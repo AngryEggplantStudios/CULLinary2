@@ -16,6 +16,8 @@ public enum FadeAction
 
 public class FadeInFadeOut : MonoBehaviour
 {
+    public bool isFinished = false;
+
     [Tooltip("The Fade Type.")]
     [SerializeField] private FadeAction fadeType;
 
@@ -68,7 +70,7 @@ public class FadeInFadeOut : MonoBehaviour
             img.color = new Color(1, 1, 1, i);
             yield return null;
         }
-
+        isFinished = true;
     }
 
     // fade from opaque to transparent
@@ -81,6 +83,7 @@ public class FadeInFadeOut : MonoBehaviour
             img.color = new Color(1, 1, 1, i);
             yield return null;
         }
+        isFinished = true;
     }
 
     IEnumerator FadeInAndOut()
@@ -103,6 +106,7 @@ public class FadeInFadeOut : MonoBehaviour
             img.color = new Color(1, 1, 1, i);
             yield return null;
         }
+        isFinished = true;
     }
 
     IEnumerator FadeOutAndIn()
@@ -125,6 +129,7 @@ public class FadeInFadeOut : MonoBehaviour
             img.color = new Color(1, 1, 1, i);
             yield return null;
         }
+        isFinished = true;
     }
 
 }
