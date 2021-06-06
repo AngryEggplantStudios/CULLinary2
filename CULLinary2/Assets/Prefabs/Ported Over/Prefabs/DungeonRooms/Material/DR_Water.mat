@@ -41,6 +41,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Control:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -61,7 +65,39 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Mask0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Mask1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Mask2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Mask3:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normal0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normal1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normal2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normal3:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -74,6 +110,26 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Splat0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Splat1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Splat2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Splat3:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TerrainHolesTexture:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -90,6 +146,12 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Vector1_02e0ea78f8e346d396328431db3829af: 0.5
+    - Vector1_3f29b272a78946659f57688a36b24e6b: 1
+    - Vector1_45ff56873564440a85106abb0dfeaa04: 0.001
+    - Vector1_552cea78c62c4982b8bfea1eda40e7cf: 0
+    - Vector1_a5c52cdc52ae4b5ca8ec255b1395b778: 0
+    - Vector1_fa63babe4f834ef4a5b88fc634b0519d: 0
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -100,17 +162,29 @@ Material:
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _EnableHeightBlend: 0
+    - _EnableInstancedPerPixelNormal: 1
     - _EnvironmentReflections: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _HeightTransition: 0
     - _Metallic: 0
+    - _Metallic0: 0
+    - _Metallic1: 0
+    - _Metallic2: 0
+    - _Metallic3: 0
     - _Mode: 0
+    - _NumLayersCount: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
+    - _Smoothness0: 0.5
+    - _Smoothness1: 0.5
+    - _Smoothness2: 0.5
+    - _Smoothness3: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -119,7 +193,9 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.84705883, g: 0.98039216, b: 1, a: 1}
+    - Color_191e57a53cc24e81a3daa5a87dcf6e17: {r: 0, g: 0.5635314, b: 1, a: 0}
+    - Color_f2d4ab7bcf304933b7227d34a7fb11ec: {r: 0.3811321, g: 0.7350543, b: 1, a: 0}
+    - _BaseColor: {r: 0.6901961, g: 0.95686275, b: 1, a: 1}
     - _Color: {r: 0.84705883, g: 0.98039216, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
