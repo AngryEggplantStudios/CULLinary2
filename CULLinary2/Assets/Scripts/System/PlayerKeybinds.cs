@@ -4,12 +4,14 @@ using UnityEngine;
 
 public enum KeybindAction
 {
+    Run,
     Interact,
     OpenInventory,
     OpenRecipeBook,
     Trash,
     CloseMenu,
-    StatsMenu
+    StatsMenu,
+    Melee
 }
 
 /// <summary>
@@ -24,7 +26,9 @@ public class PlayerKeybinds
         { KeybindAction.OpenRecipeBook, KeyCode.R },
         { KeybindAction.Trash, KeyCode.Delete },
         { KeybindAction.CloseMenu, KeyCode.Escape },
-        { KeybindAction.StatsMenu, KeyCode.Q }
+        { KeybindAction.StatsMenu, KeyCode.Q },
+        { KeybindAction.Run, KeyCode.LeftShift },
+        { KeybindAction.Melee, KeyCode.Mouse0 }
     };
 
     /// <summary>
@@ -35,6 +39,11 @@ public class PlayerKeybinds
     public static bool WasTriggered(KeybindAction key)
     {
         return Input.GetKeyDown(keybinds[key]);
+    }
+
+    public static KeyCode GetKeybind(KeybindAction action)
+    {
+        return keybinds[action];
     }
 
     /// <summary>

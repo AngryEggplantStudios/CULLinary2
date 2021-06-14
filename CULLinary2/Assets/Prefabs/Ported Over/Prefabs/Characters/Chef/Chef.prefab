@@ -660,7 +660,7 @@ Transform:
   m_GameObject: {fileID: 4007418486084460488}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.42, y: 0.03, z: -1.4447246}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children:
   - {fileID: 4007418486469922161}
   - {fileID: 3465393042775218411}
@@ -685,10 +685,10 @@ CharacterController:
   m_Height: 3
   m_Radius: 0.5
   m_SlopeLimit: 45
-  m_StepOffset: 0.3
+  m_StepOffset: 0.05
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 1.5, z: 0}
+  m_Center: {x: 0, y: 2.3, z: 0}
 --- !u!54 &4007418486084460500
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -850,8 +850,6 @@ MonoBehaviour:
   walkSpeed: 1
   runSpeed: 2.5
   turnSpeed: 8
-  invertKeys: 0
-  canRun: 1
 --- !u!114 &8558787364721461268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -872,6 +870,12 @@ MonoBehaviour:
   - {fileID: 8300000, guid: aaf3e3023a6ada44087271168ec5e846, type: 3}
   - {fileID: 8300000, guid: d077473b2cac81949aba47cc75379ea0, type: 3}
   - {fileID: 8300000, guid: d9b85af07e195074faf52c2fcdf0dc96, type: 3}
+  isGrounded: 0
+  groundCheckDistance: 0.1
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 8
+  gravity: -9.81
 --- !u!1 &4007418486469922164
 GameObject:
   m_ObjectHideFlags: 0

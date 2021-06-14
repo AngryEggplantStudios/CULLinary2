@@ -6,52 +6,47 @@ public class PlayerLocomotion : PlayerAction
 {
 
     private Animator animator;
-    private PlayerController dungeonPlayerController;
+    private PlayerController playerController;
     private CharacterController controller;
-    private GameObject player;
 
     [SerializeField] private GameObject playerBody;
-
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip[] stepSounds;
 
-    private void Start()
-    {
-        animator = GetComponent<Animator>();
-        controller = GetComponent<CharacterController>();
-        player = GameObject.FindGameObjectWithTag("Player");
-    }
+    //Setup gravity
+    [SerializeField] private bool isGrounded;
+    [SerializeField] private float groundCheckDistance;
+    [SerializeField] private LayerMask groundMask;
+    [SerializeField] private float gravity;
 
     private void Awake()
     {
-        dungeonPlayerController = GetComponent<PlayerController>();
-        dungeonPlayerController.OnPlayerMove += Move;
-        dungeonPlayerController.OnPlayerRotate += Rotate;
-        dungeonPlayerController.OnPlayerInteract += FaceWorldPosition;
+        playerController = GetComponent<PlayerController>();
+        animator = GetComponent<Animator>();
+        controller = GetComponent<CharacterController>();
+        playerController.OnPlayerMove += Move;
+        playerController.OnPlayerRotate += Rotate;
+        playerController.OnPlayerInteract += FaceWorldPosition;
     }
 
     private void Move(Vector3 direction, float speed, float animValue, bool isMoving = true)
     {
-        animator.SetFloat("Speed", animValue, 0.1f, Time.deltaTime);
-        if (isMoving)
+        isGrounded = Physics.CheckSphere(transform.position, groundCheckDistance, groundMask);
+        if (isGrounded && direction.y < 0)
         {
-            if (controller.collisionFlags != CollisionFlags.Below && controller.collisionFlags != CollisionFlags.None)
-            {
-                if (player.transform.position.y > 0.01)
-                {
-                    direction = new Vector3(direction.x, -0.30f, direction.z);
-                }
-            }
-            controller.Move(direction.normalized * speed * Time.deltaTime);
+            direction.y = -2f;
         }
-    }
 
-    public void KnockBack(Vector3 direction, float speed, float animValue, bool isMoving = true)
-    {
+        animator.SetFloat("Speed", animValue, 0.1f, Time.deltaTime);
+
         if (isMoving)
         {
             controller.Move(direction.normalized * speed * Time.deltaTime);
         }
+
+        //Gravity
+        direction.y += gravity * Time.deltaTime;
+        controller.Move(new Vector3(0.0f, direction.y * Time.deltaTime));
     }
 
     public void Rotate(Vector3 direction, float speed)
@@ -61,8 +56,9 @@ public class PlayerLocomotion : PlayerAction
 
     private void OnDestroy()
     {
-        dungeonPlayerController.OnPlayerMove -= Move;
-        dungeonPlayerController.OnPlayerRotate -= Rotate;
+        playerController.OnPlayerMove -= Move;
+        playerController.OnPlayerRotate -= Rotate;
+        playerController.OnPlayerInteract -= FaceWorldPosition;
     }
 
     public void StepSound(AnimationEvent evt)

@@ -17,60 +17,31 @@ public class PlayerController : PlayerAction
     [SerializeField] private float runSpeed = 20.0f;
     [SerializeField] private float turnSpeed = 10.0f;
 
-    // Whether to invert movement directions and keyboard mapping
-    [SerializeField] private bool invertKeys = false;
+    private KeyCode runKeyCode;
 
-    // Whether run is enabled
-    [SerializeField] private bool canRun = true;
-
-    //Directions
-    private Vector3 direction;
-    private Vector3 normalizedDirection;
-    private Vector3 moveDirection;
-
-    // Helper variables for restaurant
-    private int directionMultiplier = 1;   // Restaurant camera is facing backwards
-    private bool isMovementAllowed = true; // Disable movement while cooking
-
-    // Disables movement of this player.
-    public void DisableMovement()
+    private void Awake()
     {
-        isMovementAllowed = false;
-    }
-
-    // Enables movement of this player.
-    public void EnableMovement()
-    {
-        isMovementAllowed = true;
-    }
-
-    // Face a certain position in world coordinates.
-    public void Face(Vector3 positionToLookAt)
-    {
-        OnPlayerInteract?.Invoke(positionToLookAt, turnSpeed);
-    }
-
-    private void Start()
-    {
-        directionMultiplier = invertKeys ? -1 : 1;
+        runKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.Run);
     }
 
     private void Update()
     {
-        if (!isMovementAllowed)
-        {
-            return;
-        }
 
         float moveVertical = Input.GetAxisRaw("Vertical");
         float moveHorizontal = Input.GetAxisRaw("Horizontal");
 
-        direction = new Vector3(moveHorizontal, 0.0f, moveVertical);
-        normalizedDirection = direction.normalized * directionMultiplier;
-        float targetAngle = Mathf.Atan2(normalizedDirection.x, normalizedDirection.z) * Mathf.Rad2Deg;
-        moveDirection = Quaternion.Euler(0.0f, targetAngle, 0.0f) * Vector3.forward;
+        Vector3 direction = new Vector3(moveHorizontal, 0.0f, moveVertical);
+        float targetAngle = Mathf.Atan2(direction.normalized.x, direction.normalized.z) * Mathf.Rad2Deg;
+        Vector3 moveDirection = Quaternion.Euler(0.0f, targetAngle, 0.0f) * Vector3.forward;
 
         this.SetIsInvoking(true);
+
+        /* Testing Jump
+        if (Input.GetKey(KeyCode.Space))
+        {
+            moveDirection.y = Mathf.Sqrt(3.0f * -2.0f * -9.81f);
+        }
+        */
 
         if (direction == Vector3.zero)
         {
@@ -78,7 +49,7 @@ public class PlayerController : PlayerAction
         }
         else
         {
-            if (canRun && Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetKey(runKeyCode))
             {
                 OnPlayerMove?.Invoke(moveDirection.normalized, runSpeed, 1.0f, true);
             }
@@ -90,8 +61,10 @@ public class PlayerController : PlayerAction
 
         if (direction != Vector3.zero)
         {
-            OnPlayerRotate?.Invoke(normalizedDirection, turnSpeed);
+            OnPlayerRotate?.Invoke(direction.normalized, turnSpeed);
         }
+
+
     }
 
 }
