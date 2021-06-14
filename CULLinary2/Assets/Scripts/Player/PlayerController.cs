@@ -36,6 +36,13 @@ public class PlayerController : PlayerAction
 
         this.SetIsInvoking(true);
 
+        /* Testing Jump
+        if (Input.GetKey(KeyCode.Space))
+        {
+            moveDirection.y = Mathf.Sqrt(3.0f * -2.0f * -9.81f);
+        }
+        */
+
         if (direction == Vector3.zero)
         {
             OnPlayerMove?.Invoke(moveDirection.normalized, 0.0f, 0.0f, false);
