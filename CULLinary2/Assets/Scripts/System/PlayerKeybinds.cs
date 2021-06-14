@@ -10,7 +10,8 @@ public enum KeybindAction
     OpenRecipeBook,
     Trash,
     CloseMenu,
-    StatsMenu
+    StatsMenu,
+    Melee
 }
 
 /// <summary>
@@ -26,7 +27,8 @@ public class PlayerKeybinds
         { KeybindAction.Trash, KeyCode.Delete },
         { KeybindAction.CloseMenu, KeyCode.Escape },
         { KeybindAction.StatsMenu, KeyCode.Q },
-        { KeybindAction.Run, KeyCode.LeftShift }
+        { KeybindAction.Run, KeyCode.LeftShift },
+        { KeybindAction.Melee, KeyCode.Mouse0 }
     };
 
     /// <summary>
