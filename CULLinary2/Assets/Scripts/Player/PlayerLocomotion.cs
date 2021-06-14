@@ -11,9 +11,13 @@ public class PlayerLocomotion : PlayerAction
     private GameObject player;
 
     [SerializeField] private GameObject playerBody;
-
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip[] stepSounds;
+
+    [SerializeField] private bool isGrounded;
+    [SerializeField] private float groundCheckDistance;
+    [SerializeField] private LayerMask groundMask;
+    [SerializeField] private float gravity;
 
     private void Start()
     {
@@ -32,18 +36,21 @@ public class PlayerLocomotion : PlayerAction
 
     private void Move(Vector3 direction, float speed, float animValue, bool isMoving = true)
     {
+        isGrounded = Physics.CheckSphere(transform.position, groundCheckDistance, groundMask);
+        if (isGrounded && direction.y < 0)
+        {
+            direction.y = -2f;
+        }
+
         animator.SetFloat("Speed", animValue, 0.1f, Time.deltaTime);
+
         if (isMoving)
         {
-            if (controller.collisionFlags != CollisionFlags.Below && controller.collisionFlags != CollisionFlags.None)
-            {
-                if (player.transform.position.y > 0.01)
-                {
-                    direction = new Vector3(direction.x, -0.30f, direction.z);
-                }
-            }
             controller.Move(direction.normalized * speed * Time.deltaTime);
         }
+
+        direction.y += gravity * Time.deltaTime;
+        controller.Move(new Vector3(0.0f, direction.y * Time.deltaTime));
     }
 
     public void KnockBack(Vector3 direction, float speed, float animValue, bool isMoving = true)

@@ -15,18 +15,13 @@ public class PlayerController : PlayerAction
     //Speed
     [SerializeField] private float walkSpeed = 10.0f;
     [SerializeField] private float runSpeed = 20.0f;
-    [SerializeField] private float turnSpeed = 10.0f;   
+    [SerializeField] private float turnSpeed = 10.0f;
 
-    // Whether to invert movement directions and keyboard mapping
-    [SerializeField] private bool invertKeys = false;
+    private KeyCode runKeyCode;
 
-    // Whether run is enabled
-    [SerializeField] private bool canRun = true;
-
-    // Face a certain position in world coordinates.
-    public void Face(Vector3 positionToLookAt)
+    private void Awake()
     {
-        OnPlayerInteract?.Invoke(positionToLookAt, turnSpeed);
+        runKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.Run);
     }
 
     private void Update()
@@ -47,7 +42,7 @@ public class PlayerController : PlayerAction
         }
         else
         {
-            if (canRun && Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetKey(runKeyCode))
             {
                 OnPlayerMove?.Invoke(moveDirection.normalized, runSpeed, 1.0f, true);
             }
@@ -61,6 +56,8 @@ public class PlayerController : PlayerAction
         {
             OnPlayerRotate?.Invoke(direction.normalized, turnSpeed);
         }
+
+
     }
 
 }
