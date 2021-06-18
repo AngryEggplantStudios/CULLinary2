@@ -5,20 +5,20 @@ using UnityEngine;
 [System.Serializable]
 public class PlayerData
 {
-    public string ToJson()
-    {
-        return JsonUtility.ToJson(this);
-    }
+  public string ToJson()
+  {
+    return JsonUtility.ToJson(this);
+  }
 
-    public void LoadFromJson(string jsonData)
+  public void LoadFromJson(string jsonData)
+  {
+    try
     {
-        try
-        {
-            JsonUtility.FromJsonOverwrite(jsonData, this);
-        }
-        catch
-        {
-            Debug.Log("No save file...");
-        }
+      JsonUtility.FromJsonOverwrite(jsonData, this);
     }
+    catch
+    {
+      Debug.Log("No save file...");
+    }
+  }
 }

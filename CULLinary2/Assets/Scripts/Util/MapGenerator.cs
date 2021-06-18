@@ -7,195 +7,195 @@ using UnityEngine.AI;
 
 public class MapGenerator : MonoBehaviour
 {
-    public GameObject startingRoom;
-    public GameObject[] fillerRooms;
-    public GameObject[] spawnRooms;
-    public GameObject deadend;
-    public int roomLimit;
-    public float fillerRatio = 0.5f;
+  public GameObject startingRoom;
+  public GameObject[] fillerRooms;
+  public GameObject[] spawnRooms;
+  public GameObject deadend;
+  public int roomLimit;
+  public float fillerRatio = 0.5f;
 
-    private static GameObject parent;
-    private static int roomCounter = 0;
-    private static List<GameObject> roomPool;
-    private static List<GameObject> generatedRooms;
+  private static GameObject parent;
+  private static int roomCounter = 0;
+  private static List<GameObject> roomPool;
+  private static List<GameObject> generatedRooms;
 
-    private static Queue<ConnectionPoint> ConnectionPoints;
+  private static Queue<ConnectionPoint> ConnectionPoints;
 
-    /*
-    For Loading Screen usage
-    */
-    public static bool isGenerated = false;
-    public static float roomProgress = 0f;
-    public static bool isGeneratingDeadends = false;
-    public static bool isGeneratingRooms = true;
-    public static bool isBuildingNavMesh = false;
+  /*
+  For Loading Screen usage
+  */
+  public static bool isGenerated = false;
+  public static float roomProgress = 0f;
+  public static bool isGeneratingDeadends = false;
+  public static bool isGeneratingRooms = true;
+  public static bool isBuildingNavMesh = false;
 
-    // Singleton
-    private static MapGenerator _instance;
-    public static MapGenerator Instance { get { return _instance; } }
+  // Singleton
+  private static MapGenerator _instance;
+  public static MapGenerator Instance { get { return _instance; } }
 
-    private void Awake()
+  private void Awake()
+  {
+    if (_instance != null && _instance != this)
     {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            _instance = this;
-        }
-        generatedRooms = new List<GameObject>();
-        ConnectionPoints = new Queue<ConnectionPoint>();
-        roomPool = new List<GameObject>();
+      Destroy(this.gameObject);
+    }
+    else
+    {
+      _instance = this;
+    }
+    generatedRooms = new List<GameObject>();
+    ConnectionPoints = new Queue<ConnectionPoint>();
+    roomPool = new List<GameObject>();
+  }
+
+  private void Start()
+  {
+    parent = new GameObject();
+    parent.AddComponent<NavMeshSurface>();
+
+    // Generate pools of rooms
+    List<GameObject> fillerRoomPool = new List<GameObject>();
+    for (int i = 0; i < fillerRatio * roomLimit; i++)
+    {
+      fillerRoomPool.Add(fillerRooms[i % fillerRooms.Length]);
+    }
+    Shuffle(fillerRoomPool);
+
+    List<GameObject> spawnRoomPool = new List<GameObject>();
+    int numOfDuplicates = (int)((1.0f - fillerRatio) * roomLimit / spawnRooms.Length) + 1;
+    for (int i = 0; i < (1 - fillerRatio) * roomLimit; i++)
+    {
+      spawnRoomPool.Add(spawnRooms[i / numOfDuplicates]);
     }
 
-    private void Start()
+    roomPool = MergeShuffle(fillerRoomPool, spawnRoomPool).ToList();
+
+    roomCounter = 0;
+    roomProgress = 0f;
+    isGeneratingRooms = true;
+    isBuildingNavMesh = false;
+    isGenerated = false;
+    isGeneratingDeadends = false;
+
+    StartCoroutine(GenerateMap());
+  }
+
+  private IEnumerator GenerateMap()
+  {
+    //Add starting room's connection points
+    AddConnectionPoints(startingRoom.GetComponentsInChildren<ConnectionPoint>());
+    yield return null;
+
+    //While we haven't exceed the room limit,
+    //let's try to generate the room for each connection point,
+    //starting from the center
+    while (ConnectionPoints.Count > 0 && roomPool.Count > 0)
     {
-        parent = new GameObject();
-        parent.AddComponent<NavMeshSurface>();
+      ConnectionPoint currentPoint = ConnectionPoints.Dequeue();
+      yield return null;
 
-        // Generate pools of rooms
-        List<GameObject> fillerRoomPool = new List<GameObject>();
-        for (int i = 0; i < fillerRatio * roomLimit; i++)
-        {
-            fillerRoomPool.Add(fillerRooms[i % fillerRooms.Length]);
-        }
-        Shuffle(fillerRoomPool);
-
-        List<GameObject> spawnRoomPool = new List<GameObject>();
-        int numOfDuplicates = (int)((1.0f - fillerRatio) * roomLimit / spawnRooms.Length) + 1;
-        for (int i = 0; i < (1 - fillerRatio) * roomLimit; i++)
-        {
-            spawnRoomPool.Add(spawnRooms[i / numOfDuplicates]);
-        }
-
-        roomPool = MergeShuffle(fillerRoomPool, spawnRoomPool).ToList();
-
-        roomCounter = 0;
-        roomProgress = 0f;
-        isGeneratingRooms = true;
-        isBuildingNavMesh = false;
-        isGenerated = false;
-        isGeneratingDeadends = false;
-
-        StartCoroutine(GenerateMap());
+      yield return StartCoroutine(currentPoint.GenerateRoom(roomPool[0]));
     }
 
-    private IEnumerator GenerateMap()
+    isGeneratingRooms = false;
+    yield return new WaitForSeconds(0.03f);
+
+    //Let us build the navmesh now for the AI
+    isBuildingNavMesh = true;
+    parent.GetComponent<NavMeshSurface>().BuildNavMesh();
+    yield return new WaitForSeconds(0.03f);
+    //reactivate Deco
+    foreach (GameObject room in generatedRooms)
     {
-        //Add starting room's connection points
-        AddConnectionPoints(startingRoom.GetComponentsInChildren<ConnectionPoint>());
-        yield return null;
+      room.transform.Find("Environment").Find("Deco").gameObject.SetActive(true);
+    }
+    isBuildingNavMesh = false;
 
-        //While we haven't exceed the room limit,
-        //let's try to generate the room for each connection point,
-        //starting from the center
-        while (ConnectionPoints.Count > 0 && roomPool.Count > 0)
-        {
-            ConnectionPoint currentPoint = ConnectionPoints.Dequeue();
-            yield return null;
+    isGenerated = true;
 
-            yield return StartCoroutine(currentPoint.GenerateRoom(roomPool[0]));
-        }
+    //For all the connection points left, let us generate the deadend
+    //isGeneratingDeadends = true;
+    foreach (ConnectionPoint currentPoint in ConnectionPoints)
+    {
+      yield return null;
+      yield return StartCoroutine(currentPoint.GenerateRoom(deadend, true));
+    }
+    //isGeneratingDeadends = false;
+  }
 
-        isGeneratingRooms = false;
-        yield return new WaitForSeconds(0.03f);
+  public static void AddConnectionPoints(ConnectionPoint[] points)
+  {
+    foreach (ConnectionPoint c in points)
+    {
+      if (!c.GetIsConnected())
+      {
+        ConnectionPoints.Enqueue(c);
+      }
+    }
+  }
 
-        //Let us build the navmesh now for the AI
-        isBuildingNavMesh = true;
-        parent.GetComponent<NavMeshSurface>().BuildNavMesh();
-        yield return new WaitForSeconds(0.03f);
-        //reactivate Deco
-        foreach (GameObject room in generatedRooms)
-        {
-            room.transform.Find("Environment").Find("Deco").gameObject.SetActive(true);
-        }
-        isBuildingNavMesh = false;
+  public static void AddGeneratedRoom(GameObject room)
+  {
+    roomPool.RemoveAt(0);
+    roomCounter++;
+    roomProgress = roomCounter / (float)_instance.roomLimit;
+    generatedRooms.Add(room);
+    room.transform.parent = parent.transform;
+  }
 
-        isGenerated = true;
+  // Shuffle algos for randomising rooms
+  static System.Random rng = new System.Random();
 
-        //For all the connection points left, let us generate the deadend
-        //isGeneratingDeadends = true;
-        foreach (ConnectionPoint currentPoint in ConnectionPoints)
-        {
-            yield return null;
-            yield return StartCoroutine(currentPoint.GenerateRoom(deadend, true));
-        }
-        //isGeneratingDeadends = false;
+  static void Shuffle<T>(IList<T> list)
+  {
+    int n = list.Count;
+    while (n > 1)
+    {
+      n--;
+      int k = rng.Next(n + 1);
+      T value = list[k];
+      list[k] = list[n];
+      list[n] = value;
+    }
+  }
+
+  static IEnumerable<T> MergeShuffle<T>(IEnumerable<T> lista, IEnumerable<T> listb)
+  {
+    int total = lista.Count() + listb.Count();
+    var indexes = Enumerable.Range(0, total - 1)
+                            .OrderBy(_ => rng.NextDouble())
+                            .Take(lista.Count())
+                            .OrderBy(x => x)
+                            .ToList();
+
+    var first = lista.GetEnumerator();
+    var second = listb.GetEnumerator();
+
+    for (int i = 0; i < total; i++)
+      if (indexes.Contains(i))
+      {
+        first.MoveNext();
+        yield return first.Current;
+      }
+      else
+      {
+        second.MoveNext();
+        yield return second.Current;
+      }
+  }
+
+  static T RemoveAndReturnFirst<T>(List<T> list)
+  {
+    if (list == null || list.Count == 0)
+    {
+      return default(T);
     }
 
-    public static void AddConnectionPoints(ConnectionPoint[] points)
-    {
-        foreach (ConnectionPoint c in points)
-        {
-            if (!c.GetIsConnected())
-            {
-                ConnectionPoints.Enqueue(c);
-            }
-        }
-    }
-
-    public static void AddGeneratedRoom(GameObject room)
-    {
-        roomPool.RemoveAt(0);
-        roomCounter++;
-        roomProgress = roomCounter / (float)_instance.roomLimit;
-        generatedRooms.Add(room);
-        room.transform.parent = parent.transform;
-    }
-
-    // Shuffle algos for randomising rooms
-    static System.Random rng = new System.Random();
-
-    static void Shuffle<T>(IList<T> list)
-    {
-        int n = list.Count;
-        while (n > 1)
-        {
-            n--;
-            int k = rng.Next(n + 1);
-            T value = list[k];
-            list[k] = list[n];
-            list[n] = value;
-        }
-    }
-
-    static IEnumerable<T> MergeShuffle<T>(IEnumerable<T> lista, IEnumerable<T> listb)
-    {
-        int total = lista.Count() + listb.Count();
-        var indexes = Enumerable.Range(0, total - 1)
-                                .OrderBy(_ => rng.NextDouble())
-                                .Take(lista.Count())
-                                .OrderBy(x => x)
-                                .ToList();
-
-        var first = lista.GetEnumerator();
-        var second = listb.GetEnumerator();
-
-        for (int i = 0; i < total; i++)
-            if (indexes.Contains(i))
-            {
-                first.MoveNext();
-                yield return first.Current;
-            }
-            else
-            {
-                second.MoveNext();
-                yield return second.Current;
-            }
-    }
-
-    static T RemoveAndReturnFirst<T>(List<T> list)
-    {
-        if (list == null || list.Count == 0)
-        {
-            return default(T);
-        }
-
-        T currentFirst = list[0];
-        list.RemoveAt(0);
-        return currentFirst;
-    }
+    T currentFirst = list[0];
+    list.RemoveAt(0);
+    return currentFirst;
+  }
 }
 
 /*
