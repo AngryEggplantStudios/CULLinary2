@@ -5,13 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class LoadMainMenu : MonoBehaviour
 {
-    [SerializeField] private FadeInFadeOut fade;
+  [SerializeField] private FadeInFadeOut fade;
 
-    private void Update()
+  private void Update()
+  {
+    if (fade.isFinished)
     {
-        if (fade.isFinished)
-        {
-            SceneManager.LoadScene((int)SceneIndexes.MAIN_MENU);
-        }
+      SceneManager.LoadScene((int)SceneIndexes.MAIN_MENU);
     }
+  }
 }

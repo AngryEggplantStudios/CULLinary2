@@ -5,87 +5,87 @@ using UnityEditor;
 
 public class ConnectionPoint : MonoBehaviour
 {
-    [SerializeField] private bool isConnected = false;
-    [SerializeField] private float bias; //How far from the centre should the connection point spawn the next room?
+  [SerializeField] private bool isConnected = false;
+  [SerializeField] private float bias; //How far from the centre should the connection point spawn the next room?
 
-    public IEnumerator GenerateRoom(GameObject roomToGenerate, bool isDeadEnd = false)
+  public IEnumerator GenerateRoom(GameObject roomToGenerate, bool isDeadEnd = false)
+  {
+    Quaternion rotation = Quaternion.LookRotation(this.transform.forward);
+    Vector3 position = GenerateRelativeVector(rotation.eulerAngles.y, bias);
+    GameObject generatedRoom = Instantiate(roomToGenerate, position, rotation);
+    yield return null;
+
+    ConnectionPoint[] connectionPoints = null;
+    ConnectionPoint chosenPoint = null;
+    if (!isDeadEnd)
     {
-        Quaternion rotation = Quaternion.LookRotation(this.transform.forward);
-        Vector3 position = GenerateRelativeVector(rotation.eulerAngles.y, bias);
-        GameObject generatedRoom = Instantiate(roomToGenerate, position, rotation);
-        yield return null;
-
-        ConnectionPoint[] connectionPoints = null;
-        ConnectionPoint chosenPoint = null;
-        if (!isDeadEnd)
-        {
-            connectionPoints = generatedRoom.GetComponentsInChildren<ConnectionPoint>();
-            chosenPoint = connectionPoints[0];
-        }
-        CheckCollision validatorNewRoom = generatedRoom.GetComponentInChildren<CheckCollision>();
-        validatorNewRoom.TurnOnCollider();
-        yield return new WaitForSeconds(0.03f);
-
-        if (validatorNewRoom.GetIsCollided())
-        {
-            Destroy(generatedRoom);
-            yield return null;
-        }
-        else
-        {
-            this.SetConnected();
-            if (!isDeadEnd)
-            {
-                //deactivate Deco before generating NavMesh
-                generatedRoom.transform.Find("Environment").Find("Deco").gameObject.SetActive(false);
-
-                MapGenerator.AddGeneratedRoom(generatedRoom);
-                chosenPoint.SetConnected();
-                MapGenerator.AddConnectionPoints(connectionPoints);
-            }
-        }
+      connectionPoints = generatedRoom.GetComponentsInChildren<ConnectionPoint>();
+      chosenPoint = connectionPoints[0];
     }
+    CheckCollision validatorNewRoom = generatedRoom.GetComponentInChildren<CheckCollision>();
+    validatorNewRoom.TurnOnCollider();
+    yield return new WaitForSeconds(0.03f);
 
-    private void OnTriggerEnter(Collider collider)
+    if (validatorNewRoom.GetIsCollided())
     {
-        if (collider.CompareTag("Validator"))
-        {
-            isConnected = true;
-        }
+      Destroy(generatedRoom);
+      yield return null;
     }
-
-    public Vector3 GenerateRelativeVector(float eulerAngle, float bias)
+    else
     {
-        float xBias = 0f;
-        float zBias = 0f;
-        if (eulerAngle > -10.0f && eulerAngle < 10.0f)
-        {
-            zBias = bias;
-        }
-        else if (eulerAngle > 80.0f && eulerAngle < 100.0f)
-        {
-            xBias = bias;
-        }
-        else if (eulerAngle > 170.0f && eulerAngle < 190.0f)
-        {
-            zBias = -bias;
-        }
-        else if (eulerAngle > 260.0f && eulerAngle < 280.0f)
-        {
-            xBias = -bias;
-        }
-        return new Vector3(this.transform.position.x + xBias, this.transform.position.y, this.transform.position.z + zBias);
-    }
+      this.SetConnected();
+      if (!isDeadEnd)
+      {
+        //deactivate Deco before generating NavMesh
+        generatedRoom.transform.Find("Environment").Find("Deco").gameObject.SetActive(false);
 
-    public void SetConnected()
-    {
-        isConnected = true;
+        MapGenerator.AddGeneratedRoom(generatedRoom);
+        chosenPoint.SetConnected();
+        MapGenerator.AddConnectionPoints(connectionPoints);
+      }
     }
+  }
 
-    public bool GetIsConnected()
+  private void OnTriggerEnter(Collider collider)
+  {
+    if (collider.CompareTag("Validator"))
     {
-        return isConnected;
+      isConnected = true;
     }
+  }
+
+  public Vector3 GenerateRelativeVector(float eulerAngle, float bias)
+  {
+    float xBias = 0f;
+    float zBias = 0f;
+    if (eulerAngle > -10.0f && eulerAngle < 10.0f)
+    {
+      zBias = bias;
+    }
+    else if (eulerAngle > 80.0f && eulerAngle < 100.0f)
+    {
+      xBias = bias;
+    }
+    else if (eulerAngle > 170.0f && eulerAngle < 190.0f)
+    {
+      zBias = -bias;
+    }
+    else if (eulerAngle > 260.0f && eulerAngle < 280.0f)
+    {
+      xBias = -bias;
+    }
+    return new Vector3(this.transform.position.x + xBias, this.transform.position.y, this.transform.position.z + zBias);
+  }
+
+  public void SetConnected()
+  {
+    isConnected = true;
+  }
+
+  public bool GetIsConnected()
+  {
+    return isConnected;
+  }
 
 }
 
