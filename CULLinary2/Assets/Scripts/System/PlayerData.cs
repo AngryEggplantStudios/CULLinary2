@@ -1,19 +1,25 @@
 using UnityEngine;
 
 [System.Serializable]
-public class PlayerData {
+public class PlayerData
+{
 
   public string inventory;
   public int maxHealth;
   public int currentHealth;
-  public string ToJson() {
+  public string ToJson()
+  {
     return JsonUtility.ToJson(this);
   }
 
-  public void LoadFromJson(string jsonData) {
-    try {
+  public void LoadFromJson(string jsonData)
+  {
+    try
+    {
       JsonUtility.FromJsonOverwrite(jsonData, this);
-    } catch {
+    }
+    catch
+    {
       Debug.Log("No save file...");
     }
   }
