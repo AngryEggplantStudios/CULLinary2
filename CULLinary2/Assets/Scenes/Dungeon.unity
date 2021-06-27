@@ -581,6 +581,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9a0d39611c4dec87a14e053dbf31dfc, type: 3}
+--- !u!20 &186378757 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 4007418486469922166, guid: d9a0d39611c4dec87a14e053dbf31dfc, type: 3}
+  m_PrefabInstance: {fileID: 186378756}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &186378758 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2394941396998005330, guid: d9a0d39611c4dec87a14e053dbf31dfc, type: 3}
+  m_PrefabInstance: {fileID: 186378756}
+  m_PrefabAsset: {fileID: 0}
 --- !u!82 &212557734 stripped
 AudioSource:
   m_CorrespondingSourceObject: {fileID: 9100753358725591437, guid: d9a0d39611c4dec87a14e053dbf31dfc, type: 3}
@@ -4098,6 +4108,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthBar: {fileID: 1337104429}
   healthText: {fileID: 993907930}
+  skinRenderer: {fileID: 186378758}
+  damageCounter: {fileID: 1441873726}
+  invincibilityDeltaTime: 0.025
+  invincibilityDurationSeconds: 0
+--- !u!114 &1441873726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1441873722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b589de3f0b7c42ac8494d0cd58d6c32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageCounterPrefab: {fileID: 0}
+  displayCanvasTransform: {fileID: 306391732}
+  displayCamera: {fileID: 186378757}
 --- !u!1001 &1462246325
 PrefabInstance:
   m_ObjectHideFlags: 0
