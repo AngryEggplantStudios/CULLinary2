@@ -8,5 +8,5 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Database", menuName = "Game Database")]
 public class GameDatabase : ScriptableObject
 {
-  public List<Ingredient> allIngredients;
+    public List<Ingredient> allIngredients;
 }

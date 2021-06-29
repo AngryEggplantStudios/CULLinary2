@@ -4,23 +4,23 @@ using UnityEngine;
 public class PlayerData
 {
 
-  public string inventory;
-  public int maxHealth;
-  public int currentHealth;
-  public string ToJson()
-  {
-    return JsonUtility.ToJson(this);
-  }
+    public string inventory;
+    public int maxHealth;
+    public int currentHealth;
+    public string ToJson()
+    {
+        return JsonUtility.ToJson(this);
+    }
 
-  public void LoadFromJson(string jsonData)
-  {
-    try
+    public void LoadFromJson(string jsonData)
     {
-      JsonUtility.FromJsonOverwrite(jsonData, this);
+        try
+        {
+            JsonUtility.FromJsonOverwrite(jsonData, this);
+        }
+        catch
+        {
+            Debug.Log("No save file...");
+        }
     }
-    catch
-    {
-      Debug.Log("No save file...");
-    }
-  }
 }

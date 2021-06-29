@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum ScriptableEnum
 {
-  INGREDIENT,
-  EQUIPMENT,
-  RECIPE
+    INGREDIENT,
+    EQUIPMENT,
+    RECIPE
 }
