@@ -15,8 +15,9 @@ public class PlayerController : PlayerAction {
   [SerializeField] private float walkSpeed = 10.0f;
   [SerializeField] private float runSpeed = 20.0f;
   [SerializeField] private float turnSpeed = 10.0f;
+  [SerializeField] private PlayerStamina staminaBar;
 
-  private KeyCode runKeyCode;
+    private KeyCode runKeyCode;
 
   private void Awake() {
     runKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.Run);
@@ -43,8 +44,9 @@ public class PlayerController : PlayerAction {
     if (direction == Vector3.zero) {
       OnPlayerMove?.Invoke(moveDirection.normalized, 0.0f, 0.0f, false);
     } else {
-      if (Input.GetKey(runKeyCode)) {
+      if (Input.GetKey(runKeyCode) && staminaBar.hasStamina()) {
         OnPlayerMove?.Invoke(moveDirection.normalized, runSpeed, 1.0f, true);
+        staminaBar.useStamina();
       } else {
         OnPlayerMove?.Invoke(moveDirection.normalized, walkSpeed, 0.5f, true);
       }
