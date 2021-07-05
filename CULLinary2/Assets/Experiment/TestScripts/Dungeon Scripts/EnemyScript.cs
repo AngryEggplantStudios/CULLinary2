@@ -287,22 +287,22 @@ public class EnemyScript : Enemy
 
     public override void HandleHit(float damage)
     {
-        if (state != State.AttackTarget)
-        {
-            Alert();
-        }
-        
-        this.health -= damage;
-        hpBarFull.fillAmount = health/maxHealth;
-        StartCoroutine(FlashOnDamage());
-        SpawnDamageCounter(damage);
-        audioSourceDamage.clip = stabSounds[Random.Range(0, stabSounds.Length)];
-        audioSourceDamage.Play();
+      Debug.Log("I'm getting hit");
+      if (state != State.AttackTarget)
+      {
+          Alert();
+      }
+      this.health -= damage;
+      hpBarFull.fillAmount = health/maxHealth;
+      StartCoroutine(FlashOnDamage());
+      SpawnDamageCounter(damage);
+      audioSourceDamage.clip = stabSounds[Random.Range(0, stabSounds.Length)];
+      audioSourceDamage.Play();
 
-        if (this.health <= 0)
-        {
-            Die();
-        }
+      if (this.health <= 0)
+      {
+          Die();
+      }
     }
 
     private void SpawnDamageCounter(float damage)

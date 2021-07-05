@@ -75,16 +75,16 @@ public class PlayerHealth : MonoBehaviour {
     damageCounter.transform.GetComponentInChildren<Text>().text = damage.ToString();
     //damageCounter.transform.SetParent(GameObject.FindObjectOfType<InventoryUI>().transform);
     //damageCounter.transform.position = cam.WorldToScreenPoint(transform.position);
-    Debug.Log("I'm damaged by " + damage);
+    //Debug.Log("I'm damaged by " + damage);
   }
 
   public void KnockbackPlayer(Vector3 positionOfEnemy)
   {
     //ToImplementKnockback
     //StartCoroutine(KnockCoroutine(positionOfEnemy));
-    Vector3 forceDirection = transform.position - positionOfEnemy;
+    /*Vector3 forceDirection = transform.position - positionOfEnemy;
     forceDirection.y = 0;
-    Vector3 force = forceDirection.normalized;
+    Vector3 force = forceDirection.normalized;*/
     //dpl.KnockBack(force, 50, 3, true);
   }
 

@@ -9,6 +9,7 @@ public class PlayerManager : MonoBehaviour {
   // Player Stats and default values
   public int currentHealth = 200;
   public int maxHealth = 200;
+  public int meleeDamage = 20;
 
   private static PlayerData playerData;
 
