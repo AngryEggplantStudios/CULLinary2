@@ -11,7 +11,7 @@ public class PlayerStamina : MonoBehaviour
 
   private float maxStamina = 100.0f;
   private float currStamina;
-  private float staminaConsumed = 0.1f;
+  private float staminaConsumed = 0.001f; //0.01f
   private WaitForSeconds timeTakenRegen = new WaitForSeconds(0.05f);
   private Coroutine regen;
   private GameObject staminaBar;

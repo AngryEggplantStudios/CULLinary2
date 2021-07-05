@@ -24,6 +24,7 @@ public class PlayerHealth : MonoBehaviour {
     healthBar.fillAmount = currentHealth / maxHealth;
     healthText.text = currentHealth + "/" + maxHealth;
     this.currHealth = currentHealth;
+    SetupFlash();
   }
 
   public bool HandleHit(int damage) {
@@ -31,7 +32,8 @@ public class PlayerHealth : MonoBehaviour {
       return false;
     }
     PlayerManager.instance.currentHealth -= damage;
-    healthBar.fillAmount = PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth;
+    healthBar.fillAmount = (float) PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth;
+
     healthText.text = PlayerManager.instance.currentHealth + "/" + PlayerManager.instance.maxHealth;
     //Spawn damage counter
     //Play Audio
