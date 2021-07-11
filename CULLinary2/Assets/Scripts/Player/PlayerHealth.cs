@@ -5,15 +5,19 @@ using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private GameObject damageCounter_prefab;
+    [SerializeField] private GameObject gameOverUI;
     [SerializeField] private Image healthBar;
     [SerializeField] private Text healthText;
-    [SerializeField] private Renderer skinRenderer;
-    [SerializeField] private DamageCounter damageCounter;
-    [SerializeField] private float invincibilityDeltaTime = 0.025f;
     [SerializeField] private float invincibilityDurationSeconds;
+    [SerializeField] private GameObject model;
     private bool isInvincible = false;
+    private float currHealth;
+    private Renderer rend;
     private Color[] originalColors;
     private Color onDamageColor = Color.white;
+    private float invincibilityDeltaTime = 0.025f;
 
     private void Awake()
     {
@@ -21,6 +25,7 @@ public class PlayerHealth : MonoBehaviour
         int maxHealth = PlayerManager.instance ? PlayerManager.instance.maxHealth : 200;
         healthBar.fillAmount = currentHealth / maxHealth;
         healthText.text = currentHealth + "/" + maxHealth;
+        this.currHealth = currentHealth;
         SetupFlash();
     }
 
@@ -31,28 +36,71 @@ public class PlayerHealth : MonoBehaviour
             return false;
         }
         PlayerManager.instance.currentHealth -= damage;
-        healthBar.fillAmount = PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth;
-        healthText.text = PlayerManager.instance.currentHealth + "/" + PlayerManager.instance.maxHealth;
-        if (damageCounter)
-        {
-            damageCounter.SpawnDamageCounter(damage);
-        }
+        healthBar.fillAmount = (float)PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth;
 
+        healthText.text = PlayerManager.instance.currentHealth + "/" + PlayerManager.instance.maxHealth;
+        //Spawn damage counter
         //Play Audio
         //If health is 0, play game over scene and invoke game over event
+        SpawnDamageCounter(damage);
+        audioSource.Play();
+
+        if (this.currHealth <= 0)
+        {
+            //gameOverUI.GetComponent<GameManager>().GameOver();
+            //Die();
+            Debug.Log("Ded");
+        }
+        StartCoroutine(BecomeTemporarilyInvincible());
         return true;
+    }
+
+    public float GetHealth()
+    {
+        return this.currHealth;
     }
 
     private void SetupFlash()
     {
-        if (skinRenderer)
+        rend = model.GetComponentInChildren<Renderer>();
+        if (rend)
         {
-            originalColors = new Color[skinRenderer.materials.Length];
-            for (int i = 0; i < skinRenderer.materials.Length; i++)
+            originalColors = new Color[rend.materials.Length];
+            for (var i = 0; i < rend.materials.Length; i++)
             {
-                originalColors[i] = skinRenderer.materials[i].color;
+                originalColors[i] = rend.materials[i].color;
             }
         }
+    }
+
+    private void SpawnDamageCounter(float damage)
+    {
+        GameObject damageCounter = Instantiate(damageCounter_prefab);
+        damageCounter.transform.GetComponentInChildren<Text>().text = damage.ToString();
+        //damageCounter.transform.SetParent(GameObject.FindObjectOfType<InventoryUI>().transform);
+        //damageCounter.transform.position = cam.WorldToScreenPoint(transform.position);
+        //Debug.Log("I'm damaged by " + damage);
+    }
+
+    public void KnockbackPlayer(Vector3 positionOfEnemy)
+    {
+        //ToImplementKnockback
+        //StartCoroutine(KnockCoroutine(positionOfEnemy));
+        /*Vector3 forceDirection = transform.position - positionOfEnemy;
+        forceDirection.y = 0;
+        Vector3 force = forceDirection.normalized;*/
+        //dpl.KnockBack(force, 50, 3, true);
+    }
+
+    private IEnumerator KnockCoroutine(Vector3 positionOfEnemy)
+    {
+
+        Vector3 forceDirection = transform.position - positionOfEnemy;
+        Vector3 force = forceDirection.normalized;
+        gameObject.GetComponent<Rigidbody>().velocity = force * 4;
+        yield return new WaitForSeconds(0.3f);
+        gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+
     }
 
     private IEnumerator BecomeTemporarilyInvincible()
@@ -61,18 +109,19 @@ public class PlayerHealth : MonoBehaviour
         bool isFlashing = false;
         for (float i = 0; i < invincibilityDurationSeconds; i += invincibilityDeltaTime)
         {
+            // Alternate between 0 and 1 scale to simulate flashing
             if (isFlashing)
             {
-                for (var k = 0; k < skinRenderer.materials.Length; k++)
+                for (var k = 0; k < rend.materials.Length; k++)
                 {
-                    skinRenderer.materials[k].color = onDamageColor;
+                    rend.materials[k].color = onDamageColor;
                 }
             }
             else
             {
-                for (var k = 0; k < skinRenderer.materials.Length; k++)
+                for (var k = 0; k < rend.materials.Length; k++)
                 {
-                    skinRenderer.materials[k].color = originalColors[k];
+                    rend.materials[k].color = originalColors[k];
                 }
             }
             isFlashing = !isFlashing;
@@ -80,7 +129,5 @@ public class PlayerHealth : MonoBehaviour
         }
         isInvincible = false;
     }
-
-
 
 }

@@ -16,6 +16,7 @@ public class PlayerController : PlayerAction
     [SerializeField] private float walkSpeed = 10.0f;
     [SerializeField] private float runSpeed = 20.0f;
     [SerializeField] private float turnSpeed = 10.0f;
+    [SerializeField] private PlayerStamina staminaBar;
 
     private KeyCode runKeyCode;
 
@@ -42,6 +43,23 @@ public class PlayerController : PlayerAction
             moveDirection.y = Mathf.Sqrt(3.0f * -2.0f * -9.81f);
         }
         */
+
+        if (direction == Vector3.zero)
+        {
+            OnPlayerMove?.Invoke(moveDirection.normalized, 0.0f, 0.0f, false);
+        }
+        else
+        {
+            if (Input.GetKey(runKeyCode) && staminaBar.hasStamina())
+            {
+                OnPlayerMove?.Invoke(moveDirection.normalized, runSpeed, 1.0f, true);
+                staminaBar.useStamina();
+            }
+            else
+            {
+                OnPlayerMove?.Invoke(moveDirection.normalized, walkSpeed, 0.5f, true);
+            }
+        }
 
         if (direction == Vector3.zero)
         {
