@@ -2,28 +2,28 @@ using UnityEngine;
 
 public static class SaveSystem
 {
-  public static void SaveData(PlayerData playerData)
-  {
-
-    FileManager.WriteToFile("saveFile.clown", playerData.ToJson());
-  }
-
-  public static PlayerData LoadData()
-  {
-    if (FileManager.LoadFromFile("saveFile.clown", out var json))
+    public static void SaveData(PlayerData playerData)
     {
-      PlayerData playerData = new PlayerData();
-      playerData.LoadFromJson(json);
-      return playerData;
+
+        FileManager.WriteToFile("saveFile.clown", playerData.ToJson());
     }
-    Debug.Log("Save file not loaded");
-    return null;
 
-  }
+    public static PlayerData LoadData()
+    {
+        if (FileManager.LoadFromFile("saveFile.clown", out var json))
+        {
+            PlayerData playerData = new PlayerData();
+            playerData.LoadFromJson(json);
+            return playerData;
+        }
+        Debug.Log("Save file not loaded");
+        return null;
 
-  public static void CreateNewFile(PlayerData playerData)
-  {
+    }
 
-    FileManager.WriteToFile("saveFile.clown", playerData.ToJson()); //Default save name
-  }
+    public static void CreateNewFile(PlayerData playerData)
+    {
+
+        FileManager.WriteToFile("saveFile.clown", playerData.ToJson()); //Default save name
+    }
 }

@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class PlayerAction : MonoBehaviour
 {
-  private bool isInvoking = false;
+    private bool isInvoking = false;
 
-  protected void SetIsInvoking(bool b)
-  {
-    this.isInvoking = b;
-  }
+    protected void SetIsInvoking(bool b)
+    {
+        this.isInvoking = b;
+    }
 
-  public bool GetIsInvoking()
-  {
-    return this.isInvoking;
-  }
+    public bool GetIsInvoking()
+    {
+        return this.isInvoking;
+    }
 }
