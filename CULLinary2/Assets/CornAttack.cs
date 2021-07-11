@@ -72,7 +72,7 @@ public class CornAttack : EnemyAttack
                 lRend.SetPosition(1, targetPosition);
             }
             firePositions.Add(targetPosition);
-            
+
         }
 
 
