@@ -7,13 +7,15 @@ public class PlayerHealth : MonoBehaviour
 {
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private GameObject damageCounter_prefab;
-    [SerializeField] private GameObject gameOverUI;
     [SerializeField] private Image healthBar;
     [SerializeField] private Text healthText;
     [SerializeField] private float invincibilityDurationSeconds;
     [SerializeField] private GameObject model;
+
+    //To be ported over to somewhere
+    [SerializeField] private GameObject canvasDisplay;
+    [SerializeField] private Camera cam;
     private bool isInvincible = false;
-    private float currHealth;
     private Renderer rend;
     private Color[] originalColors;
     private Color onDamageColor = Color.white;
@@ -25,7 +27,6 @@ public class PlayerHealth : MonoBehaviour
         int maxHealth = PlayerManager.instance ? PlayerManager.instance.maxHealth : 200;
         healthBar.fillAmount = currentHealth / maxHealth;
         healthText.text = currentHealth + "/" + maxHealth;
-        this.currHealth = currentHealth;
         SetupFlash();
     }
 
@@ -37,29 +38,18 @@ public class PlayerHealth : MonoBehaviour
         }
         PlayerManager.instance.currentHealth -= damage;
         healthBar.fillAmount = (float)PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth;
-
         healthText.text = PlayerManager.instance.currentHealth + "/" + PlayerManager.instance.maxHealth;
-        //Spawn damage counter
-        //Play Audio
-        //If health is 0, play game over scene and invoke game over event
         SpawnDamageCounter(damage);
         audioSource.Play();
 
-        if (this.currHealth <= 0)
+        if (PlayerManager.instance.currentHealth <= 0)
         {
-            //gameOverUI.GetComponent<GameManager>().GameOver();
-            //Die();
             Debug.Log("Ded");
+            return true;
         }
         StartCoroutine(BecomeTemporarilyInvincible());
         return true;
     }
-
-    public float GetHealth()
-    {
-        return this.currHealth;
-    }
-
     private void SetupFlash()
     {
         rend = model.GetComponentInChildren<Renderer>();
@@ -77,9 +67,11 @@ public class PlayerHealth : MonoBehaviour
     {
         GameObject damageCounter = Instantiate(damageCounter_prefab);
         damageCounter.transform.GetComponentInChildren<Text>().text = damage.ToString();
+        damageCounter.transform.SetParent(canvasDisplay.transform);
+        damageCounter.transform.position = cam.WorldToScreenPoint(transform.position);
         //damageCounter.transform.SetParent(GameObject.FindObjectOfType<InventoryUI>().transform);
         //damageCounter.transform.position = cam.WorldToScreenPoint(transform.position);
-        //Debug.Log("I'm damaged by " + damage);
+        Debug.Log("I'm damaged by " + damage);
     }
 
     public void KnockbackPlayer(Vector3 positionOfEnemy)
