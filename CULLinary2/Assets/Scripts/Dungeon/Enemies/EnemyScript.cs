@@ -148,6 +148,7 @@ public class EnemyScript : Enemy
     {
         //To Figure out a proper UI
         //ui.transform.SetParent(GameObject.FindObjectOfType<InventoryUI>().transform);
+        EnemyManager.attachToUIForHp(ui);
         ui.transform.position = cam.WorldToScreenPoint(transform.position);
         uiList.Add(ui);
     }
