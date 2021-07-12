@@ -40,7 +40,6 @@ public class PlayerStamina : MonoBehaviour
     //Query if enough stamina to perform sprint
     public bool hasStamina()
     {
-
         resetStaminaRegen();
         if (currStamina - staminaConsumed < 0.0f)
         {
