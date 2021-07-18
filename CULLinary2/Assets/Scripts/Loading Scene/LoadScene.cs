@@ -9,54 +9,54 @@ using UnityEngine.UI;
 /// </summary>
 public class LoadScene : MonoBehaviour
 {
-  [SerializeField] private Text loadingText;
+    [SerializeField] private Text loadingText;
 
-  private bool isAbleToProceed = false;
-  private bool isAbleToActivate = false;
-  private AsyncOperation operation;
-  private Scene scene;
+    private bool isAbleToProceed = false;
+    private bool isAbleToActivate = false;
+    private AsyncOperation operation;
+    private Scene scene;
 
-  private void Start()
-  {
-    StartCoroutine(LoadNextScene());
-  }
-
-  private void Update()
-  {
-    if (isAbleToActivate && Input.GetKeyDown(KeyCode.Space))
+    private void Start()
     {
-      isAbleToProceed = true;
+        StartCoroutine(LoadNextScene());
     }
-    if (isAbleToProceed && isAbleToActivate)
+
+    private void Update()
     {
-      this.operation.allowSceneActivation = true;
-      StartCoroutine(ActivateScene());
+        if (isAbleToActivate && Input.GetKeyDown(KeyCode.Space))
+        {
+            isAbleToProceed = true;
+        }
+        if (isAbleToProceed && isAbleToActivate)
+        {
+            this.operation.allowSceneActivation = true;
+            StartCoroutine(ActivateScene());
 
+        }
     }
-  }
 
-  private IEnumerator ActivateScene()
-  {
-    yield return null;
-    SceneManager.SetActiveScene(scene);
-    SceneManager.UnloadSceneAsync((int)SceneIndexes.LOADING_SCENE);
-  }
-
-  private IEnumerator LoadNextScene()
-  {
-    this.operation = SceneManager.LoadSceneAsync(PlayerPrefs.GetInt("nextScene", (int)SceneIndexes.MAIN_MENU));
-    this.scene = SceneManager.GetSceneByBuildIndex(PlayerPrefs.GetInt("nextScene", (int)SceneIndexes.MAIN_MENU));
-    this.operation.allowSceneActivation = false;
-    while (true)
+    private IEnumerator ActivateScene()
     {
-      if (operation.progress >= 0.9f)
-      {
-        this.isAbleToActivate = true;
-        loadingText.text = "Press Space to continue.";
-        break;
-      }
-      yield return null;
+        yield return null;
+        SceneManager.SetActiveScene(scene);
+        SceneManager.UnloadSceneAsync((int)SceneIndexes.LOADING_SCENE);
     }
-  }
+
+    private IEnumerator LoadNextScene()
+    {
+        this.operation = SceneManager.LoadSceneAsync(PlayerPrefs.GetInt("nextScene", (int)SceneIndexes.MAIN_MENU));
+        this.scene = SceneManager.GetSceneByBuildIndex(PlayerPrefs.GetInt("nextScene", (int)SceneIndexes.MAIN_MENU));
+        this.operation.allowSceneActivation = false;
+        while (true)
+        {
+            if (operation.progress >= 0.9f)
+            {
+                this.isAbleToActivate = true;
+                loadingText.text = "Press Space to continue.";
+                break;
+            }
+            yield return null;
+        }
+    }
 }
 

@@ -1,24 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
 public class PlayerData
 {
-  public string ToJson()
-  {
-    return JsonUtility.ToJson(this);
-  }
 
-  public void LoadFromJson(string jsonData)
-  {
-    try
+    public string inventory;
+    public int maxHealth;
+    public int currentHealth;
+    public string ToJson()
     {
-      JsonUtility.FromJsonOverwrite(jsonData, this);
+        return JsonUtility.ToJson(this);
     }
-    catch
+
+    public void LoadFromJson(string jsonData)
     {
-      Debug.Log("No save file...");
+        try
+        {
+            JsonUtility.FromJsonOverwrite(jsonData, this);
+        }
+        catch
+        {
+            Debug.Log("No save file...");
+        }
     }
-  }
 }
