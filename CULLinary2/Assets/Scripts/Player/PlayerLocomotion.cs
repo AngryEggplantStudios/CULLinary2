@@ -46,7 +46,7 @@ public class PlayerLocomotion : PlayerAction
 
         if (isGrounded)
         {
-            direction.y = -2f;
+            direction.y = -0.5f;
             verticalSpeed = 0f;
         }
         else
