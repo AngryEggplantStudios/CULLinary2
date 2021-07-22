@@ -637,6 +637,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 100
   maxHealth: 100
+  currentStamina: 100
+  maxStamina: 100
   meleeDamage: 20
 --- !u!4 &215295673
 Transform:
@@ -3585,8 +3587,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67d968d0a208a014f92eecd5b7b8612b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  staminaBarUI: {fileID: 1235011672}
-  outLine: {fileID: 1968837938}
+  staminaBar: {fileID: 775459666}
+  staminaText: {fileID: 337987147}
+  regenerationRate: 1
 --- !u!1001 &1462246325
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4898,7 +4901,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1968837939
 RectTransform:
   m_ObjectHideFlags: 0

@@ -42,7 +42,6 @@ public class PlayerLocomotion : PlayerAction
         }
 
         playerStamina.reduceStamina(staminaCost);
-        //playerStamina.useStamina();
 
         if (isGrounded)
         {

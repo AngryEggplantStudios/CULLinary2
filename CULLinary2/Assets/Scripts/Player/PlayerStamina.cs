@@ -5,19 +5,11 @@ using UnityEngine.UI;
 
 public class PlayerStamina : MonoBehaviour
 {
-    [SerializeField] private GameObject outLine;
     [SerializeField] private Image staminaBar;
     [SerializeField] private Text staminaText;
-
-    private float maxStamina = 100.0f;
-    private float currStamina;
-    private float staminaConsumed = 0.1f; //0.01f
-    private WaitForSeconds timeTakenRegen = new WaitForSeconds(0.05f);
+    [SerializeField] private float regenerationRate = 1f;
     private Coroutine regen;
-    private Image stmBarFull;
-    private float coroutineFlash = 0.1f;
-    private GameObject flashyOutline;
-    private Coroutine regenZero;
+    private bool canRegenerate = true;
 
     // Start is called before the first frame update
     private void DisplayOnUI(float currentStamina, float maxStamina)
@@ -33,46 +25,58 @@ public class PlayerStamina : MonoBehaviour
         DisplayOnUI(currentStamina, maxStamina);
     }
 
+    private void Update()
+    {
+        if (PlayerManager.instance.currentStamina < PlayerManager.instance.maxStamina && canRegenerate)
+        {
+            StartCoroutine(RegenerateStamina());
+            return;
+        }
+    }
+
+    private IEnumerator RegenerateStamina()
+    {
+        while (PlayerManager.instance.currentStamina < PlayerManager.instance.maxStamina)
+        {
+            //Regenerate
+            PlayerManager.instance.currentStamina = Mathf.Min(PlayerManager.instance.currentStamina + regenerationRate, PlayerManager.instance.maxStamina);
+            float currentStamina = PlayerManager.instance.currentStamina;
+            float maxStamina = PlayerManager.instance.maxStamina;
+            DisplayOnUI(currentStamina, maxStamina);
+            yield return new WaitForSeconds(1f);
+        }
+    }
+
+    private IEnumerator checkRegenerate()
+    {
+        canRegenerate = false;
+        yield return new WaitForSeconds(3f);
+        canRegenerate = true;
+    }
+
     public bool hasStamina(float staminaCost)
     {
-        return currStamina - staminaConsumed >= 0.0f;
+        return PlayerManager.instance.currentStamina - staminaCost >= 0.0f;
     }
 
     public void reduceStamina(float staminaCost)
     {
         staminaCost = staminaCost < 0 ? 0 : staminaCost;
-        currStamina -= staminaCost;
-
+        PlayerManager.instance.currentStamina -= staminaCost;
+        float currentStamina = PlayerManager.instance.currentStamina;
+        float maxStamina = PlayerManager.instance.maxStamina;
+        DisplayOnUI(currentStamina, maxStamina);
+        resetStaminaRegeneration();
     }
 
-    //Will only be called when hasEnoughStamina
-    public void useStamina()
-    {
-        currStamina = currStamina - staminaConsumed;
-        stmBarFull.fillAmount = currStamina / maxStamina;
-        resetStaminaRegen();
-    }
-
-    private IEnumerator RegenStamina()
-    {
-        yield return new WaitForSeconds(1);
-
-        while (currStamina < maxStamina)
-        {
-            currStamina = currStamina + maxStamina / 100;
-            stmBarFull.fillAmount = currStamina / maxStamina;
-            yield return timeTakenRegen;
-        }
-    }
-
-    private void resetStaminaRegen()
+    private void resetStaminaRegeneration()
     {
         if (regen != null)
         {
             StopCoroutine(regen);
         }
 
-        regen = StartCoroutine(RegenStamina());
+        regen = StartCoroutine(checkRegenerate());
     }
 
 }
