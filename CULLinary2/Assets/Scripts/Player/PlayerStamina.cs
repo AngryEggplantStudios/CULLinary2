@@ -10,6 +10,7 @@ public class PlayerStamina : MonoBehaviour
     [SerializeField] private float regenerationRate = 1f;
     private Coroutine regen;
     private bool canRegenerate = true;
+    private bool rateBool = true;
 
     // Start is called before the first frame update
     private void DisplayOnUI(float currentStamina, float maxStamina)
@@ -29,27 +30,28 @@ public class PlayerStamina : MonoBehaviour
     {
         if (PlayerManager.instance.currentStamina < PlayerManager.instance.maxStamina && canRegenerate)
         {
-            StartCoroutine(RegenerateStamina());
+            RegenerateStamina();
             return;
         }
     }
 
-    private IEnumerator RegenerateStamina()
+    private void RegenerateStamina()
     {
-        while (PlayerManager.instance.currentStamina < PlayerManager.instance.maxStamina && canRegenerate)
+        if (rateBool)
         {
-            //Regenerate
+            StartCoroutine(WaitOneSecond());
             PlayerManager.instance.currentStamina = Mathf.Min(PlayerManager.instance.currentStamina + regenerationRate, PlayerManager.instance.maxStamina);
             float currentStamina = PlayerManager.instance.currentStamina;
             float maxStamina = PlayerManager.instance.maxStamina;
             DisplayOnUI(currentStamina, maxStamina);
-            yield return StartCoroutine(WaitOneSecond());
         }
     }
 
     private IEnumerator WaitOneSecond()
     {
+        rateBool = false;
         yield return new WaitForSeconds(1f);
+        rateBool = true;
     }
     private IEnumerator checkRegenerate()
     {
