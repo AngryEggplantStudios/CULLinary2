@@ -5,13 +5,14 @@ using UnityEngine.UI;
 
 public class PlayerStamina : MonoBehaviour
 {
-
+    public delegate void PlayerReduceStamina(float cost);
+    public event PlayerReduceStamina OnPlayerReduceStamina;
     [SerializeField] private GameObject staminaBarUI;
     [SerializeField] private GameObject outLine;
 
     private float maxStamina = 100.0f;
     private float currStamina;
-    private float staminaConsumed = 0.001f; //0.01f
+    private float staminaConsumed = 0.1f; //0.01f
     private WaitForSeconds timeTakenRegen = new WaitForSeconds(0.05f);
     private Coroutine regen;
     private GameObject staminaBar;
@@ -29,12 +30,6 @@ public class PlayerStamina : MonoBehaviour
         stmBarFull = staminaBar.transform.Find("StaminaBarFull")?.gameObject.GetComponent<Image>();
         flashyOutline.gameObject.SetActive(false);
         stmBarFull.fillAmount = currStamina / maxStamina;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     //Query if enough stamina to perform sprint

@@ -8,41 +8,40 @@ public class PlayerLocomotion : PlayerAction
     private Animator animator;
     private PlayerController playerController;
     private CharacterController controller;
-
-    [SerializeField] private GameObject playerBody;
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip[] stepSounds;
-
-    //Setup gravity
-    [SerializeField] private bool isGrounded;
-    [SerializeField] private float groundCheckDistance;
-    [SerializeField] private LayerMask groundMask;
-    [SerializeField] private float gravity;
     private float verticalSpeed = 0f;
     private float currSpeed = 0f;
     private Vector3 prevDirection = Vector3.zero;
+    private PlayerStamina playerStamina;
+    [SerializeField] private GameObject playerBody;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip[] stepSounds;
+    [SerializeField] private float gravity;
     [SerializeField] private float acceleration = 5f;
     [SerializeField] private float deceleration = 7f;
+    [SerializeField] private float staminaCost = 0.1f;
+    [SerializeField] private float speedThreshold = 0.05f;
 
     private void Awake()
     {
         playerController = GetComponent<PlayerController>();
         animator = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
+        playerStamina = GetComponent<PlayerStamina>();
         playerController.OnPlayerMove += Move;
+        playerController.OnPlayerRun += Run;
+        playerController.OnPlayerStop += Stop;
         playerController.OnPlayerRotate += Rotate;
         playerController.OnPlayerInteract += FaceWorldPosition;
     }
 
-    private void Move(Vector3 direction, float speed, float animValue, bool isMoving = true)
+    private void Run(Vector3 direction, float speed, bool isGrounded = true)
     {
-        isGrounded = Physics.CheckSphere(transform.position, groundCheckDistance, groundMask);
+        if (!playerStamina.hasStamina())
+        {
+            return;
+        }
 
-        // temp: for jump
-        // float jumpHeight = 5f;
-        // if (direction.y > 0) {
-        //   controller.Move(Vector3.up * direction.y * jumpHeight * Time.deltaTime);
-        // }
+        playerStamina.useStamina();
 
         if (isGrounded)
         {
@@ -55,43 +54,64 @@ public class PlayerLocomotion : PlayerAction
             controller.Move(Vector3.down * -verticalSpeed * Time.deltaTime);
         }
 
-        animator.SetFloat("Speed", animValue, 0.25f, Time.deltaTime);
+        animator.SetFloat("Speed", 1.0f, 0.25f, Time.deltaTime);
+        float accelerationToApply = currSpeed < speed ? acceleration : deceleration;
+        prevDirection = direction.normalized;
+        currSpeed = Mathf.Lerp(currSpeed, speed, accelerationToApply * Time.deltaTime);
+        controller.Move(direction.normalized * currSpeed * Time.deltaTime);
+    }
 
-        float targetSpeed = speed;
-        float accelerationToApply = 0f;
-        Vector3 targetDirection = direction.normalized;
-
-        if (isMoving)
+    private void Stop(Vector3 direction, bool isGrounded = true)
+    {
+        if (isGrounded)
         {
-            if (currSpeed < targetSpeed)
-            {
-                accelerationToApply = acceleration;
-            }
-            if (currSpeed > targetSpeed)
-            {
-                accelerationToApply = deceleration;
-            }
-
-            prevDirection = direction.normalized;
+            direction.y = -0.5f;
+            verticalSpeed = 0f;
         }
         else
         {
-            targetSpeed = 0f;
-            if (currSpeed > 0.05f)
-            {
-                // decelerate with previous direction
-                accelerationToApply = deceleration;
-                targetDirection = prevDirection;
-            }
-            else
-            {
-                // stop moving
-                currSpeed = 0f;
-                prevDirection = Vector3.zero;
-            }
+            verticalSpeed += gravity * Time.deltaTime;
+            controller.Move(Vector3.down * -verticalSpeed * Time.deltaTime);
         }
 
-        currSpeed = Mathf.Lerp(currSpeed, targetSpeed, accelerationToApply * Time.deltaTime);
+        animator.SetFloat("Speed", 0.0f, 0.25f, Time.deltaTime);
+        float accelerationToApply = 0f;
+        Vector3 targetDirection = direction.normalized;
+
+        if (currSpeed > speedThreshold) // decelerate with previous direction
+        {
+            accelerationToApply = deceleration;
+            targetDirection = prevDirection;
+        }
+        else // stop moving
+        {
+            currSpeed = 0f;
+            prevDirection = Vector3.zero;
+        }
+
+        currSpeed = Mathf.Lerp(currSpeed, 0.0f, accelerationToApply * Time.deltaTime);
+        controller.Move(targetDirection * currSpeed * Time.deltaTime);
+    }
+
+    private void Move(Vector3 direction, float speed, bool isGrounded = true)
+    {
+
+        if (isGrounded)
+        {
+            direction.y = -0.5f;
+            verticalSpeed = 0f;
+        }
+        else
+        {
+            verticalSpeed += gravity * Time.deltaTime;
+            controller.Move(Vector3.down * -verticalSpeed * Time.deltaTime);
+        }
+
+        animator.SetFloat("Speed", 0.5f, 0.25f, Time.deltaTime);
+        Vector3 targetDirection = direction.normalized;
+        float accelerationToApply = currSpeed < speed ? acceleration : deceleration;
+        prevDirection = direction.normalized;
+        currSpeed = Mathf.Lerp(currSpeed, speed, accelerationToApply * Time.deltaTime);
         controller.Move(targetDirection * currSpeed * Time.deltaTime);
     }
 
@@ -105,6 +125,8 @@ public class PlayerLocomotion : PlayerAction
         playerController.OnPlayerMove -= Move;
         playerController.OnPlayerRotate -= Rotate;
         playerController.OnPlayerInteract -= FaceWorldPosition;
+        playerController.OnPlayerRun -= Run;
+        playerController.OnPlayerStop -= Stop;
     }
 
     public void StepSound(AnimationEvent evt)
