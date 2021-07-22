@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class DungeonSpawn : MonoBehaviour
 {
-    private enum SpawnState {
+    private enum SpawnState
+    {
         Inactive,
         Active,
         Loop,
@@ -50,7 +51,6 @@ public class DungeonSpawn : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
-    Debug.Log(collider);
         if (collider.CompareTag("Player") && delayFlag)
         {
             if (this.state == SpawnState.Inactive)
@@ -98,6 +98,6 @@ public class DungeonSpawn : MonoBehaviour
     {
         yield return new WaitForSeconds(delayLoopTime);
         canSpawn = true;
-        
+
     }
 }
