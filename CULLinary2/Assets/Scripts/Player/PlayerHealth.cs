@@ -21,30 +21,38 @@ public class PlayerHealth : MonoBehaviour
     private Color onDamageColor = Color.white;
     private float invincibilityDeltaTime = 0.025f;
 
+    private void DisplayOnUI(float currentHealth, float maxHealth)
+    {
+        healthBar.fillAmount = currentHealth / maxHealth;
+        healthText.text = Mathf.CeilToInt(currentHealth) + "/" + Mathf.CeilToInt(maxHealth);
+    }
+
     private void Awake()
     {
-        int currentHealth = PlayerManager.instance ? PlayerManager.instance.currentHealth : 200;
-        int maxHealth = PlayerManager.instance ? PlayerManager.instance.maxHealth : 200;
-        healthBar.fillAmount = currentHealth / maxHealth;
-        healthText.text = currentHealth + "/" + maxHealth;
+        float currentHealth = PlayerManager.instance ? PlayerManager.instance.currentHealth : 200f;
+        float maxHealth = PlayerManager.instance ? PlayerManager.instance.maxHealth : 200f;
+        DisplayOnUI(currentHealth, maxHealth);
         SetupFlash();
     }
 
-    public bool HandleHit(int damage)
+    public bool HandleHit(float damage)
     {
+        damage = damage < 0 ? 0 : Mathf.CeilToInt(damage); //Guard check
         if (isInvincible)
         {
             return false;
         }
+
         PlayerManager.instance.currentHealth -= damage;
-        healthBar.fillAmount = (float)PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth;
-        healthText.text = PlayerManager.instance.currentHealth + "/" + PlayerManager.instance.maxHealth;
+        float currentHealth = PlayerManager.instance.currentHealth;
+        float maxHealth = PlayerManager.instance.maxHealth;
+        DisplayOnUI(currentHealth, maxHealth);
         SpawnDamageCounter(damage);
         audioSource.Play();
 
         if (PlayerManager.instance.currentHealth <= 0)
         {
-            Debug.Log("Ded");
+            Debug.Log("You are dead.");
             return true;
         }
         StartCoroutine(BecomeTemporarilyInvincible());
@@ -69,8 +77,6 @@ public class PlayerHealth : MonoBehaviour
         damageCounter.transform.GetComponentInChildren<Text>().text = damage.ToString();
         damageCounter.transform.SetParent(canvasDisplay.transform);
         damageCounter.transform.position = cam.WorldToScreenPoint(transform.position);
-        //damageCounter.transform.SetParent(GameObject.FindObjectOfType<InventoryUI>().transform);
-        //damageCounter.transform.position = cam.WorldToScreenPoint(transform.position);
         Debug.Log("I'm damaged by " + damage);
     }
 
@@ -92,7 +98,6 @@ public class PlayerHealth : MonoBehaviour
         gameObject.GetComponent<Rigidbody>().velocity = force * 4;
         yield return new WaitForSeconds(0.3f);
         gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-
     }
 
     private IEnumerator BecomeTemporarilyInvincible()

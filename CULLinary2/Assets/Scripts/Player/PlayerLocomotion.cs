@@ -36,12 +36,13 @@ public class PlayerLocomotion : PlayerAction
 
     private void Run(Vector3 direction, float speed, bool isGrounded = true)
     {
-        if (!playerStamina.hasStamina())
+        if (!playerStamina.hasStamina(staminaCost))
         {
             return;
         }
 
-        playerStamina.useStamina();
+        playerStamina.reduceStamina(staminaCost);
+        //playerStamina.useStamina();
 
         if (isGrounded)
         {

@@ -8,9 +8,11 @@ public class PlayerManager : MonoBehaviour
     public static PlayerManager instance;
 
     // Player Stats and default values
-    public int currentHealth = 200;
-    public int maxHealth = 200;
-    public int meleeDamage = 20;
+    public float currentHealth = 200f;
+    public float maxHealth = 200f;
+    public float currentStamina = 100f;
+    public float maxStamina = 100f;
+    public float meleeDamage = 20f;
 
     private static PlayerData playerData;
 
@@ -35,6 +37,8 @@ public class PlayerManager : MonoBehaviour
         // Save Player Stats
         playerData.currentHealth = currentHealth;
         playerData.maxHealth = maxHealth;
+        playerData.currentStamina = currentStamina;
+        playerData.maxStamina = maxStamina;
         // Save Data into Save System
         SaveSystem.SaveData(playerData);
     }
@@ -46,6 +50,8 @@ public class PlayerManager : MonoBehaviour
         // Load Player Stats
         currentHealth = playerData.currentHealth;
         maxHealth = playerData.maxHealth;
+        currentStamina = playerData.currentStamina;
+        maxStamina = playerData.maxStamina;
     }
 
 }
