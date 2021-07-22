@@ -36,17 +36,21 @@ public class PlayerStamina : MonoBehaviour
 
     private IEnumerator RegenerateStamina()
     {
-        while (PlayerManager.instance.currentStamina < PlayerManager.instance.maxStamina)
+        while (PlayerManager.instance.currentStamina < PlayerManager.instance.maxStamina && canRegenerate)
         {
             //Regenerate
             PlayerManager.instance.currentStamina = Mathf.Min(PlayerManager.instance.currentStamina + regenerationRate, PlayerManager.instance.maxStamina);
             float currentStamina = PlayerManager.instance.currentStamina;
             float maxStamina = PlayerManager.instance.maxStamina;
             DisplayOnUI(currentStamina, maxStamina);
-            yield return new WaitForSeconds(1f);
+            yield return StartCoroutine(WaitOneSecond());
         }
     }
 
+    private IEnumerator WaitOneSecond()
+    {
+        yield return new WaitForSeconds(1f);
+    }
     private IEnumerator checkRegenerate()
     {
         canRegenerate = false;
