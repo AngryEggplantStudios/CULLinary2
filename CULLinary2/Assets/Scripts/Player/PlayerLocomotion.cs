@@ -38,6 +38,7 @@ public class PlayerLocomotion : PlayerAction
     {
         if (!playerStamina.hasStamina(staminaCost))
         {
+            Move(direction, speed, isGrounded);
             return;
         }
 
