@@ -37,7 +37,10 @@ public class LoadScene : MonoBehaviour
 
     private IEnumerator ActivateScene()
     {
-        yield return null;
+        while (!operation.isDone)
+        {
+            yield return null;
+        }
         SceneManager.SetActiveScene(scene);
         SceneManager.UnloadSceneAsync((int)SceneIndexes.LOADING_SCENE);
     }
