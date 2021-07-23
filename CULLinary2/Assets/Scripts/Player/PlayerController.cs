@@ -24,8 +24,10 @@ public class PlayerController : PlayerAction
     [SerializeField] private LayerMask groundMask;
     private bool isGrounded = true;
     private KeyCode runKeyCode;
+    private PlayerMelee playerMelee;
     private void Awake()
     {
+        playerMelee = GetComponent<PlayerMelee>();
         runKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.Run);
     }
 
@@ -41,33 +43,44 @@ public class PlayerController : PlayerAction
 
         isGrounded = Physics.CheckSphere(transform.position, groundCheckDistance, groundMask);
 
-        this.SetIsInvoking(true);
+        bool isMeleeInvoked = playerMelee ? playerMelee.GetIsInvoking() : false;
 
-        if (Input.GetKey(KeyCode.Space))
+        if (!isMeleeInvoked)
         {
-            OnPlayerJump?.Invoke(moveDirection.normalized, isGrounded);
-        }
+            this.SetIsInvoking(true);
 
-        if (direction == Vector3.zero)
-        {
-            OnPlayerStop?.Invoke(moveDirection.normalized, isGrounded);
-        }
-        else
-        {
-            if (Input.GetKey(runKeyCode))
+            if (Input.GetKey(KeyCode.Space))
             {
-                OnPlayerRun?.Invoke(moveDirection.normalized, runSpeed, isGrounded);
+                OnPlayerJump?.Invoke(moveDirection.normalized, isGrounded);
+            }
+
+            if (direction == Vector3.zero)
+            {
+                OnPlayerStop?.Invoke(moveDirection.normalized, isGrounded);
             }
             else
             {
-                OnPlayerMove?.Invoke(moveDirection.normalized, walkSpeed, isGrounded);
+                if (Input.GetKey(runKeyCode))
+                {
+                    OnPlayerRun?.Invoke(moveDirection.normalized, runSpeed, isGrounded);
+                }
+                else
+                {
+                    OnPlayerMove?.Invoke(moveDirection.normalized, walkSpeed, isGrounded);
+                }
+            }
+
+            if (direction != Vector3.zero)
+            {
+                OnPlayerRotate?.Invoke(direction.normalized, turnSpeed);
             }
         }
-
-        if (direction != Vector3.zero)
+        else
         {
-            OnPlayerRotate?.Invoke(direction.normalized, turnSpeed);
+            this.SetIsInvoking(false);
         }
+
+
     }
 
 }
