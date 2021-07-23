@@ -20,6 +20,9 @@ public class PlayerLocomotion : PlayerAction
     [SerializeField] private float deceleration = 7f;
     [SerializeField] private float staminaCost = 0.1f;
     [SerializeField] private float speedThreshold = 0.05f;
+    [SerializeField] private float walkSpeed = 1.0f;
+    [SerializeField] private float runSpeed = 2.0f;
+
 
     private void Awake()
     {
@@ -34,11 +37,11 @@ public class PlayerLocomotion : PlayerAction
         playerController.OnPlayerInteract += FaceWorldPosition;
     }
 
-    private void Run(Vector3 direction, float speed, bool isGrounded = true)
+    private void Run(Vector3 direction, bool isGrounded = true)
     {
         if (!playerStamina.hasStamina(staminaCost))
         {
-            Move(direction, speed, isGrounded);
+            Move(direction, isGrounded);
             playerStamina.resetStaminaRegeneration();
             return;
         }
@@ -57,9 +60,9 @@ public class PlayerLocomotion : PlayerAction
         }
 
         animator.SetFloat("Speed", 1.0f, 0.25f, Time.deltaTime);
-        float accelerationToApply = currSpeed < speed ? acceleration : deceleration;
+        float accelerationToApply = currSpeed < runSpeed ? acceleration : deceleration;
         prevDirection = direction.normalized;
-        currSpeed = Mathf.Lerp(currSpeed, speed, accelerationToApply * Time.deltaTime);
+        currSpeed = Mathf.Lerp(currSpeed, runSpeed, accelerationToApply * Time.deltaTime);
         controller.Move(direction.normalized * currSpeed * Time.deltaTime);
     }
 
@@ -95,7 +98,7 @@ public class PlayerLocomotion : PlayerAction
         controller.Move(targetDirection * currSpeed * Time.deltaTime);
     }
 
-    private void Move(Vector3 direction, float speed, bool isGrounded = true)
+    private void Move(Vector3 direction, bool isGrounded = true)
     {
 
         if (isGrounded)
@@ -111,9 +114,9 @@ public class PlayerLocomotion : PlayerAction
 
         animator.SetFloat("Speed", 0.5f, 0.25f, Time.deltaTime);
         Vector3 targetDirection = direction.normalized;
-        float accelerationToApply = currSpeed < speed ? acceleration : deceleration;
+        float accelerationToApply = currSpeed < walkSpeed ? acceleration : deceleration;
         prevDirection = direction.normalized;
-        currSpeed = Mathf.Lerp(currSpeed, speed, accelerationToApply * Time.deltaTime);
+        currSpeed = Mathf.Lerp(currSpeed, walkSpeed, accelerationToApply * Time.deltaTime);
         controller.Move(targetDirection * currSpeed * Time.deltaTime);
     }
 

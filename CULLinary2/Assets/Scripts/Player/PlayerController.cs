@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class PlayerController : PlayerAction
 {
-    public delegate void PlayerMoveDelegate(Vector3 direction, float speed, bool isGrounded);
-    public delegate void PlayerRunDelegate(Vector3 direction, float speed, bool isGrounded);
+    public delegate void PlayerMoveDelegate(Vector3 direction, bool isGrounded);
+    public delegate void PlayerRunDelegate(Vector3 direction, bool isGrounded);
     public delegate void PlayerStopDelegate(Vector3 direction, bool isGrounded);
-    public delegate void PlayerRotateDelegate(Vector3 direction, float speed);
+    public delegate void PlayerRotateDelegate(Vector3 direction, float turnSpeed);
     public delegate void PlayerRotateToLocationDelegate(Vector3 worldPosition, float speed);
     public delegate void PlayerJumpDelegate(Vector3 direction, bool isGrounded);
     public event PlayerMoveDelegate OnPlayerMove;
@@ -17,15 +17,15 @@ public class PlayerController : PlayerAction
     public event PlayerRotateToLocationDelegate OnPlayerInteract;
     public event PlayerJumpDelegate OnPlayerJump;
 
-    [SerializeField] private float walkSpeed = 1.0f;
-    [SerializeField] private float runSpeed = 2.0f;
-    [SerializeField] private float turnSpeed = 8.0f;
     [SerializeField] private float groundCheckDistance;
     [SerializeField] private LayerMask groundMask;
+    [SerializeField] private float turnSpeed = 8.0f;
     private bool isGrounded = true;
     private KeyCode runKeyCode;
+    private PlayerMelee playerMelee;
     private void Awake()
     {
+        playerMelee = GetComponent<PlayerMelee>();
         runKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.Run);
     }
 
@@ -41,33 +41,44 @@ public class PlayerController : PlayerAction
 
         isGrounded = Physics.CheckSphere(transform.position, groundCheckDistance, groundMask);
 
-        this.SetIsInvoking(true);
+        bool isMeleeInvoked = playerMelee ? playerMelee.GetIsInvoking() : false;
 
-        if (Input.GetKey(KeyCode.Space))
+        if (!isMeleeInvoked)
         {
-            OnPlayerJump?.Invoke(moveDirection.normalized, isGrounded);
-        }
+            this.SetIsInvoking(true);
 
-        if (direction == Vector3.zero)
-        {
-            OnPlayerStop?.Invoke(moveDirection.normalized, isGrounded);
-        }
-        else
-        {
-            if (Input.GetKey(runKeyCode))
+            if (Input.GetKey(KeyCode.Space))
             {
-                OnPlayerRun?.Invoke(moveDirection.normalized, runSpeed, isGrounded);
+                OnPlayerJump?.Invoke(moveDirection.normalized, isGrounded);
+            }
+
+            if (direction == Vector3.zero)
+            {
+                OnPlayerStop?.Invoke(moveDirection.normalized, isGrounded);
             }
             else
             {
-                OnPlayerMove?.Invoke(moveDirection.normalized, walkSpeed, isGrounded);
+                if (Input.GetKey(runKeyCode))
+                {
+                    OnPlayerRun?.Invoke(moveDirection.normalized, isGrounded);
+                }
+                else
+                {
+                    OnPlayerMove?.Invoke(moveDirection.normalized, isGrounded);
+                }
+            }
+
+            if (direction != Vector3.zero)
+            {
+                OnPlayerRotate?.Invoke(direction.normalized, turnSpeed);
             }
         }
-
-        if (direction != Vector3.zero)
+        else
         {
-            OnPlayerRotate?.Invoke(direction.normalized, turnSpeed);
+            this.SetIsInvoking(false);
         }
+
+
     }
 
 }
