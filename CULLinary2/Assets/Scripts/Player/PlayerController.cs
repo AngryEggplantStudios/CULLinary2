@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class PlayerController : PlayerAction
 {
-    public delegate void PlayerMoveDelegate(Vector3 direction, float speed, bool isGrounded);
-    public delegate void PlayerRunDelegate(Vector3 direction, float speed, bool isGrounded);
+    public delegate void PlayerMoveDelegate(Vector3 direction, bool isGrounded);
+    public delegate void PlayerRunDelegate(Vector3 direction, bool isGrounded);
     public delegate void PlayerStopDelegate(Vector3 direction, bool isGrounded);
-    public delegate void PlayerRotateDelegate(Vector3 direction, float speed);
+    public delegate void PlayerRotateDelegate(Vector3 direction, float turnSpeed);
     public delegate void PlayerRotateToLocationDelegate(Vector3 worldPosition, float speed);
     public delegate void PlayerJumpDelegate(Vector3 direction, bool isGrounded);
     public event PlayerMoveDelegate OnPlayerMove;
@@ -17,11 +17,9 @@ public class PlayerController : PlayerAction
     public event PlayerRotateToLocationDelegate OnPlayerInteract;
     public event PlayerJumpDelegate OnPlayerJump;
 
-    [SerializeField] private float walkSpeed = 1.0f;
-    [SerializeField] private float runSpeed = 2.0f;
-    [SerializeField] private float turnSpeed = 8.0f;
     [SerializeField] private float groundCheckDistance;
     [SerializeField] private LayerMask groundMask;
+    [SerializeField] private float turnSpeed = 8.0f;
     private bool isGrounded = true;
     private KeyCode runKeyCode;
     private PlayerMelee playerMelee;
@@ -62,11 +60,11 @@ public class PlayerController : PlayerAction
             {
                 if (Input.GetKey(runKeyCode))
                 {
-                    OnPlayerRun?.Invoke(moveDirection.normalized, runSpeed, isGrounded);
+                    OnPlayerRun?.Invoke(moveDirection.normalized, isGrounded);
                 }
                 else
                 {
-                    OnPlayerMove?.Invoke(moveDirection.normalized, walkSpeed, isGrounded);
+                    OnPlayerMove?.Invoke(moveDirection.normalized, isGrounded);
                 }
             }
 
