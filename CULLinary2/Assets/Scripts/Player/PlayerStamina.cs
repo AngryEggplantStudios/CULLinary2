@@ -8,22 +8,28 @@ public class PlayerStamina : MonoBehaviour
     [SerializeField] private Image staminaBar;
     [SerializeField] private Text staminaText;
     [SerializeField] private float regenerationRate = 1f;
-    private Coroutine regen;
+    [SerializeField] private Outline outlineFlash;
+    [SerializeField] private float thresholdStamina = 0.25f;
+    private Coroutine regenerationCoroutine;
+    private bool flashIsActivated = true;
     private bool canRegenerate = true;
     private bool rateBool = true;
-
-    // Start is called before the first frame update
-    private void DisplayOnUI(float currentStamina, float maxStamina)
-    {
-        staminaBar.fillAmount = currentStamina / maxStamina;
-        staminaText.text = Mathf.FloorToInt(currentStamina) + "/" + Mathf.FloorToInt(maxStamina);
-    }
+    private Color originalFlashColor;
+    private Color deactivatedFlashColor = new Color(255, 0, 0, 0);
 
     private void Awake()
     {
         float currentStamina = PlayerManager.instance ? PlayerManager.instance.currentStamina : 100f;
         float maxStamina = PlayerManager.instance ? PlayerManager.instance.maxStamina : 100f;
         DisplayOnUI(currentStamina, maxStamina);
+        originalFlashColor = outlineFlash.effectColor;
+        outlineFlash.effectColor = deactivatedFlashColor;
+    }
+
+    private void DisplayOnUI(float currentStamina, float maxStamina)
+    {
+        staminaBar.fillAmount = currentStamina / maxStamina;
+        staminaText.text = Mathf.FloorToInt(currentStamina) + "/" + Mathf.FloorToInt(maxStamina);
     }
 
     private void Update()
@@ -32,6 +38,27 @@ public class PlayerStamina : MonoBehaviour
         {
             RegenerateStamina();
             return;
+        }
+        if (PlayerManager.instance.currentStamina / PlayerManager.instance.maxStamina < thresholdStamina && !flashIsActivated)
+        {
+
+            flashIsActivated = true;
+            StartCoroutine(flashBar());
+        }
+        else if (PlayerManager.instance.currentStamina / PlayerManager.instance.maxStamina >= thresholdStamina)
+        {
+            flashIsActivated = false;
+        }
+    }
+
+    private IEnumerator flashBar()
+    {
+        while (PlayerManager.instance.currentStamina / PlayerManager.instance.maxStamina < thresholdStamina)
+        {
+            outlineFlash.effectColor = originalFlashColor;
+            yield return new WaitForSeconds(0.5f);
+            outlineFlash.effectColor = deactivatedFlashColor;
+            yield return new WaitForSeconds(0.5f);
         }
     }
 
@@ -75,14 +102,14 @@ public class PlayerStamina : MonoBehaviour
         resetStaminaRegeneration();
     }
 
-    private void resetStaminaRegeneration()
+    public void resetStaminaRegeneration()
     {
-        if (regen != null)
+        if (regenerationCoroutine != null)
         {
-            StopCoroutine(regen);
+            StopCoroutine(regenerationCoroutine);
         }
 
-        regen = StartCoroutine(checkRegenerate());
+        regenerationCoroutine = StartCoroutine(checkRegenerate());
     }
 
 }
