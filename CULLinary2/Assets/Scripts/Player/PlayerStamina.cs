@@ -11,7 +11,7 @@ public class PlayerStamina : MonoBehaviour
     [SerializeField] private Outline outlineFlash;
     [SerializeField] private float thresholdStamina = 0.25f;
     private Coroutine regenerationCoroutine;
-    private bool flashIsActivated = true;
+    private bool flashIsActivated = false;
     private bool canRegenerate = true;
     private bool rateBool = true;
     private Color originalFlashColor;
@@ -95,7 +95,7 @@ public class PlayerStamina : MonoBehaviour
     public void reduceStamina(float staminaCost)
     {
         staminaCost = staminaCost < 0 ? 0 : staminaCost;
-        PlayerManager.instance.currentStamina -= staminaCost;
+        PlayerManager.instance.currentStamina = Mathf.Max(0f, PlayerManager.instance.currentStamina - staminaCost);
         float currentStamina = PlayerManager.instance.currentStamina;
         float maxStamina = PlayerManager.instance.maxStamina;
         DisplayOnUI(currentStamina, maxStamina);
