@@ -5,111 +5,111 @@ using UnityEngine.UI;
 
 public class PlayerStamina : MonoBehaviour
 {
+    [SerializeField] private Image staminaBar;
+    [SerializeField] private Text staminaText;
+    [SerializeField] private float regenerationRate = 1f;
+    [SerializeField] private Outline outlineFlash;
+    [SerializeField] private float thresholdStamina = 0.25f;
+    private Coroutine regenerationCoroutine;
+    private bool flashIsActivated = false;
+    private bool canRegenerate = true;
+    private bool rateBool = true;
+    private Color originalFlashColor;
+    private Color deactivatedFlashColor = new Color(255, 0, 0, 0);
 
-    [SerializeField] private GameObject staminaBarUI;
-    [SerializeField] private GameObject outLine;
-
-    private float maxStamina = 100.0f;
-    private float currStamina;
-    private float staminaConsumed = 0.001f; //0.01f
-    private WaitForSeconds timeTakenRegen = new WaitForSeconds(0.05f);
-    private Coroutine regen;
-    private GameObject staminaBar;
-    private Image stmBarFull;
-    private float coroutineFlash = 0.1f;
-    private GameObject flashyOutline;
-    private Coroutine regenZero;
-
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        staminaBar = staminaBarUI;
-        currStamina = maxStamina;
-        flashyOutline = outLine;
-        stmBarFull = staminaBar.transform.Find("StaminaBarFull")?.gameObject.GetComponent<Image>();
-        flashyOutline.gameObject.SetActive(false);
-        stmBarFull.fillAmount = currStamina / maxStamina;
+        float currentStamina = PlayerManager.instance ? PlayerManager.instance.currentStamina : 100f;
+        float maxStamina = PlayerManager.instance ? PlayerManager.instance.maxStamina : 100f;
+        DisplayOnUI(currentStamina, maxStamina);
+        originalFlashColor = outlineFlash.effectColor;
+        outlineFlash.effectColor = deactivatedFlashColor;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void DisplayOnUI(float currentStamina, float maxStamina)
     {
-
+        staminaBar.fillAmount = currentStamina / maxStamina;
+        staminaText.text = Mathf.FloorToInt(currentStamina) + "/" + Mathf.FloorToInt(maxStamina);
     }
 
-    //Query if enough stamina to perform sprint
-    public bool hasStamina()
+    private void Update()
     {
-        resetStaminaRegen();
-        if (currStamina - staminaConsumed < 0.0f)
+        if (PlayerManager.instance.currentStamina < PlayerManager.instance.maxStamina && canRegenerate)
         {
-            if (regenZero == null)
-            {
-                regenZero = StartCoroutine(flashBar());
-            }
-            return false;
+            RegenerateStamina();
+            return;
         }
-        else
+        if (PlayerManager.instance.currentStamina / PlayerManager.instance.maxStamina < thresholdStamina && !flashIsActivated)
         {
-            StopCoroutine(flashBar());
-            flashyOutline.gameObject.SetActive(false);
-            regenZero = null;
-            return true;
+
+            flashIsActivated = true;
+            StartCoroutine(flashBar());
         }
-    }
-
-    //Will only be called when hasEnoughStamina
-    public void useStamina()
-    {
-        currStamina = currStamina - staminaConsumed;
-        stmBarFull.fillAmount = currStamina / maxStamina;
-        resetStaminaRegen();
-    }
-
-    private IEnumerator RegenStamina()
-    {
-        yield return new WaitForSeconds(1);
-
-        while (currStamina < maxStamina)
+        else if (PlayerManager.instance.currentStamina / PlayerManager.instance.maxStamina >= thresholdStamina)
         {
-            currStamina = currStamina + maxStamina / 100;
-            stmBarFull.fillAmount = currStamina / maxStamina;
-            yield return timeTakenRegen;
+            flashIsActivated = false;
         }
-    }
-
-    private void resetStaminaRegen()
-    {
-        if (regen != null)
-        {
-            StopCoroutine(regen);
-        }
-
-        regen = StartCoroutine(RegenStamina());
     }
 
     private IEnumerator flashBar()
     {
-        bool isFlashing = false;
-        while (true)
+        while (PlayerManager.instance.currentStamina / PlayerManager.instance.maxStamina < thresholdStamina)
         {
-            if (currStamina - staminaConsumed >= 0)
-            {
-                StopCoroutine(flashBar());
-                flashyOutline.gameObject.SetActive(false);
-                yield break;
-            }
-            // Alternate between 0 and 1 scale to simulate flashing
-            if (isFlashing)
-            {
-                flashyOutline.gameObject.SetActive(true);
-            }
-            else
-            {
-                flashyOutline.gameObject.SetActive(false);
-            }
-            isFlashing = !isFlashing;
-            yield return new WaitForSeconds(coroutineFlash);
+            outlineFlash.effectColor = originalFlashColor;
+            yield return new WaitForSeconds(0.5f);
+            outlineFlash.effectColor = deactivatedFlashColor;
+            yield return new WaitForSeconds(0.5f);
         }
     }
+
+    private void RegenerateStamina()
+    {
+        if (rateBool)
+        {
+            StartCoroutine(WaitOneSecond());
+            PlayerManager.instance.currentStamina = Mathf.Min(PlayerManager.instance.currentStamina + regenerationRate, PlayerManager.instance.maxStamina);
+            float currentStamina = PlayerManager.instance.currentStamina;
+            float maxStamina = PlayerManager.instance.maxStamina;
+            DisplayOnUI(currentStamina, maxStamina);
+        }
+    }
+
+    private IEnumerator WaitOneSecond()
+    {
+        rateBool = false;
+        yield return new WaitForSeconds(1f);
+        rateBool = true;
+    }
+    private IEnumerator checkRegenerate()
+    {
+        canRegenerate = false;
+        yield return new WaitForSeconds(3f);
+        canRegenerate = true;
+    }
+
+    public bool hasStamina(float staminaCost)
+    {
+        return PlayerManager.instance.currentStamina - staminaCost >= 0.0f;
+    }
+
+    public void reduceStamina(float staminaCost)
+    {
+        staminaCost = staminaCost < 0 ? 0 : staminaCost;
+        PlayerManager.instance.currentStamina = Mathf.Max(0f, PlayerManager.instance.currentStamina - staminaCost);
+        float currentStamina = PlayerManager.instance.currentStamina;
+        float maxStamina = PlayerManager.instance.maxStamina;
+        DisplayOnUI(currentStamina, maxStamina);
+        resetStaminaRegeneration();
+    }
+
+    public void resetStaminaRegeneration()
+    {
+        if (regenerationCoroutine != null)
+        {
+            StopCoroutine(regenerationCoroutine);
+        }
+
+        regenerationCoroutine = StartCoroutine(checkRegenerate());
+    }
+
 }

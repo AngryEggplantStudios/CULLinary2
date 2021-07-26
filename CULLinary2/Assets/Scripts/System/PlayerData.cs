@@ -3,10 +3,11 @@ using UnityEngine;
 [System.Serializable]
 public class PlayerData
 {
-
     public string inventory;
-    public int maxHealth;
-    public int currentHealth;
+    public float maxHealth;
+    public float currentHealth;
+    public float maxStamina;
+    public float currentStamina;
     public string ToJson()
     {
         return JsonUtility.ToJson(this);

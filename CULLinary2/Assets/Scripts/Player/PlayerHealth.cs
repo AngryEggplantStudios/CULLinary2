@@ -11,46 +11,95 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private Text healthText;
     [SerializeField] private float invincibilityDurationSeconds;
     [SerializeField] private GameObject model;
+    [SerializeField] private Outline outlineFlash;
+    private bool flashIsActivated = false;
 
     //To be ported over to somewhere
     [SerializeField] private GameObject canvasDisplay;
     [SerializeField] private Camera cam;
+    [SerializeField] private float thresholdHealth = 0.25f;
+    private Color originalFlashColor;
+    private Color deactivatedFlashColor = new Color(255, 0, 0, 0);
     private bool isInvincible = false;
     private Renderer rend;
     private Color[] originalColors;
     private Color onDamageColor = Color.white;
     private float invincibilityDeltaTime = 0.025f;
 
-    private void Awake()
+    private void DisplayOnUI(float currentHealth, float maxHealth)
     {
-        int currentHealth = PlayerManager.instance ? PlayerManager.instance.currentHealth : 200;
-        int maxHealth = PlayerManager.instance ? PlayerManager.instance.maxHealth : 200;
         healthBar.fillAmount = currentHealth / maxHealth;
-        healthText.text = currentHealth + "/" + maxHealth;
-        SetupFlash();
+        healthText.text = Mathf.CeilToInt(currentHealth) + "/" + Mathf.CeilToInt(maxHealth);
     }
 
-    public bool HandleHit(int damage)
+    private void Awake()
     {
+        float currentHealth = PlayerManager.instance ? PlayerManager.instance.currentHealth : 200f;
+        float maxHealth = PlayerManager.instance ? PlayerManager.instance.maxHealth : 200f;
+        DisplayOnUI(currentHealth, maxHealth);
+        SetupIFrame();
+        originalFlashColor = outlineFlash.effectColor;
+        outlineFlash.effectColor = deactivatedFlashColor;
+    }
+
+    private void Update()
+    {
+        if (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth < thresholdHealth && !flashIsActivated)
+        {
+            flashIsActivated = true;
+            StartCoroutine(flashBar());
+        }
+        else if (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth >= thresholdHealth)
+        {
+            flashIsActivated = false;
+        }
+    }
+
+    private IEnumerator flashBar()
+    {
+        while (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth < thresholdHealth)
+        {
+            outlineFlash.effectColor = originalFlashColor;
+            yield return new WaitForSeconds(0.5f);
+            outlineFlash.effectColor = deactivatedFlashColor;
+            yield return new WaitForSeconds(0.5f);
+        }
+    }
+
+    public bool IncreaseHealth(float health)
+    {
+        health = health < 0 ? 0 : Mathf.CeilToInt(health);
+        PlayerManager.instance.currentHealth = Mathf.Min(PlayerManager.instance.currentHealth + health, PlayerManager.instance.maxHealth);
+        float currentHealth = PlayerManager.instance.currentHealth;
+        float maxHealth = PlayerManager.instance.maxHealth;
+        DisplayOnUI(currentHealth, maxHealth);
+        return true;
+    }
+
+    public bool HandleHit(float damage)
+    {
+        damage = damage < 0 ? 0 : Mathf.CeilToInt(damage); //Guard check
         if (isInvincible)
         {
             return false;
         }
-        PlayerManager.instance.currentHealth -= damage;
-        healthBar.fillAmount = (float)PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth;
-        healthText.text = PlayerManager.instance.currentHealth + "/" + PlayerManager.instance.maxHealth;
+
+        PlayerManager.instance.currentHealth = Mathf.Max(0f, PlayerManager.instance.currentHealth - damage);
+        float currentHealth = PlayerManager.instance.currentHealth;
+        float maxHealth = PlayerManager.instance.maxHealth;
+        DisplayOnUI(currentHealth, maxHealth);
         SpawnDamageCounter(damage);
         audioSource.Play();
 
-        if (PlayerManager.instance.currentHealth <= 0)
+        if (PlayerManager.instance.currentHealth <= 0f)
         {
-            Debug.Log("Ded");
+            Debug.Log("You are dead.");
             return true;
         }
         StartCoroutine(BecomeTemporarilyInvincible());
         return true;
     }
-    private void SetupFlash()
+    private void SetupIFrame()
     {
         rend = model.GetComponentInChildren<Renderer>();
         if (rend)
@@ -69,8 +118,6 @@ public class PlayerHealth : MonoBehaviour
         damageCounter.transform.GetComponentInChildren<Text>().text = damage.ToString();
         damageCounter.transform.SetParent(canvasDisplay.transform);
         damageCounter.transform.position = cam.WorldToScreenPoint(transform.position);
-        //damageCounter.transform.SetParent(GameObject.FindObjectOfType<InventoryUI>().transform);
-        //damageCounter.transform.position = cam.WorldToScreenPoint(transform.position);
         Debug.Log("I'm damaged by " + damage);
     }
 
@@ -92,7 +139,6 @@ public class PlayerHealth : MonoBehaviour
         gameObject.GetComponent<Rigidbody>().velocity = force * 4;
         yield return new WaitForSeconds(0.3f);
         gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-
     }
 
     private IEnumerator BecomeTemporarilyInvincible()

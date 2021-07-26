@@ -4,24 +4,28 @@ using UnityEngine;
 
 public class PlayerController : PlayerAction
 {
-    public delegate void PlayerMoveDelegate(Vector3 direction, float speed, float animValue, bool isMoving);
-    public delegate void PlayerRotateDelegate(Vector3 direction, float speed);
+    public delegate void PlayerMoveDelegate(Vector3 direction, bool isGrounded);
+    public delegate void PlayerRunDelegate(Vector3 direction, bool isGrounded);
+    public delegate void PlayerStopDelegate(Vector3 direction, bool isGrounded);
+    public delegate void PlayerRotateDelegate(Vector3 direction, float turnSpeed);
     public delegate void PlayerRotateToLocationDelegate(Vector3 worldPosition, float speed);
-
+    public delegate void PlayerJumpDelegate(Vector3 direction, bool isGrounded);
     public event PlayerMoveDelegate OnPlayerMove;
+    public event PlayerRunDelegate OnPlayerRun;
+    public event PlayerStopDelegate OnPlayerStop;
     public event PlayerRotateDelegate OnPlayerRotate;
     public event PlayerRotateToLocationDelegate OnPlayerInteract;
+    public event PlayerJumpDelegate OnPlayerJump;
 
-    //Speed
-    [SerializeField] private float walkSpeed = 10.0f;
-    [SerializeField] private float runSpeed = 20.0f;
-    [SerializeField] private float turnSpeed = 10.0f;
-    [SerializeField] private PlayerStamina staminaBar;
-
+    [SerializeField] private float groundCheckDistance;
+    [SerializeField] private LayerMask groundMask;
+    [SerializeField] private float turnSpeed = 8.0f;
+    private bool isGrounded = true;
     private KeyCode runKeyCode;
-
+    private PlayerMelee playerMelee;
     private void Awake()
     {
+        playerMelee = GetComponent<PlayerMelee>();
         runKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.Run);
     }
 
@@ -35,51 +39,43 @@ public class PlayerController : PlayerAction
         float targetAngle = Mathf.Atan2(direction.normalized.x, direction.normalized.z) * Mathf.Rad2Deg;
         Vector3 moveDirection = Quaternion.Euler(0.0f, targetAngle, 0.0f) * Vector3.forward;
 
-        this.SetIsInvoking(true);
+        isGrounded = Physics.CheckSphere(transform.position, groundCheckDistance, groundMask);
 
-        /* Testing Jump
-        if (Input.GetKey(KeyCode.Space))
-        {
-            moveDirection.y = Mathf.Sqrt(3.0f * -2.0f * -9.81f);
-        }
-        */
+        bool isMeleeInvoked = playerMelee ? playerMelee.GetIsInvoking() : false;
 
-        if (direction == Vector3.zero)
+        if (!isMeleeInvoked)
         {
-            OnPlayerMove?.Invoke(moveDirection.normalized, 0.0f, 0.0f, false);
-        }
-        else
-        {
-            if (Input.GetKey(runKeyCode) && staminaBar.hasStamina())
+            this.SetIsInvoking(true);
+
+            if (Input.GetKey(KeyCode.Space))
             {
-                OnPlayerMove?.Invoke(moveDirection.normalized, runSpeed, 1.0f, true);
-                staminaBar.useStamina();
+                OnPlayerJump?.Invoke(moveDirection.normalized, isGrounded);
+            }
+
+            if (direction == Vector3.zero)
+            {
+                OnPlayerStop?.Invoke(moveDirection.normalized, isGrounded);
             }
             else
             {
-                OnPlayerMove?.Invoke(moveDirection.normalized, walkSpeed, 0.5f, true);
+                if (Input.GetKey(runKeyCode))
+                {
+                    OnPlayerRun?.Invoke(moveDirection.normalized, isGrounded);
+                }
+                else
+                {
+                    OnPlayerMove?.Invoke(moveDirection.normalized, isGrounded);
+                }
             }
-        }
 
-        if (direction == Vector3.zero)
-        {
-            OnPlayerMove?.Invoke(moveDirection.normalized, 0.0f, 0.0f, false);
+            if (direction != Vector3.zero)
+            {
+                OnPlayerRotate?.Invoke(direction.normalized, turnSpeed);
+            }
         }
         else
         {
-            if (Input.GetKey(runKeyCode))
-            {
-                OnPlayerMove?.Invoke(moveDirection.normalized, runSpeed, 1.0f, true);
-            }
-            else
-            {
-                OnPlayerMove?.Invoke(moveDirection.normalized, walkSpeed, 0.5f, true);
-            }
-        }
-
-        if (direction != Vector3.zero)
-        {
-            OnPlayerRotate?.Invoke(direction.normalized, turnSpeed);
+            this.SetIsInvoking(false);
         }
 
 

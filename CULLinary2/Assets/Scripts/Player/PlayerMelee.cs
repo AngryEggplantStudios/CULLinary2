@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerMelee : PlayerAction
 {
@@ -19,7 +20,7 @@ public class PlayerMelee : PlayerAction
 
     private void Update()
     {
-        if (Input.GetKey(meleeKeyCode))
+        if (Input.GetKey(meleeKeyCode) && !(EventSystem.current.IsPointerOverGameObject()))
         {
             this.SetIsInvoking(true);
             OnPlayerMelee?.Invoke();
