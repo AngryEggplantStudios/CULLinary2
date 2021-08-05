@@ -90,7 +90,6 @@ public class PlayerStamina : MonoBehaviour
         {
             StopCoroutine(regenerationCoroutine);
         }
-
         regenerationCoroutine = StartCoroutine(checkRegenerate());
     }
 
