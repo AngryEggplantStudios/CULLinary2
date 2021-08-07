@@ -6,7 +6,8 @@ public class GameTimer : SingletonGeneric<GameTimer>
 {
     [SerializeField] private Light DirectionalLight;
     [SerializeField] private LightingPreset Preset;
-    private float dayLengthInMinutes = 0.2f;
+    // 0.2 of 1 minute = 10 seconds eg
+    [SerializeField] private float dayLengthInMinutes;
     private static float gameTime;
     private static float timeScale;
     private int dayNum;

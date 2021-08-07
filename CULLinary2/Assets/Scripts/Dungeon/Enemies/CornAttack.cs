@@ -129,8 +129,6 @@ public class CornAttack : EnemyAttack
     public override void attackPlayerEnd()
     {
         canDealDamage = false;
-
-
     }
 
     private void OnTriggerStay(Collider other)
