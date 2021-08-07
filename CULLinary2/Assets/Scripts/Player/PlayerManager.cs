@@ -15,6 +15,7 @@ public class PlayerManager : MonoBehaviour
     public float meleeDamage = 20f;
 
     private static PlayerData playerData;
+    private GameTimer timer;
 
     // Force singleton reference to be the first PlayerManager being instantiated
     private void Awake()
@@ -23,6 +24,8 @@ public class PlayerManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+            timer = GameTimer.instance;
+            Debug.Log(timer);
             Debug.Log("Creating instance of Player Manager");
         }
         else
@@ -39,6 +42,7 @@ public class PlayerManager : MonoBehaviour
         playerData.maxHealth = maxHealth;
         playerData.currentStamina = currentStamina;
         playerData.maxStamina = maxStamina;
+        //TODO: Add GameTime after completing
         // Save Data into Save System
         SaveSystem.SaveData(playerData);
     }
