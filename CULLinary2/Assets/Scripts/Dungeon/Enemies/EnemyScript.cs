@@ -8,21 +8,11 @@ public class EnemyScript : Enemy
 {
     public NavMeshAgent agent;
 
-    private enum State
-    {
-        Roaming,
-        Idle,
-        ChaseTarget,
-        AttackTarget,
-        ShootingTarget,
-        GoingBackToStart,
-    }
+
 
     [SerializeField] private float maxHealth;
     [SerializeField] private float distanceTriggered;
     [SerializeField] private float stopChase;
-    [SerializeField] private float wanderTimer;
-    [SerializeField] private float idleTimer;
     [SerializeField] private float timeBetweenAttacks;
     [SerializeField] private float collideDamage;
 
@@ -57,7 +47,6 @@ public class EnemyScript : Enemy
     }
 
     [SerializeField] private LootTuple[] lootTuples;
-    [SerializeField] private float wanderRadius;
     
     [SerializeField] private AudioSource audioSourceDamage;
     [SerializeField] private AudioClip[] stabSounds;
@@ -83,6 +72,18 @@ public class EnemyScript : Enemy
     private Color onDamageColor = Color.white;
     private bool canMoveDuringAttack = true;
 
+    public delegate void EnemyIdleDelegate();
+
+    public delegate void EnemyRoamingDelegate();
+
+    public delegate void EnemyChasePlayerDelegate(Vector3 playerPosition);
+
+    public event EnemyIdleDelegate onEnemyIdle;
+
+    public event EnemyRoamingDelegate onEnemyRoaming;
+
+    public event EnemyChasePlayerDelegate onEnemyChase;
+
     private void Awake()
     {
         state = State.Idle;
@@ -95,7 +96,6 @@ public class EnemyScript : Enemy
         GameObject attackRadius = gameObject.transform.Find("AttackRadius").gameObject;
         refScript = attackRadius.GetComponent <EnemyAttack>();
         animator = GetComponentInChildren<Animator>();
-        timer = wanderTimer;
         goingBackToStartTimer = 0;
         SetupFlash();
         SetupLoot();
@@ -105,6 +105,30 @@ public class EnemyScript : Enemy
         cam = player.GetComponentInChildren<Camera>();
         SetupHpBar();
     }
+
+    public Animator getAnimator()
+	{
+        return this.animator;
+	}
+
+    public float getStopChaseDistance()
+    {
+        return this.stopChase;
+    }
+    public NavMeshAgent getNavMeshAgent()
+    {
+        return agent;
+    }
+
+    public Transform getPlayerReference()
+	{
+        return this.player;
+	}
+
+    public void setStateMachine(State newState)
+	{
+        state = newState;
+	}
 
     private void SetupFlash()
     {
@@ -161,51 +185,13 @@ public class EnemyScript : Enemy
         {
             default:
             case State.Idle:
-                animator.SetBool("isMoving", false);
-                timer += Time.deltaTime;
-                FindTarget();
-                if (timer >= idleTimer)
-                {
-                    Vector3 newPos = RandomNavSphere(startingPosition, wanderRadius, -1);
-                    agent.SetDestination(newPos);
-                    timer = 0;
-                    state = State.Roaming;
-                    roamPosition = newPos;
-                }
+                onEnemyIdle?.Invoke();
                 break;
             case State.Roaming:
-                animator.SetBool("isMoving", true);
-                timer += Time.deltaTime;
-                FindTarget();
-                Vector3 distanceToFinalPosition = transform.position - roamPosition;
-                //without this the eggplant wandering will be buggy as it may be within the Navmesh Obstacles itself
-                if (timer >= wanderTimer || distanceToFinalPosition.magnitude < 0.5f)
-                {
-                    timer = 0;
-                    state = State.Idle;
-                }
+                onEnemyRoaming?.Invoke();
                 break;
             case State.ChaseTarget:
-                animator.SetBool("isMoving", true);
-                directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
-                if (directionVector <= agent.stoppingDistance)
-                {
-                    transform.LookAt(playerPositionWithoutYOffset);
-                    // Target within attack range
-                    state = State.AttackTarget;
-                    // Add new state to attack player
-                }
-                else
-                {
-                    agent.SetDestination(playerPositionWithoutYOffset);
-
-                }
-
-                if (Vector3.Distance(transform.position, player.position) > stopChase + 0.1f)
-                {
-                    // Too far, stop chasing
-                    state = State.GoingBackToStart;
-                }
+                onEnemyChase?.Invoke(playerPositionWithoutYOffset);
                 break;
             case State.AttackTarget:
                 transform.LookAt(playerPositionWithoutYOffset);
@@ -276,7 +262,7 @@ public class EnemyScript : Enemy
         }
     }
 
-    private void Alert()
+    public void Alert()
     {
         timer = 0;
         state = State.ChaseTarget;
@@ -288,7 +274,6 @@ public class EnemyScript : Enemy
 
     public override void HandleHit(float damage)
     {
-      Debug.Log("I'm getting hit");
       if (state != State.AttackTarget)
       {
           Alert();
@@ -347,7 +332,7 @@ public class EnemyScript : Enemy
         Instantiate(lootDropped, transform.position, Quaternion.identity);
     }
 
-    private Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
+    public Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
     {
         Vector2 randPos = Random.insideUnitCircle * dist;
         Vector3 randDirection = new Vector3(randPos.x, transform.position.y, randPos.y);
