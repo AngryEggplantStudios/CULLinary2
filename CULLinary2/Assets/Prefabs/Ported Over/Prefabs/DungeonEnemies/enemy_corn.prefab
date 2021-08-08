@@ -176,8 +176,6 @@ MonoBehaviour:
   maxHealth: 100
   distanceTriggered: 1
   stopChase: 4
-  wanderTimer: 5
-  idleTimer: 5
   timeBetweenAttacks: 4
   collideDamage: 0
   hpBar_prefab: {fileID: 1085209639500972291, guid: 4614e0511cb49b14ebf0c58217d9d222, type: 3}
@@ -186,7 +184,6 @@ MonoBehaviour:
   lootTuples:
   - loot: {fileID: 3121572915000677017, guid: 627d29ef9f4fb2244b594a011a8f81ae, type: 3}
     ratio: 1
-  wanderRadius: 3
   audioSourceDamage: {fileID: 8464646467442361879}
   stabSounds:
   - {fileID: 8300000, guid: a45b2da923b66ba47ae8daf723c31c06, type: 3}
@@ -236,6 +233,7 @@ MonoBehaviour:
   idleTimer: 5
   wanderRadius: 3
   wanderTimer: 5
+  timeBetweenAttacks: 4
 --- !u!1 &4663391080187662594
 GameObject:
   m_ObjectHideFlags: 0

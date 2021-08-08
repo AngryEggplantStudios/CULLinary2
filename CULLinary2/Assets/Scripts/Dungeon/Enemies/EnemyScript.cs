@@ -13,8 +13,6 @@ public class EnemyScript : Enemy
     [SerializeField] private float maxHealth;
     [SerializeField] private float distanceTriggered;
     [SerializeField] private float stopChase;
-    [SerializeField] private float timeBetweenAttacks;
-    [SerializeField] private float collideDamage;
 
     [SerializeField] private GameObject hpBar_prefab;
     private GameObject hpBar;
@@ -47,18 +45,12 @@ public class EnemyScript : Enemy
     }
 
     [SerializeField] private LootTuple[] lootTuples;
-    
     [SerializeField] private AudioSource audioSourceDamage;
     [SerializeField] private AudioClip[] stabSounds;
     [SerializeField] private AudioSource audioSourceAttack;
     [SerializeField] private AudioClip alertSound;
     [SerializeField] private AudioClip attackSound;
 
-    private Vector3 startingPosition;
-    private Vector3 roamPosition;
-    private float timer;
-    private float goingBackToStartTimer;
-    private float dist;
     private float health;
     private Animator animator;
     private Camera cam;
@@ -66,7 +58,6 @@ public class EnemyScript : Enemy
     private Transform player;
     private GameObject lootDropped;
     private EnemyAttack refScript;
-    private bool canAttack = true;
     private Renderer rend;
     private Color[] originalColors;
     private Color onDamageColor = Color.white;
@@ -76,13 +67,22 @@ public class EnemyScript : Enemy
 
     public delegate void EnemyRoamingDelegate();
 
-    public delegate void EnemyChasePlayerDelegate(Vector3 playerPosition);
+    public delegate void EnemyChasePlayerDelegate();
+
+    public delegate void EnemyAttackPlayerDelegate();
+
+    public delegate void EnemyReturnDelegate();
 
     public event EnemyIdleDelegate onEnemyIdle;
 
     public event EnemyRoamingDelegate onEnemyRoaming;
 
     public event EnemyChasePlayerDelegate onEnemyChase;
+
+    public event EnemyAttackPlayerDelegate onEnemyAttack;
+
+    public event EnemyReturnDelegate onEnemyReturn;
+
 
     private void Awake()
     {
@@ -92,11 +92,9 @@ public class EnemyScript : Enemy
 
     private void Start()
     {
-        startingPosition = transform.position;
         GameObject attackRadius = gameObject.transform.Find("AttackRadius").gameObject;
         refScript = attackRadius.GetComponent <EnemyAttack>();
         animator = GetComponentInChildren<Animator>();
-        goingBackToStartTimer = 0;
         SetupFlash();
         SetupLoot();
 
@@ -124,6 +122,12 @@ public class EnemyScript : Enemy
 	{
         return this.player;
 	}
+
+    public bool getCanMoveDuringAttack()
+	{
+        return canMoveDuringAttack;
+	}
+
 
     public void setStateMachine(State newState)
 	{
@@ -179,8 +183,6 @@ public class EnemyScript : Enemy
 
     private void Update()
     {
-        Vector3 playerPositionWithoutYOffset = new Vector3(player.position.x, transform.position.y, player.position.z);
-        float directionVector;
         switch (state)
         {
             default:
@@ -191,39 +193,13 @@ public class EnemyScript : Enemy
                 onEnemyRoaming?.Invoke();
                 break;
             case State.ChaseTarget:
-                onEnemyChase?.Invoke(playerPositionWithoutYOffset);
+                onEnemyChase?.Invoke();
                 break;
             case State.AttackTarget:
-                transform.LookAt(playerPositionWithoutYOffset);
-                animator.SetBool("isMoving", false);
-                animator.ResetTrigger("attack");
-                if (canAttack == true)
-                {
-                    animator.SetTrigger("attack");
-                    canAttack = false;
-                    StartCoroutine(DelayFire());
-                }
-                directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
-                if (directionVector > agent.stoppingDistance && canMoveDuringAttack)
-                {
-                    // Target within attack range
-                    state = State.ChaseTarget;
-                }
-
+                onEnemyAttack?.Invoke();
                 break;
             case State.GoingBackToStart:
-                goingBackToStartTimer += Time.deltaTime;
-                animator.SetBool("isMoving", true);
-                float reachedPositionDistance = 1.0f;
-                transform.LookAt(startingPosition);
-                agent.SetDestination(startingPosition);
-                if (Vector3.Distance(transform.position, startingPosition) <= reachedPositionDistance || goingBackToStartTimer > 4.0f)
-                {
-                    // Reached Start Position
-                    animator.SetBool("isMoving", false);
-                    state = State.Idle;
-                    goingBackToStartTimer = 0;
-                }
+                onEnemyReturn?.Invoke();
                 break;
         }
 
@@ -247,15 +223,9 @@ public class EnemyScript : Enemy
         
     }
 
-    private IEnumerator DelayFire()
+    public void FindTarget()
     {
-        yield return new WaitForSeconds(timeBetweenAttacks);
-        canAttack = true;
-    }
-
-    private void FindTarget()
-    {
-        dist = Vector3.Distance(player.position, transform.position);
+        float dist = Vector3.Distance(player.position, transform.position);
         if (dist <= distanceTriggered)
         {
             Alert();
@@ -264,7 +234,6 @@ public class EnemyScript : Enemy
 
     public void Alert()
     {
-        timer = 0;
         state = State.ChaseTarget;
         
         SetupUI(Instantiate(enemyAlert_prefab));
@@ -349,6 +318,7 @@ public class EnemyScript : Enemy
 
         return navHit.position;
     }
+
     public void attackPlayerStart()
     {
         canMoveDuringAttack = false;
