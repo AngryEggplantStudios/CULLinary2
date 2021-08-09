@@ -11,10 +11,12 @@ public class GameTimer : SingletonGeneric<GameTimer>
     private static float gameTime;
     private static float timeScale;
     private int dayNum;
-    
+    private int hourNum;
+    private int minuteNum;
+
     void Start()
     {
-        gameTime = 0f;
+        gameTime = 0.25f; //day starts at 6 am 
         timeScale = 24 / (dayLengthInMinutes / 60);
         Debug.Log("Starting class");
     }
@@ -23,9 +25,11 @@ public class GameTimer : SingletonGeneric<GameTimer>
     {
         if (Preset == null)
             return;
-
         gameTime += Time.deltaTime * timeScale / 86400;
-        //Debug.Log(gameTime);
+        float actualTime = gameTime * 24;
+        hourNum = Mathf.FloorToInt(actualTime);
+        minuteNum = Mathf.FloorToInt((actualTime - (float)hourNum) * 60);
+        Debug.Log(hourNum + ":" + minuteNum.ToString("00"));
         UpdateLighting(gameTime);
         if (gameTime > 1)
         {
