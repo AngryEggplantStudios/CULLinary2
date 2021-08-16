@@ -18,7 +18,7 @@ public class PlayerLocomotion : PlayerAction
     [SerializeField] private float gravity;
     [SerializeField] private float acceleration = 5f;
     [SerializeField] private float deceleration = 7f;
-    [SerializeField] private float staminaCost = 0.1f;
+    [SerializeField] private float staminaCost = 0.001f; //suupposed to be 0.1f
     [SerializeField] private float speedThreshold = 0.05f;
     [SerializeField] private float walkSpeed = 1.0f;
     [SerializeField] private float runSpeed = 2.0f;
