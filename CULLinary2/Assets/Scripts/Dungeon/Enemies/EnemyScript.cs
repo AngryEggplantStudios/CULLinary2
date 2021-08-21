@@ -8,6 +8,9 @@ public class EnemyScript : Enemy
 {
     public NavMeshAgent agent;
 
+    public EnemyName enemyName;
+    public GameObject spawner;
+
     private enum State
     {
         Roaming,
@@ -34,7 +37,8 @@ public class EnemyScript : Enemy
     [SerializeField] private GameObject enemyAlert_prefab;
     private List<GameObject> uiList = new List<GameObject>();
 
-    [System.Serializable] private class LootTuple
+    [System.Serializable]
+    private class LootTuple
     {
         [SerializeField] private GameObject loot;
         [SerializeField] private int ratio;
@@ -58,7 +62,7 @@ public class EnemyScript : Enemy
 
     [SerializeField] private LootTuple[] lootTuples;
     [SerializeField] private float wanderRadius;
-    
+
     [SerializeField] private AudioSource audioSourceDamage;
     [SerializeField] private AudioClip[] stabSounds;
     [SerializeField] private AudioSource audioSourceAttack;
@@ -93,7 +97,7 @@ public class EnemyScript : Enemy
     {
         startingPosition = transform.position;
         GameObject attackRadius = gameObject.transform.Find("AttackRadius").gameObject;
-        refScript = attackRadius.GetComponent <EnemyAttack>();
+        refScript = attackRadius.GetComponent<EnemyAttack>();
         animator = GetComponentInChildren<Animator>();
         timer = wanderTimer;
         goingBackToStartTimer = 0;
@@ -110,7 +114,8 @@ public class EnemyScript : Enemy
     {
         rend = GetComponentInChildren<Renderer>();
         originalColors = new Color[rend.materials.Length];
-        for (int i = 0; i < rend.materials.Length; i++) {
+        for (int i = 0; i < rend.materials.Length; i++)
+        {
             originalColors[i] = rend.materials[i].color;
         }
     }
@@ -258,7 +263,7 @@ public class EnemyScript : Enemy
             }
         }
 
-        
+
     }
 
     private IEnumerator DelayFire()
@@ -280,7 +285,7 @@ public class EnemyScript : Enemy
     {
         timer = 0;
         state = State.ChaseTarget;
-        
+
         SetupUI(Instantiate(enemyAlert_prefab));
         audioSourceAttack.clip = alertSound;
         audioSourceAttack.Play();
@@ -288,22 +293,22 @@ public class EnemyScript : Enemy
 
     public override void HandleHit(float damage)
     {
-      Debug.Log("I'm getting hit");
-      if (state != State.AttackTarget)
-      {
-          Alert();
-      }
-      this.health -= damage;
-      hpBarFull.fillAmount = health/maxHealth;
-      StartCoroutine(FlashOnDamage());
-      SpawnDamageCounter(damage);
-      audioSourceDamage.clip = stabSounds[Random.Range(0, stabSounds.Length)];
-      audioSourceDamage.Play();
+        Debug.Log("I'm getting hit");
+        if (state != State.AttackTarget)
+        {
+            Alert();
+        }
+        this.health -= damage;
+        hpBarFull.fillAmount = health / maxHealth;
+        StartCoroutine(FlashOnDamage());
+        SpawnDamageCounter(damage);
+        audioSourceDamage.clip = stabSounds[Random.Range(0, stabSounds.Length)];
+        audioSourceDamage.Play();
 
-      if (this.health <= 0)
-      {
-          Die();
-      }
+        if (this.health <= 0)
+        {
+            Die();
+        }
     }
 
     private void SpawnDamageCounter(float damage)
@@ -315,10 +320,30 @@ public class EnemyScript : Enemy
 
     private void Die()
     {
-/*        if (PlayerManager.instance != null)
+        /*
+        if (PlayerManager.instance != null)
         {
             PlayerManager.noOfMobsCulled++;
-        }*/
+        }
+        */
+
+        // update population number
+        EcosystemManager ecosystemManager = GameObject.FindWithTag("EcosystemManager").GetComponent<EcosystemManager>();
+        if (ecosystemManager)
+        {
+            ecosystemManager.DecreasePopulation(enemyName, 1);
+        }
+
+        // update spawn cap for the spawner it came from
+        if (spawner)
+        {
+            spawner.GetComponent<DungeonSpawn>().DecrementSpawnCap(1);
+        }
+        else
+        {
+            Debug.Log("spawner is null");
+        }
+
         DropLoot();
         Destroy(hpBar);
         Destroy(gameObject);
@@ -326,7 +351,8 @@ public class EnemyScript : Enemy
 
     private IEnumerator FlashOnDamage()
     {
-        for (var i = 0; i < rend.materials.Length; i++) {
+        for (var i = 0; i < rend.materials.Length; i++)
+        {
             rend.materials[i].color = onDamageColor;
         }
 
@@ -337,7 +363,8 @@ public class EnemyScript : Enemy
             yield return null;
         }
 
-        for (var i = 0; i < rend.materials.Length; i++) {
+        for (var i = 0; i < rend.materials.Length; i++)
+        {
             rend.materials[i].color = originalColors[i];
         }
     }
@@ -364,6 +391,13 @@ public class EnemyScript : Enemy
 
         return navHit.position;
     }
+
+    public void SetSpawner(GameObject spawnerGO)
+    {
+        spawner = spawnerGO;
+        Debug.Log("Set spawner: " + spawner);
+    }
+
     public void attackPlayerStart()
     {
         canMoveDuringAttack = false;

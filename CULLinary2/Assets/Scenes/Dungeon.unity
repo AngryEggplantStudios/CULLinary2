@@ -332,6 +332,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4581795053017934815, guid: fdc9e513ceb71ca47ae6d43cad00232c, type: 3}
+      propertyPath: dungeonSpawnManagerGO
+      value: 
+      objectReference: {fileID: 2125197343}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fdc9e513ceb71ca47ae6d43cad00232c, type: 3}
 --- !u!4 &42823303 stripped
@@ -4335,7 +4339,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1725588168
 MonoBehaviour:
@@ -4351,6 +4355,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DirectionalLight: {fileID: 983659663}
   Preset: {fileID: 11400000, guid: 90c3c66ae35e3b840be125e2619555e4, type: 2}
+  dayLengthInMinutes: 1
 --- !u!1 &1745590154
 GameObject:
   m_ObjectHideFlags: 0
@@ -4529,6 +4534,49 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7250581191029284546, guid: aa0a808b0810f425782ed75e87f32910, type: 3}
   m_PrefabInstance: {fileID: 1768588694}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1800807455
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1800807457}
+  - component: {fileID: 1800807456}
+  m_Layer: 0
+  m_Name: EcosystemManager
+  m_TagString: EcosystemManager
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1800807456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1800807455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1040a868c63d8894893535deea24f904, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1800807457
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1800807455}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.3085065, y: -25.130451, z: 12.781224}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1801444344
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5573,6 +5621,49 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7263063332990278282, guid: 656d597af5b2899419e6bfeb8d151f97, type: 3}
   m_PrefabInstance: {fileID: 2104082514}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2125197343
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2125197345}
+  - component: {fileID: 2125197344}
+  m_Layer: 0
+  m_Name: DungeonSpawnManager
+  m_TagString: DungeonSpawnManager
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2125197344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2125197343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb7edae49d66c8d4096831254c497ceb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &2125197345
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2125197343}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.3085065, y: -25.130451, z: 12.781224}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2135516555
 PrefabInstance:
   m_ObjectHideFlags: 0

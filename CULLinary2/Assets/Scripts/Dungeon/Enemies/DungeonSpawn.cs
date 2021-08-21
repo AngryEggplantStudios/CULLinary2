@@ -23,7 +23,7 @@ public class DungeonSpawn : MonoBehaviour
     [Tooltip("Delay after triggering if toLoop is checked")]
     [SerializeField] private float delayLoopTime;
     [Tooltip("Maximum number of enemies that can be spawned using this spawner")]
-    [SerializeField] private int spawnCap; //It will not spawn more than this amount in total
+    [SerializeField] private int localSpawnCap; //It will not spawn more than this amount in total
     [Tooltip("Initial Delay")]
     [SerializeField] private int initialDelay = 10;
     private bool delayFlag = false;
@@ -34,6 +34,17 @@ public class DungeonSpawn : MonoBehaviour
 
     private void Start()
     {
+        // modify spawning cap for this spawner based on current population and number of spawners for this enemy
+        EcosystemManager ecosystemManager = GameObject.FindWithTag("EcosystemManager").GetComponent<EcosystemManager>();
+        DungeonSpawnManager dungeonSpawnManager = GameObject.FindWithTag("DungeonSpawnManager").GetComponent<DungeonSpawnManager>();
+
+        if (ecosystemManager && dungeonSpawnManager)
+        {
+            Population pop = ecosystemManager.GetPopulation(GetEnemyName());
+            localSpawnCap = Mathf.RoundToInt(pop.GetCurrentNumber() / dungeonSpawnManager.GetNumSpawners(GetEnemyName()));
+            Debug.Log(string.Format("local spawn cap for spawner at {0} is {1}", transform.position, localSpawnCap));
+        }
+
         this.state = SpawnState.Inactive;
         if (toLoop)
         {
@@ -45,7 +56,7 @@ public class DungeonSpawn : MonoBehaviour
         }
         else
         {
-            StartCoroutine(delayTimer(initialDelay));
+            StartCoroutine(DelayTimer(initialDelay));
         }
     }
 
@@ -59,45 +70,61 @@ public class DungeonSpawn : MonoBehaviour
                 int enemyNum = Random.Range(minEnemy, maxEnemy + 1);
                 for (int i = 0; i < enemyNum; i++)
                 {
-                    instantiateEnemy();
+                    InstantiateEnemy();
                 }
             }
             else if (this.state == SpawnState.Loop && canSpawn)
             {
                 canSpawn = false;
-                StartCoroutine(spawnTimer(delayLoopTime));
+                StartCoroutine(SpawnTimer(delayLoopTime));
                 int enemyNum = Random.Range(minEnemy, maxEnemy + 1);
                 for (int i = 0; i < enemyNum; i++)
                 {
-                    instantiateEnemy();
+                    InstantiateEnemy();
                 }
             }
         }
 
     }
 
-    private void instantiateEnemy()
+    private void InstantiateEnemy()
     {
-        if (spawnAmount < spawnCap)
+        if (spawnAmount < localSpawnCap)
         {
             float distX = Random.Range(-distRange, distRange);
             float distZ = Random.Range(-distRange, distRange);
             Vector3 enemyTransform = new Vector3(transform.position.x + distX, transform.position.y, transform.position.z + distZ);
             Instantiate(enemyToSpawn, enemyTransform, Quaternion.identity);
+            enemyToSpawn.GetComponent<EnemyScript>().spawner = gameObject;
+            // Debug.Log("DungeonSpawn GO: " + gameObject);
+            // enemyToSpawn.GetComponent<EnemyScript>().SetSpawner(gameObject);
             spawnAmount++;
         }
     }
 
-    private IEnumerator delayTimer(int delayTime)
+    private IEnumerator DelayTimer(int delayTime)
     {
         yield return new WaitForSeconds(delayTime);
         delayFlag = true;
     }
 
-    private IEnumerator spawnTimer(float delayLoopTime)
+    private IEnumerator SpawnTimer(float delayLoopTime)
     {
         yield return new WaitForSeconds(delayLoopTime);
         canSpawn = true;
+    }
 
+    public EnemyName GetEnemyName()
+    {
+        return enemyToSpawn.GetComponent<EnemyScript>().enemyName;
+    }
+
+    public void DecrementSpawnCap(int value)
+    {
+        if (localSpawnCap > 0)
+        {
+            localSpawnCap -= value;
+            Debug.Log(string.Format("local spawn cap for spawner at {0} dropped to {1}", transform.position, localSpawnCap));
+        }
     }
 }
