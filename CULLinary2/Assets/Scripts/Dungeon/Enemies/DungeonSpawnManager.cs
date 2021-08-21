@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DungeonSpawnManager : MonoBehaviour
 {
-    private List<GameObject> dungeonSpawns;
+    private static List<GameObject> dungeonSpawns;
 
     void Awake()
     {
@@ -12,7 +12,30 @@ public class DungeonSpawnManager : MonoBehaviour
         dungeonSpawns = new List<GameObject>(spawnObjectsArray);
     }
 
-    public int GetNumSpawners(EnemyName name)
+    public static int GetLocalSpawnCap(EnemyName name)
+    {
+        Population pop = EcosystemManager.GetPopulation(name);
+        int localSpawnCap = Mathf.RoundToInt(pop.GetCurrentNumber() / GetNumSpawners(name));
+        if (localSpawnCap < 1 && pop.GetLevel() != PopulationLevel.Extinct)
+        {
+            localSpawnCap = 1;
+        }
+        return localSpawnCap;
+    }
+
+    public static void UpdateLocalSpawnCap()
+    {
+        // set new local spawn cap for each dungeon spawner when population level naturally increases
+        foreach (GameObject spawner in dungeonSpawns)
+        {
+            DungeonSpawn dungeonSpawnScript = spawner.GetComponent<DungeonSpawn>();
+            EnemyName enemyName = dungeonSpawnScript.GetEnemyName();
+            int newLocalSpawnCap = GetLocalSpawnCap(enemyName);
+            dungeonSpawnScript.SetSpawnCap(newLocalSpawnCap);
+        }
+    }
+
+    public static int GetNumSpawners(EnemyName name)
     {
         int numSpawners = 0;
         foreach (GameObject dungeonSpawn in dungeonSpawns)
@@ -26,7 +49,7 @@ public class DungeonSpawnManager : MonoBehaviour
         return numSpawners;
     }
 
-    private EnemyName GetEnemyName(GameObject dungeonSpawnGO)
+    private static EnemyName GetEnemyName(GameObject dungeonSpawnGO)
     {
         DungeonSpawn dungeonSpawnScript = dungeonSpawnGO.GetComponent<DungeonSpawn>();
         return dungeonSpawnScript.GetEnemyName();

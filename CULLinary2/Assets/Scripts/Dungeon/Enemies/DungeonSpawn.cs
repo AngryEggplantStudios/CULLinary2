@@ -31,19 +31,14 @@ public class DungeonSpawn : MonoBehaviour
     private SpawnState state;
     private bool canSpawn = true;
     private int spawnAmount = 0;
+    private GameTimer gameTimer;
 
     private void Start()
     {
         // modify spawning cap for this spawner based on current population and number of spawners for this enemy
-        EcosystemManager ecosystemManager = GameObject.FindWithTag("EcosystemManager").GetComponent<EcosystemManager>();
-        DungeonSpawnManager dungeonSpawnManager = GameObject.FindWithTag("DungeonSpawnManager").GetComponent<DungeonSpawnManager>();
+        localSpawnCap = DungeonSpawnManager.GetLocalSpawnCap(GetEnemyName());
 
-        if (ecosystemManager && dungeonSpawnManager)
-        {
-            Population pop = ecosystemManager.GetPopulation(GetEnemyName());
-            localSpawnCap = Mathf.RoundToInt(pop.GetCurrentNumber() / dungeonSpawnManager.GetNumSpawners(GetEnemyName()));
-            Debug.Log(string.Format("local spawn cap for spawner at {0} is {1}", transform.position, localSpawnCap));
-        }
+        GameTimer.OnStartNewDay += SpawnEnemy;
 
         this.state = SpawnState.Inactive;
         if (toLoop)
@@ -87,6 +82,11 @@ public class DungeonSpawn : MonoBehaviour
 
     }
 
+    private void SpawnEnemy()
+    {
+        // Debug.Log("spawning enemy");
+    }
+
     private void InstantiateEnemy()
     {
         if (spawnAmount < localSpawnCap)
@@ -119,12 +119,18 @@ public class DungeonSpawn : MonoBehaviour
         return enemyToSpawn.GetComponent<EnemyScript>().enemyName;
     }
 
+    public void SetSpawnCap(int value)
+    {
+        localSpawnCap = value;
+        Debug.Log("local spawn cap set to " + value + " for " + GetEnemyName());
+    }
+
     public void DecrementSpawnCap(int value)
     {
         if (localSpawnCap > 0)
         {
             localSpawnCap -= value;
-            Debug.Log(string.Format("local spawn cap for spawner at {0} dropped to {1}", transform.position, localSpawnCap));
+            // Debug.Log(string.Format("local spawn cap for spawner at {0} dropped to {1}", transform.position, localSpawnCap));
         }
     }
 }

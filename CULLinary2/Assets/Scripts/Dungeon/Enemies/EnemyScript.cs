@@ -280,11 +280,7 @@ public class EnemyScript : Enemy
         */
 
         // update population number
-        EcosystemManager ecosystemManager = GameObject.FindWithTag("EcosystemManager").GetComponent<EcosystemManager>();
-        if (ecosystemManager)
-        {
-            ecosystemManager.DecreasePopulation(enemyName, 1);
-        }
+        EcosystemManager.DecreasePopulation(enemyName, 1);
 
         // update spawn cap for the spawner it came from
         if (spawner)
