@@ -177,8 +177,6 @@ MonoBehaviour:
   maxHealth: 100
   distanceTriggered: 1
   stopChase: 4
-  wanderTimer: 5
-  idleTimer: 5
   timeBetweenAttacks: 4
   collideDamage: 0
   hpBar_prefab: {fileID: 1085209639500972291, guid: 4614e0511cb49b14ebf0c58217d9d222, type: 3}
@@ -187,7 +185,6 @@ MonoBehaviour:
   lootTuples:
   - loot: {fileID: 3121572915000677017, guid: 627d29ef9f4fb2244b594a011a8f81ae, type: 3}
     ratio: 1
-  wanderRadius: 3
   audioSourceDamage: {fileID: 8464646467442361879}
   stabSounds:
   - {fileID: 8300000, guid: a45b2da923b66ba47ae8daf723c31c06, type: 3}
@@ -220,6 +217,24 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &5058658367727178944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1685020186128492628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bb4cc901308be147acad82655ca46d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyScript: {fileID: -6020973230333044185}
+  distanceTriggered: 1
+  idleTimer: 5
+  wanderRadius: 3
+  wanderTimer: 5
+  timeBetweenAttacks: 4
 --- !u!1 &4663391080187662594
 GameObject:
   m_ObjectHideFlags: 0
