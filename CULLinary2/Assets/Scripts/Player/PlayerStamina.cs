@@ -12,10 +12,9 @@ public class PlayerStamina : MonoBehaviour
     [SerializeField] private float thresholdStamina = 0.25f;
     private Coroutine regenerationCoroutine;
     private bool flashIsActivated = false;
-    private bool canRegenerate = true;
-    private bool rateBool = true;
     private Color originalFlashColor;
     private Color deactivatedFlashColor = new Color(255, 0, 0, 0);
+    private WaitForSeconds timeTakenRegen = new WaitForSeconds(0.05f);
 
     private void Awake()
     {
@@ -34,14 +33,8 @@ public class PlayerStamina : MonoBehaviour
 
     private void Update()
     {
-        if (PlayerManager.instance.currentStamina < PlayerManager.instance.maxStamina && canRegenerate)
-        {
-            RegenerateStamina();
-            return;
-        }
         if (PlayerManager.instance.currentStamina / PlayerManager.instance.maxStamina < thresholdStamina && !flashIsActivated)
         {
-
             flashIsActivated = true;
             StartCoroutine(flashBar());
         }
@@ -62,29 +55,18 @@ public class PlayerStamina : MonoBehaviour
         }
     }
 
-    private void RegenerateStamina()
+    private IEnumerator checkRegenerate()
     {
-        if (rateBool)
+        yield return new WaitForSeconds(2f);
+        while (PlayerManager.instance.currentStamina < (PlayerManager.instance.maxStamina))
         {
-            StartCoroutine(WaitOneSecond());
+            //StartCoroutine(WaitOneSecond());
             PlayerManager.instance.currentStamina = Mathf.Min(PlayerManager.instance.currentStamina + regenerationRate, PlayerManager.instance.maxStamina);
             float currentStamina = PlayerManager.instance.currentStamina;
             float maxStamina = PlayerManager.instance.maxStamina;
             DisplayOnUI(currentStamina, maxStamina);
+            yield return timeTakenRegen;
         }
-    }
-
-    private IEnumerator WaitOneSecond()
-    {
-        rateBool = false;
-        yield return new WaitForSeconds(1f);
-        rateBool = true;
-    }
-    private IEnumerator checkRegenerate()
-    {
-        canRegenerate = false;
-        yield return new WaitForSeconds(3f);
-        canRegenerate = true;
     }
 
     public bool hasStamina(float staminaCost)
@@ -108,7 +90,6 @@ public class PlayerStamina : MonoBehaviour
         {
             StopCoroutine(regenerationCoroutine);
         }
-
         regenerationCoroutine = StartCoroutine(checkRegenerate());
     }
 
