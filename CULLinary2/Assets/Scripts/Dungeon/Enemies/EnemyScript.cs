@@ -292,6 +292,11 @@ public class EnemyScript : Enemy
             Debug.Log("spawner is null");
         }
 
+        if (TryGetComponent<MiniBoss>(out MiniBoss miniBossScript))
+        {
+            miniBossScript.Die();
+        }
+
         DropLoot();
         Destroy(hpBar);
         Destroy(gameObject);
@@ -338,12 +343,6 @@ public class EnemyScript : Enemy
         NavMesh.SamplePosition(randDirection, out navHit, dist, layermask);
 
         return navHit.position;
-    }
-
-    public void SetSpawner(GameObject spawnerGO)
-    {
-        spawner = spawnerGO;
-        Debug.Log("Set spawner: " + spawner);
     }
 
     public void attackPlayerStart()

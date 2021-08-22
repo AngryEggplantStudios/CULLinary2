@@ -12,6 +12,7 @@ public class DungeonSpawn : MonoBehaviour
     }
 
     [SerializeField] private GameObject enemyToSpawn;
+    [SerializeField] private GameObject miniBoss;
     [Tooltip("Minimum amount of enemies to spawn per trigger")]
     [SerializeField] private int minEnemy;
     [Tooltip("Maximum amount of enemies to spawn per trigger")]
@@ -37,8 +38,13 @@ public class DungeonSpawn : MonoBehaviour
     {
         // modify spawning cap for this spawner based on current population and number of spawners for this enemy
         localSpawnCap = DungeonSpawnManager.GetLocalSpawnCap(GetEnemyName());
+        if (DungeonSpawnManager.IsOverpopulated(GetEnemyName()))
+        {
+            minEnemy = Mathf.RoundToInt(minEnemy * 2f);
+            maxEnemy = Mathf.RoundToInt(maxEnemy * 2f);
+        }
 
-        GameTimer.OnStartNewDay += SpawnEnemy;
+        GameTimer.OnStartNewDay += SpawnEnemies;
 
         this.state = SpawnState.Inactive;
         if (toLoop)
@@ -62,29 +68,25 @@ public class DungeonSpawn : MonoBehaviour
             if (this.state == SpawnState.Inactive)
             {
                 this.state = SpawnState.Active;
-                int enemyNum = Random.Range(minEnemy, maxEnemy + 1);
-                for (int i = 0; i < enemyNum; i++)
-                {
-                    InstantiateEnemy();
-                }
+                SpawnEnemies();
             }
             else if (this.state == SpawnState.Loop && canSpawn)
             {
                 canSpawn = false;
                 StartCoroutine(SpawnTimer(delayLoopTime));
-                int enemyNum = Random.Range(minEnemy, maxEnemy + 1);
-                for (int i = 0; i < enemyNum; i++)
-                {
-                    InstantiateEnemy();
-                }
+                SpawnEnemies();
             }
         }
 
     }
 
-    private void SpawnEnemy()
+    private void SpawnEnemies()
     {
-        // Debug.Log("spawning enemy");
+        int enemyNum = Random.Range(minEnemy, maxEnemy + 1);
+        for (int i = 0; i < enemyNum; i++)
+        {
+            InstantiateEnemy();
+        }
     }
 
     private void InstantiateEnemy()
@@ -96,9 +98,15 @@ public class DungeonSpawn : MonoBehaviour
             Vector3 enemyTransform = new Vector3(transform.position.x + distX, transform.position.y, transform.position.z + distZ);
             Instantiate(enemyToSpawn, enemyTransform, Quaternion.identity);
             enemyToSpawn.GetComponent<EnemyScript>().spawner = gameObject;
-            // Debug.Log("DungeonSpawn GO: " + gameObject);
-            // enemyToSpawn.GetComponent<EnemyScript>().SetSpawner(gameObject);
             spawnAmount++;
+        }
+    }
+
+    public void SpawnMiniBoss()
+    {
+        if (miniBoss)
+        {
+            Instantiate(miniBoss, transform.position, Quaternion.identity);
         }
     }
 
@@ -122,7 +130,6 @@ public class DungeonSpawn : MonoBehaviour
     public void SetSpawnCap(int value)
     {
         localSpawnCap = value;
-        Debug.Log("local spawn cap set to " + value + " for " + GetEnemyName());
     }
 
     public void DecrementSpawnCap(int value)
@@ -130,7 +137,6 @@ public class DungeonSpawn : MonoBehaviour
         if (localSpawnCap > 0)
         {
             localSpawnCap -= value;
-            // Debug.Log(string.Format("local spawn cap for spawner at {0} dropped to {1}", transform.position, localSpawnCap));
         }
     }
 }

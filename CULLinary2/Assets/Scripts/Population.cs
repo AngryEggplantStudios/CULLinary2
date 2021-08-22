@@ -32,7 +32,7 @@ public class Population
         this.optimalNumber = Mathf.RoundToInt(Mathf.Lerp(lowerBound, upperBound, 0.5f));
         this.level = level;
         SetCurrentNumberBasedOnLevel();
-        Debug.Log("current number for " + name + " : " + currentNumber);
+        // Debug.Log("current number for " + name + " : " + currentNumber);
     }
 
     public EnemyName GetName()
@@ -53,7 +53,7 @@ public class Population
         switch (level)
         {
             case PopulationLevel.Overpopulated:
-                currentNumber = upperBound + 1; // how much more to increase?
+                currentNumber = Mathf.RoundToInt(upperBound * 1.5f); // how much more to increase?
                 break;
             case PopulationLevel.Normal:
                 min = this.optimalNumber;
@@ -74,8 +74,6 @@ public class Population
                 currentNumber = 0;
                 break;
         }
-
-        // Debug.Log("current number for " + name + " set to " + currentNumber);
     }
 
     public void IncreaseBy(int value)
@@ -94,18 +92,19 @@ public class Population
 
     public void IncreaseLevel()
     {
+        // runs when new day is started and today is the day to increase pop level
         // natural population increase for endangered, vulnerable and normal only
         switch (level)
         {
             case PopulationLevel.Vulnerable:
                 level = PopulationLevel.Normal;
                 SetCurrentNumberBasedOnLevel();
-                Debug.Log("increased pop level for " + name + " to normal");
+                // Debug.Log("increased pop level for " + name + " to normal");
                 break;
             case PopulationLevel.Endangered:
                 level = PopulationLevel.Vulnerable;
                 SetCurrentNumberBasedOnLevel();
-                Debug.Log("increased pop level for " + name + " to vulnerable");
+                // Debug.Log("increased pop level for " + name + " to vulnerable");
                 break;
             case PopulationLevel.Normal:
                 // randomly increase to overpopulated
@@ -113,23 +112,22 @@ public class Population
                 {
                     level = PopulationLevel.Overpopulated;
                     SetCurrentNumberBasedOnLevel();
-                    Debug.Log("increased pop level for " + name + " to overpopulated");
+                    // Debug.Log("increased pop level for " + name + " to overpopulated");
                 }
                 else
                 {
-                    Debug.Log("did not increase pop level to overpopulated for " + name);
+                    // Debug.Log("did not increase pop level to overpopulated for " + name);
                 }
                 break;
             case PopulationLevel.Overpopulated:
             case PopulationLevel.Extinct:
                 // do nothing
-                Debug.Log("pop level remains at " + level + " for " + name);
+                // Debug.Log("pop level remains at " + level + " for " + name);
                 break;
         }
-        // Debug.Log("increased pop level for " + name + " to " + GetLevel());
     }
 
-    public bool WillBecomeOverpopulated()
+    private bool WillBecomeOverpopulated()
     {
         float randomValue = Random.value;
         return randomValue >= chanceOfOverpopulation;
@@ -174,6 +172,12 @@ public class Population
             IncreaseLevel();
             numDaysLeftToIncreaseLevel = numDaysBetweenLevelIncrease;
         }
+    }
+
+    public void ResetToNormal()
+    {
+        this.level = PopulationLevel.Normal;
+        SetCurrentNumberBasedOnLevel();
     }
 
 }

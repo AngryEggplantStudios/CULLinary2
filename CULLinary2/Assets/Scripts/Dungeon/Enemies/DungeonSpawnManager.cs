@@ -23,6 +23,12 @@ public class DungeonSpawnManager : MonoBehaviour
         return localSpawnCap;
     }
 
+    public static bool IsOverpopulated(EnemyName name)
+    {
+        Population pop = EcosystemManager.GetPopulation(name);
+        return pop.IsOverpopulated();
+    }
+
     public static void UpdateLocalSpawnCap()
     {
         // set new local spawn cap for each dungeon spawner when population level naturally increases
@@ -35,18 +41,22 @@ public class DungeonSpawnManager : MonoBehaviour
         }
     }
 
-    public static int GetNumSpawners(EnemyName name)
+    public static List<GameObject> GetSpawners(EnemyName name)
     {
-        int numSpawners = 0;
+        List<GameObject> spawners = new List<GameObject>();
         foreach (GameObject dungeonSpawn in dungeonSpawns)
         {
             if (GetEnemyName(dungeonSpawn) == name)
             {
-                numSpawners++;
+                spawners.Add(dungeonSpawn);
             }
         }
+        return spawners;
+    }
 
-        return numSpawners;
+    public static int GetNumSpawners(EnemyName name)
+    {
+        return GetSpawners(name).Count;
     }
 
     private static EnemyName GetEnemyName(GameObject dungeonSpawnGO)

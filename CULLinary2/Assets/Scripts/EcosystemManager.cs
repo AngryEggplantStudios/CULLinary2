@@ -5,7 +5,7 @@ using UnityEngine;
 public class EcosystemManager : MonoBehaviour
 {
     private static List<Population> populations = new List<Population> {
-        new Population(EnemyName.Potato, 5, 20, PopulationLevel.Endangered),
+        new Population(EnemyName.Potato, 5, 20, PopulationLevel.Normal),
         new Population(EnemyName.Corn, 5, 20, PopulationLevel.Endangered),
         new Population(EnemyName.Eggplant, 5, 20, PopulationLevel.Endangered)
     };
@@ -28,9 +28,28 @@ public class EcosystemManager : MonoBehaviour
             foreach (Population pop in populations)
             {
                 pop.CheckNaturalPopulationIncrease();
+                if (pop.IsOverpopulated())
+                {
+                    SpawnMiniBoss(pop);
+                }
             }
+
             DungeonSpawnManager.UpdateLocalSpawnCap();
         }
+    }
+
+    private void SpawnMiniBoss(Population pop)
+    {
+        List<GameObject> spawners = DungeonSpawnManager.GetSpawners(pop.GetName());
+        GameObject randomSpawner = spawners[Random.Range(0, spawners.Count)];
+        randomSpawner.GetComponent<DungeonSpawn>().SpawnMiniBoss();
+        // Debug.Log("spawning miniboss at " + randomSpawner.transform.position);
+    }
+
+    public static void ResetPopulationToNormal(EnemyName name)
+    {
+        Population pop = GetPopulation(name);
+        pop.ResetToNormal();
     }
 
     public static Population GetPopulation(EnemyName enemyName)
