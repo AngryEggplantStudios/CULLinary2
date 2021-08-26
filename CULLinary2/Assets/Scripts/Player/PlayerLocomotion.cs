@@ -39,14 +39,17 @@ public class PlayerLocomotion : PlayerAction
 
     private void Run(Vector3 direction, bool isGrounded = true)
     {
-        if (!playerStamina.hasStamina(staminaCost))
+        if (playerStamina && !playerStamina.hasStamina(staminaCost))
         {
             Move(direction, isGrounded);
             playerStamina.resetStaminaRegeneration();
             return;
         }
 
-        playerStamina.reduceStamina(staminaCost);
+        if (playerStamina)
+        {
+            playerStamina.reduceStamina(staminaCost);
+        }
 
         if (isGrounded)
         {
