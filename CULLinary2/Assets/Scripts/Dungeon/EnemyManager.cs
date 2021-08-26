@@ -8,7 +8,11 @@ public static class EnemyManager
 
     public static void attachToUIForHp(GameObject hpBarToAttach)
     {
-        hpBarToAttach.transform.SetParent(uiForHpBar.transform);
+        if (hpBarToAttach != null && uiForHpBar != null)
+        {
+            hpBarToAttach.transform.SetParent(uiForHpBar.transform);
+        }
+
         //return uiForHpBar;
     }
 }

@@ -22,7 +22,8 @@ public class EnemyScript : Enemy
     [SerializeField] private GameObject enemyAlert_prefab;
     private List<GameObject> uiList = new List<GameObject>();
 
-    [System.Serializable] private class LootTuple
+    [System.Serializable]
+    private class LootTuple
     {
         [SerializeField] private GameObject loot;
         [SerializeField] private int ratio;
@@ -86,28 +87,30 @@ public class EnemyScript : Enemy
 
     private void Awake()
     {
+        animator = GetComponentInChildren<Animator>();
         state = State.Idle;
         health = maxHealth;
+        player = GameObject.FindGameObjectWithTag("Player").transform;
+        cam = player.GetComponentInChildren<Camera>();
     }
 
     private void Start()
     {
         GameObject attackRadius = gameObject.transform.Find("AttackRadius").gameObject;
-        refScript = attackRadius.GetComponent <EnemyAttack>();
-        animator = GetComponentInChildren<Animator>();
+        refScript = attackRadius.GetComponent<EnemyAttack>();
+
         SetupFlash();
         SetupLoot();
 
         // Make sure player exists (finished loading) before running these
-        player = GameObject.FindGameObjectWithTag("Player").transform;
-        cam = player.GetComponentInChildren<Camera>();
+
         SetupHpBar();
     }
 
     public Animator getAnimator()
-	{
+    {
         return this.animator;
-	}
+    }
 
     public float getStopChaseDistance()
     {
@@ -119,26 +122,27 @@ public class EnemyScript : Enemy
     }
 
     public Transform getPlayerReference()
-	{
+    {
         return this.player;
-	}
+    }
 
     public bool getCanMoveDuringAttack()
-	{
+    {
         return canMoveDuringAttack;
-	}
+    }
 
 
     public void setStateMachine(State newState)
-	{
+    {
         state = newState;
-	}
+    }
 
     private void SetupFlash()
     {
         rend = GetComponentInChildren<Renderer>();
         originalColors = new Color[rend.materials.Length];
-        for (int i = 0; i < rend.materials.Length; i++) {
+        for (int i = 0; i < rend.materials.Length; i++)
+        {
             originalColors[i] = rend.materials[i].color;
         }
     }
@@ -220,7 +224,7 @@ public class EnemyScript : Enemy
             }
         }
 
-        
+
     }
 
     public void FindTarget()
@@ -235,7 +239,7 @@ public class EnemyScript : Enemy
     public void Alert()
     {
         state = State.ChaseTarget;
-        
+
         SetupUI(Instantiate(enemyAlert_prefab));
         audioSourceAttack.clip = alertSound;
         audioSourceAttack.Play();
@@ -243,21 +247,21 @@ public class EnemyScript : Enemy
 
     public override void HandleHit(float damage)
     {
-      if (state != State.AttackTarget)
-      {
-          Alert();
-      }
-      this.health -= damage;
-      hpBarFull.fillAmount = health/maxHealth;
-      StartCoroutine(FlashOnDamage());
-      SpawnDamageCounter(damage);
-      audioSourceDamage.clip = stabSounds[Random.Range(0, stabSounds.Length)];
-      audioSourceDamage.Play();
+        if (state != State.AttackTarget)
+        {
+            Alert();
+        }
+        this.health -= damage;
+        hpBarFull.fillAmount = health / maxHealth;
+        StartCoroutine(FlashOnDamage());
+        SpawnDamageCounter(damage);
+        audioSourceDamage.clip = stabSounds[Random.Range(0, stabSounds.Length)];
+        audioSourceDamage.Play();
 
-      if (this.health <= 0)
-      {
-          Die();
-      }
+        if (this.health <= 0)
+        {
+            Die();
+        }
     }
 
     private void SpawnDamageCounter(float damage)
@@ -269,10 +273,10 @@ public class EnemyScript : Enemy
 
     private void Die()
     {
-/*        if (PlayerManager.instance != null)
-        {
-            PlayerManager.noOfMobsCulled++;
-        }*/
+        /*        if (PlayerManager.instance != null)
+                {
+                    PlayerManager.noOfMobsCulled++;
+                }*/
         DropLoot();
         Destroy(hpBar);
         Destroy(gameObject);
@@ -280,7 +284,8 @@ public class EnemyScript : Enemy
 
     private IEnumerator FlashOnDamage()
     {
-        for (var i = 0; i < rend.materials.Length; i++) {
+        for (var i = 0; i < rend.materials.Length; i++)
+        {
             rend.materials[i].color = onDamageColor;
         }
 
@@ -291,7 +296,8 @@ public class EnemyScript : Enemy
             yield return null;
         }
 
-        for (var i = 0; i < rend.materials.Length; i++) {
+        for (var i = 0; i < rend.materials.Length; i++)
+        {
             rend.materials[i].color = originalColors[i];
         }
     }
