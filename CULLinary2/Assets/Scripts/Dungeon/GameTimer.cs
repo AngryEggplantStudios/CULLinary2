@@ -29,7 +29,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         float actualTime = gameTime * 24;
         hourNum = Mathf.FloorToInt(actualTime);
         minuteNum = Mathf.FloorToInt((actualTime - (float)hourNum) * 60);
-        Debug.Log(hourNum + ":" + minuteNum.ToString("00"));
+        // Debug.Log(hourNum + ":" + minuteNum.ToString("00"));
         UpdateLighting(gameTime);
         if (gameTime > 1)
         {

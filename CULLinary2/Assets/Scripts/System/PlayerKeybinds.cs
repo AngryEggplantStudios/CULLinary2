@@ -6,6 +6,7 @@ public enum KeybindAction
 {
     Run,
     Interact,
+    OpenOrders,
     OpenInventory,
     OpenRecipeBook,
     Trash,
@@ -22,6 +23,7 @@ public class PlayerKeybinds
     private static Dictionary<KeybindAction, KeyCode> keybinds = new Dictionary<KeybindAction, KeyCode>
     {
         { KeybindAction.Interact, KeyCode.F },
+        { KeybindAction.OpenOrders, KeyCode.O },
         { KeybindAction.OpenInventory, KeyCode.I },
         { KeybindAction.OpenRecipeBook, KeyCode.R },
         { KeybindAction.Trash, KeyCode.Delete },

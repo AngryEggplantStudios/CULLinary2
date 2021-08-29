@@ -16,6 +16,10 @@ public class PlayerInventory : MonoBehaviour
     {
         inventoryUI.SetActive(!inventoryUI.activeSelf);
     }
+    public void OpenInventory()
+    {
+        inventoryUI.SetActive(true);
+    }
 
     private void Update()
     {
