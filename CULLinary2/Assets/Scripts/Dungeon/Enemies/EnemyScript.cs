@@ -238,6 +238,7 @@ public class EnemyScript : Enemy
 
     public void Alert()
     {
+        Debug.Log("In chasing target");
         state = State.ChaseTarget;
 
         SetupUI(Instantiate(enemyAlert_prefab));

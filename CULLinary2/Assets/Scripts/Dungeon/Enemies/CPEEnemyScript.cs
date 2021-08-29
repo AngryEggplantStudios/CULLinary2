@@ -91,7 +91,7 @@ public class CPEEnemyScript : MonoBehaviour
         }
         else
         {
-            Debug.Log("Setting destination");
+            Debug.Log("Setting destination to player offset");
             agent.SetDestination(playerPositionWithoutYOffset);
         }
 
