@@ -16,6 +16,8 @@ public class CPEEnemyScript : MonoBehaviour
     // Variables for goingBackToStart
     private float goingBackToStartTimer;
 
+    public LineRenderer lineTest;
+
     // Variables for roaming
     private Vector3 roamPosition;
 
@@ -82,6 +84,11 @@ public class CPEEnemyScript : MonoBehaviour
         Vector3 playerPositionWithoutYOffset = new Vector3(player.position.x, transform.position.y, player.position.z);
         animator.SetBool("isMoving", true);
         float directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
+        var points = new Vector3[2];
+
+        points[0] = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        points[1] = playerPositionWithoutYOffset;
+        lineTest.SetPositions(points);
         if (directionVector <= agent.stoppingDistance)
         {
             transform.LookAt(playerPositionWithoutYOffset);
