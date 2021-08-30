@@ -4,7 +4,6 @@ public static class SaveSystem
 {
     public static void SaveData(PlayerData playerData)
     {
-
         FileManager.WriteToFile("saveFile.clown", playerData.ToJson());
     }
 
@@ -18,7 +17,6 @@ public static class SaveSystem
         }
         Debug.Log("Save file not loaded");
         return null;
-
     }
 
     public static void CreateNewFile(PlayerData playerData)

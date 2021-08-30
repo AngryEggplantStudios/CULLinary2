@@ -7,9 +7,8 @@ public static class FileManager
 {
     public static bool WriteToFile(string a_FileName, string a_FileContents)
     {
+        Debug.Log("Saving to " + Application.persistentDataPath);
         var fullPath = Path.Combine(Application.persistentDataPath, a_FileName);
-        Debug.Log(fullPath);
-
         try
         {
             File.WriteAllText(fullPath, a_FileContents);
@@ -24,6 +23,7 @@ public static class FileManager
 
     public static bool CheckFile(string a_FileName)
     {
+        Debug.Log("Checking file in " + Application.persistentDataPath);
         string fullPath = Path.Combine(Application.persistentDataPath, a_FileName);
         string result;
         try
@@ -40,6 +40,7 @@ public static class FileManager
 
     public static bool LoadFromFile(string a_FileName, out string result, bool isAbsolutePath = false)
     {
+        Debug.Log("Loading file in " + Application.persistentDataPath);
         string fullPath;
         if (isAbsolutePath)
         {
