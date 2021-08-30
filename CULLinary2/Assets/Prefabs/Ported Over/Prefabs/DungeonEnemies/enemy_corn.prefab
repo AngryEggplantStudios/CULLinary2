@@ -176,8 +176,6 @@ MonoBehaviour:
   maxHealth: 100
   distanceTriggered: 1
   stopChase: 4
-  timeBetweenAttacks: 4
-  collideDamage: 0
   hpBar_prefab: {fileID: 1085209639500972291, guid: 4614e0511cb49b14ebf0c58217d9d222, type: 3}
   damageCounter_prefab: {fileID: 1085209639500972291, guid: 24f41dda89c7bd648bd2796ac669721e, type: 3}
   enemyAlert_prefab: {fileID: 1085209639500972291, guid: 186234b88676f4b4f872f98d3ab0973c, type: 3}
@@ -233,6 +231,8 @@ MonoBehaviour:
   idleTimer: 5
   wanderRadius: 3
   wanderTimer: 5
+  reachedPositionDistance: 0
+  lineTest: {fileID: 0}
   timeBetweenAttacks: 4
 --- !u!1 &4663391080187662594
 GameObject:
@@ -498,15 +498,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7982d92d1633fff469b59284459a7f6d, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.6
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7982d92d1633fff469b59284459a7f6d, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.6
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7982d92d1633fff469b59284459a7f6d, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.6
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7982d92d1633fff469b59284459a7f6d, type: 3}
       propertyPath: m_LocalPosition.x

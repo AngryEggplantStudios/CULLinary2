@@ -12,7 +12,8 @@ public class CPEEnemyScript : MonoBehaviour
     [SerializeField] private float idleTimer;
     [SerializeField] private float wanderRadius;
     [SerializeField] private float wanderTimer;
-
+    // The amount of distance to be considered from the final position, needs to be set to suitable value else mob will "WALK" forever
+    [SerializeField] private float reachedPositionDistance;
     // Variables for goingBackToStart
     private float goingBackToStartTimer;
 
@@ -78,7 +79,7 @@ public class CPEEnemyScript : MonoBehaviour
         Vector3 distanceToFinalPosition = transform.position - roamPosition;
         Debug.Log(distanceToFinalPosition);
         //without this the eggplant wandering will be buggy as it may be within the Navmesh Obstacles itself
-        if (timer >= wanderTimer || distanceToFinalPosition.magnitude < 5f)
+        if (timer >= wanderTimer || distanceToFinalPosition.magnitude < reachedPositionDistance)
         {
             timer = 0;
             Debug.Log("Has Set is moving to false");
@@ -142,7 +143,6 @@ public class CPEEnemyScript : MonoBehaviour
     {
         goingBackToStartTimer += Time.deltaTime;
         animator.SetBool("isMoving", true);
-        float reachedPositionDistance = 5.0f;
         transform.LookAt(startingPosition);
         agent.SetDestination(startingPosition);
         var points = new Vector3[2];
@@ -150,7 +150,8 @@ public class CPEEnemyScript : MonoBehaviour
         points[0] = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         points[1] = startingPosition;
         lineTest.SetPositions(points);
-        if (Vector3.Distance(transform.position, startingPosition) <= reachedPositionDistance || goingBackToStartTimer > 4.0f)
+        //|| goingBackToStartTimer > 4.0f
+        if (Vector3.Distance(transform.position, startingPosition) <= reachedPositionDistance)
         {
             Debug.Log("Reach start");
             // Reached Start Position
