@@ -312,7 +312,7 @@ public class EnemyScript : Enemy
     {
         Vector2 randPos = Random.insideUnitCircle * dist;
         Vector3 randDirection = new Vector3(randPos.x, transform.position.y, randPos.y);
-        while ((randDirection - origin).magnitude < 5.0f)
+        while ((randDirection - origin).magnitude < 10.0f)
         {
             randPos = Random.insideUnitCircle * dist;
             randDirection = new Vector3(randPos.x, transform.position.y, randPos.y);

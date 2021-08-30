@@ -59,6 +59,11 @@ public class CPEEnemyScript : MonoBehaviour
         {
             Vector3 newPos = enemyScript.RandomNavSphere(startingPosition, wanderRadius, -1);
             agent.SetDestination(newPos);
+            var points = new Vector3[2];
+
+            points[0] = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            points[1] = newPos;
+            lineTest.SetPositions(points);
             timer = 0;
             enemyScript.setStateMachine(State.Roaming);
             roamPosition = newPos;
@@ -71,10 +76,13 @@ public class CPEEnemyScript : MonoBehaviour
         timer += Time.deltaTime;
         enemyScript.FindTarget();
         Vector3 distanceToFinalPosition = transform.position - roamPosition;
+        Debug.Log(distanceToFinalPosition);
         //without this the eggplant wandering will be buggy as it may be within the Navmesh Obstacles itself
-        if (timer >= wanderTimer || distanceToFinalPosition.magnitude < 0.5f)
+        if (timer >= wanderTimer || distanceToFinalPosition.magnitude < 5f)
         {
             timer = 0;
+            Debug.Log("Has Set is moving to false");
+            animator.SetBool("isMoving", false);
             enemyScript.setStateMachine(State.Idle);
         }
     }
@@ -134,11 +142,17 @@ public class CPEEnemyScript : MonoBehaviour
     {
         goingBackToStartTimer += Time.deltaTime;
         animator.SetBool("isMoving", true);
-        float reachedPositionDistance = 1.0f;
+        float reachedPositionDistance = 5.0f;
         transform.LookAt(startingPosition);
         agent.SetDestination(startingPosition);
+        var points = new Vector3[2];
+
+        points[0] = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        points[1] = startingPosition;
+        lineTest.SetPositions(points);
         if (Vector3.Distance(transform.position, startingPosition) <= reachedPositionDistance || goingBackToStartTimer > 4.0f)
         {
+            Debug.Log("Reach start");
             // Reached Start Position
             animator.SetBool("isMoving", false);
             enemyScript.setStateMachine(State.Idle);
