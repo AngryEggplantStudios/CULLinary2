@@ -58,4 +58,16 @@ public class PlayerManager : MonoBehaviour
         maxStamina = playerData.maxStamina;
     }
 
+    public void CreateBlankData()
+    {
+        //Create new data
+        playerData = new PlayerData();
+        //Load Default stats
+        playerData.currentHealth = currentHealth;
+        playerData.maxHealth = maxHealth;
+        playerData.currentStamina = currentStamina;
+        playerData.maxStamina = maxStamina;
+        SaveSystem.SaveData(playerData);
+    }
+
 }
