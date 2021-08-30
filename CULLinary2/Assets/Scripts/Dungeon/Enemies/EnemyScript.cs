@@ -308,11 +308,11 @@ public class EnemyScript : Enemy
         Instantiate(lootDropped, transform.position, Quaternion.identity);
     }
 
-    public Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
+    public Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask, float minDist)
     {
         Vector2 randPos = Random.insideUnitCircle * dist;
         Vector3 randDirection = new Vector3(randPos.x, transform.position.y, randPos.y);
-        while ((randDirection - origin).magnitude < 25.0f)
+        while ((randDirection - origin).magnitude < minDist)
         {
             randPos = Random.insideUnitCircle * dist;
             randDirection = new Vector3(randPos.x, transform.position.y, randPos.y);

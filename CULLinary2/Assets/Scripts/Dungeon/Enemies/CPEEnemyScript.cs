@@ -12,8 +12,10 @@ public class CPEEnemyScript : MonoBehaviour
     [SerializeField] private float idleTimer;
     [SerializeField] private float wanderRadius;
     [SerializeField] private float wanderTimer;
-    // The amount of distance to be considered from the final position, needs to be set to suitable value else mob will "WALK" forever
-    [SerializeField] private float reachedPositionDistance;
+
+    // The minimum distance to wander about.
+    [Tooltip("The minimum distance to wander about. Needed because of the stopping distance being large makes the enemy only wander a bit before stopping.")]
+    [SerializeField] private float minDist;
     // Variables for goingBackToStart
     private float goingBackToStartTimer;
 
@@ -32,7 +34,9 @@ public class CPEEnemyScript : MonoBehaviour
     private float timer;
     private Vector3 startingPosition;
 
-
+    // The amount of distance to be considered from the final position, needs to be set to suitable value else mob will "WALK" forever
+    [Tooltip("The minimum distance to stop. Has to be equal to Stopping distance. Cannot use stopping distance directly else navmesh agent will keep bumping into player/")]
+    private float reachedPositionDistance;
     // Start is called before the first frame update
     void Start()
     {
@@ -45,7 +49,7 @@ public class CPEEnemyScript : MonoBehaviour
         enemyScript.onEnemyIdle += EnemyIdle;
         enemyScript.onEnemyAttack += EnemyAttackPlayer;
         enemyScript.onEnemyReturn += EnemyReturn;
-
+        reachedPositionDistance = agent.stoppingDistance;
         startingPosition = transform.position;
         timer = wanderTimer;
         goingBackToStartTimer = 0;
@@ -58,7 +62,7 @@ public class CPEEnemyScript : MonoBehaviour
         enemyScript.FindTarget();
         if (timer >= idleTimer)
         {
-            Vector3 newPos = enemyScript.RandomNavSphere(startingPosition, wanderRadius, -1);
+            Vector3 newPos = enemyScript.RandomNavSphere(startingPosition, wanderRadius, -1, minDist);
             agent.SetDestination(newPos);
             var points = new Vector3[2];
 
@@ -98,7 +102,7 @@ public class CPEEnemyScript : MonoBehaviour
         points[0] = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         points[1] = playerPositionWithoutYOffset;
         lineTest.SetPositions(points);
-        if (directionVector <= agent.stoppingDistance)
+        if (directionVector <= reachedPositionDistance)
         {
             transform.LookAt(playerPositionWithoutYOffset);
             // Target within attack range
@@ -151,6 +155,7 @@ public class CPEEnemyScript : MonoBehaviour
         points[1] = startingPosition;
         lineTest.SetPositions(points);
         //|| goingBackToStartTimer > 4.0f
+        Debug.Log(Vector3.Distance(transform.position, startingPosition));
         if (Vector3.Distance(transform.position, startingPosition) <= reachedPositionDistance)
         {
             Debug.Log("Reach start");
