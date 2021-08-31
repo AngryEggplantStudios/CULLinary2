@@ -232,6 +232,7 @@ public class EnemyScript : Enemy
 
     public void Alert()
     {
+        Debug.Log("In chasing target");
         state = State.ChaseTarget;
 
         SetupUI(Instantiate(enemyAlert_prefab));
@@ -297,11 +298,11 @@ public class EnemyScript : Enemy
         Instantiate(lootDropped, transform.position, Quaternion.identity);
     }
 
-    public Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
+    public Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask, float minDist)
     {
         Vector2 randPos = Random.insideUnitCircle * dist;
         Vector3 randDirection = new Vector3(randPos.x, transform.position.y, randPos.y);
-        while ((randDirection - origin).magnitude < 5.0f)
+        while ((randDirection - origin).magnitude < minDist)
         {
             randPos = Random.insideUnitCircle * dist;
             randDirection = new Vector3(randPos.x, transform.position.y, randPos.y);

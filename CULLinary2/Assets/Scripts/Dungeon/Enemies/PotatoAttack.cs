@@ -7,8 +7,6 @@ public class PotatoAttack : EnemyAttack
     private SphereCollider attackCollider;
     private PlayerHealth healthScript;
     private bool canDealDamage;
-    public GameObject selectionCirclePrefab;
-    public GameObject selectionCircleActual;
 
 
     private void Awake()
