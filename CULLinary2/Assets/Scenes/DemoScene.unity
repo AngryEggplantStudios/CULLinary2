@@ -265,6 +265,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Chef
       objectReference: {fileID: 0}
+    - target: {fileID: 4007418486084460488, guid: d9a0d39611c4dec87a14e053dbf31dfc, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 4007418486084460490, guid: d9a0d39611c4dec87a14e053dbf31dfc, type: 3}
       propertyPath: m_Center.y
       value: 1
@@ -287,7 +291,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4007418486084460491, guid: d9a0d39611c4dec87a14e053dbf31dfc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 754.8
+      value: 926
       objectReference: {fileID: 0}
     - target: {fileID: 4007418486084460491, guid: d9a0d39611c4dec87a14e053dbf31dfc, type: 3}
       propertyPath: m_LocalPosition.y
@@ -295,7 +299,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4007418486084460491, guid: d9a0d39611c4dec87a14e053dbf31dfc, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -74.8
+      value: -169
       objectReference: {fileID: 0}
     - target: {fileID: 4007418486084460491, guid: d9a0d39611c4dec87a14e053dbf31dfc, type: 3}
       propertyPath: m_LocalRotation.w
@@ -393,7 +397,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1411236017546622185, guid: b7994354aab3c5446a9eda9627515638, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 9.61
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2490179393845968961, guid: b7994354aab3c5446a9eda9627515638, type: 3}
       propertyPath: wanderTimer
@@ -402,6 +406,26 @@ PrefabInstance:
     - target: {fileID: 2490179393845968961, guid: b7994354aab3c5446a9eda9627515638, type: 3}
       propertyPath: wanderRadius
       value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2490179393845968961, guid: b7994354aab3c5446a9eda9627515638, type: 3}
+      propertyPath: distanceTriggered
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4530135754035235960, guid: b7994354aab3c5446a9eda9627515638, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5702811443908732498, guid: b7994354aab3c5446a9eda9627515638, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5702811443908732498, guid: b7994354aab3c5446a9eda9627515638, type: 3}
+      propertyPath: stopChase
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5702811443908732498, guid: b7994354aab3c5446a9eda9627515638, type: 3}
+      propertyPath: distanceTriggered
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6860521342657593539, guid: b7994354aab3c5446a9eda9627515638, type: 3}
       propertyPath: m_Speed
@@ -417,15 +441,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8008916349616235639, guid: b7994354aab3c5446a9eda9627515638, type: 3}
       propertyPath: m_LocalScale.x
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8008916349616235639, guid: b7994354aab3c5446a9eda9627515638, type: 3}
       propertyPath: m_LocalScale.y
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8008916349616235639, guid: b7994354aab3c5446a9eda9627515638, type: 3}
       propertyPath: m_LocalScale.z
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8008916349616235639, guid: b7994354aab3c5446a9eda9627515638, type: 3}
       propertyPath: m_LocalPosition.x
@@ -437,7 +461,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8008916349616235639, guid: b7994354aab3c5446a9eda9627515638, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -246
+      value: -153.3
       objectReference: {fileID: 0}
     - target: {fileID: 8008916349616235639, guid: b7994354aab3c5446a9eda9627515638, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1308,4 +1332,4 @@ MonoBehaviour:
   maxHealth: 500
   currentStamina: 500
   maxStamina: 500
-  meleeDamage: 20
+  meleeDamage: 10

@@ -15,7 +15,7 @@ public class PlayerSlash : PlayerAction
     [SerializeField] private float rotateSpeed = 5f;
     [SerializeField] private Camera mainCamera;
 
-    private const float MAX_DIST_CAM_TO_GROUND = 10000f;
+    private const float MAX_DIST_CAM_TO_GROUND = 100f;
     private const float MELEE_ANIMATION_TIME_SECONDS = 0.10f;
 
     private Collider weaponCollider;
