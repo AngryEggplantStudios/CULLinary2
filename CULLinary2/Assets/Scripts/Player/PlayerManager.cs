@@ -25,7 +25,6 @@ public class PlayerManager : MonoBehaviour
         {
             instance = this;
             timer = GameTimer.instance;
-            Debug.Log(timer);
             Debug.Log("Creating instance of Player Manager");
         }
         else
