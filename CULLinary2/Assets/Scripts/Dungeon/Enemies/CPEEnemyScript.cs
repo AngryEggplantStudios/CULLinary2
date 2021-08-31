@@ -34,7 +34,7 @@ public class CPEEnemyScript : MonoBehaviour
     void Start()
     {
         // Get Variables from EnemyScript
-        agent = enemyScript.getNavMeshAgent();
+        agent = gameObject.GetComponent<NavMeshAgent>();
         animator = enemyScript.getAnimator();
         player = enemyScript.getPlayerReference();
         enemyScript.onEnemyRoaming += EnemyRoaming;

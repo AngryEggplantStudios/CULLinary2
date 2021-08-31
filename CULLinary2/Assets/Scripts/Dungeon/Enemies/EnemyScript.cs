@@ -7,9 +7,6 @@ using UnityEngine.UI;
 public class EnemyScript : Enemy
 {
     public NavMeshAgent agent;
-
-
-
     [SerializeField] private float maxHealth;
     [SerializeField] private float distanceTriggered;
     [SerializeField] private float stopChase;
@@ -101,9 +98,6 @@ public class EnemyScript : Enemy
 
         SetupFlash();
         SetupLoot();
-
-        // Make sure player exists (finished loading) before running these
-
         SetupHpBar();
     }
 
@@ -273,10 +267,6 @@ public class EnemyScript : Enemy
 
     private void Die()
     {
-        /*        if (PlayerManager.instance != null)
-                {
-                    PlayerManager.noOfMobsCulled++;
-                }*/
         DropLoot();
         Destroy(hpBar);
         Destroy(gameObject);
@@ -337,7 +327,6 @@ public class EnemyScript : Enemy
         audioSourceAttack.clip = attackSound;
         audioSourceAttack.Play();
     }
-
 
     public void attackPlayerEnd()
     {

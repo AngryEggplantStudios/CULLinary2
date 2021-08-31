@@ -48,7 +48,6 @@ public class MenuController : MonoBehaviour
         {
             saveGamePresentWarning.SetActive(true);
         }
-
     }
 
     public void ToggleSaveGamePresentWarning()
