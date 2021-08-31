@@ -19,6 +19,8 @@ public class RushEnemyScript : MonoBehaviour
     public LineRenderer debugLine;
     // Variables for goingBackToStart
     private float goingBackToStartTimer;
+    private float presetSpeed = 30.0f;
+    private float presetAccel = 90.0f;
     private float chargingSpeed = 300.0f;
     private float chargingAccel = 1500.0f;
     // Variables for roaming
@@ -60,7 +62,6 @@ public class RushEnemyScript : MonoBehaviour
 
     private void EnemyIdle()
     {
-        Debug.Log(enemyAttack);
         animator.SetBool("isMoving", false);
         timer += Time.deltaTime;
         enemyScript.FindTarget();
@@ -85,12 +86,10 @@ public class RushEnemyScript : MonoBehaviour
         timer += Time.deltaTime;
         enemyScript.FindTarget();
         Vector3 distanceToFinalPosition = transform.position - roamPosition;
-        Debug.Log(distanceToFinalPosition);
         //without this the eggplant wandering will be buggy as it may be within the Navmesh Obstacles itself
         if (timer >= wanderTimer || distanceToFinalPosition.magnitude < reachedPositionDistance)
         {
             timer = 0;
-            Debug.Log("Has Set is moving to false");
             animator.SetBool("isMoving", false);
             enemyScript.setStateMachine(State.Idle);
         }
@@ -98,7 +97,6 @@ public class RushEnemyScript : MonoBehaviour
 
     private void EnemyChase()
     {
-        Debug.Log("IN ENemy Chase");
         Vector3 playerPositionWithoutYOffset = new Vector3(player.position.x, transform.position.y, player.position.z);
         animator.SetBool("isMoving", true);
         float directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
@@ -119,7 +117,6 @@ public class RushEnemyScript : MonoBehaviour
         else
         {
             // Between 90 and 140, assuming direction vector is 140
-            Debug.Log("Setting destination");
             agent.SetDestination(playerPositionWithoutYOffset);
         }
 
@@ -128,14 +125,7 @@ public class RushEnemyScript : MonoBehaviour
 
     private void EnemyAttackPlayer()
     {
-        Debug.Log("IN ENemy Attack");
         Vector3 playerPositionWithoutYOffset = new Vector3(player.position.x, transform.position.y, player.position.z);
-        if (!chargeDirection.HasValue)
-		{
-            //means not charging
-            transform.LookAt(playerPositionWithoutYOffset);
-        }
-        float distanceOvershoot = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
         animator.SetBool("isMoving", false);
         animator.ResetTrigger("attack");
         if (canAttack == true)
@@ -151,6 +141,8 @@ public class RushEnemyScript : MonoBehaviour
             Debug.Log("Setting charge diirection to null"); 
             amInAttackState = false;
             chargeDirection = null;
+            //agent.speed = presetSpeed;
+            //agent.acceleration = presetAccel;
 /*            enemyScript.setStateMachine(State.Idle);*/
         }
         var points = new Vector3[2];
@@ -158,6 +150,8 @@ public class RushEnemyScript : MonoBehaviour
         bool canStartCharging = enemyAttack.getCanDealDamage();
         if (canStartCharging && !chargeDirection.HasValue)
 		{
+            agent.speed = chargingSpeed;
+            agent.acceleration = chargingAccel;
             Debug.Log("StartCharging");
             //Initialize Start charging player
             //chargeDirection = playerPositionWithoutYOffset;
@@ -186,26 +180,27 @@ public class RushEnemyScript : MonoBehaviour
             //Destination of charge already set, continue charging
             agent.SetDestination(chargeDirection.Value);
         } 
-        else if (!canStartCharging && !amInAttackState)
-		{
-            //still haven't started charging and am not in attacking state
-            float directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
-			if (directionVector >= distanceTriggered && directionVector > 90.0f && enemyScript.getCanMoveDuringAttack())
-			{
-				// Target within attack range
-				Debug.Log("In Chasing target");
-				enemyScript.setStateMachine(State.ChaseTarget);
-			}
-		}
         else
 		{
             // am revving up to charge, do nothing
 		}
+        if (!chargeDirection.HasValue)
+        {
+            //means not charging
+            transform.LookAt(playerPositionWithoutYOffset);
+            float directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
+            //cooling down cant move
+            if (directionVector >= enemyScript.getStopChaseDistance())
+            {
+                // Target within attack range
+                Debug.Log("sTOP cHASING Tt");
+                enemyScript.setStateMachine(State.GoingBackToStart);
+            }
+        }
     }
 
     private void EnemyReturn()
     {
-        Debug.Log("IN ENemy Return");
         goingBackToStartTimer += Time.deltaTime;
         animator.SetBool("isMoving", true);
         float reachedPositionDistance = 1.0f;
