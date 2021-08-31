@@ -18,11 +18,15 @@ public class PlayerStamina : MonoBehaviour
 
     private void Awake()
     {
+        originalFlashColor = outlineFlash.effectColor;
+        outlineFlash.effectColor = deactivatedFlashColor;
+    }
+
+    private void Start()
+    {
         float currentStamina = PlayerManager.instance ? PlayerManager.instance.currentStamina : 100f;
         float maxStamina = PlayerManager.instance ? PlayerManager.instance.maxStamina : 100f;
         DisplayOnUI(currentStamina, maxStamina);
-        originalFlashColor = outlineFlash.effectColor;
-        outlineFlash.effectColor = deactivatedFlashColor;
     }
 
     private void DisplayOnUI(float currentStamina, float maxStamina)

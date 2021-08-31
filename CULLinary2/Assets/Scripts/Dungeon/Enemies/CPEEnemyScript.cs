@@ -7,7 +7,7 @@ public class CPEEnemyScript : MonoBehaviour
 {
     [SerializeField] private EnemyScript enemyScript;
     [SerializeField] private float distanceTriggered;
-    
+
     // Variables for idle
     [SerializeField] private float idleTimer;
     [SerializeField] private float wanderRadius;
@@ -41,7 +41,7 @@ public class CPEEnemyScript : MonoBehaviour
     void Start()
     {
         // Get Variables from EnemyScript
-        agent = enemyScript.getNavMeshAgent();
+        agent = gameObject.GetComponent<NavMeshAgent>();
         animator = enemyScript.getAnimator();
         player = enemyScript.getPlayerReference();
         enemyScript.onEnemyRoaming += EnemyRoaming;
@@ -56,7 +56,7 @@ public class CPEEnemyScript : MonoBehaviour
     }
 
     private void EnemyIdle()
-	{
+    {
         animator.SetBool("isMoving", false);
         timer += Time.deltaTime;
         enemyScript.FindTarget();
@@ -76,7 +76,7 @@ public class CPEEnemyScript : MonoBehaviour
     }
 
     private void EnemyRoaming()
-	{
+    {
         animator.SetBool("isMoving", true);
         timer += Time.deltaTime;
         enemyScript.FindTarget();

@@ -5,6 +5,9 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Audio;
 
+/// <summary>
+/// Archived version of the old main menu controller
+/// </summary>
 public class MainMenu : MonoBehaviour
 {
     [SerializeField] private AudioSource selectSound;

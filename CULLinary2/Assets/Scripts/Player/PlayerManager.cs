@@ -25,7 +25,6 @@ public class PlayerManager : MonoBehaviour
         {
             instance = this;
             timer = GameTimer.instance;
-            Debug.Log(timer);
             Debug.Log("Creating instance of Player Manager");
         }
         else
@@ -56,6 +55,18 @@ public class PlayerManager : MonoBehaviour
         maxHealth = playerData.maxHealth;
         currentStamina = playerData.currentStamina;
         maxStamina = playerData.maxStamina;
+    }
+
+    public void CreateBlankData()
+    {
+        //Create new data
+        playerData = new PlayerData();
+        //Load Default stats
+        playerData.currentHealth = currentHealth;
+        playerData.maxHealth = maxHealth;
+        playerData.currentStamina = currentStamina;
+        playerData.maxStamina = maxStamina;
+        SaveSystem.SaveData(playerData);
     }
 
 }
