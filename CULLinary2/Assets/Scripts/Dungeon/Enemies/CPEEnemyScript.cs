@@ -81,12 +81,10 @@ public class CPEEnemyScript : MonoBehaviour
         timer += Time.deltaTime;
         enemyScript.FindTarget();
         Vector3 distanceToFinalPosition = transform.position - roamPosition;
-        Debug.Log(distanceToFinalPosition);
         //without this the eggplant wandering will be buggy as it may be within the Navmesh Obstacles itself
         if (timer >= wanderTimer || distanceToFinalPosition.magnitude < reachedPositionDistance)
         {
             timer = 0;
-            Debug.Log("Has Set is moving to false");
             animator.SetBool("isMoving", false);
             enemyScript.setStateMachine(State.Idle);
         }
@@ -111,7 +109,6 @@ public class CPEEnemyScript : MonoBehaviour
         }
         else
         {
-            Debug.Log("Setting destination to player offset");
             agent.SetDestination(playerPositionWithoutYOffset);
         }
 
@@ -155,10 +152,8 @@ public class CPEEnemyScript : MonoBehaviour
         points[1] = startingPosition;
         lineTest.SetPositions(points);
         //|| goingBackToStartTimer > 4.0f
-        Debug.Log(Vector3.Distance(transform.position, startingPosition));
         if (Vector3.Distance(transform.position, startingPosition) <= reachedPositionDistance)
         {
-            Debug.Log("Reach start");
             // Reached Start Position
             animator.SetBool("isMoving", false);
             enemyScript.setStateMachine(State.Idle);
