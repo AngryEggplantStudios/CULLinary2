@@ -19,7 +19,8 @@ public class RushEnemyScript : MonoBehaviour
     public LineRenderer debugLine;
     // Variables for goingBackToStart
     private float goingBackToStartTimer;
-
+    private float chargingSpeed = 300.0f;
+    private float chargingAccel = 1500.0f;
     // Variables for roaming
     private Vector3 roamPosition;
 
@@ -101,24 +102,28 @@ public class RushEnemyScript : MonoBehaviour
         Vector3 playerPositionWithoutYOffset = new Vector3(player.position.x, transform.position.y, player.position.z);
         animator.SetBool("isMoving", true);
         float directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
-        if (directionVector <= reachedPositionDistance)
+
+
+        if (directionVector <= 90.0f)
         {
             //transform.LookAt(playerPositionWithoutYOffset);
             // Target within attack range
             enemyScript.setStateMachine(State.AttackTarget);
             // Add new state to attack player
         }
-        else
-        {
-            Debug.Log("Setting destination");
-            agent.SetDestination(playerPositionWithoutYOffset);
-        }
-
-        if (Vector3.Distance(transform.position, player.position) > enemyScript.getStopChaseDistance() + 0.1f)
+        else if (directionVector > enemyScript.getStopChaseDistance())
         {
             // Too far, stop chasing
             enemyScript.setStateMachine(State.GoingBackToStart);
         }
+        else
+        {
+            // Between 90 and 140, assuming direction vector is 140
+            Debug.Log("Setting destination");
+            agent.SetDestination(playerPositionWithoutYOffset);
+        }
+
+
     }
 
     private void EnemyAttackPlayer()
@@ -185,13 +190,13 @@ public class RushEnemyScript : MonoBehaviour
 		{
             //still haven't started charging and am not in attacking state
             float directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
-            /*            if (directionVector > agent.stoppingDistance && enemyScript.getCanMoveDuringAttack())
-                        {
-                            // Target within attack range
-                            Debug.Log("In Chasing target");
-                            enemyScript.setStateMachine(State.ChaseTarget);
-                        }*/
-        }
+			if (directionVector >= distanceTriggered && directionVector > 90.0f && enemyScript.getCanMoveDuringAttack())
+			{
+				// Target within attack range
+				Debug.Log("In Chasing target");
+				enemyScript.setStateMachine(State.ChaseTarget);
+			}
+		}
         else
 		{
             // am revving up to charge, do nothing
