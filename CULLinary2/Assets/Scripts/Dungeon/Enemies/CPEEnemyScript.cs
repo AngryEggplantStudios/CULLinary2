@@ -35,7 +35,7 @@ public class CPEEnemyScript : MonoBehaviour
     private Vector3 startingPosition;
 
     // The amount of distance to be considered from the final position, needs to be set to suitable value else mob will "WALK" forever
-    [Tooltip("The minimum distance to stop. Has to be equal to Stopping distance. Cannot use stopping distance directly else navmesh agent will keep bumping into player/")]
+    [Tooltip("The minimum distance to stop in front of the player. Has to be equal to Stopping distance. Cannot use stopping distance directly else navmesh agent will keep bumping into player/")]
     private float reachedPositionDistance;
     // Start is called before the first frame update
     void Start()
