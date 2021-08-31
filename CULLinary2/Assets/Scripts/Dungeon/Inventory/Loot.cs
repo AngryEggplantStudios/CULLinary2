@@ -27,14 +27,14 @@ public class Loot : MonoBehaviour
 
     public void PickUp()
     {
-        // Notif
-        GameObject itemPickupNotif = Instantiate(itemPickupNotif_prefab);
+        // Notif Disable FOR NOW TODO RESTORE
+/*        GameObject itemPickupNotif = Instantiate(itemPickupNotif_prefab);
         itemPickupNotif.transform.SetParent(GameObject.Find("UI").transform);
         itemPickupNotif.transform.GetComponentInChildren<Image>().sprite = itemForLoot.icon;
 
         // Sound
         audioSource.clip = itemPickupSound;
-        audioSource.Play();
+        audioSource.Play();*/
 
         Destroy(gameObject);
     }
@@ -44,10 +44,10 @@ public class Loot : MonoBehaviour
         // Debug.Log("loot colliding with: " + other.tag);
         if ((other.CompareTag("Player") || other.CompareTag("MeleeWeapon"))) 
         {
-           /* if (InventoryUI.instance.AddItem(this.GetItem()))
-            {
-                PickUp();
-            }*/
-        }
+			if (InventoryUI.instance.AddItem(this.GetItem()))
+			{
+				PickUp();
+			}
+		}
     }
 }
