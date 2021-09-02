@@ -34,12 +34,16 @@ public class PlayerHealth : MonoBehaviour
 
     private void Awake()
     {
-        float currentHealth = PlayerManager.instance ? PlayerManager.instance.currentHealth : 200f;
-        float maxHealth = PlayerManager.instance ? PlayerManager.instance.maxHealth : 200f;
-        DisplayOnUI(currentHealth, maxHealth);
         SetupIFrame();
         originalFlashColor = outlineFlash.effectColor;
         outlineFlash.effectColor = deactivatedFlashColor;
+    }
+
+    private void Start()
+    {
+        float currentHealth = PlayerManager.instance ? PlayerManager.instance.currentHealth : 200f;
+        float maxHealth = PlayerManager.instance ? PlayerManager.instance.maxHealth : 200f;
+        DisplayOnUI(currentHealth, maxHealth);
     }
 
     private void Update()

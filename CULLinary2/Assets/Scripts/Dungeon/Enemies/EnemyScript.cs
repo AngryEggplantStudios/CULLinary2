@@ -7,9 +7,6 @@ using UnityEngine.UI;
 public class EnemyScript : Enemy
 {
     public NavMeshAgent agent;
-
-
-
     [SerializeField] private float maxHealth;
     [SerializeField] private float distanceTriggered;
     [SerializeField] private float stopChase;
@@ -101,9 +98,6 @@ public class EnemyScript : Enemy
 
         SetupFlash();
         SetupLoot();
-
-        // Make sure player exists (finished loading) before running these
-
         SetupHpBar();
     }
 
@@ -238,6 +232,7 @@ public class EnemyScript : Enemy
 
     public void Alert()
     {
+        Debug.Log("In chasing target");
         state = State.ChaseTarget;
 
         SetupUI(Instantiate(enemyAlert_prefab));
@@ -273,10 +268,6 @@ public class EnemyScript : Enemy
 
     private void Die()
     {
-        /*        if (PlayerManager.instance != null)
-                {
-                    PlayerManager.noOfMobsCulled++;
-                }*/
         DropLoot();
         Destroy(hpBar);
         Destroy(gameObject);
@@ -307,11 +298,11 @@ public class EnemyScript : Enemy
         Instantiate(lootDropped, transform.position, Quaternion.identity);
     }
 
-    public Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
+    public Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask, float minDist)
     {
         Vector2 randPos = Random.insideUnitCircle * dist;
         Vector3 randDirection = new Vector3(randPos.x, transform.position.y, randPos.y);
-        while ((randDirection - origin).magnitude < 5.0f)
+        while ((randDirection - origin).magnitude < minDist)
         {
             randPos = Random.insideUnitCircle * dist;
             randDirection = new Vector3(randPos.x, transform.position.y, randPos.y);
@@ -337,7 +328,6 @@ public class EnemyScript : Enemy
         audioSourceAttack.clip = attackSound;
         audioSourceAttack.Play();
     }
-
 
     public void attackPlayerEnd()
     {
