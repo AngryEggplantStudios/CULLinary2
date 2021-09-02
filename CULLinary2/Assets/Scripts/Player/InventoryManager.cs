@@ -11,7 +11,7 @@ public class InventoryManager : MonoBehaviour
     private InventorySlot[] slots;
     public static InventoryManager instance;
     private int inventoryLimit;
-    private List<Item> itemList;
+    public List<Item> innerItemList;
 
     private void Awake()
     {
@@ -21,16 +21,16 @@ public class InventoryManager : MonoBehaviour
     private void Start()
     {
         slots = inventoryPanel.GetComponentsInChildren<InventorySlot>();
-        itemList = PlayerManager.instance.itemList;
-        inventoryLimit = PlayerManager.instance.inventoryLimit;
+        inventoryLimit = PlayerManager.instance ? PlayerManager.instance.inventoryLimit : 16;
+        PopulateUI(PlayerManager.instance.itemList);
     }
 
     public bool AddItem(Item item)
     {
-        if (itemList.Count < inventoryLimit)
+        if (innerItemList.Count < inventoryLimit)
         {
-            itemList.Add(item);
-            UpdateUI();
+            innerItemList.Add(item);
+            StartCoroutine(UpdateUI());
             return true;
         }
         return false;
@@ -38,19 +38,26 @@ public class InventoryManager : MonoBehaviour
 
     public void RemoveItem(Item item)
     {
-        itemList.Remove(item);
-        UpdateUI();
+        innerItemList.Remove(item);
+        StartCoroutine(UpdateUI());
     }
 
-    public void UpdateUI()
+    public void PopulateUI(List<Item> items)
+    {
+        innerItemList = items;
+        StartCoroutine(UpdateUI());
+    }
+
+    public IEnumerator UpdateUI()
     {
         if (slots != null)
         {
             for (int i = 0; i < slots.Length; i++)
             {
-                if (i < itemList.Count)
+                yield return null;
+                if (i < innerItemList.Count)
                 {
-                    slots[i].AddItem(itemList[i]);
+                    slots[i].AddItem(innerItemList[i]);
                 }
                 else
                 {
@@ -58,8 +65,8 @@ public class InventoryManager : MonoBehaviour
                 }
             }
         }
-        inventoryCapacityText.text = itemList.Count + "/" + inventoryLimit;
-        inventoryCapacityText.color = itemList.Count == inventoryLimit ? Color.red : Color.black;
+        inventoryCapacityText.text = innerItemList.Count + "/" + inventoryLimit;
+        inventoryCapacityText.color = innerItemList.Count == inventoryLimit ? Color.red : Color.black;
     }
 
 }

@@ -37,14 +37,18 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    public void SaveData()
+    public void SaveData(List<Item> innerItemList)
     {
+        if (playerData == null)
+        {
+            playerData = new PlayerData();
+        }
         // Save Player Stats
         playerData.currentHealth = currentHealth;
         playerData.maxHealth = maxHealth;
         playerData.currentStamina = currentStamina;
         playerData.maxStamina = maxStamina;
-        playerData.inventory = SerializeInventory(itemList);
+        playerData.inventory = SerializeInventory(innerItemList);
         SaveSystem.SaveData(playerData);
     }
 
@@ -68,7 +72,6 @@ public class PlayerManager : MonoBehaviour
                 itemList.Add(GameData.GetItemById(item.id));
             }
         }
-        InventoryManager.instance.UpdateUI();
     }
 
     public void CreateBlankData()
