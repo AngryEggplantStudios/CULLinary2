@@ -19,7 +19,6 @@ public class CornAttack : EnemyAttack
     private float viewDistance = 50f;
     private void Awake()
     {
-
         attackCollider = gameObject.GetComponent<SphereCollider>();
         canDealDamage = false;
         player = GameObject.FindGameObjectWithTag("Player").transform;
@@ -89,6 +88,7 @@ public class CornAttack : EnemyAttack
         }
 
     }
+    
     public override void attackPlayerStart()
     {
         //this.selectionCircleActual = Instantiate(this.selectionCirclePrefab);

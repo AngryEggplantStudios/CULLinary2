@@ -10,12 +10,10 @@ public class PlayerMelee : PlayerAction
     public event PlayerMeleeDelegate OnPlayerMelee;
 
     private KeyCode meleeKeyCode;
-    private float damage;
 
     private void Awake()
     {
         meleeKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.Melee);
-        damage = PlayerManager.instance ? PlayerManager.instance.meleeDamage : 20;
     }
 
     private void Update()
@@ -30,14 +28,5 @@ public class PlayerMelee : PlayerAction
     public void StopInvoking()
     {
         this.SetIsInvoking(false);
-    }
-
-    private void OnTriggerEnter(Collider collider)
-    {
-        Enemy target = collider.GetComponent<Enemy>();
-        if (target != null)
-        {
-            target.HandleHit(damage);
-        }
     }
 }

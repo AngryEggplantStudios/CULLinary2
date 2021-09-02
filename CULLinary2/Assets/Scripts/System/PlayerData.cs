@@ -9,6 +9,8 @@ public class PlayerData
     public float maxStamina;
     public float currentStamina;
     public float gameTime;
+
+
     public string ToJson()
     {
         return JsonUtility.ToJson(this);

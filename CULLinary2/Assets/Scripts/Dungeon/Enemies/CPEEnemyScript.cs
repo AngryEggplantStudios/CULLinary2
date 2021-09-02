@@ -7,14 +7,19 @@ public class CPEEnemyScript : MonoBehaviour
 {
     [SerializeField] private EnemyScript enemyScript;
     [SerializeField] private float distanceTriggered;
-    
+
     // Variables for idle
     [SerializeField] private float idleTimer;
     [SerializeField] private float wanderRadius;
     [SerializeField] private float wanderTimer;
 
+    // The minimum distance to wander about.
+    [Tooltip("The minimum distance to wander about. Needed because of the stopping distance being large makes the enemy only wander a bit before stopping.")]
+    [SerializeField] private float minDist;
     // Variables for goingBackToStart
     private float goingBackToStartTimer;
+
+    public LineRenderer lineTest;
 
     // Variables for roaming
     private Vector3 roamPosition;
@@ -29,12 +34,14 @@ public class CPEEnemyScript : MonoBehaviour
     private float timer;
     private Vector3 startingPosition;
 
-
+    // The amount of distance to be considered from the final position, needs to be set to suitable value else mob will "WALK" forever
+    [Tooltip("The minimum distance to stop in front of the player. Has to be equal to Stopping distance. Cannot use stopping distance directly else navmesh agent will keep bumping into player/")]
+    private float reachedPositionDistance;
     // Start is called before the first frame update
     void Start()
     {
         // Get Variables from EnemyScript
-        agent = enemyScript.getNavMeshAgent();
+        agent = gameObject.GetComponent<NavMeshAgent>();
         animator = enemyScript.getAnimator();
         player = enemyScript.getPlayerReference();
         enemyScript.onEnemyRoaming += EnemyRoaming;
@@ -42,21 +49,26 @@ public class CPEEnemyScript : MonoBehaviour
         enemyScript.onEnemyIdle += EnemyIdle;
         enemyScript.onEnemyAttack += EnemyAttackPlayer;
         enemyScript.onEnemyReturn += EnemyReturn;
-
+        reachedPositionDistance = agent.stoppingDistance;
         startingPosition = transform.position;
         timer = wanderTimer;
         goingBackToStartTimer = 0;
     }
 
     private void EnemyIdle()
-	{
+    {
         animator.SetBool("isMoving", false);
         timer += Time.deltaTime;
         enemyScript.FindTarget();
         if (timer >= idleTimer)
         {
-            Vector3 newPos = enemyScript.RandomNavSphere(startingPosition, wanderRadius, -1);
+            Vector3 newPos = enemyScript.RandomNavSphere(startingPosition, wanderRadius, -1, minDist);
             agent.SetDestination(newPos);
+            var points = new Vector3[2];
+
+            points[0] = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            points[1] = newPos;
+            lineTest.SetPositions(points);
             timer = 0;
             enemyScript.setStateMachine(State.Roaming);
             roamPosition = newPos;
@@ -64,15 +76,16 @@ public class CPEEnemyScript : MonoBehaviour
     }
 
     private void EnemyRoaming()
-	{
+    {
         animator.SetBool("isMoving", true);
         timer += Time.deltaTime;
         enemyScript.FindTarget();
         Vector3 distanceToFinalPosition = transform.position - roamPosition;
         //without this the eggplant wandering will be buggy as it may be within the Navmesh Obstacles itself
-        if (timer >= wanderTimer || distanceToFinalPosition.magnitude < 0.5f)
+        if (timer >= wanderTimer || distanceToFinalPosition.magnitude < reachedPositionDistance)
         {
             timer = 0;
+            animator.SetBool("isMoving", false);
             enemyScript.setStateMachine(State.Idle);
         }
     }
@@ -82,7 +95,12 @@ public class CPEEnemyScript : MonoBehaviour
         Vector3 playerPositionWithoutYOffset = new Vector3(player.position.x, transform.position.y, player.position.z);
         animator.SetBool("isMoving", true);
         float directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
-        if (directionVector <= agent.stoppingDistance)
+        var points = new Vector3[2];
+
+        points[0] = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        points[1] = playerPositionWithoutYOffset;
+        lineTest.SetPositions(points);
+        if (directionVector <= reachedPositionDistance)
         {
             transform.LookAt(playerPositionWithoutYOffset);
             // Target within attack range
@@ -91,7 +109,6 @@ public class CPEEnemyScript : MonoBehaviour
         }
         else
         {
-            Debug.Log("Setting destination");
             agent.SetDestination(playerPositionWithoutYOffset);
         }
 
@@ -127,10 +144,15 @@ public class CPEEnemyScript : MonoBehaviour
     {
         goingBackToStartTimer += Time.deltaTime;
         animator.SetBool("isMoving", true);
-        float reachedPositionDistance = 1.0f;
         transform.LookAt(startingPosition);
         agent.SetDestination(startingPosition);
-        if (Vector3.Distance(transform.position, startingPosition) <= reachedPositionDistance || goingBackToStartTimer > 4.0f)
+        var points = new Vector3[2];
+
+        points[0] = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        points[1] = startingPosition;
+        lineTest.SetPositions(points);
+        //|| goingBackToStartTimer > 4.0f
+        if (Vector3.Distance(transform.position, startingPosition) <= reachedPositionDistance)
         {
             // Reached Start Position
             animator.SetBool("isMoving", false);
