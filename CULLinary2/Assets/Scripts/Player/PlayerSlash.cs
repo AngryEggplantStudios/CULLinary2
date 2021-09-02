@@ -15,7 +15,7 @@ public class PlayerSlash : PlayerAction
     [SerializeField] private float rotateSpeed = 5f;
     [SerializeField] private Camera mainCamera;
 
-    private const float MAX_DIST_CAM_TO_GROUND = 100f;
+    private const float MAX_DIST_CAM_TO_GROUND = 10000f;
     private const float MELEE_ANIMATION_TIME_SECONDS = 0.10f;
 
     private Collider weaponCollider;
@@ -50,7 +50,7 @@ public class PlayerSlash : PlayerAction
         bool hitGround;
 
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        hitGround = Physics.Raycast(ray, out hit, MAX_DIST_CAM_TO_GROUND, 1 << 3);
+        hitGround = Physics.Raycast(ray, out hit, MAX_DIST_CAM_TO_GROUND, ~(1 << 5));
         if (hitGround)
         {
             rotateToFaceDirection = new Vector3(hit.point.x - playerBody.transform.position.x,

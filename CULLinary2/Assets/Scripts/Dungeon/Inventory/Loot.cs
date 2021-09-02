@@ -28,13 +28,13 @@ public class Loot : MonoBehaviour
     public void PickUp()
     {
         // Notif Disable FOR NOW TODO RESTORE
-/*        GameObject itemPickupNotif = Instantiate(itemPickupNotif_prefab);
-        itemPickupNotif.transform.SetParent(GameObject.Find("UI").transform);
-        itemPickupNotif.transform.GetComponentInChildren<Image>().sprite = itemForLoot.icon;
+        /*        GameObject itemPickupNotif = Instantiate(itemPickupNotif_prefab);
+                itemPickupNotif.transform.SetParent(GameObject.Find("UI").transform);
+                itemPickupNotif.transform.GetComponentInChildren<Image>().sprite = itemForLoot.icon;
 
-        // Sound
-        audioSource.clip = itemPickupSound;
-        audioSource.Play();*/
+                // Sound
+                audioSource.clip = itemPickupSound;
+                audioSource.Play();*/
 
         Destroy(gameObject);
     }
@@ -42,12 +42,12 @@ public class Loot : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // Debug.Log("loot colliding with: " + other.tag);
-        if ((other.CompareTag("Player") || other.CompareTag("MeleeWeapon"))) 
+        if ((other.CompareTag("Player") || other.CompareTag("MeleeWeapon")))
         {
-			if (InventoryUI.instance.AddItem(this.GetItem()))
-			{
-				PickUp();
-			}
-		}
+            if (InventoryUI.instance.AddItem(this.GetItem()))
+            {
+                PickUp();
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-public enum State
+public enum MonsterState
 {
     Roaming,
     Idle,
@@ -7,4 +7,3 @@ public enum State
     ShootingTarget,
     GoingBackToStart,
 }
-
