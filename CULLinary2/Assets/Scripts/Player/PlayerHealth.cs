@@ -51,7 +51,7 @@ public class PlayerHealth : MonoBehaviour
         if (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth < thresholdHealth && !flashIsActivated)
         {
             flashIsActivated = true;
-            StartCoroutine(flashBar());
+            StartCoroutine(FlashBar());
         }
         else if (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth >= thresholdHealth)
         {
@@ -59,7 +59,7 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    private IEnumerator flashBar()
+    private IEnumerator FlashBar()
     {
         while (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth < thresholdHealth)
         {
@@ -122,7 +122,6 @@ public class PlayerHealth : MonoBehaviour
         damageCounter.transform.GetComponentInChildren<Text>().text = damage.ToString();
         damageCounter.transform.SetParent(canvasDisplay.transform);
         damageCounter.transform.position = cam.WorldToScreenPoint(transform.position);
-        Debug.Log("I'm damaged by " + damage);
     }
 
     public void KnockbackPlayer(Vector3 positionOfEnemy)
