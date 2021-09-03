@@ -13,7 +13,10 @@ public class PlayerManager : MonoBehaviour
     public float currentStamina = 100f;
     public float maxStamina = 100f;
     public float meleeDamage = 20f;
+    public int inventoryLimit = 16;
+    public List<Item> itemList = new List<Item>();
 
+    // Private variables
     private static PlayerData playerData;
     private GameTimer timer;
 
@@ -34,27 +37,41 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    public void SaveData()
+    public void SaveData(List<Item> innerItemList)
     {
+        if (playerData == null)
+        {
+            playerData = new PlayerData();
+        }
         // Save Player Stats
         playerData.currentHealth = currentHealth;
         playerData.maxHealth = maxHealth;
         playerData.currentStamina = currentStamina;
         playerData.maxStamina = maxStamina;
-        //TODO: Add GameTime after completing
-        // Save Data into Save System
+        playerData.inventory = SerializeInventory(innerItemList);
         SaveSystem.SaveData(playerData);
     }
 
     public void LoadData()
     {
-        // Load Data from Save System
         playerData = SaveSystem.LoadData();
-        // Load Player Stats
+
         currentHealth = playerData.currentHealth;
         maxHealth = playerData.maxHealth;
         currentStamina = playerData.currentStamina;
         maxStamina = playerData.maxStamina;
+
+        InventoryItemData[] inventory = JsonArrayParser.FromJson<InventoryItemData>(playerData.inventory);
+        itemList.Clear();
+
+        //Need to change this somehow
+        foreach (InventoryItemData item in inventory)
+        {
+            for (int i = 0; i < item.count; i++)
+            {
+                itemList.Add(GameData.GetItemById(item.id));
+            }
+        }
     }
 
     public void CreateBlankData()
@@ -66,7 +83,34 @@ public class PlayerManager : MonoBehaviour
         playerData.maxHealth = maxHealth;
         playerData.currentStamina = currentStamina;
         playerData.maxStamina = maxStamina;
+        playerData.inventory = "";
         SaveSystem.SaveData(playerData);
+    }
+
+    private static string SerializeInventory(List<Item> itemList)
+    {
+        Dictionary<int, int> inventory = new Dictionary<int, int>();
+
+        foreach (Item item in itemList)
+        {
+            if (inventory.ContainsKey(item.itemId))
+            {
+                inventory[item.itemId] += 1;
+            }
+            else
+            {
+                inventory.Add(item.itemId, 1);
+            }
+        }
+        InventoryItemData[] items = new InventoryItemData[inventory.Count];
+        int i = 0;
+        foreach (var item in inventory)
+        {
+            InventoryItemData gameItem = new InventoryItemData(item.Key, item.Value);
+            items[i] = gameItem;
+            i++;
+        }
+        return JsonArrayParser.ToJson(items, true);
     }
 
 }

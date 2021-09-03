@@ -21,6 +21,10 @@ public class NewMapGenerator : MonoBehaviour
     public Vector2 offset;
 
     public float meshHeightMultiplier;
+    [Range(0, 1)]
+    public float meshMinHeight;
+    [Range(0, 1)]
+    public float meshMaxHeight;
 
     public bool autoUpdate;
     public bool autosave = false;
@@ -55,6 +59,7 @@ public class NewMapGenerator : MonoBehaviour
                         break;
                     }
                 }
+                noiseMap[x, y] = Mathf.Clamp(noiseMap[x, y], meshMinHeight, meshMaxHeight);
             }
         }
 
