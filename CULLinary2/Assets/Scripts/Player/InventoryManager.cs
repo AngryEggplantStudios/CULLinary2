@@ -1,60 +1,78 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
-public class InventoryUI : MonoBehaviour
+public class InventoryManager : MonoBehaviour
 {
     [Header("UI References")]
     [SerializeField] private Text inventoryCapacityText;
-    [SerializeField] private InventorySlot[] slots;
-    private List<Item> itemList = new List<Item>(); // Inventory
-    [SerializeField] private int inventoryLimit = 16;
-
-    public static InventoryUI instance;
+    [SerializeField] private GameObject inventoryPanel;
+    private InventorySlot[] slots;
+    public static InventoryManager instance;
+    private int inventoryLimit;
+    public List<Item> innerItemList;
 
     private void Awake()
     {
         instance = this;
     }
 
-    public List<Item> GetItemList()
+    private void Start()
     {
-        return itemList;
+        slots = inventoryPanel.GetComponentsInChildren<InventorySlot>();
+        inventoryLimit = PlayerManager.instance ? PlayerManager.instance.inventoryLimit : 16;
+        PopulateUI(PlayerManager.instance.itemList);
     }
 
     public bool AddItem(Item item)
     {
-        if (itemList.Count < inventoryLimit)
+        if (innerItemList.Count < inventoryLimit)
         {
-            itemList.Add(item);
-            for (int i = 0; i < itemList.Count; i++)
-            {
-                Debug.Log(itemList[i]);
-            }
-            //UpdateUI();
+            innerItemList.Add(item);
+            StartCoroutine(UpdateUI());
             return true;
         }
-
-        // Not enough room
         return false;
-    }
-
-    public void PopulateUI(List<Item> items)
-    {
-        itemList = items;
-        //UpdateUI();
     }
 
     public void RemoveItem(Item item)
     {
-        itemList.Remove(item);
-        //UpdateUI();
+        innerItemList.Remove(item);
+        StartCoroutine(UpdateUI());
     }
 
-    // Checks if the item IDs specified exist in the inventory.
+    public void PopulateUI(List<Item> items)
+    {
+        innerItemList = items;
+        StartCoroutine(UpdateUI());
+    }
+
+    public IEnumerator UpdateUI()
+    {
+        if (slots != null)
+        {
+            for (int i = 0; i < slots.Length; i++)
+            {
+                yield return null;
+                if (i < innerItemList.Count)
+                {
+                    slots[i].AddItem(innerItemList[i]);
+                }
+                else
+                {
+                    slots[i].ClearSlot();
+                }
+            }
+        }
+        inventoryCapacityText.text = innerItemList.Count + "/" + inventoryLimit;
+        inventoryCapacityText.color = innerItemList.Count == inventoryLimit ? Color.red : Color.black;
+    }
+
+}
+
+/*
+   // Checks if the item IDs specified exist in the inventory.
     // If they do, remove them and return true.
     // Otherwise, returns false.
     public bool RemoveIdsFromInventory(int[] itemsToRemove)
@@ -128,26 +146,4 @@ public class InventoryUI : MonoBehaviour
         //UpdateUI();
         return true;
     }
-
-
-
-    private void UpdateUI()
-    {
-        if (slots != null)
-        {
-            for (int i = 0; i < slots.Length; i++)
-            {
-                if (i < itemList.Count)
-                {
-                    slots[i].AddItem(itemList[i]);
-                }
-                else
-                {
-                    slots[i].ClearSlot();
-                }
-            }
-        }
-        inventoryCapacityText.text = itemList.Count + "/" + inventoryLimit;
-        inventoryCapacityText.color = itemList.Count == inventoryLimit ? Color.red : Color.black;
-    }
-}
+    */
