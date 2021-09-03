@@ -41,7 +41,7 @@ public class EggplantAttack : EnemyAttack
         PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
         if (canDealDamage && playerHealth != null)
         {
-            healthScript.HandleHit(attackDamage);
+            playerHealth.HandleHit(attackDamage);
         }
     }
 }

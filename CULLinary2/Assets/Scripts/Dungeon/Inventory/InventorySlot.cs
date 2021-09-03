@@ -24,7 +24,6 @@ public class InventorySlot : MonoBehaviour
 
     public void RemoveItemFromInventory()
     {
-        InventoryUI.instance.RemoveItem(item);
+        InventoryManager.instance.RemoveItem(item);
     }
-
 }

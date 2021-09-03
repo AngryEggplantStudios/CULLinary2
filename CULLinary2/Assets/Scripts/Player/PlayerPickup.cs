@@ -19,6 +19,11 @@ public class PlayerPickup : MonoBehaviour
     {
         inventoryUI.SetActive(!inventoryUI.activeSelf);
     }
+    
+    public void OpenInventory()
+    {
+        inventoryUI.SetActive(true);
+    }
 
     private void Update()
     {
