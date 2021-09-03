@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -8,6 +9,12 @@ public class RecipeSlot : MonoBehaviour, IPointerEnterHandler,
     public Image recipeIcon;
     public Text recipeDescription;
     public Color hoverColour = Color.white;
+
+    // Container to attach ingredients to
+    public GameObject ingredientsContainer;
+
+    // Prefab for ingredient icons
+    public GameObject recipeIngredientSlot;
 
     private Recipe recipe;
     private RecipeManager recipeManager;
@@ -58,6 +65,7 @@ public class RecipeSlot : MonoBehaviour, IPointerEnterHandler,
         recipe = newRecipe;
         recipeIcon.sprite = recipe.cookedRecipeItem.icon;
         recipeDescription.text = recipe.GetRecipeName();
+        UpdateIngredientsUI();
     }
 
     public void HideRecipe()
@@ -75,5 +83,23 @@ public class RecipeSlot : MonoBehaviour, IPointerEnterHandler,
     public Recipe GetRecipe()
     {
         return recipe;
+    }
+
+    private void UpdateIngredientsUI()
+    {
+        foreach (Transform child in ingredientsContainer.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (int ingredientId in recipe.GetIngredientIds())
+        {
+            GameObject ingredientEntry = Instantiate(recipeIngredientSlot,
+                                                     new Vector3(0, 0, 0),
+                                                     Quaternion.identity,
+                                                     ingredientsContainer.transform) as GameObject;
+            Image ingredientIcon = ingredientEntry.GetComponent<Image>();
+            ingredientIcon.sprite = GameData.GetItemById(ingredientId).icon;
+        }
     }
 }

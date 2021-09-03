@@ -73,7 +73,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             Debug.Log("Money + $" + stationId + ", you win!");
             orderSubmissionSound.Play();
             orderSubmissionSound.SetScheduledEndTime(AudioSettings.dspTime + 11.15f);
-            
+
             StartCoroutine(UpdateUI());
             return true;
         }
@@ -88,6 +88,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     {
         foreach (Transform child in ordersContainer.transform)
         {
+            yield return null;
             Destroy(child.gameObject);
         }
 

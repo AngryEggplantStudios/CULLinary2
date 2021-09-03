@@ -43,6 +43,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
     {
         foreach (Transform child in recipesContainer.transform)
         {
+            yield return null;
             Destroy(child.gameObject);
         }
 
