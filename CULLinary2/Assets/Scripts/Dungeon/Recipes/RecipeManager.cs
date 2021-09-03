@@ -41,6 +41,11 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
 
     public IEnumerator UpdateUI()
     {
+        foreach (Transform child in recipesContainer.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
         foreach (Recipe r in innerUnlockedRecipesList)
         {
             yield return null;

@@ -43,6 +43,24 @@ public class InventoryManager : MonoBehaviour
         StartCoroutine(UpdateUI());
     }
 
+    // Tries to remove an item, given the ID.
+    // If the item was not found, return false.
+    // Otherwise, remove the item and return true.
+    public bool RemoveIdIfPossible(int idToRemove)
+    {
+        for (int i = 0; i < innerItemList.Count; i++)
+        {
+            Item currentItem = innerItemList[i];
+            if (currentItem.itemId == idToRemove)
+            {
+                innerItemList.RemoveAt(i);
+                StartCoroutine(UpdateUI());
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void PopulateUI(List<Item> items)
     {
         innerItemList = items;

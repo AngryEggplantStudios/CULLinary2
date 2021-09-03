@@ -6,9 +6,14 @@ public class OrderSubmissionStation : PlayerInteractable
 {
     public SpherePlayerCollider spCollider;
 
-    // To be set when the day begins
+    // TODO: To be set when the day begins,
+    //       could also set to private
+    // 
     // NOTE: Ensure that it is never set to -1,
-    private int uniqueId = -1;
+    public int uniqueId = -1;
+    
+    private bool hasCached = false;
+    private PlayerPickup inventory;
 
     public void setId(int id)
     {
@@ -35,8 +40,21 @@ public class OrderSubmissionStation : PlayerInteractable
     }
 
     public override void OnPlayerInteract(GameObject player)
-    { }
+    {
+        CacheReferences(player);
+        OrdersManager.Instance.CompleteOrder(uniqueId);
+    }
 
     public override void OnPlayerLeave(GameObject player)
     { }
+
+    // Helper function to cache useful references
+    private void CacheReferences(GameObject player)
+    {
+        if (!hasCached)
+        {            
+            inventory = player.GetComponent<PlayerPickup>();
+            hasCached = true;
+        }
+    }
 }
