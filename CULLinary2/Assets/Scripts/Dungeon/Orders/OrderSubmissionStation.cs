@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class OrderSubmissionStation : PlayerInteractable
 {
-    public SpherePlayerCollider collider;
+    public SpherePlayerCollider spCollider;
 
     // To be set when the day begins
     // NOTE: Ensure that it is never set to -1,
@@ -31,7 +31,7 @@ public class OrderSubmissionStation : PlayerInteractable
 
     public override SpherePlayerCollider GetCollider()
     {
-        return collider;
+        return spCollider;
     }
 
     public override void OnPlayerInteract(GameObject player)

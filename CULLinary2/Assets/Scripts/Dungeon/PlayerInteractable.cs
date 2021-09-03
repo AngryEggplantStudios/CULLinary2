@@ -8,7 +8,6 @@ public abstract class PlayerInteractable : MonoBehaviour
     private GameObject player;
     private bool hasInteracted = false;
 
-
     void Awake()
     {
         interactAction = KeybindAction.Interact;

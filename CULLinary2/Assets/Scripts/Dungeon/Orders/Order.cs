@@ -3,27 +3,25 @@ using System.Collections.Generic;
 // A simple class to encapsulate an order
 public class Order
 {
-    private List<Item> ingredients;
-    private Item product;
+    private Recipe recipe;
     private string description;
     private int submissionStationId;
 
-    public Order(List<Item> ings, Item prod, string desc, int submStn)
+    public Order(Recipe rec, string desc, int submStn)
     {
-        ingredients = ings;
-        product = prod;
+        recipe = rec;
         description = desc;
         submissionStationId = submStn;
     }
 
     public List<Item> GetIngredients()
     {
-        return ingredients;
+        return new List<Item>(recipe.ingredientList);
     }
 
     public Item GetProduct()
     {
-        return product;
+        return recipe.cookedRecipeItem;
     }
 
     public string GetDescription()

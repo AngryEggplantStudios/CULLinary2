@@ -666,6 +666,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1001557670}
   m_CullTransparentMesh: 1
+--- !u!1 &1097606241 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5433069898523792184, guid: 4c528aa2dfd7a41d98aabc51940baf9f, type: 3}
+  m_PrefabInstance: {fileID: 1661504081}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1125180799
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -929,6 +934,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemDatabase: {fileID: 11400000, guid: 675dc5e4415184a1f8f6d9b09b17eb9d, type: 2}
+  recipeDatabase: {fileID: 11400000, guid: f89a5f6ee0c2c584488a6e6f29f6a2e4, type: 2}
 --- !u!4 &1312430618
 Transform:
   m_ObjectHideFlags: 0
@@ -1972,6 +1978,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1661504085 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6128361636046867384, guid: 4c528aa2dfd7a41d98aabc51940baf9f, type: 3}
+  m_PrefabInstance: {fileID: 1661504081}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1661504086 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 520109747330040271, guid: 4c528aa2dfd7a41d98aabc51940baf9f, type: 3}
@@ -2055,6 +2066,51 @@ MonoBehaviour:
   meleeDamage: 10
   inventoryLimit: 16
   itemList: []
+--- !u!1 &1719857077
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1719857078}
+  - component: {fileID: 1719857079}
+  m_Layer: 0
+  m_Name: RecipeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1719857078
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1719857077}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 21
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1719857079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1719857077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ff6fccb72d450f4b803619273f41cb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  recipesContainer: {fileID: 1097606241}
+  recipeSlot: {fileID: 5886313380595551692, guid: 65e98f9d655818f4d8f43b218310a263, type: 3}
 --- !u!1 &1785079787
 GameObject:
   m_ObjectHideFlags: 0
@@ -2482,6 +2538,10 @@ PrefabInstance:
       propertyPath: recipeBookUi
       value: 
       objectReference: {fileID: 1503192260}
+    - target: {fileID: 5871783208197686710, guid: ec8f985d25c3945709391a476021adb9, type: 3}
+      propertyPath: cookingIndicator
+      value: 
+      objectReference: {fileID: 1661504085}
     - target: {fileID: 7338926051894887305, guid: ec8f985d25c3945709391a476021adb9, type: 3}
       propertyPath: healthBar
       value: 

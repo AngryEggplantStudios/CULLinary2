@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -69,17 +70,16 @@ public class InventoryManager : MonoBehaviour
         inventoryCapacityText.color = innerItemList.Count == inventoryLimit ? Color.red : Color.black;
     }
 
-}
-
-/*
-   // Checks if the item IDs specified exist in the inventory.
+    // Checks if the item IDs specified exist in the inventory.
     // If they do, remove them and return true.
     // Otherwise, returns false.
+    // 
+    // NOTE: This does not call UpdateUI(), because adding the final dish to the inventory would also do so.
     public bool RemoveIdsFromInventory(int[] itemsToRemove)
     {
         // Maps item ID to number of item and list of those items
         Dictionary<int, Tuple<int, List<Item>>> itemsInInventory = new Dictionary<int, Tuple<int, List<Item>>>();
-        foreach (Item i in itemList)
+        foreach (Item i in innerItemList)
         {
             if (itemsInInventory.ContainsKey(i.itemId))
             {
@@ -87,8 +87,8 @@ public class InventoryManager : MonoBehaviour
                 Tuple<int, List<Item>> originalPair = itemsInInventory[i.itemId];
                 originalPair.Item2.Add(i);
                 itemsInInventory[i.itemId] = new Tuple<int, List<Item>>(
-                        originalPair.Item1 + 1,
-                        originalPair.Item2
+                    originalPair.Item1 + 1,
+                    originalPair.Item2
                 );
             }
             else
@@ -138,12 +138,12 @@ public class InventoryManager : MonoBehaviour
             for (int i = 0; i < pair.Value; i++)
             {
                 // just remove first one every time
-                itemList.Remove(inventoryItems[0]);
+                innerItemList.Remove(inventoryItems[0]);
                 inventoryItems.Remove(inventoryItems[0]);
             }
         }
 
-        //UpdateUI();
+        // StartCoroutine(UpdateUI());
         return true;
     }
-    */
+}
