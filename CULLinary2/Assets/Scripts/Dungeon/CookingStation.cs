@@ -24,7 +24,7 @@ public class CookingStation : PlayerInteractable
             isCooking = true;
             Debug.Log("cooking");
             PlayerRecipeBook recipes = player.GetComponent<PlayerRecipeBook>();
-            PlayerInventory inventory = player.GetComponent<PlayerInventory>();
+            PlayerPickup inventory = player.GetComponent<PlayerPickup>();
             recipes.OpenRecipeBook();
             inventory.OpenInventory();
         }

@@ -524,15 +524,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4007418486084460491, guid: d9a0d39611c4dec87a14e053dbf31dfc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.97
+      value: 92.1
       objectReference: {fileID: 0}
     - target: {fileID: 4007418486084460491, guid: d9a0d39611c4dec87a14e053dbf31dfc, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1.9
       objectReference: {fileID: 0}
     - target: {fileID: 4007418486084460491, guid: d9a0d39611c4dec87a14e053dbf31dfc, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.09
+      value: 86.9
       objectReference: {fileID: 0}
     - target: {fileID: 4007418486084460491, guid: d9a0d39611c4dec87a14e053dbf31dfc, type: 3}
       propertyPath: m_LocalRotation.w
@@ -577,6 +577,14 @@ PrefabInstance:
     - target: {fileID: 7862043471958131669, guid: d9a0d39611c4dec87a14e053dbf31dfc, type: 3}
       propertyPath: groundCheckDistance
       value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 8558787364721461268, guid: d9a0d39611c4dec87a14e053dbf31dfc, type: 3}
+      propertyPath: runSpeed
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 8558787364721461268, guid: d9a0d39611c4dec87a14e053dbf31dfc, type: 3}
+      propertyPath: walkSpeed
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8558787364721461268, guid: d9a0d39611c4dec87a14e053dbf31dfc, type: 3}
       propertyPath: maxGravity
@@ -644,6 +652,8 @@ MonoBehaviour:
   currentStamina: 100
   maxStamina: 100
   meleeDamage: 20
+  inventoryLimit: 16
+  itemList: []
 --- !u!4 &215295673
 Transform:
   m_ObjectHideFlags: 0
@@ -3846,6 +3856,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: bc1e1e17b05dcb84780d4664513ab117, type: 3}
   playerBody: {fileID: 1877148413}
   rotateSpeed: 0.5
+  mainCamera: {fileID: 0}
 --- !u!114 &1441873725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4500,7 +4511,7 @@ Transform:
   m_GameObject: {fileID: 1663625129}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -22, y: 0, z: -22}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_Children:
   - {fileID: 800309444}
   - {fileID: 1713099848}

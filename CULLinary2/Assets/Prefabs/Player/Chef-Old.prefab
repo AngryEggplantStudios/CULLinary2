@@ -819,6 +819,8 @@ GameObject:
   - component: {fileID: 7338926051894887305}
   - component: {fileID: 8391296286428922574}
   - component: {fileID: 2122462914361991666}
+  - component: {fileID: 4838171491780665028}
+  - component: {fileID: 5871783208197686710}
   m_Layer: 7
   m_Name: Chef-Old
   m_TagString: Player
@@ -1153,6 +1155,32 @@ MonoBehaviour:
   itemPickupNotificationPrefab: {fileID: 1085209639500972291, guid: 240a3117544637248943c375c966a1e1, type: 3}
   canvasDisplay: {fileID: 0}
   inventoryUI: {fileID: 0}
+--- !u!114 &4838171491780665028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2122462914361991667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8662409ba05cd741a1bc88804d3f4db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ordersUi: {fileID: 0}
+--- !u!114 &5871783208197686710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2122462914361991667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1fa3c63362ad254c92d26c43c838c0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  recipeBookUi: {fileID: 0}
 --- !u!1 &2239753430244254328
 GameObject:
   m_ObjectHideFlags: 0
