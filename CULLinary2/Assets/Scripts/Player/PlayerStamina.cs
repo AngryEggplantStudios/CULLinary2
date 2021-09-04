@@ -6,14 +6,23 @@ using UnityEngine.UI;
 public class PlayerStamina : MonoBehaviour
 {
     [SerializeField] private Image staminaBar;
+    [SerializeField] private Image staminaCircle;
     [SerializeField] private Text staminaText;
     [SerializeField] private float regenerationRate = 1f;
     [SerializeField] private Outline outlineFlash;
+    [SerializeField] private Image outlineCircleFlash;
     [SerializeField] private float thresholdStamina = 0.25f;
+    [SerializeField] private GameObject canvasDisplay;
+    [SerializeField] private Camera playerCamera;
+
+
     private Coroutine regenerationCoroutine;
     private bool flashIsActivated = false;
     private Color originalFlashColor;
     private Color deactivatedFlashColor = new Color(255, 0, 0, 0);
+    private Color dangerCircleFlashColor = Color.red;
+    private Color originalCircleFlashColor = Color.white;
+    private Image outlineCircleColor;
     private WaitForSeconds timeTakenRegen = new WaitForSeconds(0.05f);
 
     private void Awake()
@@ -26,13 +35,22 @@ public class PlayerStamina : MonoBehaviour
     {
         float currentStamina = PlayerManager.instance ? PlayerManager.instance.currentStamina : 100f;
         float maxStamina = PlayerManager.instance ? PlayerManager.instance.maxStamina : 100f;
+        outlineCircleColor = outlineCircleFlash.GetComponent<Image>();
         DisplayOnUI(currentStamina, maxStamina);
+        SetupUI(staminaCircle.gameObject);
     }
 
     private void DisplayOnUI(float currentStamina, float maxStamina)
     {
+        // for now keep both active
         staminaBar.fillAmount = currentStamina / maxStamina;
+        staminaCircle.fillAmount = currentStamina / maxStamina;
         staminaText.text = Mathf.FloorToInt(currentStamina) + "/" + Mathf.FloorToInt(maxStamina);
+    }
+
+    public void SetStaminaCircleActive(bool setActive)
+    {
+        staminaCircle.gameObject.SetActive(setActive);
     }
 
     private void Update()
@@ -46,6 +64,20 @@ public class PlayerStamina : MonoBehaviour
         {
             flashIsActivated = false;
         }
+
+        Vector2 screenPos = playerCamera.WorldToScreenPoint(transform.position);
+        screenPos.x = screenPos.x + 40f;
+        screenPos.y = screenPos.y + 50f;
+        if (screenPos != Vector2.zero)
+        {
+            staminaCircle.transform.position = screenPos;
+        }
+    }
+
+    private void SetupUI(GameObject ui)
+    {
+        ui.transform.SetParent(canvasDisplay.transform);
+        ui.transform.position = playerCamera.WorldToScreenPoint(transform.position);
     }
 
     private IEnumerator flashBar()
@@ -53,8 +85,10 @@ public class PlayerStamina : MonoBehaviour
         while (PlayerManager.instance.currentStamina / PlayerManager.instance.maxStamina < thresholdStamina)
         {
             outlineFlash.effectColor = originalFlashColor;
+            outlineCircleColor.color = dangerCircleFlashColor;
             yield return new WaitForSeconds(0.5f);
             outlineFlash.effectColor = deactivatedFlashColor;
+            outlineCircleColor.color = originalCircleFlashColor;
             yield return new WaitForSeconds(0.5f);
         }
     }
@@ -71,6 +105,7 @@ public class PlayerStamina : MonoBehaviour
             DisplayOnUI(currentStamina, maxStamina);
             yield return timeTakenRegen;
         }
+        SetStaminaCircleActive(false);
     }
 
     public bool hasStamina(float staminaCost)
