@@ -5,51 +5,43 @@ using UnityEngine;
 
 public class GameData : MonoBehaviour
 {
-    [SerializeField] private ItemDatabase itemDatabase;
+    [Header("All Databases")]
+    [SerializeField] private InventoryItemDatabase inventoryItemDatabase;
     [SerializeField] private RecipeDatabase recipeDatabase;
 
-    private static Dictionary<int, Item> itemDict;
-    private static List<Item> itemList = new List<Item>();
-
+    //Inventory Items
+    private static Dictionary<int, InventoryItem> inventoryItemDict;
+    private static List<InventoryItem> inventoryItemList = new List<InventoryItem>();
+    //Recipes
     private static Dictionary<int, Recipe> recipeDict;
-
     private static List<Recipe> recipeList;
-
-    public static GameData instance;
-
-    private void Awake()
-    {
-        DontDestroyOnLoad(this);
-        if (instance == null)
-        {
-            instance = this;
-            Debug.Log("Creating instance of GameData");
-        }
-        else
-        {
-            Debug.Log("Duplicate GameData Detected. Deleting new GameData");
-            Destroy(this.gameObject);
-        }
-    }
 
     private void Start()
     {
-        itemDict = new Dictionary<int, Item>();
-        itemList = itemDatabase.allItems;
-        StartCoroutine(PopulateItemDatabase());
+        inventoryItemDict = new Dictionary<int, InventoryItem>();
+        inventoryItemList = inventoryItemDatabase.allItems;
+        //StartCoroutine(PopulateInventoryItemDatabase());
 
         recipeDict = new Dictionary<int, Recipe>();
         recipeList = recipeDatabase.recipes;
-        StartCoroutine(PopulateRecipeDatabase());
+        //StartCoroutine(PopulateRecipeDatabase());
+
+        StartCoroutine(Populate());
     }
 
-    private IEnumerator PopulateItemDatabase()
+    private IEnumerator Populate()
     {
-        foreach (Item i in itemDatabase.allItems)
+        yield return StartCoroutine(PopulateInventoryItemDatabase());
+        yield return StartCoroutine(PopulateRecipeDatabase());
+    }
+
+    private IEnumerator PopulateInventoryItemDatabase()
+    {
+        foreach (InventoryItem i in inventoryItemDatabase.allItems)
         {
             try
             {
-                itemDict.Add(i.itemId, i);
+                inventoryItemDict.Add(i.inventoryItemId, i);
             }
             catch
             {
@@ -57,21 +49,25 @@ public class GameData : MonoBehaviour
             }
             yield return null;
         }
+
+        if (PlayerManager.instance != null)
+        {
+            PlayerManager.instance.LoadInventory();
+        }
+        Debug.Log("Inventory Item Database populated.");
     }
 
-    public static Item GetItemById(int id)
+    public static InventoryItem GetItemById(int id)
     {
-        return itemDict[id];
+        return inventoryItemDict[id];
     }
-
-    public static List<Item> GetItemList()
+    public static List<InventoryItem> GetItemList()
     {
-        return itemList;
+        return inventoryItemList;
     }
-
-    public static Dictionary<int, Item> GetItemDict()
+    public static Dictionary<int, InventoryItem> GetItemDict()
     {
-        return itemDict;
+        return inventoryItemDict;
     }
 
     private IEnumerator PopulateRecipeDatabase()
@@ -84,13 +80,17 @@ public class GameData : MonoBehaviour
             }
             catch
             {
-                Debug.Log("Unable to add recipe: " + r.GetRecipeName());
+                Debug.Log("Unable to add recipe: " + r.cookedDishItem.itemName);
             }
             yield return null;
         }
-        
-        // TODO: Get the unlocked recipes from saved game instead
-        GameObject.FindObjectOfType<RecipeManager>().FilterUnlockedRecipes(new List<int>{0, 1, 2});
+
+        if (RecipeManager.instance != null)
+        {
+            RecipeManager.instance.FilterUnlockedRecipes();
+        }
+
+        Debug.Log("Recipe Database populated.");
     }
 
     public static Recipe GetRecipeById(int id)

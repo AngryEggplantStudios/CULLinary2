@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class RecipeSlot : MonoBehaviour, IPointerEnterHandler,
-                          IPointerExitHandler, IPointerClickHandler 
+                          IPointerExitHandler, IPointerClickHandler
 {
     public Image recipeIcon;
     public Text recipeDescription;
@@ -47,7 +47,7 @@ public class RecipeSlot : MonoBehaviour, IPointerEnterHandler,
             return;
         }
 
-        InventoryManager inventory = InventoryManager.instance; 
+        InventoryManager inventory = InventoryManager.instance;
         bool didCookingSucceed = inventory.RemoveIdsFromInventory(ingredientsRequired);
         if (!didCookingSucceed)
         {
@@ -55,16 +55,16 @@ public class RecipeSlot : MonoBehaviour, IPointerEnterHandler,
             Debug.Log("OOPS! You don't have the ingredients!");
             return;
         }
-        
+
         // Cooking succeeded, give the player the food
-        inventory.AddItem(recipe.cookedRecipeItem);
+        inventory.AddItem(recipe.cookedDishItem);
     }
 
     public void AddRecipe(Recipe newRecipe)
     {
         recipe = newRecipe;
-        recipeIcon.sprite = recipe.cookedRecipeItem.icon;
-        recipeDescription.text = recipe.GetRecipeName();
+        recipeIcon.sprite = recipe.cookedDishItem.icon;
+        recipeDescription.text = recipe.cookedDishItem.itemName;
         UpdateIngredientsUI();
     }
 

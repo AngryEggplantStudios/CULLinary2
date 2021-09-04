@@ -2,42 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : SingletonGeneric<PlayerManager>
 {
-
-    public static PlayerManager instance;
-
-    // Player Stats and default values
     public float currentHealth = 200f;
     public float maxHealth = 200f;
     public float currentStamina = 100f;
     public float maxStamina = 100f;
     public float meleeDamage = 20f;
     public int inventoryLimit = 16;
-    public List<Item> itemList = new List<Item>();
+    public bool[] recipesUnlocked = new bool[3] { true, true, true }; //use index
+    public List<InventoryItem> itemList = new List<InventoryItem>();
 
     // Private variables
-    private static PlayerData playerData;
+    private static PlayerData playerData = new PlayerData();
     private GameTimer timer;
 
-    // Force singleton reference to be the first PlayerManager being instantiated
-    private void Awake()
-    {
-        DontDestroyOnLoad(this.gameObject);
-        if (instance == null)
-        {
-            instance = this;
-            timer = GameTimer.instance;
-            Debug.Log("Creating instance of Player Manager");
-        }
-        else
-        {
-            Debug.Log("Duplicate Player Manager Detected. Deleting new Player Manager");
-            Destroy(this.gameObject);
-        }
-    }
-
-    public void SaveData(List<Item> innerItemList)
+    public void SaveData(List<InventoryItem> itemList)
     {
         if (playerData == null)
         {
@@ -48,23 +28,16 @@ public class PlayerManager : MonoBehaviour
         playerData.maxHealth = maxHealth;
         playerData.currentStamina = currentStamina;
         playerData.maxStamina = maxStamina;
-        playerData.inventory = SerializeInventory(innerItemList);
+        playerData.inventory = SerializeInventory(itemList);
+        playerData.recipesUnlocked = recipesUnlocked;
+        playerData.meleeDamage = meleeDamage;
         SaveSystem.SaveData(playerData);
     }
 
-    public void LoadData()
+    public void LoadInventory()
     {
-        playerData = SaveSystem.LoadData();
-
-        currentHealth = playerData.currentHealth;
-        maxHealth = playerData.maxHealth;
-        currentStamina = playerData.currentStamina;
-        maxStamina = playerData.maxStamina;
-
         InventoryItemData[] inventory = JsonArrayParser.FromJson<InventoryItemData>(playerData.inventory);
         itemList.Clear();
-
-        //Need to change this somehow
         foreach (InventoryItemData item in inventory)
         {
             for (int i = 0; i < item.count; i++)
@@ -74,32 +47,51 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    public void CreateBlankData()
+    public void LoadData()
+    {
+        playerData = SaveSystem.LoadData();
+        currentHealth = playerData.currentHealth;
+        maxHealth = playerData.maxHealth;
+        currentStamina = playerData.currentStamina;
+        maxStamina = playerData.maxStamina;
+        recipesUnlocked = playerData.recipesUnlocked;
+        meleeDamage = playerData.meleeDamage;
+    }
+
+    public PlayerData CreateBlankData()
     {
         //Create new data
         playerData = new PlayerData();
-        //Load Default stats
-        playerData.currentHealth = currentHealth;
-        playerData.maxHealth = maxHealth;
-        playerData.currentStamina = currentStamina;
-        playerData.maxStamina = maxStamina;
-        playerData.inventory = "";
-        SaveSystem.SaveData(playerData);
+        ClearManager();
+        return playerData;
     }
 
-    private static string SerializeInventory(List<Item> itemList)
+    public void ClearManager()
+    {
+        itemList.Clear();
+        currentHealth = 200f;
+        maxHealth = 200f;
+        currentStamina = 100f;
+        maxStamina = 100f;
+        meleeDamage = 20f;
+        inventoryLimit = 16;
+        playerData.inventory = "";
+        recipesUnlocked = new bool[3] { true, true, true };
+    }
+
+    private static string SerializeInventory(List<InventoryItem> itemList)
     {
         Dictionary<int, int> inventory = new Dictionary<int, int>();
 
-        foreach (Item item in itemList)
+        foreach (InventoryItem item in itemList)
         {
-            if (inventory.ContainsKey(item.itemId))
+            if (inventory.ContainsKey(item.inventoryItemId))
             {
-                inventory[item.itemId] += 1;
+                inventory[item.inventoryItemId] += 1;
             }
             else
             {
-                inventory.Add(item.itemId, 1);
+                inventory.Add(item.inventoryItemId, 1);
             }
         }
         InventoryItemData[] items = new InventoryItemData[inventory.Count];

@@ -5,9 +5,9 @@ public class InventorySlot : MonoBehaviour
 {
     [SerializeField] private Button removeButton;
     [SerializeField] private Image icon;
-    private Item item;
+    private InventoryItem item;
 
-    public void AddItem(Item newItem)
+    public void AddItem(InventoryItem newItem)
     {
         item = newItem;
         icon.sprite = item.icon;

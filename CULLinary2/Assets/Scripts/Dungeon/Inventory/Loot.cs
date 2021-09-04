@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Loot : MonoBehaviour
 {
-    [SerializeField] private Item itemLoot;
+    [SerializeField] private InventoryItem itemLoot;
     [SerializeField] private GameObject itemPickupNotif_prefab;
 
     private void OnTriggerEnter(Collider other)
