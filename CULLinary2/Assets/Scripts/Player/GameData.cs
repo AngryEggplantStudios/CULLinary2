@@ -50,7 +50,7 @@ public class GameData : MonoBehaviour
             yield return null;
         }
 
-        if (PlayerManager.instance)
+        if (PlayerManager.instance != null)
         {
             PlayerManager.instance.LoadInventory();
         }
@@ -85,7 +85,7 @@ public class GameData : MonoBehaviour
             yield return null;
         }
 
-        if (RecipeManager.instance)
+        if (RecipeManager.instance != null)
         {
             RecipeManager.instance.FilterUnlockedRecipes();
         }

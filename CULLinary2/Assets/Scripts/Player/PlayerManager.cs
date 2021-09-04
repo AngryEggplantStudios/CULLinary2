@@ -2,10 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : SingletonGeneric<PlayerManager>
 {
-
-    public static PlayerManager instance;
 
     // Player Stats and default values
     public float currentHealth = 200f;
@@ -18,25 +16,8 @@ public class PlayerManager : MonoBehaviour
     public List<InventoryItem> itemList = new List<InventoryItem>();
 
     // Private variables
-    private static PlayerData playerData;
+    private static PlayerData playerData = new PlayerData();
     private GameTimer timer;
-
-    // Force singleton reference to be the first PlayerManager being instantiated
-    private void Awake()
-    {
-        DontDestroyOnLoad(this.gameObject);
-        if (instance == null)
-        {
-            instance = this;
-            timer = GameTimer.instance;
-            Debug.Log("Creating instance of Player Manager");
-        }
-        else
-        {
-            Debug.Log("Duplicate Player Manager Detected. Deleting new Player Manager");
-            Destroy(this.gameObject);
-        }
-    }
 
     public void SaveData(List<InventoryItem> itemList)
     {
@@ -79,7 +60,7 @@ public class PlayerManager : MonoBehaviour
         recipesUnlocked = playerData.recipesUnlocked;
     }
 
-    public void CreateBlankData()
+    public PlayerData CreateBlankData()
     {
         //Create new data
         playerData = new PlayerData();
@@ -91,7 +72,7 @@ public class PlayerManager : MonoBehaviour
         playerData.maxStamina = maxStamina;
         playerData.inventory = "";
         playerData.recipesUnlocked = new bool[3] { true, true, true };
-        SaveSystem.SaveData(playerData);
+        return playerData;
     }
 
     private static string SerializeInventory(List<InventoryItem> itemList)
