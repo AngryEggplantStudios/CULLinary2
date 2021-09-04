@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0.99999946, b: 0.99999946, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657815, g: 0.49641192, b: 0.57481617, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -495,7 +495,7 @@ GameObject:
   - component: {fileID: 767022432}
   - component: {fileID: 767022431}
   m_Layer: 5
-  m_Name: WorldHUD
+  m_Name: GameCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1067,8 +1067,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18ffb66a2e6ca4cca8fc3d7583926ca3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemDatabase: {fileID: 11400000, guid: 675dc5e4415184a1f8f6d9b09b17eb9d, type: 2}
-  recipeDatabase: {fileID: 11400000, guid: f89a5f6ee0c2c584488a6e6f29f6a2e4, type: 2}
+  inventoryItemDatabase: {fileID: 0}
+  recipeDatabase: {fileID: 0}
 --- !u!4 &1312430618
 Transform:
   m_ObjectHideFlags: 0
@@ -1319,8 +1319,8 @@ MonoBehaviour:
   ordersContainer: {fileID: 1661504089}
   orderSlot: {fileID: 5886313380595551692, guid: e2825d9424f57684799691d0359335d0, type: 3}
   orderSubmissionSound: {fileID: 1779666424}
-  order1: {fileID: 11400000, guid: 85d1ae9af7dcb164283adde36596db29, type: 2}
-  order2: {fileID: 11400000, guid: c05f3bd6ae6ae074bbe97e531c9ba2ce, type: 2}
+  order1: {fileID: 0}
+  order2: {fileID: 0}
 --- !u!4 &1407990387
 Transform:
   m_ObjectHideFlags: 0

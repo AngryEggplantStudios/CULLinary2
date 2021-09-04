@@ -5,11 +5,14 @@ using UnityEngine;
 
 public class GameData : MonoBehaviour
 {
+    [Header("All Databases")]
     [SerializeField] private InventoryItemDatabase inventoryItemDatabase;
     [SerializeField] private RecipeDatabase recipeDatabase;
 
-    private static Dictionary<int, InventoryItem> itemDict;
-    private static List<InventoryItem> itemList = new List<InventoryItem>();
+    //Inventory Items
+    private static Dictionary<int, InventoryItem> inventoryItemDict;
+    private static List<InventoryItem> inventoryItemList = new List<InventoryItem>();
+    //Recipes
     private static Dictionary<int, Recipe> recipeDict;
     private static List<Recipe> recipeList;
     public static GameData instance;
@@ -31,8 +34,8 @@ public class GameData : MonoBehaviour
 
     private void Start()
     {
-        itemDict = new Dictionary<int, InventoryItem>();
-        itemList = inventoryItemDatabase.allItems;
+        inventoryItemDict = new Dictionary<int, InventoryItem>();
+        inventoryItemList = inventoryItemDatabase.allItems;
         StartCoroutine(PopulateInventoryItemDatabase());
 
         recipeDict = new Dictionary<int, Recipe>();
@@ -46,7 +49,7 @@ public class GameData : MonoBehaviour
         {
             try
             {
-                itemDict.Add(i.inventoryItemId, i);
+                inventoryItemDict.Add(i.inventoryItemId, i);
             }
             catch
             {
@@ -58,17 +61,15 @@ public class GameData : MonoBehaviour
 
     public static InventoryItem GetItemById(int id)
     {
-        return itemDict[id];
+        return inventoryItemDict[id];
     }
-
     public static List<InventoryItem> GetItemList()
     {
-        return itemList;
+        return inventoryItemList;
     }
-
     public static Dictionary<int, InventoryItem> GetItemDict()
     {
-        return itemDict;
+        return inventoryItemDict;
     }
 
     private IEnumerator PopulateRecipeDatabase()
@@ -87,7 +88,7 @@ public class GameData : MonoBehaviour
         }
 
         // TODO: Get the unlocked recipes from saved game instead
-        GameObject.FindObjectOfType<RecipeManager>().FilterUnlockedRecipes(new List<int> { 0, 1, 2 });
+        //GameObject.FindObjectOfType<RecipeManager>().FilterUnlockedRecipes(new List<int> { 0, 1, 2 });
     }
 
     public static Recipe GetRecipeById(int id)
