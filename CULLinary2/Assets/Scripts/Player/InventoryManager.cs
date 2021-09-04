@@ -4,20 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InventoryManager : MonoBehaviour
+public class InventoryManager : SingletonGeneric<InventoryManager>
 {
     [Header("UI References")]
     [SerializeField] private Text inventoryCapacityText;
     [SerializeField] private GameObject inventoryPanel;
     private InventorySlot[] slots;
-    public static InventoryManager instance;
+
     private int inventoryLimit;
     public List<InventoryItem> itemListReference;
-
-    private void Awake()
-    {
-        instance = this;
-    }
 
     private void Start()
     {

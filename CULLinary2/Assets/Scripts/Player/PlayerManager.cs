@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class PlayerManager : SingletonGeneric<PlayerManager>
 {
-
-    // Player Stats and default values
     public float currentHealth = 200f;
     public float maxHealth = 200f;
     public float currentStamina = 100f;
@@ -32,6 +30,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.maxStamina = maxStamina;
         playerData.inventory = SerializeInventory(itemList);
         playerData.recipesUnlocked = recipesUnlocked;
+        playerData.meleeDamage = meleeDamage;
         SaveSystem.SaveData(playerData);
     }
 
@@ -39,8 +38,6 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     {
         InventoryItemData[] inventory = JsonArrayParser.FromJson<InventoryItemData>(playerData.inventory);
         itemList.Clear();
-
-        //Need to change this somehow
         foreach (InventoryItemData item in inventory)
         {
             for (int i = 0; i < item.count; i++)
@@ -58,21 +55,28 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         currentStamina = playerData.currentStamina;
         maxStamina = playerData.maxStamina;
         recipesUnlocked = playerData.recipesUnlocked;
+        meleeDamage = playerData.meleeDamage;
     }
 
     public PlayerData CreateBlankData()
     {
         //Create new data
         playerData = new PlayerData();
-        itemList.Clear();
-        //Load Default stats
-        playerData.currentHealth = currentHealth;
-        playerData.maxHealth = maxHealth;
-        playerData.currentStamina = currentStamina;
-        playerData.maxStamina = maxStamina;
-        playerData.inventory = "";
-        playerData.recipesUnlocked = new bool[3] { true, true, true };
+        ClearManager();
         return playerData;
+    }
+
+    public void ClearManager()
+    {
+        itemList.Clear();
+        currentHealth = 200f;
+        maxHealth = 200f;
+        currentStamina = 100f;
+        maxStamina = 100f;
+        meleeDamage = 20f;
+        inventoryLimit = 16;
+        playerData.inventory = "";
+        recipesUnlocked = new bool[3] { true, true, true };
     }
 
     private static string SerializeInventory(List<InventoryItem> itemList)
