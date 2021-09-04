@@ -35,14 +35,29 @@ public class NewMapGenerator : MonoBehaviour
     public MeshFilter[] meshFilters = new MeshFilter[0];
     public Renderer[] renderers = new Renderer[0];
 
+    private static NewMapGenerator _instance;
+    public static NewMapGenerator Instance { get { return _instance; } }
+
     void Awake()
     {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        } else {
+            _instance = this;
+        }
+
         GenerateMap();
+    }
+
+    public float[,] NoiseMap()
+    {
+        return Noise.GenerateNoiseMap(mapWidth, mapHeight, seed, noiseScale, octaves, persistance, lacunarity, offset);
     }
 
     public void GenerateMap()
     {
-        float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, seed, noiseScale, octaves, persistance, lacunarity, offset);
+        float[,] noiseMap = NoiseMap();
 
         Color[] colourMap = new Color[mapWidth * mapHeight];
         for (int y = 0; y < mapHeight; y++)
@@ -70,16 +85,26 @@ public class NewMapGenerator : MonoBehaviour
         {
             trans.localScale = new Vector3(-texture.width, 1, texture.height);
         }
+
         foreach (MeshFilter mf in meshFilters)
         {
             Mesh createdMesh = meshData.CreateMesh();
             mf.sharedMesh = createdMesh;
+
+            MeshCollider mc = mf.gameObject.GetComponent<MeshCollider>();
+            if (mc != null)
+            {
+                mc.sharedMesh = null;
+                mc.sharedMesh = createdMesh;
+            }
+
             if (autosave)
             {
                 string meshFilterName = "MeshFilter" + System.DateTime.Now.TimeOfDay.TotalSeconds;
                 AssetDatabase.CreateAsset(createdMesh, "Assets/Scenes/UtilScenes/Saved_Meshes/" + meshFilterName + ".asset");
             }
         }
+
         foreach (Renderer rend in renderers)
         {
             rend.sharedMaterial.mainTexture = texture;
