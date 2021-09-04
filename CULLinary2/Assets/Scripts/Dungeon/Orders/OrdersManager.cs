@@ -24,8 +24,8 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     {
         // TODO: Replace these hard-coded orders
         innerOrdersList = new List<Order>{
-            new Order(order1, "Give the pizza to the right guy", 1234),
-            new Order(order2, "Give a fried eggplant to the left guy", 5678)
+            new Order(order1, "Give the mashed potatoes to the right guy", 1234),
+            new Order(order2, "Give a eggplant soup to the left guy", 5678)
         };
         StartCoroutine(UpdateUI());
     }

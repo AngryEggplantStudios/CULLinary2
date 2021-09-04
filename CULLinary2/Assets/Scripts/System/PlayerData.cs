@@ -9,6 +9,7 @@ public class PlayerData
     public float maxStamina;
     public float currentStamina;
     public float gameTime;
+    public bool[] recipesUnlocked;
 
 
     public string ToJson()

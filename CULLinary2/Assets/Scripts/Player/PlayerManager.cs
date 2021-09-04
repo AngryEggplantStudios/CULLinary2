@@ -14,6 +14,7 @@ public class PlayerManager : MonoBehaviour
     public float maxStamina = 100f;
     public float meleeDamage = 20f;
     public int inventoryLimit = 16;
+    public bool[] recipesUnlocked = new bool[3] { true, true, true }; //use index
     public List<InventoryItem> itemList = new List<InventoryItem>();
 
     // Private variables
@@ -37,7 +38,7 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    public void SaveData(List<InventoryItem> innerItemList)
+    public void SaveData(List<InventoryItem> itemList)
     {
         if (playerData == null)
         {
@@ -48,19 +49,13 @@ public class PlayerManager : MonoBehaviour
         playerData.maxHealth = maxHealth;
         playerData.currentStamina = currentStamina;
         playerData.maxStamina = maxStamina;
-        playerData.inventory = SerializeInventory(innerItemList);
+        playerData.inventory = SerializeInventory(itemList);
+        playerData.recipesUnlocked = recipesUnlocked;
         SaveSystem.SaveData(playerData);
     }
 
-    public void LoadData()
+    public void LoadInventory()
     {
-        playerData = SaveSystem.LoadData();
-
-        currentHealth = playerData.currentHealth;
-        maxHealth = playerData.maxHealth;
-        currentStamina = playerData.currentStamina;
-        maxStamina = playerData.maxStamina;
-
         InventoryItemData[] inventory = JsonArrayParser.FromJson<InventoryItemData>(playerData.inventory);
         itemList.Clear();
 
@@ -74,16 +69,28 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+    public void LoadData()
+    {
+        playerData = SaveSystem.LoadData();
+        currentHealth = playerData.currentHealth;
+        maxHealth = playerData.maxHealth;
+        currentStamina = playerData.currentStamina;
+        maxStamina = playerData.maxStamina;
+        recipesUnlocked = playerData.recipesUnlocked;
+    }
+
     public void CreateBlankData()
     {
         //Create new data
         playerData = new PlayerData();
+        itemList.Clear();
         //Load Default stats
         playerData.currentHealth = currentHealth;
         playerData.maxHealth = maxHealth;
         playerData.currentStamina = currentStamina;
         playerData.maxStamina = maxStamina;
         playerData.inventory = "";
+        playerData.recipesUnlocked = new bool[3] { true, true, true };
         SaveSystem.SaveData(playerData);
     }
 

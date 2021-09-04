@@ -12,7 +12,7 @@ public class InventoryManager : MonoBehaviour
     private InventorySlot[] slots;
     public static InventoryManager instance;
     private int inventoryLimit;
-    public List<InventoryItem> innerItemList;
+    public List<InventoryItem> itemListReference;
 
     private void Awake()
     {
@@ -28,9 +28,9 @@ public class InventoryManager : MonoBehaviour
 
     public bool AddItem(InventoryItem item)
     {
-        if (innerItemList.Count < inventoryLimit)
+        if (itemListReference.Count < inventoryLimit)
         {
-            innerItemList.Add(item);
+            itemListReference.Add(item);
             StartCoroutine(UpdateUI());
             return true;
         }
@@ -39,7 +39,7 @@ public class InventoryManager : MonoBehaviour
 
     public void RemoveItem(InventoryItem item)
     {
-        innerItemList.Remove(item);
+        itemListReference.Remove(item);
         StartCoroutine(UpdateUI());
     }
 
@@ -48,12 +48,12 @@ public class InventoryManager : MonoBehaviour
     // Otherwise, remove the item and return true.
     public bool RemoveIdIfPossible(int idToRemove)
     {
-        for (int i = 0; i < innerItemList.Count; i++)
+        for (int i = 0; i < itemListReference.Count; i++)
         {
-            InventoryItem currentItem = innerItemList[i];
+            InventoryItem currentItem = itemListReference[i];
             if (currentItem.inventoryItemId == idToRemove)
             {
-                innerItemList.RemoveAt(i);
+                itemListReference.RemoveAt(i);
                 StartCoroutine(UpdateUI());
                 return true;
             }
@@ -63,7 +63,7 @@ public class InventoryManager : MonoBehaviour
 
     public void PopulateUI(List<InventoryItem> items)
     {
-        innerItemList = items;
+        itemListReference = items;
         StartCoroutine(UpdateUI());
     }
 
@@ -74,9 +74,9 @@ public class InventoryManager : MonoBehaviour
             for (int i = 0; i < slots.Length; i++)
             {
                 yield return null;
-                if (i < innerItemList.Count)
+                if (i < itemListReference.Count)
                 {
-                    slots[i].AddItem(innerItemList[i]);
+                    slots[i].AddItem(itemListReference[i]);
                 }
                 else
                 {
@@ -84,8 +84,8 @@ public class InventoryManager : MonoBehaviour
                 }
             }
         }
-        inventoryCapacityText.text = innerItemList.Count + "/" + inventoryLimit;
-        inventoryCapacityText.color = innerItemList.Count == inventoryLimit ? Color.red : Color.black;
+        inventoryCapacityText.text = itemListReference.Count + "/" + inventoryLimit;
+        inventoryCapacityText.color = itemListReference.Count == inventoryLimit ? Color.red : Color.black;
     }
 
     // Checks if the item IDs specified exist in the inventory.
@@ -97,7 +97,7 @@ public class InventoryManager : MonoBehaviour
     {
         // Maps item ID to number of item and list of those items
         Dictionary<int, Tuple<int, List<InventoryItem>>> itemsInInventory = new Dictionary<int, Tuple<int, List<InventoryItem>>>();
-        foreach (InventoryItem i in innerItemList)
+        foreach (InventoryItem i in itemListReference)
         {
             if (itemsInInventory.ContainsKey(i.inventoryItemId))
             {
@@ -156,7 +156,7 @@ public class InventoryManager : MonoBehaviour
             for (int i = 0; i < pair.Value; i++)
             {
                 // just remove first one every time
-                innerItemList.Remove(inventoryItems[0]);
+                itemListReference.Remove(inventoryItems[0]);
                 inventoryItems.Remove(inventoryItems[0]);
             }
         }

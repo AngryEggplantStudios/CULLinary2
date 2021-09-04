@@ -7,7 +7,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
 {
     // Container to attach recipes to
     public GameObject recipesContainer;
-    
+
     // Prefab of a recipe book entry
     public GameObject recipeSlot;
 
@@ -15,11 +15,16 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
     private bool isCooking = false;
 
     // To be called when save data is loaded
-    public void FilterUnlockedRecipes(List<int> recipeIds)
+    public void FilterUnlockedRecipes()
     {
-        foreach (int id in recipeIds)
+        bool[] recipesUnlocked = PlayerManager.instance ? PlayerManager.instance.recipesUnlocked : new bool[3] { true, true, true };
+        for (int id = 0; id < recipesUnlocked.Length; id++)
         {
-           innerUnlockedRecipesList.Add(GameData.GetRecipeById(id));
+            Debug.Log(id);
+            if (recipesUnlocked[id])
+            {
+                innerUnlockedRecipesList.Add(GameData.GetRecipeById(id));
+            }
         }
         StartCoroutine(UpdateUI());
     }
@@ -54,6 +59,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
                                                  new Vector3(0, 0, 0),
                                                  Quaternion.identity,
                                                  recipesContainer.transform) as GameObject;
+            yield return null;
             RecipeSlot recipeDetails = recipeEntry.GetComponent<RecipeSlot>();
             recipeDetails.AddRecipe(r);
         }

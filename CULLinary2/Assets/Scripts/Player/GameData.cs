@@ -15,32 +15,24 @@ public class GameData : MonoBehaviour
     //Recipes
     private static Dictionary<int, Recipe> recipeDict;
     private static List<Recipe> recipeList;
-    public static GameData instance;
-
-    private void Awake()
-    {
-        DontDestroyOnLoad(this);
-        if (instance == null)
-        {
-            instance = this;
-            Debug.Log("Creating instance of GameData");
-        }
-        else
-        {
-            Debug.Log("Duplicate GameData Detected. Deleting new GameData");
-            Destroy(this.gameObject);
-        }
-    }
 
     private void Start()
     {
         inventoryItemDict = new Dictionary<int, InventoryItem>();
         inventoryItemList = inventoryItemDatabase.allItems;
-        StartCoroutine(PopulateInventoryItemDatabase());
+        //StartCoroutine(PopulateInventoryItemDatabase());
 
         recipeDict = new Dictionary<int, Recipe>();
         recipeList = recipeDatabase.recipes;
-        StartCoroutine(PopulateRecipeDatabase());
+        //StartCoroutine(PopulateRecipeDatabase());
+
+        StartCoroutine(Populate());
+    }
+
+    private IEnumerator Populate()
+    {
+        yield return StartCoroutine(PopulateInventoryItemDatabase());
+        yield return StartCoroutine(PopulateRecipeDatabase());
     }
 
     private IEnumerator PopulateInventoryItemDatabase()
@@ -57,6 +49,12 @@ public class GameData : MonoBehaviour
             }
             yield return null;
         }
+
+        if (PlayerManager.instance)
+        {
+            PlayerManager.instance.LoadInventory();
+        }
+        Debug.Log("Inventory Item Database populated.");
     }
 
     public static InventoryItem GetItemById(int id)
@@ -87,8 +85,12 @@ public class GameData : MonoBehaviour
             yield return null;
         }
 
-        // TODO: Get the unlocked recipes from saved game instead
-        //GameObject.FindObjectOfType<RecipeManager>().FilterUnlockedRecipes(new List<int> { 0, 1, 2 });
+        if (RecipeManager.instance)
+        {
+            RecipeManager.instance.FilterUnlockedRecipes();
+        }
+
+        Debug.Log("Recipe Database populated.");
     }
 
     public static Recipe GetRecipeById(int id)
