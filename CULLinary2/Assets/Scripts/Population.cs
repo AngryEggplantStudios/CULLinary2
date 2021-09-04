@@ -11,8 +11,10 @@ public class Population
     private int currentNumber;
     private PopulationLevel level;
     private const float chanceOfOverpopulation = 0.5f;
-    private const int numDaysBetweenLevelIncrease = 1;
-    private int numDaysLeftToIncreaseLevel = numDaysBetweenLevelIncrease;
+    private int numDaysBetweenLevelIncrease = 1; // num days it takes to increase pop level naturally (for endangered, vulnerable and normal (50% chance))
+    private int numDaysLeftToIncreaseLevel; // counter to checking next increase in level
+    private int numDaysToIncreaseFromExtinct; // num days it takes to increase pop level naturally from extinct
+    private bool hasSpawnedMiniboss = false;
 
     public Population(EnemyName name, int lowerBound, int upperBound, int curr)
     {
@@ -21,7 +23,9 @@ public class Population
         this.upperBound = upperBound;
         this.currentNumber = curr;
         this.optimalNumber = Mathf.RoundToInt(Mathf.Lerp(lowerBound, upperBound, 0.5f));
-        this.level = GetLevel();
+        this.numDaysLeftToIncreaseLevel = numDaysBetweenLevelIncrease;
+        this.numDaysToIncreaseFromExtinct = numDaysBetweenLevelIncrease + 1;
+        SetLevelBasedOnNumbers();
     }
 
     public Population(EnemyName name, int lowerBound, int upperBound, PopulationLevel level)
@@ -30,8 +34,9 @@ public class Population
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
         this.optimalNumber = Mathf.RoundToInt(Mathf.Lerp(lowerBound, upperBound, 0.5f));
-        this.level = level;
-        SetCurrentNumberBasedOnLevel();
+        this.numDaysLeftToIncreaseLevel = numDaysBetweenLevelIncrease;
+        this.numDaysToIncreaseFromExtinct = numDaysBetweenLevelIncrease + 1;
+        SetLevel(level);
         // Debug.Log("current number for " + name + " : " + currentNumber);
     }
 
@@ -49,7 +54,6 @@ public class Population
     {
         int min = 0;
         int max = 0;
-
         switch (level)
         {
             case PopulationLevel.Overpopulated:
@@ -83,11 +87,11 @@ public class Population
 
     public void DecreaseBy(int value)
     {
-        this.currentNumber -= value;
-        if (this.currentNumber < 0)
+        if (currentNumber > 0)
         {
-            this.currentNumber = 0;
+            currentNumber -= value;
         }
+        Debug.Log(string.Format("current pop for {0} is: {1}", name, currentNumber));
     }
 
     public void IncreaseLevel()
@@ -97,30 +101,25 @@ public class Population
         switch (level)
         {
             case PopulationLevel.Vulnerable:
-                level = PopulationLevel.Normal;
-                SetCurrentNumberBasedOnLevel();
+                SetLevel(PopulationLevel.Normal);
                 // Debug.Log("increased pop level for " + name + " to normal");
                 break;
             case PopulationLevel.Endangered:
-                level = PopulationLevel.Vulnerable;
-                SetCurrentNumberBasedOnLevel();
+                SetLevel(PopulationLevel.Vulnerable);
                 // Debug.Log("increased pop level for " + name + " to vulnerable");
                 break;
             case PopulationLevel.Normal:
                 // randomly increase to overpopulated
                 if (WillBecomeOverpopulated())
                 {
-                    level = PopulationLevel.Overpopulated;
-                    SetCurrentNumberBasedOnLevel();
+                    SetLevel(PopulationLevel.Overpopulated);
                     // Debug.Log("increased pop level for " + name + " to overpopulated");
                 }
-                else
-                {
-                    // Debug.Log("did not increase pop level to overpopulated for " + name);
-                }
+                break;
+            case PopulationLevel.Extinct:
+                SetLevel(PopulationLevel.Endangered);
                 break;
             case PopulationLevel.Overpopulated:
-            case PopulationLevel.Extinct:
                 // do nothing
                 // Debug.Log("pop level remains at " + level + " for " + name);
                 break;
@@ -133,27 +132,27 @@ public class Population
         return randomValue >= chanceOfOverpopulation;
     }
 
-    public PopulationLevel GetLevel()
+    public void SetLevelBasedOnNumbers()
     {
         if (this.currentNumber > this.upperBound)
         {
-            return PopulationLevel.Overpopulated;
+            level = PopulationLevel.Overpopulated;
         }
         else if (this.optimalNumber <= this.currentNumber && this.currentNumber <= this.upperBound)
         {
-            return PopulationLevel.Normal;
+            level = PopulationLevel.Normal;
         }
         else if (this.lowerBound <= this.currentNumber && this.currentNumber < this.optimalNumber)
         {
-            return PopulationLevel.Vulnerable;
+            level = PopulationLevel.Vulnerable;
         }
         else if (this.currentNumber < this.lowerBound && this.currentNumber != 0)
         {
-            return PopulationLevel.Endangered;
+            level = PopulationLevel.Endangered;
         }
         else
         {
-            return PopulationLevel.Extinct;
+            level = PopulationLevel.Extinct;
         }
     }
 
@@ -174,10 +173,60 @@ public class Population
         }
     }
 
+    public PopulationLevel GetLevel()
+    {
+        return level;
+    }
+
+    private void SetLevel(PopulationLevel level)
+    {
+        this.level = level;
+        SetCurrentNumberBasedOnLevel();
+        if (this.level == PopulationLevel.Extinct)
+        {
+            numDaysLeftToIncreaseLevel = numDaysToIncreaseFromExtinct;
+        }
+    }
+
     public void ResetToNormal()
     {
-        this.level = PopulationLevel.Normal;
-        SetCurrentNumberBasedOnLevel();
+        // was overpopulated, miniboss killed
+        SetLevel(PopulationLevel.Normal);
+        hasSpawnedMiniboss = false;
+    }
+
+    public void SetExtinct()
+    {
+        SetLevel(PopulationLevel.Extinct);
+        Debug.Log(string.Format("{0} went extinct :(", name));
+    }
+
+    public void SetNumDaysBetweenLevelIncrease(int numDays)
+    {
+        numDaysBetweenLevelIncrease = numDays;
+        if (this.level != PopulationLevel.Extinct)
+        {
+            numDaysLeftToIncreaseLevel = numDays;
+        }
+    }
+
+    public void SetNumDaysToIncreaseFromExtinct(int numDays)
+    {
+        numDaysToIncreaseFromExtinct = numDays;
+        if (this.level == PopulationLevel.Extinct)
+        {
+            numDaysLeftToIncreaseLevel = numDays;
+        }
+    }
+
+    public bool HasSpawnedMiniboss()
+    {
+        return hasSpawnedMiniboss;
+    }
+
+    public void SetHasSpawnedMiniboss(bool value)
+    {
+        hasSpawnedMiniboss = value;
     }
 
 }

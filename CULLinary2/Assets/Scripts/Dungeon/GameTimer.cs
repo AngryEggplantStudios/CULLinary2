@@ -49,7 +49,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         {
             dayNum++;
             gameTime -= 1;
-            Debug.Log(dayNum);
+            Debug.Log("day " + dayNum);
             isNewDay = true;
         }
     }

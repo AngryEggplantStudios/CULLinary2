@@ -4,20 +4,33 @@ using UnityEngine;
 
 public class EcosystemManager : MonoBehaviour
 {
+    // to share among all the populations
+    [SerializeField] private int numDaysBetweenLevelIncrease = 1; // num days it takes to increase pop level naturally (for endangered, vulnerable and normal (50% chance))
+    [SerializeField] private int numDaysToIncreaseFromExtinct = 2; // num days it takes to increase pop level naturally from extinct
+
     private static List<Population> populations = new List<Population> {
-        new Population(EnemyName.Potato, 5, 20, PopulationLevel.Normal),
-        new Population(EnemyName.Corn, 5, 20, PopulationLevel.Endangered),
-        new Population(EnemyName.Eggplant, 5, 20, PopulationLevel.Endangered)
+        new Population(EnemyName.Potato, 5, 10, PopulationLevel.Normal),
+        new Population(EnemyName.Corn, 5, 10, PopulationLevel.Normal),
+        new Population(EnemyName.Eggplant, 5, 10, PopulationLevel.Normal)
     };
 
     void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
+        foreach (Population pop in populations)
+        {
+            pop.SetNumDaysBetweenLevelIncrease(numDaysBetweenLevelIncrease);
+            pop.SetNumDaysToIncreaseFromExtinct(numDaysToIncreaseFromExtinct);
+        }
     }
 
     void Start()
     {
         GameTimer.OnStartNewDay += CheckNaturalPopulationIncrease;
+        foreach (Population pop in populations)
+        {
+            Debug.Log(string.Format("{0} population level: {1}", pop.GetName(), pop.GetLevel()));
+        }
     }
 
     private void CheckNaturalPopulationIncrease()
@@ -28,13 +41,15 @@ public class EcosystemManager : MonoBehaviour
             foreach (Population pop in populations)
             {
                 pop.CheckNaturalPopulationIncrease();
-                if (pop.IsOverpopulated())
+                if (pop.IsOverpopulated() && !pop.HasSpawnedMiniboss())
                 {
                     SpawnMiniBoss(pop);
                 }
+                Debug.Log(string.Format("{0} population level: {1}", pop.GetName(), pop.GetLevel()));
             }
 
-            DungeonSpawnManager.UpdateLocalSpawnCap();
+            DungeonSpawnManager.UpdateSpawners();
+
         }
     }
 
@@ -43,7 +58,8 @@ public class EcosystemManager : MonoBehaviour
         List<GameObject> spawners = DungeonSpawnManager.GetSpawners(pop.GetName());
         GameObject randomSpawner = spawners[Random.Range(0, spawners.Count)];
         randomSpawner.GetComponent<DungeonSpawn>().SpawnMiniBoss();
-        // Debug.Log("spawning miniboss at " + randomSpawner.transform.position);
+        Debug.Log("spawning miniboss for " + pop.GetName() + " at " + randomSpawner.transform.position);
+        pop.SetHasSpawnedMiniboss(true);
     }
 
     public static void ResetPopulationToNormal(EnemyName name)
@@ -82,6 +98,12 @@ public class EcosystemManager : MonoBehaviour
         {
             pop.DecreaseBy(value);
         }
+    }
+
+    public static void SetExtinct(EnemyName name)
+    {
+        Population pop = GetPopulation(name);
+        pop.SetExtinct();
     }
 
 }

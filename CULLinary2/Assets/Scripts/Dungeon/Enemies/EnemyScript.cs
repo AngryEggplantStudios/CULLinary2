@@ -75,6 +75,8 @@ public class EnemyScript : Enemy
 
     public delegate void EnemyReturnDelegate();
 
+    public delegate void EnemyDeathDelegate(int value);
+
     public event EnemyIdleDelegate onEnemyIdle;
 
     public event EnemyRoamingDelegate onEnemyRoaming;
@@ -84,6 +86,8 @@ public class EnemyScript : Enemy
     public event EnemyAttackPlayerDelegate onEnemyAttack;
 
     public event EnemyReturnDelegate onEnemyReturn;
+
+    public event EnemyDeathDelegate OnEnemyDeath;
 
 
     private void Awake()
@@ -278,6 +282,8 @@ public class EnemyScript : Enemy
             PlayerManager.noOfMobsCulled++;
         }
         */
+
+        // OnEnemyDeath?.Invoke(1);
 
         // update population number
         EcosystemManager.DecreasePopulation(enemyName, 1);
