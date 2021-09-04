@@ -65,7 +65,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
 
         Order orderToComplete = innerOrdersList[orderIndex];
         InventoryManager inventory = InventoryManager.instance;
-        if (inventory.RemoveIdIfPossible(orderToComplete.GetProduct().itemId))
+        if (inventory.RemoveIdIfPossible(orderToComplete.GetProduct().inventoryItemId))
         {
             // Order completed successfully!
             innerOrdersList.RemoveAt(orderIndex);

@@ -14,7 +14,7 @@ public class PlayerManager : MonoBehaviour
     public float maxStamina = 100f;
     public float meleeDamage = 20f;
     public int inventoryLimit = 16;
-    public List<Item> itemList = new List<Item>();
+    public List<InventoryItem> itemList = new List<InventoryItem>();
 
     // Private variables
     private static PlayerData playerData;
@@ -37,7 +37,7 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    public void SaveData(List<Item> innerItemList)
+    public void SaveData(List<InventoryItem> innerItemList)
     {
         if (playerData == null)
         {
@@ -87,19 +87,19 @@ public class PlayerManager : MonoBehaviour
         SaveSystem.SaveData(playerData);
     }
 
-    private static string SerializeInventory(List<Item> itemList)
+    private static string SerializeInventory(List<InventoryItem> itemList)
     {
         Dictionary<int, int> inventory = new Dictionary<int, int>();
 
-        foreach (Item item in itemList)
+        foreach (InventoryItem item in itemList)
         {
-            if (inventory.ContainsKey(item.itemId))
+            if (inventory.ContainsKey(item.inventoryItemId))
             {
-                inventory[item.itemId] += 1;
+                inventory[item.inventoryItemId] += 1;
             }
             else
             {
-                inventory.Add(item.itemId, 1);
+                inventory.Add(item.inventoryItemId, 1);
             }
         }
         InventoryItemData[] items = new InventoryItemData[inventory.Count];

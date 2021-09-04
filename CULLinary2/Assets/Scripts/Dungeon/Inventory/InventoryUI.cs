@@ -10,7 +10,7 @@ public class InventoryUI : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private Text inventoryCapacityText;
     [SerializeField] private InventorySlot[] slots;
-    private List<Item> itemList = new List<Item>(); // Inventory
+    private List<InventoryItem> itemList = new List<InventoryItem>(); // Inventory
     [SerializeField] private int inventoryLimit = 16;
 
     public static InventoryUI instance;
@@ -20,12 +20,12 @@ public class InventoryUI : MonoBehaviour
         instance = this;
     }
 
-    public List<Item> GetItemList()
+    public List<InventoryItem> GetItemList()
     {
         return itemList;
     }
 
-    public bool AddItem(Item item)
+    public bool AddItem(InventoryItem item)
     {
         if (itemList.Count < inventoryLimit)
         {
@@ -42,13 +42,13 @@ public class InventoryUI : MonoBehaviour
         return false;
     }
 
-    public void PopulateUI(List<Item> items)
+    public void PopulateUI(List<InventoryItem> items)
     {
         itemList = items;
         //UpdateUI();
     }
 
-    public void RemoveItem(Item item)
+    public void RemoveItem(InventoryItem item)
     {
         itemList.Remove(item);
         //UpdateUI();
@@ -60,24 +60,24 @@ public class InventoryUI : MonoBehaviour
     public bool RemoveIdsFromInventory(int[] itemsToRemove)
     {
         // Maps item ID to number of item and list of those items
-        Dictionary<int, Tuple<int, List<Item>>> itemsInInventory = new Dictionary<int, Tuple<int, List<Item>>>();
-        foreach (Item i in itemList)
+        Dictionary<int, Tuple<int, List<InventoryItem>>> itemsInInventory = new Dictionary<int, Tuple<int, List<InventoryItem>>>();
+        foreach (InventoryItem i in itemList)
         {
-            if (itemsInInventory.ContainsKey(i.itemId))
+            if (itemsInInventory.ContainsKey(i.inventoryItemId))
             {
                 // need to do this because tuples are read-only
-                Tuple<int, List<Item>> originalPair = itemsInInventory[i.itemId];
+                Tuple<int, List<InventoryItem>> originalPair = itemsInInventory[i.inventoryItemId];
                 originalPair.Item2.Add(i);
-                itemsInInventory[i.itemId] = new Tuple<int, List<Item>>(
+                itemsInInventory[i.inventoryItemId] = new Tuple<int, List<InventoryItem>>(
                         originalPair.Item1 + 1,
                         originalPair.Item2
                 );
             }
             else
             {
-                List<Item> itemsForThatId = new List<Item>();
+                List<InventoryItem> itemsForThatId = new List<InventoryItem>();
                 itemsForThatId.Add(i);
-                itemsInInventory.Add(i.itemId, new Tuple<int, List<Item>>(1, itemsForThatId));
+                itemsInInventory.Add(i.inventoryItemId, new Tuple<int, List<InventoryItem>>(1, itemsForThatId));
             }
         }
 
@@ -115,7 +115,7 @@ public class InventoryUI : MonoBehaviour
         // Remove the items, here we are guaranteed to have enough
         foreach (KeyValuePair<int, int> pair in itemsToRemoveMap)
         {
-            List<Item> inventoryItems = itemsInInventory[pair.Key].Item2;
+            List<InventoryItem> inventoryItems = itemsInInventory[pair.Key].Item2;
             int count = pair.Value;
             for (int i = 0; i < pair.Value; i++)
             {

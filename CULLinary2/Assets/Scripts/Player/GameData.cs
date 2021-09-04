@@ -5,16 +5,13 @@ using UnityEngine;
 
 public class GameData : MonoBehaviour
 {
-    [SerializeField] private ItemDatabase itemDatabase;
+    [SerializeField] private InventoryItemDatabase inventoryItemDatabase;
     [SerializeField] private RecipeDatabase recipeDatabase;
 
-    private static Dictionary<int, Item> itemDict;
-    private static List<Item> itemList = new List<Item>();
-
+    private static Dictionary<int, InventoryItem> itemDict;
+    private static List<InventoryItem> itemList = new List<InventoryItem>();
     private static Dictionary<int, Recipe> recipeDict;
-
     private static List<Recipe> recipeList;
-
     public static GameData instance;
 
     private void Awake()
@@ -34,22 +31,22 @@ public class GameData : MonoBehaviour
 
     private void Start()
     {
-        itemDict = new Dictionary<int, Item>();
-        itemList = itemDatabase.allItems;
-        StartCoroutine(PopulateItemDatabase());
+        itemDict = new Dictionary<int, InventoryItem>();
+        itemList = inventoryItemDatabase.allItems;
+        StartCoroutine(PopulateInventoryItemDatabase());
 
         recipeDict = new Dictionary<int, Recipe>();
         recipeList = recipeDatabase.recipes;
         StartCoroutine(PopulateRecipeDatabase());
     }
 
-    private IEnumerator PopulateItemDatabase()
+    private IEnumerator PopulateInventoryItemDatabase()
     {
-        foreach (Item i in itemDatabase.allItems)
+        foreach (InventoryItem i in inventoryItemDatabase.allItems)
         {
             try
             {
-                itemDict.Add(i.itemId, i);
+                itemDict.Add(i.inventoryItemId, i);
             }
             catch
             {
@@ -59,17 +56,17 @@ public class GameData : MonoBehaviour
         }
     }
 
-    public static Item GetItemById(int id)
+    public static InventoryItem GetItemById(int id)
     {
         return itemDict[id];
     }
 
-    public static List<Item> GetItemList()
+    public static List<InventoryItem> GetItemList()
     {
         return itemList;
     }
 
-    public static Dictionary<int, Item> GetItemDict()
+    public static Dictionary<int, InventoryItem> GetItemDict()
     {
         return itemDict;
     }
@@ -84,13 +81,13 @@ public class GameData : MonoBehaviour
             }
             catch
             {
-                Debug.Log("Unable to add recipe: " + r.GetRecipeName());
+                Debug.Log("Unable to add recipe: " + r.cookedDishItem.itemName);
             }
             yield return null;
         }
-        
+
         // TODO: Get the unlocked recipes from saved game instead
-        GameObject.FindObjectOfType<RecipeManager>().FilterUnlockedRecipes(new List<int>{0, 1, 2});
+        GameObject.FindObjectOfType<RecipeManager>().FilterUnlockedRecipes(new List<int> { 0, 1, 2 });
     }
 
     public static Recipe GetRecipeById(int id)
