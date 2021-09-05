@@ -5,15 +5,11 @@ using UnityEngine;
 public class PotatoAttack : EnemyAttack
 {
     private SphereCollider attackCollider;
-    private PlayerHealth healthScript;
     private bool canDealDamage;
-    public GameObject selectionCirclePrefab;
-    public GameObject selectionCircleActual;
 
 
     private void Awake()
     {
-
         attackCollider = gameObject.GetComponent<SphereCollider>();
         canDealDamage = false;
     }
@@ -28,7 +24,6 @@ public class PotatoAttack : EnemyAttack
         canDealDamage = true;
     }
 
-
     public override void attackPlayerEnd()
     {
         attackCollider.enabled = false;
@@ -37,36 +32,10 @@ public class PotatoAttack : EnemyAttack
 
     private void OnTriggerStay(Collider other)
     {
-        if (canDealDamage)
+        PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+        if (canDealDamage && playerHealth != null)
         {
-
-            if (healthScript != null)
-            {
-                bool hitSuccess = healthScript.HandleHit(attackDamage);
-                if (hitSuccess)
-                {
-                    healthScript.KnockbackPlayer(transform.position);
-                }
-            }
-        }
-
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        PlayerHealth target = other.GetComponent<PlayerHealth>();
-        if (target != null)
-        {
-            healthScript = target;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        PlayerHealth target = other.GetComponent<PlayerHealth>();
-        if (target != null)
-        {
-            healthScript = null;
+            playerHealth.HandleHit(attackDamage);
         }
     }
 

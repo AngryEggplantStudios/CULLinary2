@@ -34,12 +34,16 @@ public class PlayerHealth : MonoBehaviour
 
     private void Awake()
     {
-        float currentHealth = PlayerManager.instance ? PlayerManager.instance.currentHealth : 200f;
-        float maxHealth = PlayerManager.instance ? PlayerManager.instance.maxHealth : 200f;
-        DisplayOnUI(currentHealth, maxHealth);
         SetupIFrame();
         originalFlashColor = outlineFlash.effectColor;
         outlineFlash.effectColor = deactivatedFlashColor;
+    }
+
+    private void Start()
+    {
+        float currentHealth = PlayerManager.instance ? PlayerManager.instance.currentHealth : 200f;
+        float maxHealth = PlayerManager.instance ? PlayerManager.instance.maxHealth : 200f;
+        DisplayOnUI(currentHealth, maxHealth);
     }
 
     private void Update()
@@ -47,7 +51,7 @@ public class PlayerHealth : MonoBehaviour
         if (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth < thresholdHealth && !flashIsActivated)
         {
             flashIsActivated = true;
-            StartCoroutine(flashBar());
+            StartCoroutine(FlashBar());
         }
         else if (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth >= thresholdHealth)
         {
@@ -55,7 +59,7 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    private IEnumerator flashBar()
+    private IEnumerator FlashBar()
     {
         while (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth < thresholdHealth)
         {
@@ -118,7 +122,6 @@ public class PlayerHealth : MonoBehaviour
         damageCounter.transform.GetComponentInChildren<Text>().text = damage.ToString();
         damageCounter.transform.SetParent(canvasDisplay.transform);
         damageCounter.transform.position = cam.WorldToScreenPoint(transform.position);
-        Debug.Log("I'm damaged by " + damage);
     }
 
     public void KnockbackPlayer(Vector3 positionOfEnemy)

@@ -9,7 +9,7 @@ public class CornAttack : EnemyAttack
     private SphereCollider attackCollider;
     private PlayerHealth healthScript;
     private bool canDealDamage;
-    private Transform player;
+    private Transform playerTransform;
 
     private int rayCount = 1;
     private List<LineRenderer> listOfRenderers;
@@ -19,10 +19,9 @@ public class CornAttack : EnemyAttack
     private float viewDistance = 50f;
     private void Awake()
     {
-
         attackCollider = gameObject.GetComponent<SphereCollider>();
         canDealDamage = false;
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     private void Start()
@@ -44,7 +43,7 @@ public class CornAttack : EnemyAttack
     {
         if (projectAttack)
         {
-            Vector3 playerDirection = (player.transform.position - transform.position).normalized;
+            Vector3 playerDirection = (playerTransform.position - transform.position).normalized;
             float angle = 0;
             int layerMask = LayerMask.GetMask("Environment");
             Vector3 finalDirection;
@@ -77,7 +76,7 @@ public class CornAttack : EnemyAttack
 
 
     }
-    private IEnumerator prepareToFire()
+    private IEnumerator PrepareToFire()
     {
         while (true)
         {
@@ -89,22 +88,19 @@ public class CornAttack : EnemyAttack
         }
 
     }
+
     public override void attackPlayerStart()
     {
-        //this.selectionCircleActual = Instantiate(this.selectionCirclePrefab);
-        //this.selectionCircleActual.transform.SetParent(this.transform, false);
-        //this.selectionCircleActual.transform.eulerAngles = new Vector3(90, 0, 0);
-        //attackCollider.enabled = true;
         projectAttack = true;
         for (int i = 0; i < rayCount; i++)
         {
             listOfRenderers[i].enabled = true;
         }
-        StartCoroutine("prepareToFire");
+        StartCoroutine(PrepareToFire());
     }
 
 
-    private void throwCorn(Vector3 sourcePosition, Vector3 targetPosition)
+    private void ThrowCorn(Vector3 sourcePosition, Vector3 targetPosition)
     {
         Transform cornTransform = Instantiate(throwObject, sourcePosition, Quaternion.identity);
         cornTransform.GetComponent<EnemyProjectile>().Setup(sourcePosition, targetPosition);
@@ -116,13 +112,13 @@ public class CornAttack : EnemyAttack
         canDealDamage = true;
         for (int i = 0; i < firePositions.Count; i++)
         {
-            throwCorn(transform.position, firePositions[i]);
+            ThrowCorn(transform.position, firePositions[i]);
         }
         for (int i = 0; i < listOfRenderers.Count; i++)
         {
             listOfRenderers[i].enabled = false;
         }
-        StopCoroutine("prepareToFire");
+        StopCoroutine(PrepareToFire());
     }
 
 
@@ -133,36 +129,10 @@ public class CornAttack : EnemyAttack
 
     private void OnTriggerStay(Collider other)
     {
-        if (canDealDamage)
+        PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+        if (canDealDamage && playerHealth != null)
         {
-
-            if (healthScript != null)
-            {
-                bool hitSuccess = healthScript.HandleHit(attackDamage);
-                if (hitSuccess)
-                {
-                    healthScript.KnockbackPlayer(transform.position);
-                }
-            }
-        }
-
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        PlayerHealth target = other.GetComponent<PlayerHealth>();
-        if (target != null)
-        {
-            healthScript = target;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        PlayerHealth target = other.GetComponent<PlayerHealth>();
-        if (target != null)
-        {
-            healthScript = null;
+            healthScript.HandleHit(attackDamage);
         }
     }
 

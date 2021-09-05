@@ -36,18 +36,6 @@ public class DungeonSpawn : MonoBehaviour
 
     private void Start()
     {
-        // modify spawning cap for this spawner based on current population and number of spawners for this enemy
-        // localSpawnCap = DungeonSpawnManager.GetLocalSpawnCap(GetEnemyName());
-        // // if (DungeonSpawnManager.IsOverpopulated(GetEnemyName()))
-        // // {
-        // //     minEnemy = Mathf.RoundToInt(minEnemy * 2f);
-        // //     maxEnemy = Mathf.RoundToInt(maxEnemy * 2f);
-        // // }
-        // int[] spawnAmountRange = DungeonSpawnManager.GetSpawnAmountRange(GetEnemyName());
-        // minEnemy = spawnAmountRange[0];
-        // maxEnemy = spawnAmountRange[1];
-        // Debug.Log(string.Format("set spawn amount to: {0}-{1}", minEnemy, maxEnemy));
-
         GameTimer.OnStartNewDay += SpawnEnemies;
 
         this.state = SpawnState.Inactive;
@@ -101,8 +89,7 @@ public class DungeonSpawn : MonoBehaviour
             float distZ = Random.Range(-distRange, distRange);
             Vector3 enemyTransform = new Vector3(transform.position.x + distX, transform.position.y, transform.position.z + distZ);
             Instantiate(enemyToSpawn, enemyTransform, Quaternion.identity);
-            enemyToSpawn.GetComponent<EnemyScript>().spawner = gameObject;
-            enemyToSpawn.GetComponent<EnemyScript>().OnEnemyDeath += DecrementSpawnCap;
+            enemyToSpawn.GetComponent<MonsterScript>().spawner = gameObject;
             spawnAmount++;
         }
     }
@@ -129,7 +116,7 @@ public class DungeonSpawn : MonoBehaviour
 
     public EnemyName GetEnemyName()
     {
-        return enemyToSpawn.GetComponent<EnemyScript>().enemyName;
+        return enemyToSpawn.GetComponent<MonsterScript>().enemyName;
     }
 
     public int GetSpawnCap()

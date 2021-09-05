@@ -1,0 +1,102 @@
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEditor;
+using static AutoDynamicBones.AutoDynamicBoneData;
+using System.IO;
+
+namespace AutoDynamicBones
+{
+    public class DynamicBoneAdapter
+    {
+        #region Methods
+
+        public static bool initialized = true;
+
+        public static List<DynamicBoneCollider> dynamicBoneColliders = new List<DynamicBoneCollider>();
+
+        public static void SetDynamicBoneOnGameObject(AutoDynamicBoneData _autoDynamicBoneData, GameObject _character)
+        {
+            // Create dynamic bone gameObject
+            GameObject dynamicBoneGameObject = new GameObject("DynamicBones");
+            Undo.RegisterCreatedObjectUndo(dynamicBoneGameObject, "Created Dynamic Bones GameObject");
+            dynamicBoneGameObject.transform.SetParent(_character.transform);
+
+            // Set dynamic bone collider components (in first because we need them after)
+            dynamicBoneColliders.Clear();
+            foreach (DynamicBoneColliderData iDynamicBoneColliderData in _autoDynamicBoneData.dynamicBoneColliderDatas)
+                dynamicBoneColliders.Add(SetDynamicBoneColliderOnGameObject(iDynamicBoneColliderData, _character));
+
+            // Set dynamic bone components
+            foreach (DynamicBoneData iDynamicBoneData in _autoDynamicBoneData.dynamicBoneDatas)
+                SetDynamicBoneOnGameObject(iDynamicBoneData, dynamicBoneGameObject, _character);
+        }
+
+        private static DynamicBoneCollider SetDynamicBoneColliderOnGameObject(DynamicBoneColliderData _dynamicBoneColliderData, GameObject _character)
+        {
+            // Search root gameobject
+            Transform rootTransform = _character.transform.Find(_dynamicBoneColliderData.root);
+            if (!rootTransform)
+                return null;
+            GameObject rootGameObject = rootTransform.gameObject;
+
+            // Add a dynamic bone component to the gameobject
+            Undo.RecordObject(rootGameObject, "Add Dynamic Bone Collider");
+            DynamicBoneCollider dynamicBoneCollider = rootGameObject.AddComponent<DynamicBoneCollider>();
+            dynamicBoneCollider.m_Center = _dynamicBoneColliderData.m_Center;
+            dynamicBoneCollider.m_Radius = _dynamicBoneColliderData.m_Radius;
+            dynamicBoneCollider.m_Height = _dynamicBoneColliderData.m_Height;
+            dynamicBoneCollider.m_Direction = (DynamicBoneCollider.Direction)_dynamicBoneColliderData.m_Direction;
+            dynamicBoneCollider.m_Bound = (DynamicBoneCollider.Bound)_dynamicBoneColliderData.m_Bound;
+            return dynamicBoneCollider;
+        }
+
+        private static void SetDynamicBoneOnGameObject(DynamicBoneData _dynamicBoneData, GameObject _dynamicBoneGameObject, GameObject _character)
+        {
+            // Search root gameobject
+            Transform rootTransform = _character.transform.Find(_dynamicBoneData.m_Root);
+            if (!rootTransform)
+                return;
+
+            // Add a dynamic bone component to the gameobject
+            Undo.RecordObject(_dynamicBoneGameObject, "Add Dynamic Bone");
+            DynamicBone dynamicBone = _dynamicBoneGameObject.AddComponent<DynamicBone>();
+
+            dynamicBone.m_Root = rootTransform;
+            dynamicBone.m_Damping = _dynamicBoneData.m_Damping;
+            dynamicBone.m_DampingDistrib = _dynamicBoneData.m_DampingDistrib;
+            dynamicBone.m_Elasticity = _dynamicBoneData.m_Elasticity;
+            dynamicBone.m_ElasticityDistrib = _dynamicBoneData.m_ElasticityDistrib;
+            dynamicBone.m_Stiffness = _dynamicBoneData.m_Stiffness;
+            dynamicBone.m_StiffnessDistrib = _dynamicBoneData.m_StiffnessDistrib;
+            dynamicBone.m_Inert = _dynamicBoneData.m_Inert;
+            dynamicBone.m_StiffnessDistrib = _dynamicBoneData.m_StiffnessDistrib;
+            dynamicBone.m_Radius = _dynamicBoneData.m_Radius;
+            dynamicBone.m_RadiusDistrib = _dynamicBoneData.m_RadiusDistrib;
+            dynamicBone.m_EndLength = _dynamicBoneData.m_EndLength;
+            dynamicBone.m_EndOffset = _dynamicBoneData.m_EndOffset;
+            dynamicBone.m_Gravity = _dynamicBoneData.m_Gravity;
+            dynamicBone.m_Force = _dynamicBoneData.m_Force;
+
+            // Set colliders
+            List<DynamicBoneCollider> colliders = new List<DynamicBoneCollider>();
+            foreach (int iIndex in _dynamicBoneData.m_Colliders)
+                colliders.Add(dynamicBoneColliders[iIndex]);
+            dynamicBone.m_Colliders = colliders;
+        }
+
+        public static void Initialize()
+        {
+            string[] assetGuids = AssetDatabase.FindAssets("DynamicBoneAdapter t:Script");
+            string path = Application.dataPath + "/StylizedToonCharacters/SharedAssets/AutoDynamicBones/Editor/DynamicBoneAdapter.cs";
+            if (assetGuids.Length > 0)
+                path = Application.dataPath + AssetDatabase.GUIDToAssetPath(assetGuids[0]).Substring(6);
+
+            // Create the file and refresh
+            string content = File.ReadAllText(path.Remove(path.Length - 2) + "txt");
+            File.WriteAllText(path, content);
+            AssetDatabase.Refresh();
+        }
+
+        #endregion
+    }
+}
