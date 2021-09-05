@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyProjectile : MonoBehaviour
+public class MonsterProjectile : MonoBehaviour
 {
     private Vector3 projDir;
 

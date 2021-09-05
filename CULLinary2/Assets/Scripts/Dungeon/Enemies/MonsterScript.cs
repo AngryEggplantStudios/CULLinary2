@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-public class MonsterScript : Enemy
+public class MonsterScript : Monster
 {
 
     [Header("Monster Variables")]
@@ -29,7 +29,7 @@ public class MonsterScript : Enemy
     [SerializeField] private AudioClip attackSound;
 
     [Header("Attacks")]
-    [SerializeField] private EnemyAttack primaryEnemyAttack;
+    [SerializeField] private MonsterAttack primaryEnemyAttack;
 
     // Variables
     private MonsterState currentState;
