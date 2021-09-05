@@ -12,6 +12,7 @@ public class ObjectSpawner : MonoBehaviour
     
     RaycastHit hit;
     List<GameObject> spawnedObjects = new List<GameObject>();
+    List<GameObject> parents = new List<GameObject>();
 
     public void SpawnObjects()
     {
@@ -20,6 +21,11 @@ public class ObjectSpawner : MonoBehaviour
 
         foreach (Spawnable spawnable in spawnables)
         {
+            GameObject parent = new GameObject(spawnable.name);
+            parent.transform.SetParent(origin);
+            parent.transform.localScale = Vector3.one;
+            parents.Add(parent);
+
             for (int i = 0; i < spawnable.density; i++)
             {
                 // Assign random location
@@ -30,7 +36,7 @@ public class ObjectSpawner : MonoBehaviour
                 if (Physics.Raycast(pos, Vector3.down, out hit) && hit.point.y >= minY)
                 {
                     // Spawn Object
-                    GameObject spawnedObject = Instantiate(spawnable.prefabs[Random.Range(0, spawnable.prefabs.Length)], origin);
+                    GameObject spawnedObject = Instantiate(spawnable.prefabs[Random.Range(0, spawnable.prefabs.Length)], parent.transform);
                     spawnedObject.transform.position = hit.point;
                     spawnedObject.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
                     spawnedObjects.Add(spawnedObject);
@@ -38,16 +44,16 @@ public class ObjectSpawner : MonoBehaviour
             }
         }
 
-        Debug.Log(spawnedObjects.Count + " objects spawned");
+        //Debug.Log(spawnedObjects.Count + " objects spawned");
     }
 
     public void DestroyObjects()
     {
-        Debug.Log(spawnedObjects.Count + " objects destroyed");
+        //Debug.Log(spawnedObjects.Count + " objects destroyed");
 
-        foreach (GameObject spawnedObject in spawnedObjects)
+        foreach (GameObject parent in parents)
         {
-            DestroyImmediate(spawnedObject);
+            DestroyImmediate(parent);
         }
         spawnedObjects = new List<GameObject>();
     }
@@ -56,6 +62,7 @@ public class ObjectSpawner : MonoBehaviour
 [System.Serializable]
 public struct Spawnable
 {
+    public string name;
     public GameObject[] prefabs;
     public int density;
 }

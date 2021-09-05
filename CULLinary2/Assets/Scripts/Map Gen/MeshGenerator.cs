@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public static class MeshGenerator {
 
@@ -10,8 +11,8 @@ public static class MeshGenerator {
 		float topLeftZ = (height - 1) / 2f;
 
 		MeshData meshData = new MeshData (width, height);
-		int vertexIndex = 0;
 
+		int vertexIndex = 0;
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 
@@ -29,6 +30,49 @@ public static class MeshGenerator {
 
 		return meshData;
 
+	}
+
+	public static MeshData GenerateWalkableMesh(float[,] heightMap, float heightMultiplier, float walkableAboveY) {
+		int width = heightMap.GetLength (0);
+		int height = heightMap.GetLength (1);
+		float topLeftX = (width - 1) / -2f;
+		float topLeftZ = (height - 1) / 2f;
+
+		MeshData meshData = new MeshData (width, height);
+		HashSet<int> unwalkable = new HashSet<int>();
+
+		int vertexIndex = 0;
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				meshData.vertices [vertexIndex] = new Vector3 (topLeftX + x, heightMap [x, y] * heightMultiplier, topLeftZ - y);
+				meshData.uvs [vertexIndex] = new Vector2 (x / (float)width, y / (float)height);
+
+				if (meshData.vertices[vertexIndex].y < walkableAboveY) unwalkable.Add(vertexIndex);
+
+				vertexIndex++;
+			}
+		}
+
+		vertexIndex = 0;
+		for (int y = 0; y < height - 1; y++) {
+			for (int x = 0; x < width - 1; x++) {
+				if (unwalkable.Contains(vertexIndex) || unwalkable.Contains(vertexIndex + width + 1))
+				{
+					vertexIndex++;
+					continue;
+				}
+
+				if (!unwalkable.Contains(vertexIndex + width))
+					meshData.AddTriangle (vertexIndex, vertexIndex + width + 1, vertexIndex + width);
+				
+				if (!unwalkable.Contains(vertexIndex + 1))
+					meshData.AddTriangle (vertexIndex + width + 1, vertexIndex, vertexIndex + 1);
+
+				vertexIndex++;
+			}
+		}
+
+		return meshData;
 	}
 }
 
