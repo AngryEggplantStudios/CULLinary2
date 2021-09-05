@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class MiniBoss : MonoBehaviour
 {
-    public EnemyName enemyName;
+    public MonsterName monsterName;
 
     public void Die()
     {
-        // Debug.Log("resetting population to normal for " + enemyName);
-        EcosystemManager.ResetPopulationToNormal(enemyName);
+        // Debug.Log("resetting population to normal for " + monsterName);
+        EcosystemManager.ResetPopulationToNormal(monsterName);
     }
 }

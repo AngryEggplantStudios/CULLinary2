@@ -12,6 +12,8 @@ public class MonsterScript : Enemy
     [SerializeField] private float distanceTriggered;
     [SerializeField] private float stopChase;
     [SerializeField] private GameObject lootDropped;
+    [SerializeField] private MonsterName monsterName;
+    [HideInInspector] public GameObject spawner;
 
     [Header("UI Prefabs")]
     [SerializeField] private GameObject hpBarPrefab;
@@ -40,8 +42,6 @@ public class MonsterScript : Enemy
     private Renderer rend;
     private Color[] originalColors;
     private Color onDamageColor = Color.white;
-    public EnemyName enemyName;
-    public GameObject spawner;
 
     // Events & Delegates
 
@@ -73,6 +73,20 @@ public class MonsterScript : Enemy
         if (GameCanvas.instance != null)
         {
             canvasDisplay = GameCanvas.instance.gameObject;
+        }
+        FindMonsterName();
+    }
+
+    private void FindMonsterName()
+    {
+        foreach (MonsterName currName in MonsterName.GetValues(typeof(MonsterName)))
+        {
+            string currNameString = MonsterName.GetName(typeof(MonsterName), currName).ToLower();
+            if (name.ToLower().Contains(currNameString))
+            {
+                monsterName = currName;
+                break;
+            }
         }
     }
 
@@ -198,7 +212,7 @@ public class MonsterScript : Enemy
 
     public void Die()
     {
-        EcosystemManager.DecreasePopulation(enemyName, 1);
+        EcosystemManager.DecreasePopulation(monsterName, 1);
 
         // update spawn cap for the spawner it came from
         if (spawner)
@@ -267,5 +281,8 @@ public class MonsterScript : Enemy
         primaryEnemyAttack.attackPlayerEnd();
     }
 
-
+    public MonsterName GetMonsterName()
+    {
+        return monsterName;
+    }
 }

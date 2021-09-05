@@ -114,9 +114,9 @@ public class DungeonSpawn : MonoBehaviour
         canSpawn = true;
     }
 
-    public EnemyName GetEnemyName()
+    public MonsterName GetMonsterName()
     {
-        return enemyToSpawn.GetComponent<MonsterScript>().enemyName;
+        return enemyToSpawn.GetComponent<MonsterScript>().GetMonsterName();
     }
 
     public int GetSpawnCap()
@@ -139,7 +139,7 @@ public class DungeonSpawn : MonoBehaviour
     public void SetMaxSpawn(int value)
     {
         maxEnemy = value;
-        // Debug.Log(string.Format("min max spawning for {0} set to {1}-{2}", GetEnemyName(), minEnemy, maxEnemy));
+        // Debug.Log(string.Format("min max spawning for {0} set to {1}-{2}", GetMonsterName(), minEnemy, maxEnemy));
     }
 
     public void DecrementSpawnCap(int value)

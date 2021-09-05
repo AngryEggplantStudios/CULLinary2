@@ -19,8 +19,13 @@ public class DungeonSpawnManager : MonoBehaviour
 
     void Update()
     {
-        // check if any population is extinct
-        foreach (EnemyName name in EnemyName.GetValues(typeof(EnemyName)))
+        CheckForExtinctPopulations();
+    }
+
+    private void CheckForExtinctPopulations()
+    {
+        // check if any population is extinct and update accordingly
+        foreach (MonsterName name in MonsterName.GetValues(typeof(MonsterName)))
         {
             Population pop = EcosystemManager.GetPopulation(name);
             if (pop.GetLevel() == PopulationLevel.Extinct)
@@ -42,7 +47,7 @@ public class DungeonSpawnManager : MonoBehaviour
         }
     }
 
-    public static bool IsOverpopulated(EnemyName name)
+    public static bool IsOverpopulated(MonsterName name)
     {
         Population pop = EcosystemManager.GetPopulation(name);
         return pop.IsOverpopulated();
@@ -57,10 +62,14 @@ public class DungeonSpawnManager : MonoBehaviour
 
     private static void UpdateLocalSpawnCaps()
     {
-        foreach (EnemyName name in EnemyName.GetValues(typeof(EnemyName)))
+        foreach (MonsterName name in MonsterName.GetValues(typeof(MonsterName)))
         {
             Population pop = EcosystemManager.GetPopulation(name);
             List<GameObject> spawners = GetSpawners(name);
+            if (spawners.Count == 0)
+            {
+                continue;
+            }
             int popNumber = pop.GetCurrentNumber();
             int localSpawnCap = Mathf.FloorToInt(popNumber / spawners.Count);
             if (localSpawnCap < 1 && pop.GetLevel() != PopulationLevel.Extinct)
@@ -88,7 +97,7 @@ public class DungeonSpawnManager : MonoBehaviour
 
     private static void UpdateSpawnAmount()
     {
-        foreach (EnemyName name in EnemyName.GetValues(typeof(EnemyName)))
+        foreach (MonsterName name in MonsterName.GetValues(typeof(MonsterName)))
         {
             Population pop = EcosystemManager.GetPopulation(name);
             List<GameObject> spawners = GetSpawners(name);
@@ -105,7 +114,7 @@ public class DungeonSpawnManager : MonoBehaviour
         }
     }
 
-    private static int[] GetSpawnAmountRange(EnemyName name)
+    private static int[] GetSpawnAmountRange(MonsterName name)
     {
         // returns [min, max]
         Population pop = EcosystemManager.GetPopulation(name);
@@ -139,12 +148,12 @@ public class DungeonSpawnManager : MonoBehaviour
         return new int[] { minSpawnAmount, maxSpawnAmount };
     }
 
-    public static List<GameObject> GetSpawners(EnemyName name)
+    public static List<GameObject> GetSpawners(MonsterName name)
     {
         List<GameObject> spawners = new List<GameObject>();
         foreach (GameObject dungeonSpawn in dungeonSpawns)
         {
-            if (GetEnemyName(dungeonSpawn) == name)
+            if (GetMonsterName(dungeonSpawn) == name)
             {
                 spawners.Add(dungeonSpawn);
             }
@@ -152,14 +161,14 @@ public class DungeonSpawnManager : MonoBehaviour
         return spawners;
     }
 
-    public static int GetNumSpawners(EnemyName name)
+    public static int GetNumSpawners(MonsterName name)
     {
         return GetSpawners(name).Count;
     }
 
-    private static EnemyName GetEnemyName(GameObject dungeonSpawnGO)
+    private static MonsterName GetMonsterName(GameObject dungeonSpawnGO)
     {
         DungeonSpawn dungeonSpawnScript = dungeonSpawnGO.GetComponent<DungeonSpawn>();
-        return dungeonSpawnScript.GetEnemyName();
+        return dungeonSpawnScript.GetMonsterName();
     }
 }

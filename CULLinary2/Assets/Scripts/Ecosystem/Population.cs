@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Population
 {
-    private EnemyName name;
+    private MonsterName name;
     private int lowerBound;
     private int upperBound; // to determine if there's overpopulation
     private int optimalNumber;
@@ -16,7 +16,7 @@ public class Population
     private int numDaysToIncreaseFromExtinct; // num days it takes to increase pop level naturally from extinct
     private bool hasSpawnedMiniboss = false;
 
-    public Population(EnemyName name, int lowerBound, int upperBound, int curr)
+    public Population(MonsterName name, int lowerBound, int upperBound, int curr)
     {
         this.name = name;
         this.lowerBound = lowerBound;
@@ -28,7 +28,7 @@ public class Population
         SetLevelBasedOnNumbers();
     }
 
-    public Population(EnemyName name, int lowerBound, int upperBound, PopulationLevel level)
+    public Population(MonsterName name, int lowerBound, int upperBound, PopulationLevel level)
     {
         this.name = name;
         this.lowerBound = lowerBound;
@@ -40,7 +40,7 @@ public class Population
         // Debug.Log("current number for " + name + " : " + currentNumber);
     }
 
-    public EnemyName GetName()
+    public MonsterName GetName()
     {
         return this.name;
     }
