@@ -70,6 +70,10 @@ public class MonsterScript : Enemy
         currentHealth = monsterHealth;
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform; //Temp fix
         playerCamera = playerTransform.GetComponentInChildren<Camera>();
+        if (GameCanvas.instance != null)
+        {
+            canvasDisplay = GameCanvas.instance.gameObject;
+        }
     }
 
     private void Start()

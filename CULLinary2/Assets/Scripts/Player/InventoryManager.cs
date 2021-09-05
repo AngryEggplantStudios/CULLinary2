@@ -4,20 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InventoryManager : MonoBehaviour
+public class InventoryManager : SingletonGeneric<InventoryManager>
 {
     [Header("UI References")]
     [SerializeField] private Text inventoryCapacityText;
     [SerializeField] private GameObject inventoryPanel;
     private InventorySlot[] slots;
-    public static InventoryManager instance;
-    private int inventoryLimit;
-    public List<Item> innerItemList;
 
-    private void Awake()
-    {
-        instance = this;
-    }
+    private int inventoryLimit;
+    public List<InventoryItem> itemListReference;
 
     private void Start()
     {
@@ -26,20 +21,20 @@ public class InventoryManager : MonoBehaviour
         PopulateUI(PlayerManager.instance.itemList);
     }
 
-    public bool AddItem(Item item)
+    public bool AddItem(InventoryItem item)
     {
-        if (innerItemList.Count < inventoryLimit)
+        if (itemListReference.Count < inventoryLimit)
         {
-            innerItemList.Add(item);
+            itemListReference.Add(item);
             StartCoroutine(UpdateUI());
             return true;
         }
         return false;
     }
 
-    public void RemoveItem(Item item)
+    public void RemoveItem(InventoryItem item)
     {
-        innerItemList.Remove(item);
+        itemListReference.Remove(item);
         StartCoroutine(UpdateUI());
     }
 
@@ -48,12 +43,12 @@ public class InventoryManager : MonoBehaviour
     // Otherwise, remove the item and return true.
     public bool RemoveIdIfPossible(int idToRemove)
     {
-        for (int i = 0; i < innerItemList.Count; i++)
+        for (int i = 0; i < itemListReference.Count; i++)
         {
-            Item currentItem = innerItemList[i];
-            if (currentItem.itemId == idToRemove)
+            InventoryItem currentItem = itemListReference[i];
+            if (currentItem.inventoryItemId == idToRemove)
             {
-                innerItemList.RemoveAt(i);
+                itemListReference.RemoveAt(i);
                 StartCoroutine(UpdateUI());
                 return true;
             }
@@ -61,9 +56,9 @@ public class InventoryManager : MonoBehaviour
         return false;
     }
 
-    public void PopulateUI(List<Item> items)
+    public void PopulateUI(List<InventoryItem> items)
     {
-        innerItemList = items;
+        itemListReference = items;
         StartCoroutine(UpdateUI());
     }
 
@@ -74,9 +69,9 @@ public class InventoryManager : MonoBehaviour
             for (int i = 0; i < slots.Length; i++)
             {
                 yield return null;
-                if (i < innerItemList.Count)
+                if (i < itemListReference.Count)
                 {
-                    slots[i].AddItem(innerItemList[i]);
+                    slots[i].AddItem(itemListReference[i]);
                 }
                 else
                 {
@@ -84,8 +79,8 @@ public class InventoryManager : MonoBehaviour
                 }
             }
         }
-        inventoryCapacityText.text = innerItemList.Count + "/" + inventoryLimit;
-        inventoryCapacityText.color = innerItemList.Count == inventoryLimit ? Color.red : Color.black;
+        inventoryCapacityText.text = itemListReference.Count + "/" + inventoryLimit;
+        inventoryCapacityText.color = itemListReference.Count == inventoryLimit ? Color.red : Color.black;
     }
 
     // Checks if the item IDs specified exist in the inventory.
@@ -96,24 +91,24 @@ public class InventoryManager : MonoBehaviour
     public bool RemoveIdsFromInventory(int[] itemsToRemove)
     {
         // Maps item ID to number of item and list of those items
-        Dictionary<int, Tuple<int, List<Item>>> itemsInInventory = new Dictionary<int, Tuple<int, List<Item>>>();
-        foreach (Item i in innerItemList)
+        Dictionary<int, Tuple<int, List<InventoryItem>>> itemsInInventory = new Dictionary<int, Tuple<int, List<InventoryItem>>>();
+        foreach (InventoryItem i in itemListReference)
         {
-            if (itemsInInventory.ContainsKey(i.itemId))
+            if (itemsInInventory.ContainsKey(i.inventoryItemId))
             {
                 // need to do this because tuples are read-only
-                Tuple<int, List<Item>> originalPair = itemsInInventory[i.itemId];
+                Tuple<int, List<InventoryItem>> originalPair = itemsInInventory[i.inventoryItemId];
                 originalPair.Item2.Add(i);
-                itemsInInventory[i.itemId] = new Tuple<int, List<Item>>(
+                itemsInInventory[i.inventoryItemId] = new Tuple<int, List<InventoryItem>>(
                     originalPair.Item1 + 1,
                     originalPair.Item2
                 );
             }
             else
             {
-                List<Item> itemsForThatId = new List<Item>();
+                List<InventoryItem> itemsForThatId = new List<InventoryItem>();
                 itemsForThatId.Add(i);
-                itemsInInventory.Add(i.itemId, new Tuple<int, List<Item>>(1, itemsForThatId));
+                itemsInInventory.Add(i.inventoryItemId, new Tuple<int, List<InventoryItem>>(1, itemsForThatId));
             }
         }
 
@@ -151,12 +146,12 @@ public class InventoryManager : MonoBehaviour
         // Remove the items, here we are guaranteed to have enough
         foreach (KeyValuePair<int, int> pair in itemsToRemoveMap)
         {
-            List<Item> inventoryItems = itemsInInventory[pair.Key].Item2;
+            List<InventoryItem> inventoryItems = itemsInInventory[pair.Key].Item2;
             int count = pair.Value;
             for (int i = 0; i < pair.Value; i++)
             {
                 // just remove first one every time
-                innerItemList.Remove(inventoryItems[0]);
+                itemListReference.Remove(inventoryItems[0]);
                 inventoryItems.Remove(inventoryItems[0]);
             }
         }

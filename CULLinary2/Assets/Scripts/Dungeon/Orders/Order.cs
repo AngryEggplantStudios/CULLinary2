@@ -14,14 +14,14 @@ public class Order
         submissionStationId = submStn;
     }
 
-    public List<Item> GetIngredients()
+    public List<InventoryItem> GetIngredients()
     {
-        return new List<Item>(recipe.ingredientList);
+        return new List<InventoryItem>(recipe.ingredientList);
     }
 
-    public Item GetProduct()
+    public InventoryItem GetProduct()
     {
-        return recipe.cookedRecipeItem;
+        return recipe.cookedDishItem;
     }
 
     public string GetDescription()
