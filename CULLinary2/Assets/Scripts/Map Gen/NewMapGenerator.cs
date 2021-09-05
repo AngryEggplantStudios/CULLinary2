@@ -80,22 +80,24 @@ public class NewMapGenerator : MonoBehaviour
 
         Texture2D texture = TextureGenerator.TextureFromColourMap(colourMap, mapWidth, mapHeight);
         MeshData meshData = MeshGenerator.GenerateTerrainMesh(noiseMap, meshHeightMultiplier);
+        MeshData walkableData = MeshGenerator.GenerateWalkableMesh(noiseMap, meshHeightMultiplier, 1.1f);
 
         foreach (Transform trans in transforms)
         {
             trans.localScale = new Vector3(-texture.width, 1, texture.height);
         }
 
+        Mesh createdMesh = meshData.CreateMesh();
+        Mesh walkableMesh = walkableData.CreateMesh();
         foreach (MeshFilter mf in meshFilters)
         {
-            Mesh createdMesh = meshData.CreateMesh();
             mf.sharedMesh = createdMesh;
 
             MeshCollider mc = mf.gameObject.GetComponent<MeshCollider>();
             if (mc != null)
             {
                 mc.sharedMesh = null;
-                mc.sharedMesh = createdMesh;
+                mc.sharedMesh = walkableMesh;
             }
 
             if (autosave)
