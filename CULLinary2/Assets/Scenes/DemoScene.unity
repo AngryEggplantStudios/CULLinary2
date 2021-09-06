@@ -530,7 +530,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 28
+  m_RootOrder: 29
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &767022430
 GameObject:
@@ -546,7 +546,7 @@ GameObject:
   - component: {fileID: 767022431}
   m_Layer: 5
   m_Name: GameCanvas
-  m_TagString: Untagged
+  m_TagString: GameCanvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2494,7 +2494,7 @@ PrefabInstance:
       objectReference: {fileID: 8452917270950687970, guid: ea1f8310f51c44df485c2582c80b0184, type: 3}
     - target: {fileID: 6916757179070320870, guid: b9af270ce5fd0ea9db545c4fb301248b, type: 3}
       propertyPath: m_RootOrder
-      value: 29
+      value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 6916757179070320870, guid: b9af270ce5fd0ea9db545c4fb301248b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2539,6 +2539,10 @@ PrefabInstance:
     - target: {fileID: 6916757179070320891, guid: b9af270ce5fd0ea9db545c4fb301248b, type: 3}
       propertyPath: m_Name
       value: TempEnemySpawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 6916757179070320891, guid: b9af270ce5fd0ea9db545c4fb301248b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b9af270ce5fd0ea9db545c4fb301248b, type: 3}

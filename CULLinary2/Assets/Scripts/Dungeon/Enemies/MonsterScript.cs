@@ -74,6 +74,7 @@ public class MonsterScript : Monster
         {
             canvasDisplay = GameCanvas.instance.gameObject;
         }
+        canvasDisplay = GameObject.FindGameObjectWithTag("GameCanvas");
         FindMonsterName();
     }
 
@@ -218,10 +219,6 @@ public class MonsterScript : Monster
         if (spawner)
         {
             spawner.GetComponent<DungeonSpawn>().DecrementSpawnCap(1);
-        }
-        else
-        {
-            Debug.Log("spawner is null");
         }
 
         if (TryGetComponent<MiniBoss>(out MiniBoss miniBossScript))

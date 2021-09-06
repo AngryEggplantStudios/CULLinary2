@@ -144,7 +144,7 @@ public class DungeonSpawn : MonoBehaviour
 
     public void DecrementSpawnCap(int value)
     {
-        Debug.Log("decrement spawn cap");
+        // Debug.Log("decrement spawn cap");
         if (localSpawnCap > 0)
         {
             localSpawnCap -= value;
