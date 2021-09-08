@@ -77,6 +77,7 @@ public class MeshCombiner : MonoBehaviour
         {
             CombineInstance[] combineInstanceArray = (combineInstanceArrays[m] as ArrayList).ToArray(typeof(CombineInstance)) as CombineInstance[];
             meshes[m] = new Mesh();
+            meshes[m].indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             meshes[m].CombineMeshes(combineInstanceArray, true, true);
 
             combineInstances[m] = new CombineInstance();
@@ -118,9 +119,12 @@ public class MeshCombiner : MonoBehaviour
         transform.rotation = baseRotation;
 
         MeshFilter mf = gameObject.GetComponent<MeshFilter>();
+        Debug.Log(mf);
+        Debug.Log(generateAsset);
         if (mf && generateAsset)
         {
-            string parentName = gameObject.transform.parent.parent.name;
+            Debug.Log(gameObject.transform.parent);
+            string parentName = gameObject.transform.name;
             string parentIndex = parentName[parentName.Length - 1].ToString();
             string savePath = "Assets/Misc/Generated/" + parentIndex + "_" + gameObject.name + ".asset";
             Debug.Log("Saved Mesh to:" + savePath);
