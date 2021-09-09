@@ -12,6 +12,7 @@ public class EnemyProjectile : MonoBehaviour
 
     private float spinSpeed = 500;
 
+    //Remember to setup Environment
     public void Setup(Vector3 sourcePosition, Vector3 targetPosition)
     {
         this.projDir = (targetPosition - sourcePosition).normalized;

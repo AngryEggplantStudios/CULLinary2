@@ -6,7 +6,6 @@ public class CornAttack : EnemyAttack
 {
     [SerializeField] private Transform throwObject;
     [SerializeField] private Material lineMaterial;
-    private SphereCollider attackCollider;
     private PlayerHealth healthScript;
     private bool canDealDamage;
     private Transform playerTransform;
@@ -14,25 +13,25 @@ public class CornAttack : EnemyAttack
     private int rayCount = 1;
     private List<LineRenderer> listOfRenderers;
     private List<Vector3> firePositions;
-    private const float LINE_HEIGHT_FROM_GROUND = 0.09f;
+    private float LINE_HEIGHT_FROM_GROUND = 0f;
     private bool projectAttack = false;
     private float viewDistance = 50f;
     private void Awake()
     {
-        attackCollider = gameObject.GetComponent<SphereCollider>();
         canDealDamage = false;
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     private void Start()
     {
+        LINE_HEIGHT_FROM_GROUND = gameObject.transform.parent.position.y;
         listOfRenderers = new List<LineRenderer>();
         GameObject gameObjectChild = new GameObject();
         gameObjectChild.transform.parent = gameObject.transform;
         LineRenderer lRend = gameObjectChild.AddComponent<LineRenderer>();
         lRend.positionCount = 2;
-        lRend.startWidth = 0.01f;
-        lRend.endWidth = 0.01f;
+        lRend.startWidth = 0.4f;
+        lRend.endWidth = 0.4f;
         lRend.enabled = false;
         lRend.material = lineMaterial;
         lRend.SetColors(Color.red, Color.red);
@@ -71,10 +70,7 @@ public class CornAttack : EnemyAttack
                 lRend.SetPosition(1, targetPosition);
             }
             firePositions.Add(targetPosition);
-
         }
-
-
     }
     private IEnumerator PrepareToFire()
     {
@@ -96,7 +92,7 @@ public class CornAttack : EnemyAttack
         {
             listOfRenderers[i].enabled = true;
         }
-        StartCoroutine(PrepareToFire());
+        StartCoroutine("PrepareToFire");
     }
 
 
@@ -114,11 +110,11 @@ public class CornAttack : EnemyAttack
         {
             ThrowCorn(transform.position, firePositions[i]);
         }
+        StopCoroutine("PrepareToFire");
         for (int i = 0; i < listOfRenderers.Count; i++)
         {
             listOfRenderers[i].enabled = false;
         }
-        StopCoroutine(PrepareToFire());
     }
 
 
