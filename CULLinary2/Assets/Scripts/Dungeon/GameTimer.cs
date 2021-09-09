@@ -10,9 +10,14 @@ public class GameTimer : SingletonGeneric<GameTimer>
     [SerializeField] private float dayLengthInMinutes;
     private static float gameTime;
     private static float timeScale;
-    private int dayNum;
+    private static int dayNum = 1;
     private int hourNum;
     private int minuteNum;
+    private string timeAsString;
+
+    public delegate void StartNewDayDelegate();
+    public static event StartNewDayDelegate OnStartNewDay;
+    private bool isNewDay = true; // prevent OnStartNewDay from being invoked multiple times
 
     void Start()
     {
@@ -29,19 +34,34 @@ public class GameTimer : SingletonGeneric<GameTimer>
         float actualTime = gameTime * 24;
         hourNum = Mathf.FloorToInt(actualTime);
         minuteNum = Mathf.FloorToInt((actualTime - (float)hourNum) * 60);
-        // Debug.Log(hourNum + ":" + minuteNum.ToString("00"));
+        timeAsString = hourNum + ":" + minuteNum.ToString("00");
+        // Debug.Log("current time: " + timeAsString);
+
+        if (timeAsString == "6:00" && isNewDay)
+        {
+            Debug.Log("start of new day");
+            isNewDay = false;
+            OnStartNewDay?.Invoke();
+        }
+
         UpdateLighting(gameTime);
         if (gameTime > 1)
         {
             dayNum++;
             gameTime -= 1;
-            Debug.Log(dayNum);
+            Debug.Log("day " + dayNum);
+            isNewDay = true;
         }
     }
 
     public static float GetTime()
     {
         return gameTime;
+    }
+
+    public static int GetDayNumber()
+    {
+        return dayNum;
     }
 
     private void OnDestroy()

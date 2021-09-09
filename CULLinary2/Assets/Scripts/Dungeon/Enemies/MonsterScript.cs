@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-public class MonsterScript : Enemy
+public class MonsterScript : Monster
 {
 
     [Header("Monster Variables")]
@@ -12,6 +12,8 @@ public class MonsterScript : Enemy
     [SerializeField] private float distanceTriggered;
     [SerializeField] private float stopChase;
     [SerializeField] private GameObject lootDropped;
+    [SerializeField] private MonsterName monsterName;
+    [HideInInspector] public GameObject spawner;
 
     [Header("UI Prefabs")]
     [SerializeField] private GameObject hpBarPrefab;
@@ -27,7 +29,7 @@ public class MonsterScript : Enemy
     [SerializeField] private AudioClip attackSound;
 
     [Header("Attacks")]
-    [SerializeField] private EnemyAttack primaryEnemyAttack;
+    [SerializeField] private MonsterAttack primaryEnemyAttack;
 
     // Variables
     private MonsterState currentState;
@@ -71,6 +73,21 @@ public class MonsterScript : Enemy
         if (GameCanvas.instance != null)
         {
             canvasDisplay = GameCanvas.instance.gameObject;
+        }
+        canvasDisplay = GameObject.FindGameObjectWithTag("GameCanvas");
+        FindMonsterName();
+    }
+
+    private void FindMonsterName()
+    {
+        foreach (MonsterName currName in MonsterName.GetValues(typeof(MonsterName)))
+        {
+            string currNameString = MonsterName.GetName(typeof(MonsterName), currName).ToLower();
+            if (name.ToLower().Contains(currNameString))
+            {
+                monsterName = currName;
+                break;
+            }
         }
     }
 
@@ -196,6 +213,19 @@ public class MonsterScript : Enemy
 
     public void Die()
     {
+        EcosystemManager.DecreasePopulation(monsterName, 1);
+
+        // update spawn cap for the spawner it came from
+        if (spawner)
+        {
+            spawner.GetComponent<DungeonSpawn>().DecrementSpawnCap(1);
+        }
+
+        if (TryGetComponent<MiniBoss>(out MiniBoss miniBossScript))
+        {
+            miniBossScript.Die();
+        }
+
         DropLoot();
         foreach (GameObject uiElement in uiElements)
         {
@@ -248,5 +278,8 @@ public class MonsterScript : Enemy
         primaryEnemyAttack.attackPlayerEnd();
     }
 
-
+    public MonsterName GetMonsterName()
+    {
+        return monsterName;
+    }
 }

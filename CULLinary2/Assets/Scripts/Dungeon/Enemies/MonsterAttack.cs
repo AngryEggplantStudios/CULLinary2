@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-abstract public class EnemyAttack : MonoBehaviour
+abstract public class MonsterAttack : MonoBehaviour
 {
     [SerializeField] public int attackDamage;
 
