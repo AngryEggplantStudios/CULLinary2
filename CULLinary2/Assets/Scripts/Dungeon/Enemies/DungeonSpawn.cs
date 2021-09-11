@@ -12,6 +12,7 @@ public class DungeonSpawn : MonoBehaviour
     }
 
     [SerializeField] private GameObject enemyToSpawn;
+    [SerializeField] private GameObject miniBoss;
     [Tooltip("Minimum amount of enemies to spawn per trigger")]
     [SerializeField] private int minEnemy;
     [Tooltip("Maximum amount of enemies to spawn per trigger")]
@@ -23,7 +24,7 @@ public class DungeonSpawn : MonoBehaviour
     [Tooltip("Delay after triggering if toLoop is checked")]
     [SerializeField] private float delayLoopTime;
     [Tooltip("Maximum number of enemies that can be spawned using this spawner")]
-    [SerializeField] private int spawnCap; //It will not spawn more than this amount in total
+    [SerializeField] private int localSpawnCap; //It will not spawn more than this amount in total
     [Tooltip("Initial Delay")]
     [SerializeField] private int initialDelay = 10;
     private bool delayFlag = false;
@@ -31,9 +32,12 @@ public class DungeonSpawn : MonoBehaviour
     private SpawnState state;
     private bool canSpawn = true;
     private int spawnAmount = 0;
+    private GameTimer gameTimer;
 
     private void Start()
     {
+        GameTimer.OnStartNewDay += SpawnEnemies;
+
         this.state = SpawnState.Inactive;
         if (toLoop)
         {
@@ -45,7 +49,7 @@ public class DungeonSpawn : MonoBehaviour
         }
         else
         {
-            StartCoroutine(delayTimer(initialDelay));
+            StartCoroutine(DelayTimer(initialDelay));
         }
     }
 
@@ -56,48 +60,94 @@ public class DungeonSpawn : MonoBehaviour
             if (this.state == SpawnState.Inactive)
             {
                 this.state = SpawnState.Active;
-                int enemyNum = Random.Range(minEnemy, maxEnemy + 1);
-                for (int i = 0; i < enemyNum; i++)
-                {
-                    instantiateEnemy();
-                }
+                SpawnEnemies();
             }
             else if (this.state == SpawnState.Loop && canSpawn)
             {
                 canSpawn = false;
-                StartCoroutine(spawnTimer(delayLoopTime));
-                int enemyNum = Random.Range(minEnemy, maxEnemy + 1);
-                for (int i = 0; i < enemyNum; i++)
-                {
-                    instantiateEnemy();
-                }
+                StartCoroutine(SpawnTimer(delayLoopTime));
+                SpawnEnemies();
             }
         }
 
     }
 
-    private void instantiateEnemy()
+    private void SpawnEnemies()
     {
-        if (spawnAmount < spawnCap)
+        int enemyNum = Random.Range(minEnemy, maxEnemy + 1);
+        for (int i = 0; i < enemyNum; i++)
+        {
+            InstantiateEnemy();
+        }
+    }
+
+    private void InstantiateEnemy()
+    {
+        if (spawnAmount < localSpawnCap)
         {
             float distX = Random.Range(-distRange, distRange);
             float distZ = Random.Range(-distRange, distRange);
             Vector3 enemyTransform = new Vector3(transform.position.x + distX, transform.position.y, transform.position.z + distZ);
             Instantiate(enemyToSpawn, enemyTransform, Quaternion.identity);
+            enemyToSpawn.GetComponent<MonsterScript>().spawner = gameObject;
             spawnAmount++;
         }
     }
 
-    private IEnumerator delayTimer(int delayTime)
+    public void SpawnMiniBoss()
+    {
+        if (miniBoss)
+        {
+            Instantiate(miniBoss, transform.position, Quaternion.identity);
+        }
+    }
+
+    private IEnumerator DelayTimer(int delayTime)
     {
         yield return new WaitForSeconds(delayTime);
         delayFlag = true;
     }
 
-    private IEnumerator spawnTimer(float delayLoopTime)
+    private IEnumerator SpawnTimer(float delayLoopTime)
     {
         yield return new WaitForSeconds(delayLoopTime);
         canSpawn = true;
+    }
 
+    public MonsterName GetMonsterName()
+    {
+        return enemyToSpawn.GetComponent<MonsterScript>().GetMonsterName();
+    }
+
+    public int GetSpawnCap()
+    {
+        return localSpawnCap;
+    }
+
+    public void SetSpawnCap(int value)
+    {
+        localSpawnCap = value;
+        // Debug.Log("spawn cap set to " + value);
+    }
+
+    public void SetMinSpawn(int value)
+    {
+        minEnemy = value;
+        // Debug.Log("min enemy spawn set to " + value);
+    }
+
+    public void SetMaxSpawn(int value)
+    {
+        maxEnemy = value;
+        // Debug.Log(string.Format("min max spawning for {0} set to {1}-{2}", GetMonsterName(), minEnemy, maxEnemy));
+    }
+
+    public void DecrementSpawnCap(int value)
+    {
+        // Debug.Log("decrement spawn cap");
+        if (localSpawnCap > 0)
+        {
+            localSpawnCap -= value;
+        }
     }
 }

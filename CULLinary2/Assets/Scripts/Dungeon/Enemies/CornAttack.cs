@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CornAttack : EnemyAttack
+public class CornAttack : MonsterAttack
 {
     [SerializeField] private Transform throwObject;
     [SerializeField] private Material lineMaterial;
@@ -99,7 +99,7 @@ public class CornAttack : EnemyAttack
     private void ThrowCorn(Vector3 sourcePosition, Vector3 targetPosition)
     {
         Transform cornTransform = Instantiate(throwObject, sourcePosition, Quaternion.identity);
-        cornTransform.GetComponent<EnemyProjectile>().Setup(sourcePosition, targetPosition);
+        cornTransform.GetComponent<MonsterProjectile>().Setup(sourcePosition, targetPosition);
     }
 
     public override void attackPlayerDealDamage()

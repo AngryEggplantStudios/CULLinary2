@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PotatoAttack : EnemyAttack
+public class PotatoAttack : MonsterAttack
 {
     private SphereCollider attackCollider;
     private bool canDealDamage;
