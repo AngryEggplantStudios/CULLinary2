@@ -9,7 +9,7 @@ public class DamageScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
-        Enemy target = collider.GetComponent<Enemy>();
+        Monster target = collider.GetComponent<Monster>();
         if (target == null)
         {
             return;

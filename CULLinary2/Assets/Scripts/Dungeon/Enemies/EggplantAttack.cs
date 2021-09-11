@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EggplantAttack : EnemyAttack
+public class EggplantAttack : MonsterAttack
 {
     private SpriteRenderer attackSprite;
     private SphereCollider attackCollider;
