@@ -271,7 +271,8 @@ public class MonsterScript : Monster
 
     private void DropLoot()
     {
-        Instantiate(lootDropped, transform.position, Quaternion.identity);
+        Vector3 tempVectors = new Vector3(transform.position.x, transform.position.y + 2.0f, transform.position.z);
+        Instantiate(lootDropped, tempVectors, Quaternion.identity);
     }
 
     public void attackPlayerStart()
