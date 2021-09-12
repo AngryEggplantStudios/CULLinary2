@@ -38,6 +38,7 @@ public class MonsterScript : Monster
     private Camera playerCamera;
     private Image hpBarFull;
     private List<GameObject> uiElements = new List<GameObject>();
+    private List<GameObject> damageUiElements = new List<GameObject>();
     private bool canMoveDuringAttack = true;
     private Renderer rend;
     private Color[] originalColors;
@@ -137,6 +138,17 @@ public class MonsterScript : Monster
                     uiElements.Remove(null);
                 }
             }
+            foreach (GameObject ui in damageUiElements)
+            {
+                if (ui != null)
+                {
+                    ui.transform.position = screenPos;
+                }
+                else
+                {
+                    uiElements.Remove(null);
+                }
+            }
         }
     }
 
@@ -211,6 +223,7 @@ public class MonsterScript : Monster
         GameObject damageCounter = Instantiate(damageCounterPrefab);
         damageCounter.transform.GetComponentInChildren<Text>().text = damage.ToString();
         SetupUI(damageCounter);
+        damageUiElements.Add(damageCounter);
     }
 
     public void Die()
