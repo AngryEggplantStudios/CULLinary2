@@ -18,13 +18,15 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private GameObject canvasDisplay;
     [SerializeField] private Camera cam;
     [SerializeField] private float thresholdHealth = 0.25f;
+    [SerializeField] private Renderer rend;
     private Color originalFlashColor;
     private Color deactivatedFlashColor = new Color(255, 0, 0, 0);
     private bool isInvincible = false;
-    private Renderer rend;
+
     private Color[] originalColors;
     private Color onDamageColor = Color.white;
     private float invincibilityDeltaTime = 0.025f;
+    private Animator animator;
 
     private void DisplayOnUI(float currentHealth, float maxHealth)
     {
@@ -34,6 +36,7 @@ public class PlayerHealth : MonoBehaviour
 
     private void Awake()
     {
+        animator = GetComponent<Animator>();
         SetupIFrame();
         originalFlashColor = outlineFlash.effectColor;
         outlineFlash.effectColor = deactivatedFlashColor;
@@ -94,6 +97,7 @@ public class PlayerHealth : MonoBehaviour
         DisplayOnUI(currentHealth, maxHealth);
         SpawnDamageCounter(damage);
         audioSource.Play();
+        animator.SetTrigger("isTakingDamage");
 
         if (PlayerManager.instance.currentHealth <= 0f)
         {
@@ -105,8 +109,7 @@ public class PlayerHealth : MonoBehaviour
     }
     private void SetupIFrame()
     {
-        rend = model.GetComponentInChildren<Renderer>();
-        if (rend)
+        if (rend != null)
         {
             originalColors = new Color[rend.materials.Length];
             for (var i = 0; i < rend.materials.Length; i++)

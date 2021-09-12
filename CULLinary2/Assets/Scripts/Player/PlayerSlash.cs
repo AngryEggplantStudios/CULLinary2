@@ -73,11 +73,22 @@ public class PlayerSlash : PlayerAction
         audioSource.Play();
     }
 
+    public void AttackFinish()
+    {
+        weaponCollider.enabled = false;
+        animator.SetBool("isMelee", false);
+    }
+
     public void AttackEnd()
     {
-        animator.SetBool("isMelee", false);
-        weaponCollider.enabled = false;
         playerMelee.StopInvoking();
+    }
+
+    public void AttackCleanUp()
+    {
+        animator.SetBool("isMelee", false);
+        playerMelee.StopInvoking();
+        weaponCollider.enabled = false;
     }
 
 }
