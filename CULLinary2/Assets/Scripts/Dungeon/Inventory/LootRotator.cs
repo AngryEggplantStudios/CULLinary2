@@ -7,6 +7,11 @@ public class LootRotator : MonoBehaviour
     public float amplitude = 0.05f;
     public float verticalSpeed = 2f;
     public float rotationSpeed = 90;
+    private float originalY;
+    private void Start()
+    {
+        originalY = transform.position.y - 2.0f;
+    }
 
     private void Update()
     {
@@ -14,6 +19,6 @@ public class LootRotator : MonoBehaviour
 
         Vector3 pos = transform.position;
         float newY = (Mathf.Sin(Time.time * verticalSpeed) + 1) * amplitude;
-        transform.position = new Vector3(pos.x, newY, pos.z);
+        transform.position = new Vector3(pos.x, newY + originalY, pos.z);
     }
 }
