@@ -38,6 +38,7 @@ public class PlayerStamina : MonoBehaviour
         outlineCircleColor = outlineCircleFlash.GetComponent<Image>();
         DisplayOnUI(currentStamina, maxStamina);
         SetupUI(staminaCircle.gameObject);
+        SetStaminaCircleActive(false);
     }
 
     private void DisplayOnUI(float currentStamina, float maxStamina)
