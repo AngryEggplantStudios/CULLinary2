@@ -8,15 +8,37 @@ public abstract class PlayerInteractable : MonoBehaviour
     private GameObject player;
     private bool hasInteracted = false;
 
+    // Keep track of game object failures
+    // for the error message
+    private const int findGameObjectFailureLimit = 10;
+    private int numberOfFailures = 0;
+
     void Awake()
     {
         interactAction = KeybindAction.Interact;
-        player = GameObject.FindGameObjectWithTag("Player");
         hasInteracted = false;
+    }
+
+    void Start()
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
     }
 
     void Update()
     {
+        if (player == null && numberOfFailures < findGameObjectFailureLimit)
+        {
+            // Sometimes, it does not work in Awake or Start
+            // So finding the game object has to be done here
+            player = GameObject.FindGameObjectWithTag("Player");
+
+            numberOfFailures++;
+            if (numberOfFailures == findGameObjectFailureLimit)
+            {
+                Debug.Log("PlayerInteractable.cs: Could not find Player in scene");
+            }
+        }
+
         if (hasInteracted && !PlayerWithinRange())
         {
             hasInteracted = false;

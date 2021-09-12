@@ -5,22 +5,26 @@ using UnityEngine;
 public class OrderSubmissionStation : PlayerInteractable
 {
     public SpherePlayerCollider spCollider;
-
-    // TODO: To be set when the day begins,
-    //       could also set to private
-    // 
-    // NOTE: Ensure that it is never set to -1,
     public int uniqueId = -1;
-    
+
     private bool hasCached = false;
     private PlayerPickup inventory;
 
-    public void setId(int id)
+    public void Awake()
+    {
+        // Set the unique ID of this station
+        // 
+        // Note that OrdersManager should have a lower execution order 
+        // than OrderSubmissionStation (i.e. executed first)
+        SetId(OrdersManager.instance.AddOrderSubmissionStation(this.GetComponent<Transform>()));
+    }
+
+    public void SetId(int id)
     {
         uniqueId = id;
     }
 
-    public bool getId(out int id)
+    public bool GetId(out int id)
     {
         id = uniqueId;
         if (uniqueId == -1)
@@ -52,7 +56,7 @@ public class OrderSubmissionStation : PlayerInteractable
     private void CacheReferences(GameObject player)
     {
         if (!hasCached)
-        {            
+        {
             inventory = player.GetComponent<PlayerPickup>();
             hasCached = true;
         }
