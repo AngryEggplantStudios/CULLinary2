@@ -18,14 +18,21 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     public Recipe order1;
     public Recipe order2;
 
+    // Define a callback for order completion
+    public delegate void OrderCompletionDelegate(int orderSubmissionStationId);
+
     private List<Order> innerOrdersList;
+    // Hash table that maps the ID of the order submission station to their transforms
+    private Dictionary<int, Transform> orderSubmissionStations = new Dictionary<int, Transform>();
+    private int numberOfOrders = 0;
+    private event OrderCompletionDelegate onOrderCompleteCallback;
 
     void Start()
     {
         // TODO: Replace these hard-coded orders
         innerOrdersList = new List<Order>{
-            new Order(order1, "Give the mashed potatoes to the right guy", 1234),
-            new Order(order2, "Give a eggplant soup to the left guy", 5678)
+            new Order(order1, "Give the mashed potatoes to the right house", 0),
+            new Order(order2, "Give a eggplant soup to the left house", 1)
         };
         StartCoroutine(UpdateUI());
     }
@@ -75,6 +82,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             orderSubmissionSound.SetScheduledEndTime(AudioSettings.dspTime + 11.15f);
 
             StartCoroutine(UpdateUI());
+            onOrderCompleteCallback.Invoke(stationId);
             return true;
         }
         else
@@ -102,5 +110,34 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             OrderSlot orderDetails = orderLog.GetComponent<OrderSlot>();
             orderDetails.AssignOrder(o);
         }
+    }
+
+    // Adds the order submission station to the hash table of stations and
+    // returns an unique ID (also the key of the station in the hash table)
+    public int AddOrderSubmissionStation(Transform stationTransform)
+    {
+        int orderIndex = numberOfOrders;
+        orderSubmissionStations.Add(orderIndex, stationTransform);
+        numberOfOrders++;
+        return orderIndex;
+    }
+
+    // Register a callback to be run when an order is completed
+    public void AddOrderCompletionCallback(OrderCompletionDelegate ocd)
+    {
+        onOrderCompleteCallback += ocd;
+    }
+
+    // Gets all relevant order stations
+    // Note this this loops through all the orders
+    public Dictionary<int, Transform> GetRelevantOrderStations()
+    {
+        Dictionary<int, Transform> relevantStations = new Dictionary<int, Transform>();
+        foreach (Order o in innerOrdersList)
+        {
+            int id = o.GetSubmissionStationId();
+            relevantStations.Add(id, orderSubmissionStations[id]);
+        }
+        return relevantStations;
     }
 }

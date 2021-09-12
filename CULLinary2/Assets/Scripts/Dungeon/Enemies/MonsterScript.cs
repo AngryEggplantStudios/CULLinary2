@@ -38,6 +38,7 @@ public class MonsterScript : Monster
     private Camera playerCamera;
     private Image hpBarFull;
     private List<GameObject> uiElements = new List<GameObject>();
+    private List<GameObject> damageUiElements = new List<GameObject>();
     private bool canMoveDuringAttack = true;
     private Renderer rend;
     private Color[] originalColors;
@@ -137,6 +138,17 @@ public class MonsterScript : Monster
                     uiElements.Remove(null);
                 }
             }
+            foreach (GameObject ui in damageUiElements)
+            {
+                if (ui != null)
+                {
+                    ui.transform.position = screenPos;
+                }
+                else
+                {
+                    uiElements.Remove(null);
+                }
+            }
         }
     }
 
@@ -149,6 +161,7 @@ public class MonsterScript : Monster
     {
         GameObject hpBarObject = Instantiate(hpBarPrefab);
         hpBarFull = hpBarObject.transform.Find("hpBar_full").gameObject.GetComponent<Image>();
+        uiElements.Add(hpBarObject);
         SetupUI(hpBarObject);
     }
 
@@ -164,7 +177,6 @@ public class MonsterScript : Monster
 
     private void SetupUI(GameObject ui)
     {
-        uiElements.Add(ui);
         ui.transform.SetParent(canvasDisplay.transform);
         ui.transform.position = playerCamera.WorldToScreenPoint(transform.position);
     }
@@ -181,7 +193,9 @@ public class MonsterScript : Monster
     public void Alert()
     {
         currentState = MonsterState.ChaseTarget;
-        SetupUI(Instantiate(enemyAlertPrefab));
+        GameObject enemyAlertObject = Instantiate(enemyAlertPrefab);
+        SetupUI(enemyAlertObject);
+        uiElements.Add(enemyAlertObject);
         audioSourceAttack.clip = alertSound;
         audioSourceAttack.Play();
     }
@@ -209,6 +223,7 @@ public class MonsterScript : Monster
         GameObject damageCounter = Instantiate(damageCounterPrefab);
         damageCounter.transform.GetComponentInChildren<Text>().text = damage.ToString();
         SetupUI(damageCounter);
+        damageUiElements.Add(damageCounter);
     }
 
     public void Die()
@@ -256,7 +271,8 @@ public class MonsterScript : Monster
 
     private void DropLoot()
     {
-        Instantiate(lootDropped, transform.position, Quaternion.identity);
+        Vector3 tempVectors = new Vector3(transform.position.x, transform.position.y + 2.0f, transform.position.z);
+        Instantiate(lootDropped, tempVectors, Quaternion.identity);
     }
 
     public void attackPlayerStart()

@@ -80,6 +80,7 @@ public class MonsterBehavior : MonoBehaviour
         if (timer >= wanderTimer || distanceToFinalPosition.magnitude < reachedPositionDistance)
         {
             timer = 0;
+            navMeshAgent.SetDestination(gameObject.transform.position);
             animator.SetBool("isMoving", false);
             monsterScript.SetStateMachine(MonsterState.Idle);
         }
@@ -101,7 +102,9 @@ public class MonsterBehavior : MonoBehaviour
 
         if (directionVector <= reachedPositionDistance)
         {
-            transform.LookAt(playerPositionWithoutYOffset);
+            playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
+            slowlyRotateToLookAt(playerPositionWithoutYOffset);
+            navMeshAgent.SetDestination(gameObject.transform.position);
             // Target within attack range
             monsterScript.SetStateMachine(MonsterState.AttackTarget);
             // Add new state to attack player
@@ -121,7 +124,7 @@ public class MonsterBehavior : MonoBehaviour
     private void EnemyAttackPlayer(Vector3 playerPosition, bool ableToMove)
     {
         Vector3 playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
-        transform.LookAt(playerPositionWithoutYOffset);
+        slowlyRotateToLookAt(playerPositionWithoutYOffset);
         animator.SetBool("isMoving", false);
         animator.ResetTrigger("attack");
         if (canAttack == true)
@@ -142,8 +145,8 @@ public class MonsterBehavior : MonoBehaviour
     private void EnemyReturn()
     {
         goingBackToStartTimer += Time.deltaTime;
+        slowlyRotateToLookAt(startingPosition);
         animator.SetBool("isMoving", true);
-        transform.LookAt(startingPosition);
         navMeshAgent.SetDestination(startingPosition);
 
         if (lineTest)
@@ -198,6 +201,14 @@ public class MonsterBehavior : MonoBehaviour
         monsterScript.onEnemyIdle -= EnemyIdle;
         monsterScript.onEnemyAttack -= EnemyAttackPlayer;
         monsterScript.onEnemyReturn -= EnemyReturn;
+    }
+
+    private void slowlyRotateToLookAt(Vector3 target)
+	{
+        transform.rotation = Quaternion.Lerp(
+            transform.rotation,
+            Quaternion.Euler(Quaternion.LookRotation(target - transform.position).eulerAngles),
+            Time.deltaTime * 3.0f);
     }
 
 
