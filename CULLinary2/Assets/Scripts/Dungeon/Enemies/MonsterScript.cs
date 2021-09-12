@@ -149,6 +149,7 @@ public class MonsterScript : Monster
     {
         GameObject hpBarObject = Instantiate(hpBarPrefab);
         hpBarFull = hpBarObject.transform.Find("hpBar_full").gameObject.GetComponent<Image>();
+        uiElements.Add(hpBarObject);
         SetupUI(hpBarObject);
     }
 
@@ -164,7 +165,6 @@ public class MonsterScript : Monster
 
     private void SetupUI(GameObject ui)
     {
-        uiElements.Add(ui);
         ui.transform.SetParent(canvasDisplay.transform);
         ui.transform.position = playerCamera.WorldToScreenPoint(transform.position);
     }
@@ -181,7 +181,9 @@ public class MonsterScript : Monster
     public void Alert()
     {
         currentState = MonsterState.ChaseTarget;
-        SetupUI(Instantiate(enemyAlertPrefab));
+        GameObject enemyAlertObject = Instantiate(enemyAlertPrefab);
+        SetupUI(enemyAlertObject);
+        uiElements.Add(enemyAlertObject);
         audioSourceAttack.clip = alertSound;
         audioSourceAttack.Play();
     }
