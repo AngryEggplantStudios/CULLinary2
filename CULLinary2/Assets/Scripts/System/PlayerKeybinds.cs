@@ -12,7 +12,8 @@ public enum KeybindAction
     Trash,
     CloseMenu,
     StatsMenu,
-    Melee
+    Melee,
+    Skill
 }
 
 /// <summary>
@@ -30,7 +31,8 @@ public class PlayerKeybinds
         { KeybindAction.CloseMenu, KeyCode.Escape },
         { KeybindAction.StatsMenu, KeyCode.Q },
         { KeybindAction.Run, KeyCode.LeftShift },
-        { KeybindAction.Melee, KeyCode.Mouse0 }
+        { KeybindAction.Melee, KeyCode.Mouse0 },
+        { KeybindAction.Skill, KeyCode.Mouse1 },
     };
 
     /// <summary>
