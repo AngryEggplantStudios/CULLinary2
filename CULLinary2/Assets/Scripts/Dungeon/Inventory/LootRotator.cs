@@ -18,7 +18,6 @@ public class LootRotator : MonoBehaviour
         transform.Rotate(new Vector3(0, rotationSpeed, 0) * Time.deltaTime);
 
         Vector3 pos = transform.position;
-        Debug.Log(originalY);
         float newY = (Mathf.Sin(Time.time * verticalSpeed)) * amplitude;
         //Debug.Log(newY);
         transform.position = new Vector3(pos.x, newY + originalY, pos.z);
