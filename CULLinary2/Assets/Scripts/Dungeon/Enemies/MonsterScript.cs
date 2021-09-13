@@ -46,6 +46,8 @@ public class MonsterScript : Monster
     private Animator animator;
     // Store a reference to final damage counter when death
     private GameObject damageCounter;
+    // Store refference to collider so can disable when death
+    private Collider monsterCollider;
 
     // Events & Delegates
 
@@ -72,6 +74,7 @@ public class MonsterScript : Monster
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        monsterCollider = GetComponent<Collider>();
         currentHealth = monsterHealth;
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform; //Temp fix
         playerCamera = playerTransform.GetComponentInChildren<Camera>();
@@ -218,9 +221,12 @@ public class MonsterScript : Monster
         audioSourceDamage.Play();
         if (this.currentHealth <= 0)
         {
+            // Reset all triggers first to prevent interference of other animation states before deathj
             animator.ResetTrigger("attack");
-            //animator.SetBool("isMoving", false);
+            animator.SetBool("isMoving", false);
             animator.SetTrigger("death");
+            // Disable collider to prevent spam hitting damage
+            monsterCollider.enabled = false;
             Die();
         }
     }
@@ -294,6 +300,12 @@ public class MonsterScript : Monster
         primaryEnemyAttack.attackPlayerEnd();
     }
 
+    public void destroyDamageNumbers()
+	{
+        //Death Animation too long destroy earlier
+        Destroy(damageCounter);
+    }
+
     public void monsterDeathAnimation()
 	{
         DropLoot();
@@ -301,7 +313,6 @@ public class MonsterScript : Monster
         {
             Destroy(uiElement);
         }
-        //Destroy(damageCounter);
         Destroy(gameObject);
     }
 
