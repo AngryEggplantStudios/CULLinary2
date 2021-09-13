@@ -43,6 +43,9 @@ public class MonsterScript : Monster
     private Renderer rend;
     private Color[] originalColors;
     private Color onDamageColor = Color.white;
+    private Animator animator;
+    // Store a reference to final damage counter when death
+    private GameObject damageCounter;
 
     // Events & Delegates
 
@@ -68,6 +71,7 @@ public class MonsterScript : Monster
 
     private void Awake()
     {
+        animator = GetComponent<Animator>();
         currentHealth = monsterHealth;
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform; //Temp fix
         playerCamera = playerTransform.GetComponentInChildren<Camera>();
@@ -214,13 +218,16 @@ public class MonsterScript : Monster
         audioSourceDamage.Play();
         if (this.currentHealth <= 0)
         {
+            animator.ResetTrigger("attack");
+            //animator.SetBool("isMoving", false);
+            animator.SetTrigger("death");
             Die();
         }
     }
 
     private void SpawnDamageCounter(float damage)
     {
-        GameObject damageCounter = Instantiate(damageCounterPrefab);
+        damageCounter = Instantiate(damageCounterPrefab);
         damageCounter.transform.GetComponentInChildren<Text>().text = damage.ToString();
         SetupUI(damageCounter);
         damageUiElements.Add(damageCounter);
@@ -240,13 +247,6 @@ public class MonsterScript : Monster
         {
             miniBossScript.Die();
         }
-
-        DropLoot();
-        foreach (GameObject uiElement in uiElements)
-        {
-            Destroy(uiElement);
-        }
-        Destroy(gameObject);
     }
 
     private IEnumerator FlashOnDamage()
@@ -292,6 +292,17 @@ public class MonsterScript : Monster
     {
         canMoveDuringAttack = true;
         primaryEnemyAttack.attackPlayerEnd();
+    }
+
+    public void monsterDeathAnimation()
+	{
+        DropLoot();
+        foreach (GameObject uiElement in uiElements)
+        {
+            Destroy(uiElement);
+        }
+        //Destroy(damageCounter);
+        Destroy(gameObject);
     }
 
     public MonsterName GetMonsterName()
