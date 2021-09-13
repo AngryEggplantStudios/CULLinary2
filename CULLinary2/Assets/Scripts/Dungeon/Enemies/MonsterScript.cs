@@ -122,7 +122,11 @@ public class MonsterScript : Monster
                 onEnemyChase?.Invoke(stopChase, playerTransform.position);
                 break;
             case MonsterState.AttackTarget:
-                onEnemyAttack?.Invoke(playerTransform.position, canMoveDuringAttack);
+                // Hack to ensure attack trigger isn't triggered
+                if (this.currentHealth > 0)
+                {
+                    onEnemyAttack?.Invoke(playerTransform.position, canMoveDuringAttack);
+                }
                 break;
             case MonsterState.GoingBackToStart:
                 onEnemyReturn?.Invoke();
@@ -277,7 +281,7 @@ public class MonsterScript : Monster
 
     private void DropLoot()
     {
-        Vector3 tempVectors = new Vector3(transform.position.x, transform.position.y + 2.0f, transform.position.z);
+        Vector3 tempVectors = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         Instantiate(lootDropped, tempVectors, Quaternion.identity);
     }
 

@@ -41,7 +41,6 @@ public class EggplantAttack : MonsterAttack
         PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
         if (canDealDamage && playerHealth != null)
         {
-            Debug.Log("oof");
             playerHealth.HandleHit(attackDamage);
         }
     }
