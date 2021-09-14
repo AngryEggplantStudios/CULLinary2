@@ -10,7 +10,7 @@ public class LootRotator : MonoBehaviour
     private float originalY;
     private void Start()
     {
-        originalY = transform.position.y - 2.0f;
+        originalY = transform.position.y;
     }
 
     private void Update()
@@ -18,7 +18,8 @@ public class LootRotator : MonoBehaviour
         transform.Rotate(new Vector3(0, rotationSpeed, 0) * Time.deltaTime);
 
         Vector3 pos = transform.position;
-        float newY = (Mathf.Sin(Time.time * verticalSpeed) + 1) * amplitude;
+        float newY = (Mathf.Sin(Time.time * verticalSpeed)) * amplitude;
+        //Debug.Log(newY);
         transform.position = new Vector3(pos.x, newY + originalY, pos.z);
     }
 }
