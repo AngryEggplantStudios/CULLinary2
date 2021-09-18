@@ -45,7 +45,6 @@ public class ProcGenerateNavMesh : MonoBehaviour
 
     public void CombineMeshes(GameObject gameObjectToGenerateMesh)
     {
-        Debug.Log("Combining Meshes");
         Vector3 basePosition = gameObjectToGenerateMesh.transform.position;
         Quaternion baseRotation = gameObjectToGenerateMesh.transform.rotation;
         gameObjectToGenerateMesh.transform.position = Vector3.zero;

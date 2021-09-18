@@ -10,7 +10,7 @@ public class PlayerStamina : MonoBehaviour
     [SerializeField] private Text staminaText;
     [SerializeField] private float regenerationRate = 1f;
     [SerializeField] private Outline outlineFlash;
-    [SerializeField] private Image outlineCircleFlash;
+    [SerializeField] private Outline outlineCircleFlash;
     [SerializeField] private float thresholdStamina = 0.25f;
     [SerializeField] private GameObject canvasDisplay;
     [SerializeField] private Camera playerCamera;
@@ -20,24 +20,24 @@ public class PlayerStamina : MonoBehaviour
     private bool flashIsActivated = false;
     private Color originalFlashColor;
     private Color deactivatedFlashColor = new Color(255, 0, 0, 0);
-    private Color dangerCircleFlashColor = Color.red;
-    private Color originalCircleFlashColor = Color.white;
-    private Image outlineCircleColor;
+    private Color dangerCircleFlashColor;
     private WaitForSeconds timeTakenRegen = new WaitForSeconds(0.05f);
+    private GameObject parentGameObject;
 
     private void Awake()
     {
         originalFlashColor = outlineFlash.effectColor;
         outlineFlash.effectColor = deactivatedFlashColor;
+        dangerCircleFlashColor = outlineCircleFlash.effectColor;
+        outlineCircleFlash.effectColor = deactivatedFlashColor;
+        parentGameObject = outlineCircleFlash.gameObject;
     }
 
     private void Start()
     {
         float currentStamina = PlayerManager.instance ? PlayerManager.instance.currentStamina : 100f;
         float maxStamina = PlayerManager.instance ? PlayerManager.instance.maxStamina : 100f;
-        outlineCircleColor = outlineCircleFlash.GetComponent<Image>();
         DisplayOnUI(currentStamina, maxStamina);
-        SetupUI(staminaCircle.gameObject);
         SetStaminaCircleActive(false);
     }
 
@@ -51,7 +51,7 @@ public class PlayerStamina : MonoBehaviour
 
     public void SetStaminaCircleActive(bool setActive)
     {
-        staminaCircle.gameObject.SetActive(setActive);
+        parentGameObject.SetActive(setActive);
     }
 
     private void Update()
@@ -66,13 +66,13 @@ public class PlayerStamina : MonoBehaviour
             flashIsActivated = false;
         }
 
-        Vector2 screenPos = playerCamera.WorldToScreenPoint(transform.position);
+/*        Vector2 screenPos = playerCamera.WorldToScreenPoint(transform.position);
         screenPos.x = screenPos.x + 40f;
         screenPos.y = screenPos.y + 50f;
         if (screenPos != Vector2.zero)
         {
             staminaCircle.transform.position = screenPos;
-        }
+        }*/
     }
 
     private void SetupUI(GameObject ui)
@@ -86,10 +86,10 @@ public class PlayerStamina : MonoBehaviour
         while (PlayerManager.instance.currentStamina / PlayerManager.instance.maxStamina < thresholdStamina)
         {
             outlineFlash.effectColor = originalFlashColor;
-            outlineCircleColor.color = dangerCircleFlashColor;
+            outlineCircleFlash.effectColor = dangerCircleFlashColor;
             yield return new WaitForSeconds(0.5f);
             outlineFlash.effectColor = deactivatedFlashColor;
-            outlineCircleColor.color = originalCircleFlashColor;
+            outlineCircleFlash.effectColor = deactivatedFlashColor;
             yield return new WaitForSeconds(0.5f);
         }
     }

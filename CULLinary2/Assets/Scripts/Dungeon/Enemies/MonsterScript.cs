@@ -43,6 +43,11 @@ public class MonsterScript : Monster
     private Renderer rend;
     private Color[] originalColors;
     private Color onDamageColor = Color.white;
+    private Animator animator;
+    // Store a reference to final damage counter when death
+    private GameObject damageCounter;
+    // Store refference to collider so can disable when death
+    private Collider monsterCollider;
 
     // Events & Delegates
 
@@ -68,6 +73,8 @@ public class MonsterScript : Monster
 
     private void Awake()
     {
+        animator = GetComponent<Animator>();
+        monsterCollider = GetComponent<Collider>();
         currentHealth = monsterHealth;
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform; //Temp fix
         playerCamera = playerTransform.GetComponentInChildren<Camera>();
@@ -115,7 +122,11 @@ public class MonsterScript : Monster
                 onEnemyChase?.Invoke(stopChase, playerTransform.position);
                 break;
             case MonsterState.AttackTarget:
-                onEnemyAttack?.Invoke(playerTransform.position, canMoveDuringAttack);
+                // Hack to ensure attack trigger isn't triggered
+                if (this.currentHealth > 0)
+                {
+                    onEnemyAttack?.Invoke(playerTransform.position, canMoveDuringAttack);
+                }
                 break;
             case MonsterState.GoingBackToStart:
                 onEnemyReturn?.Invoke();
@@ -214,13 +225,19 @@ public class MonsterScript : Monster
         audioSourceDamage.Play();
         if (this.currentHealth <= 0)
         {
+            // Reset all triggers first to prevent interference of other animation states before deathj
+            animator.ResetTrigger("attack");
+            animator.SetBool("isMoving", false);
+            animator.SetTrigger("death");
+            // Disable collider to prevent spam hitting damage
+            monsterCollider.enabled = false;
             Die();
         }
     }
 
     private void SpawnDamageCounter(float damage)
     {
-        GameObject damageCounter = Instantiate(damageCounterPrefab);
+        damageCounter = Instantiate(damageCounterPrefab);
         damageCounter.transform.GetComponentInChildren<Text>().text = damage.ToString();
         SetupUI(damageCounter);
         damageUiElements.Add(damageCounter);
@@ -240,13 +257,6 @@ public class MonsterScript : Monster
         {
             miniBossScript.Die();
         }
-
-        DropLoot();
-        foreach (GameObject uiElement in uiElements)
-        {
-            Destroy(uiElement);
-        }
-        Destroy(gameObject);
     }
 
     private IEnumerator FlashOnDamage()
@@ -271,7 +281,7 @@ public class MonsterScript : Monster
 
     private void DropLoot()
     {
-        Vector3 tempVectors = new Vector3(transform.position.x, transform.position.y + 2.0f, transform.position.z);
+        Vector3 tempVectors = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         Instantiate(lootDropped, tempVectors, Quaternion.identity);
     }
 
@@ -292,6 +302,22 @@ public class MonsterScript : Monster
     {
         canMoveDuringAttack = true;
         primaryEnemyAttack.attackPlayerEnd();
+    }
+
+    public void destroyDamageNumbers()
+	{
+        //Death Animation too long destroy earlier
+        Destroy(damageCounter);
+    }
+
+    public void monsterDeathAnimation()
+	{
+        DropLoot();
+        foreach (GameObject uiElement in uiElements)
+        {
+            Destroy(uiElement);
+        }
+        Destroy(gameObject);
     }
 
     public MonsterName GetMonsterName()
