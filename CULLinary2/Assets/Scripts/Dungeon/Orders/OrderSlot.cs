@@ -14,7 +14,9 @@ public class OrderSlot : MonoBehaviour
     {
         order = newOrder;
         orderIcon.sprite = order.GetProduct().icon;
-        orderDescription.text = order.GetDescription();
+        orderDescription.text = "Give a " + order.GetProduct().itemName +
+            " to house #" + order.GetSubmissionStationId()
+            + ". " + order.GetDescription();
     }
 
     public Order GetOrder()

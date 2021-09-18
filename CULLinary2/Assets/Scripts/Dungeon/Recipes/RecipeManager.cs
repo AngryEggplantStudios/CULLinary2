@@ -14,18 +14,38 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
     private List<Recipe> innerUnlockedRecipesList = new List<Recipe>();
     private bool isCooking = false;
 
+    // Random number generator for recipes
+    private System.Random rand = new System.Random();
+
+    // Only populate the unlocked recipes list once
+    private bool hasPopulatedUnlockedRecipes = false;
+
     // To be called when save data is loaded
     public void FilterUnlockedRecipes()
     {
-        bool[] recipesUnlocked = PlayerManager.instance ? PlayerManager.instance.recipesUnlocked : new bool[3] { true, true, true };
-        for (int id = 0; id < recipesUnlocked.Length; id++)
+        if (!hasPopulatedUnlockedRecipes)
         {
-            if (recipesUnlocked[id])
+            bool[] recipesUnlocked = PlayerManager.instance
+                ? PlayerManager.instance.recipesUnlocked
+                : new bool[3] { true, true, true };
+            
+            for (int id = 0; id < recipesUnlocked.Length; id++)
             {
-                innerUnlockedRecipesList.Add(GameData.GetRecipeById(id));
+                if (recipesUnlocked[id])
+                {
+                    innerUnlockedRecipesList.Add(GameData.GetRecipeById(id));
+                }
             }
+            hasPopulatedUnlockedRecipes = true;
+            StartCoroutine(UpdateUI());
         }
-        StartCoroutine(UpdateUI());
+    }
+
+    public Recipe GetRandomRecipe()
+    {
+        FilterUnlockedRecipes();
+        int randomIndex = rand.Next(innerUnlockedRecipesList.Count);
+        return innerUnlockedRecipesList[randomIndex];
     }
 
     public void ActivateCooking()
