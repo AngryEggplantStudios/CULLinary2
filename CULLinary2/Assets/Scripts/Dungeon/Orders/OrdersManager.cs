@@ -18,6 +18,10 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     public Recipe order1;
     public Recipe order2;
 
+    // Number of orders to generate in a day
+    public int numberOfDailyOrders = 6;
+
+
     // Define a callback for order completion
     public delegate void OrderCompletionDelegate(int orderSubmissionStationId);
 
@@ -26,15 +30,32 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     private Dictionary<int, Transform> orderSubmissionStations = new Dictionary<int, Transform>();
     private int numberOfOrders = 0;
     private event OrderCompletionDelegate onOrderCompleteCallback;
+    // Random number generator for new orders
+    private System.Random rand;
+    // First generation of orders
+    private bool firstGeneration = false;
+    // Do not rely on game timer for first day generation
+    private bool firstDay = true;
 
     void Start()
     {
-        // TODO: Replace these hard-coded orders
-        innerOrdersList = new List<Order>{
-            new Order(order1, "Give the mashed potatoes to the right house", 0),
-            new Order(order2, "Give a eggplant soup to the left house", 1)
+        innerOrdersList = new List<Order>();
+        rand = new System.Random();
+
+        // Generate random orders daily
+        GameTimer.OnStartNewDay += () =>
+        {
+            if (firstDay)
+            {
+                Debug.Log("First day");
+                firstDay = false;
+            }
+            else
+            {
+                Debug.Log("No es first day");
+                GenerateRandomOrders();
+            }
         };
-        StartCoroutine(UpdateUI());
     }
 
     public void AddOrder(Order order)
@@ -139,5 +160,38 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             relevantStations.Add(id, orderSubmissionStations[id]);
         }
         return relevantStations;
+    }
+
+    // Opening the orders menu for the first time will generate the orders
+    // TODO: Load from save game/player data instead
+    public void FirstGenerationOfOrders()
+    {
+        if (!firstGeneration)
+        {
+            GenerateRandomOrders();
+        }
+    }
+
+    // To be called when a new day begins
+    // Generates random orders and populates the order list
+    private void GenerateRandomOrders()
+    {
+        innerOrdersList.Clear();
+        List<int> stations = new List<int>(orderSubmissionStations.Keys);
+        int numberOfStations = stations.Count;
+
+        for (int i = 0; i < numberOfDailyOrders && i < numberOfStations; i++)
+        {
+            int randomIndex = rand.Next(stations.Count);
+            int stationId = stations[randomIndex];
+            Recipe randomRecipe = RecipeManager.instance.GetRandomRecipe();
+            Order newOrder = new Order(randomRecipe, "¡Hola mundo!", stationId);
+
+            stations.RemoveAt(randomIndex);
+            innerOrdersList.Add(newOrder);
+        }
+
+        firstGeneration = true;
+        StartCoroutine(UpdateUI());
     }
 }
