@@ -9,11 +9,16 @@ public enum KeybindAction
     OpenOrders,
     OpenInventory,
     OpenRecipeBook,
+    OpenCreatures,
+    OpenMap,
     Trash,
     CloseMenu,
     StatsMenu,
     Melee,
-    Skill
+    Skill,
+    Consumable1,
+    Consumable2,
+    Consumable3
 }
 
 /// <summary>
@@ -24,15 +29,20 @@ public class PlayerKeybinds
     private static Dictionary<KeybindAction, KeyCode> keybinds = new Dictionary<KeybindAction, KeyCode>
     {
         { KeybindAction.Interact, KeyCode.F },
-        { KeybindAction.OpenOrders, KeyCode.O },
+        { KeybindAction.OpenOrders, KeyCode.Tab },
         { KeybindAction.OpenInventory, KeyCode.I },
         { KeybindAction.OpenRecipeBook, KeyCode.R },
+        { KeybindAction.OpenCreatures, KeyCode.C },
+        { KeybindAction.OpenMap, KeyCode.M },
         { KeybindAction.Trash, KeyCode.Delete },
         { KeybindAction.CloseMenu, KeyCode.Escape },
         { KeybindAction.StatsMenu, KeyCode.Q },
         { KeybindAction.Run, KeyCode.LeftShift },
         { KeybindAction.Melee, KeyCode.Mouse0 },
         { KeybindAction.Skill, KeyCode.Mouse1 },
+        { KeybindAction.Consumable1, KeyCode.Alpha1 },
+        { KeybindAction.Consumable2, KeyCode.Alpha2 },
+        { KeybindAction.Consumable3, KeyCode.Alpha3 },
     };
 
     /// <summary>
