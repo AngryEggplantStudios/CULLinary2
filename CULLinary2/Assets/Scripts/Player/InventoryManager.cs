@@ -181,7 +181,10 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
                 // is less than what we have seen so far
                 bool doesThisItemExist = itemsSeen[i] <= numberInInventory;
                 missingItems.Add((i, doesThisItemExist));
-                doAllItemsExist = doesThisItemExist;
+                if (!doesThisItemExist)
+                {
+                    doAllItemsExist = false;
+                }
             }
         }
         outItemsMap = itemsSeen;
