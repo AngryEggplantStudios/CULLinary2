@@ -46,8 +46,11 @@ public class Minimap : MonoBehaviour
         // Register the callback
         OrdersManager.instance.AddOrderCompletionCallback(stationId =>
         {
-            Destroy(orderSubmissionStationLocationsAndIcons[stationId].Item2.gameObject);
-            orderSubmissionStationLocationsAndIcons.Remove(stationId);
+            if (orderSubmissionStationLocationsAndIcons.ContainsKey(stationId))
+            {
+                Destroy(orderSubmissionStationLocationsAndIcons[stationId].Item2.gameObject);
+                orderSubmissionStationLocationsAndIcons.Remove(stationId);
+            }
         });
     }
 
