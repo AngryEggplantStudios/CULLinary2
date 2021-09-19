@@ -99,7 +99,7 @@ public class RecipeSlot : MonoBehaviour, IPointerEnterHandler,
                                                      Quaternion.identity,
                                                      ingredientsContainer.transform) as GameObject;
             Image ingredientIcon = ingredientEntry.GetComponent<Image>();
-            ingredientIcon.sprite = GameData.GetItemById(ingredientId).icon;
+            ingredientIcon.sprite = DatabaseLoader.GetItemById(ingredientId).icon;
         }
     }
 }
