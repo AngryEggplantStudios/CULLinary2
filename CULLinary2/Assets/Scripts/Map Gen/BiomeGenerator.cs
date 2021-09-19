@@ -6,20 +6,20 @@ using UnityEditor;
 public class BiomeGenerator : MonoBehaviour
 {
     [Header("Map Size")]
-    [SerializeField] private int mapWidth;
-    [SerializeField] private int mapHeight;
+    [SerializeField] private int mapWidth = 200;
+    [SerializeField] private int mapHeight = 200;
 
     [Header("Generator Variables")]
-    [SerializeField] private float noiseScale;
-    [SerializeField] private int octaves;
-    [Range(0, 1)] [SerializeField] private float persistence;
-    [SerializeField] private float lacunarity;
+    [SerializeField] private float noiseScale = 50f;
+    [SerializeField] private int octaves = 2;
+    [Range(0, 1)] [SerializeField] private float persistence = 0.408f;
+    [SerializeField] private float lacunarity = 2.01f;
     [SerializeField] private float falloffHardness = 3f;
-    [SerializeField] private float falloffStrength = 2.2f;
+    [SerializeField] private float falloffStrength = 6f;
     [SerializeField] private Vector2 offset = new Vector2(0, 0);
-    [SerializeField] private float meshHeightMultiplier;
-    [Range(0, 1)] [SerializeField] private float meshMinHeight;
-    [Range(0, 1)] [SerializeField] private float meshMaxHeight;
+    [SerializeField] private float meshHeightMultiplier = 4f;
+    [Range(0, 1)] [SerializeField] private float meshMinHeight = 0f;
+    [Range(0, 1)] [SerializeField] private float meshMaxHeight = 0.4f;
 
     [Header("Seed")]
     [SerializeField] private int seed;
@@ -32,12 +32,12 @@ public class BiomeGenerator : MonoBehaviour
 
     //Private variables
     private float[,] falloffMap;
+    private float[,] noiseMap;
     private Mesh createdMesh;
     private Mesh walkableMesh;
+    private Texture2D texture;
     private string createdMeshPath = "";
     private string walkableMeshPath = "";
-
-
     private static BiomeGenerator _instance;
     public static BiomeGenerator Instance { get { return _instance; } }
 
@@ -58,6 +58,8 @@ public class BiomeGenerator : MonoBehaviour
         walkableMeshPath = BiomeDataManager.instance.biomeWalkableMeshPath;
         seed = BiomeDataManager.instance.seed;
 
+        yield return StartCoroutine(GenerateNoise());
+
         createdMesh = AssetDatabase.LoadAssetAtPath<Mesh>(createdMeshPath);
         yield return null;
         walkableMesh = AssetDatabase.LoadAssetAtPath<Mesh>(walkableMeshPath);
@@ -70,21 +72,12 @@ public class BiomeGenerator : MonoBehaviour
         else
         {
             AttachMeshes();
-            SaveMesh(createdMeshPath, createdMesh);
-            SaveMesh(walkableMeshPath, walkableMesh);
         }
     }
 
-    public IEnumerator GenerateMap(int seed)
+    private IEnumerator GenerateNoise()
     {
-        this.seed = seed;
-        createdMeshPath = "Assets/Scenes/UtilScenes/Saved_Meshes/" + "CreatedMesh" + ".asset";
-        walkableMeshPath = "Assets/Scenes/UtilScenes/Saved_Meshes/" + "WalkableMesh" + ".asset";
-        BiomeDataManager.instance.biomeCreatedMeshPath = createdMeshPath;
-        BiomeDataManager.instance.biomeWalkableMeshPath = walkableMeshPath;
-        BiomeDataManager.instance.SaveData();
-
-        float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, seed, noiseScale, octaves, persistence, lacunarity, offset);
+        noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, seed, noiseScale, octaves, persistence, lacunarity, offset);
 
         yield return null;
 
@@ -108,9 +101,19 @@ public class BiomeGenerator : MonoBehaviour
             yield return null;
         }
 
-        Texture2D texture = TextureGenerator.TextureFromColourMap(colourMap, mapWidth, mapHeight);
-        MeshData meshData = MeshGenerator.GenerateTerrainMesh(noiseMap, meshHeightMultiplier);
-        MeshData walkableData = MeshGenerator.GenerateWalkableMesh(noiseMap, meshHeightMultiplier, 1.1f);
+        texture = TextureGenerator.TextureFromColourMap(colourMap, mapWidth, mapHeight);
+    }
+
+    public IEnumerator GenerateMap(int seed)
+    {
+        this.seed = seed;
+        createdMeshPath = "Assets/Scenes/UtilScenes/Saved_Meshes/" + "CreatedMesh" + ".asset";
+        walkableMeshPath = "Assets/Scenes/UtilScenes/Saved_Meshes/" + "WalkableMesh" + ".asset";
+        BiomeDataManager.instance.biomeCreatedMeshPath = createdMeshPath;
+        BiomeDataManager.instance.biomeWalkableMeshPath = walkableMeshPath;
+        BiomeDataManager.instance.SaveData();
+
+        yield return StartCoroutine(GenerateNoise());
 
         foreach (Transform trans in transforms)
         {
@@ -121,6 +124,9 @@ public class BiomeGenerator : MonoBehaviour
         {
             rend.sharedMaterial.mainTexture = texture;
         }
+
+        MeshData meshData = MeshGenerator.GenerateTerrainMesh(noiseMap, meshHeightMultiplier);
+        MeshData walkableData = MeshGenerator.GenerateWalkableMesh(noiseMap, meshHeightMultiplier, 1.1f);
 
         createdMesh = meshData.CreateMesh();
         walkableMesh = walkableData.CreateMesh();

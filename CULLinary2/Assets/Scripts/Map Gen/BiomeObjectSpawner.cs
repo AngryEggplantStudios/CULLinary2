@@ -5,13 +5,18 @@ using UnityEngine;
 public class BiomeObjectSpawner : MonoBehaviour
 {
     [SerializeField] private int size = 2000;
-    [SerializeField] private float minY;
-    [SerializeField] private Transform origin;
+    [SerializeField] private float minY = 8;
     [SerializeField] private Spawnable[] spawnables;
+    private Transform origin;
 
     private RaycastHit hit;
     private List<GameObject> spawnedObjects = new List<GameObject>();
     private List<GameObject> parents = new List<GameObject>();
+
+    private void Awake()
+    {
+        origin = this.transform.parent.transform;
+    }
 
     public IEnumerator SpawnObjects(int seed)
     {
@@ -40,8 +45,8 @@ public class BiomeObjectSpawner : MonoBehaviour
                     spawnedObject.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
                     spawnedObjects.Add(spawnedObject);
                 }
-                yield return null;
             }
+            yield return null;
         }
         Debug.Log(spawnedObjects.Count + " objects spawned");
     }

@@ -20,6 +20,10 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
         CheckForExistingData();
     }
 
+    private void Start()
+    {
+        LoadBiome();
+    }
     public void LoadBiome()
     {
         if (hasExistingData)
@@ -28,6 +32,7 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
         }
         else
         {
+            Debug.Log("Hi");
             StartCoroutine(StartGeneration());
         }
     }
