@@ -37,6 +37,10 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     // Do not rely on game timer for first day generation
     private bool firstDay = true;
 
+    // Cache for number of orders by recipe ID
+    private Dictionary<int, int> numberOfOrdersByRecipeCache;
+    private bool isCacheValid = false;
+
     void Start()
     {
         innerOrdersList = new List<Order>();
@@ -61,6 +65,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     public void AddOrder(Order order)
     {
         innerOrdersList.Add(order);
+        isCacheValid = false;
         StartCoroutine(UpdateUI());
     }
 
@@ -104,6 +109,8 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
 
             StartCoroutine(UpdateUI());
             onOrderCompleteCallback.Invoke(stationId);
+
+            isCacheValid = false;
             return true;
         }
         else
@@ -131,6 +138,8 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             OrderSlot orderDetails = orderLog.GetComponent<OrderSlot>();
             orderDetails.AssignOrder(o);
         }
+        // Show correct number of orders in recipes menu
+        StartCoroutine(RecipeManager.instance.UpdateUI());
     }
 
     // Adds the order submission station to the hash table of stations and
@@ -172,6 +181,28 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         }
     }
 
+    // Gets a dictionary of recipe IDs mapped to the number
+    // of orders that the player has currently for that recipe.
+    public Dictionary<int, int> GetNumberOfOrdersByRecipe()
+    {
+        if (!isCacheValid)
+        {
+            Dictionary<int, int> ordersByRecipe = new Dictionary<int, int>();
+            foreach (Order o in innerOrdersList)
+            {
+                int recipeId = o.GetRecipe().recipeId;
+                if (!ordersByRecipe.ContainsKey(recipeId))
+                {
+                    ordersByRecipe.Add(recipeId, 0);
+                }
+                ordersByRecipe[recipeId]++;
+            }
+            numberOfOrdersByRecipeCache = ordersByRecipe;
+            isCacheValid = true;
+        }
+        return numberOfOrdersByRecipeCache;
+    }
+
     // To be called when a new day begins
     // Generates random orders and populates the order list
     private void GenerateRandomOrders()
@@ -192,6 +223,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         }
 
         firstGeneration = true;
+        isCacheValid = false;
         StartCoroutine(UpdateUI());
     }
 }

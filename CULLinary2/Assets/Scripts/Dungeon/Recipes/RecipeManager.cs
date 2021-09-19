@@ -89,6 +89,18 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         {
             Destroy(child.gameObject);
         }
+        Dictionary<int, int> ordersByRecipe = OrdersManager.instance.GetNumberOfOrdersByRecipe();
+        int GetNumberOfOrders(int recipeId)
+        {
+            if (ordersByRecipe.ContainsKey(recipeId))
+            {
+                return ordersByRecipe[recipeId];
+            }
+            else
+            {
+                return 0;
+            }
+        }
 
         foreach (Recipe r in innerUnlockedRecipesList)
         {
@@ -103,7 +115,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             bool areItemsInInventory =
                 InventoryManager.instance.CheckIfItemsExist(ingIds, out _, out checkedIngs);
 
-            recipeDetails.AddRecipe(r, areItemsInInventory, checkedIngs, 0);
+            recipeDetails.AddRecipe(r, areItemsInInventory, checkedIngs, GetNumberOfOrders(r.recipeId));
             recipeDetails.SetInfoDisplay(infoDisplay);
             yield return null;
         }

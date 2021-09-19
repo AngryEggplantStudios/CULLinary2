@@ -33,4 +33,9 @@ public class Order
     {
         return submissionStationId;
     }
+
+    public Recipe GetRecipe()
+    {
+        return recipe;
+    }
 }
