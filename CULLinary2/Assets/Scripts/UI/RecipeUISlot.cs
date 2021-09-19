@@ -40,7 +40,7 @@ public class RecipeUISlot : MonoBehaviour
         ordered = numberOfOrders > 0;
         checkedIngs = checkedIngredients;
         numOfOrders = numberOfOrders;
-        StartCoroutine(UpdateUI());
+        UpdateUI();
     }
 
     public void AddUnknownRecipe(Recipe newRecipe)
@@ -49,7 +49,7 @@ public class RecipeUISlot : MonoBehaviour
         known = false;
         cookable = false;
         ordered = false;
-        StartCoroutine(UpdateUI());
+        UpdateUI();
     }
 
     public void SetInfoDisplay(RecipeUIInfoDisplay display)
@@ -69,7 +69,7 @@ public class RecipeUISlot : MonoBehaviour
         }
     }
 
-    private IEnumerator UpdateUI()
+    private void UpdateUI()
     {
         recipeIcon.sprite = recipe.cookedDishItem.icon;
         if (known)
@@ -83,6 +83,5 @@ public class RecipeUISlot : MonoBehaviour
         }
         cookableButton.SetActive(cookable);
         orderedIcon.SetActive(ordered);
-        yield return null;
     }
 }
