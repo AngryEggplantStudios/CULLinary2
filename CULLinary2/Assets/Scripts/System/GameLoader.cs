@@ -25,8 +25,8 @@ public class GameLoader : SingletonGeneric<GameLoader>
         currentProgress = 0.2f;
         yield return StartCoroutine(biomeGeneratorManager.LoadBiome());
         currentProgress = 0.9f;
-        monsters.SetActive(true);
         playerCharacter.SetActive(true);
         uiCanvas.SetActive(true);
+        monsters.SetActive(true);
     }
 }

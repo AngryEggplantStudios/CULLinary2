@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class InventoryManager : SingletonGeneric<InventoryManager>
 {
     [Header("UI References")]
-    [SerializeField] private Text inventoryCapacityText;
     [SerializeField] private GameObject inventoryPanel;
     private InventorySlot[] slots;
 
@@ -79,8 +78,6 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
                 }
             }
         }
-        inventoryCapacityText.text = itemListReference.Count + "/" + inventoryLimit;
-        inventoryCapacityText.color = itemListReference.Count == inventoryLimit ? Color.red : Color.black;
     }
 
     // Checks if the item IDs specified exist in the inventory.
