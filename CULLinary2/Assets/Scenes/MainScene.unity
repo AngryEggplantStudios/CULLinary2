@@ -3216,6 +3216,7 @@ MonoBehaviour:
   biomeNavMeshGenerator: {fileID: 6060218616651526435}
   progress: 0
   isComplete: 0
+  loadingStatus: 
 --- !u!114 &6060218616651526437
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3228,6 +3229,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e072afc0e6b5444cfba72252b56fe200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshCollider: {fileID: 6060218616561705332}
+  meshFilter: {fileID: 6060218616561705334}
+  meshRenderer: {fileID: 6060218616561705337}
   mapWidth: 200
   mapHeight: 200
   noiseScale: 50
@@ -3257,7 +3261,8 @@ MonoBehaviour:
   - name: Forest
     height: 1
     colour: {r: 0.24313727, g: 0.41960788, b: 0.07058824, a: 0}
-  renderers: []
+  renderers:
+  - {fileID: 6060218616561705337}
   transforms: []
 --- !u!114 &6060218616651526438
 MonoBehaviour:

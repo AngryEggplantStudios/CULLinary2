@@ -5,6 +5,11 @@ using UnityEditor;
 
 public class BiomeGenerator : MonoBehaviour
 {
+    [Header("References")]
+    [SerializeField] private MeshCollider meshCollider;
+    [SerializeField] private MeshFilter meshFilter;
+    [SerializeField] private MeshRenderer meshRenderer;
+
     [Header("Map Size")]
     [SerializeField] private int mapWidth = 200;
     [SerializeField] private int mapHeight = 200;
@@ -51,6 +56,7 @@ public class BiomeGenerator : MonoBehaviour
         {
             _instance = this;
         }
+
     }
     public IEnumerator LoadGeneratedMap()
     {
@@ -59,6 +65,9 @@ public class BiomeGenerator : MonoBehaviour
         seed = BiomeDataManager.instance.seed;
 
         yield return StartCoroutine(GenerateNoise());
+
+        createdMesh = null;
+        walkableMesh = null;
 
         createdMesh = AssetDatabase.LoadAssetAtPath<Mesh>(createdMeshPath);
         yield return null;
@@ -69,10 +78,15 @@ public class BiomeGenerator : MonoBehaviour
         {
             yield return StartCoroutine(GenerateMap(seed));
         }
-        else
-        {
-            AttachMeshes();
-        }
+        yield return StartCoroutine(AttachMeshes());
+    }
+
+    public IEnumerator ReactivateMap()
+    {
+        meshRenderer.enabled = false;
+        yield return new WaitForSeconds(1f);
+        meshRenderer.enabled = true;
+
     }
 
     private IEnumerator GenerateNoise()
@@ -102,6 +116,17 @@ public class BiomeGenerator : MonoBehaviour
         }
 
         texture = TextureGenerator.TextureFromColourMap(colourMap, mapWidth, mapHeight);
+
+        foreach (Renderer rend in renderers)
+        {
+            rend.sharedMaterial.mainTexture = texture;
+        }
+
+        foreach (Transform trans in transforms)
+        {
+            trans.localScale = new Vector3(-texture.width, 1, texture.height);
+        }
+
     }
 
     public IEnumerator GenerateMap(int seed)
@@ -115,16 +140,6 @@ public class BiomeGenerator : MonoBehaviour
 
         yield return StartCoroutine(GenerateNoise());
 
-        foreach (Transform trans in transforms)
-        {
-            trans.localScale = new Vector3(-texture.width, 1, texture.height);
-        }
-
-        foreach (Renderer rend in renderers)
-        {
-            rend.sharedMaterial.mainTexture = texture;
-        }
-
         MeshData meshData = MeshGenerator.GenerateTerrainMesh(noiseMap, meshHeightMultiplier);
         MeshData walkableData = MeshGenerator.GenerateWalkableMesh(noiseMap, meshHeightMultiplier, 1.1f);
 
@@ -133,17 +148,17 @@ public class BiomeGenerator : MonoBehaviour
 
         yield return null;
 
-        AttachMeshes();
+
         SaveMesh(createdMeshPath, createdMesh);
         SaveMesh(walkableMeshPath, walkableMesh);
     }
 
-    private void AttachMeshes()
+    private IEnumerator AttachMeshes()
     {
-        GameObject parentObject = this.transform.parent.gameObject;
-        parentObject.GetComponent<MeshFilter>().sharedMesh = createdMesh;
-        MeshCollider mc = parentObject.GetComponent<MeshCollider>();
-        mc.sharedMesh = walkableMesh;
+        meshFilter.sharedMesh = createdMesh;
+        yield return null;
+        meshCollider.sharedMesh = walkableMesh;
+        yield return null;
     }
 
     private void SaveMesh(string meshName, Mesh meshToSave)
