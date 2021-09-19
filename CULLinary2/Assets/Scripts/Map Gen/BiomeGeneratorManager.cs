@@ -19,23 +19,18 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
         isComplete = false;
         loadingStatus = "Currently loading world...";
         progress = 0f;
-        CheckForExistingData();
     }
 
-    private void Start()
+    public IEnumerator LoadBiome()
     {
-        LoadBiome();
-    }
-    public void LoadBiome()
-    {
+        CheckForExistingData();
         if (hasExistingData)
         {
-            StartCoroutine(LoadExistingBiome());
+            yield return StartCoroutine(LoadExistingBiome());
         }
         else
         {
-            Debug.Log("Hi");
-            StartCoroutine(StartGeneration());
+            yield return StartCoroutine(StartGeneration());
         }
     }
 

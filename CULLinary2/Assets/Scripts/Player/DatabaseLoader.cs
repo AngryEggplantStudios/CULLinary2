@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameData : MonoBehaviour
+public class DatabaseLoader : MonoBehaviour
 {
+    [Header("Autoload?")]
+    [SerializeField] private bool isAutoload = false;
     [Header("All Databases")]
     [SerializeField] private InventoryItemDatabase inventoryItemDatabase;
     [SerializeField] private RecipeDatabase recipeDatabase;
@@ -20,16 +22,15 @@ public class GameData : MonoBehaviour
     {
         inventoryItemDict = new Dictionary<int, InventoryItem>();
         inventoryItemList = inventoryItemDatabase.allItems;
-        //StartCoroutine(PopulateInventoryItemDatabase());
-
         recipeDict = new Dictionary<int, Recipe>();
         recipeList = recipeDatabase.recipes;
-        //StartCoroutine(PopulateRecipeDatabase());
-
-        StartCoroutine(Populate());
+        if (isAutoload)
+        {
+            StartCoroutine(Populate());
+        }
     }
 
-    private IEnumerator Populate()
+    public IEnumerator Populate()
     {
         yield return StartCoroutine(PopulateInventoryItemDatabase());
         yield return StartCoroutine(PopulateRecipeDatabase());

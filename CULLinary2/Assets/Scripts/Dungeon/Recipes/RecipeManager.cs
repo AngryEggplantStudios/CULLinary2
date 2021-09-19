@@ -28,12 +28,12 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             bool[] recipesUnlocked = PlayerManager.instance
                 ? PlayerManager.instance.recipesUnlocked
                 : new bool[3] { true, true, true };
-            
+
             for (int id = 0; id < recipesUnlocked.Length; id++)
             {
                 if (recipesUnlocked[id])
                 {
-                    innerUnlockedRecipesList.Add(GameData.GetRecipeById(id));
+                    innerUnlockedRecipesList.Add(DatabaseLoader.GetRecipeById(id));
                 }
             }
             hasPopulatedUnlockedRecipes = true;
