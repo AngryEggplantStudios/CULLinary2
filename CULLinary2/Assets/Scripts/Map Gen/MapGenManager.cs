@@ -8,7 +8,7 @@ public class MapGenManager : MonoBehaviour
 
     public NewMapGenerator mapGen;
     public ObjectSpawner objSpawner;
-    
+
     private static MapGenManager _instance;
     public static MapGenManager Instance { get { return _instance; } }
 
@@ -17,7 +17,9 @@ public class MapGenManager : MonoBehaviour
         if (_instance != null && _instance != this)
         {
             Destroy(this.gameObject);
-        } else {
+        }
+        else
+        {
             _instance = this;
         }
     }

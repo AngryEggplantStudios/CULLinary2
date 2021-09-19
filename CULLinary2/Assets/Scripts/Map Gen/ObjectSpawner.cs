@@ -9,7 +9,7 @@ public class ObjectSpawner : MonoBehaviour
     public float minY;
     public Transform origin;
     public Spawnable[] spawnables;
-    
+
     RaycastHit hit;
     List<GameObject> spawnedObjects = new List<GameObject>();
     List<GameObject> parents = new List<GameObject>();
@@ -29,7 +29,7 @@ public class ObjectSpawner : MonoBehaviour
             for (int i = 0; i < spawnable.density; i++)
             {
                 // Assign random location
-                Vector3 pos = new Vector3(Random.Range(-size/2f, size/2f), 100, Random.Range(-size/2f, size/2f));
+                Vector3 pos = new Vector3(Random.Range(-size / 2f, size / 2f), 100, Random.Range(-size / 2f, size / 2f));
                 pos += origin.transform.position;
 
                 // Check validity
@@ -57,12 +57,4 @@ public class ObjectSpawner : MonoBehaviour
         }
         spawnedObjects = new List<GameObject>();
     }
-}
-
-[System.Serializable]
-public struct Spawnable
-{
-    public string name;
-    public GameObject[] prefabs;
-    public int density;
 }

@@ -27,7 +27,6 @@ public class NewMapGenerator : MonoBehaviour
     public float meshMaxHeight;
 
     public bool autoUpdate;
-    public bool autosave = false;
 
     public TerrainType[] regions;
 
@@ -43,7 +42,9 @@ public class NewMapGenerator : MonoBehaviour
         if (_instance != null && _instance != this)
         {
             Destroy(this.gameObject);
-        } else {
+        }
+        else
+        {
             _instance = this;
         }
 
@@ -89,28 +90,16 @@ public class NewMapGenerator : MonoBehaviour
 
         Mesh createdMesh = meshData.CreateMesh();
         Mesh walkableMesh = walkableData.CreateMesh();
-        foreach (MeshFilter mf in meshFilters)
-        {
-            mf.sharedMesh = createdMesh;
 
-            MeshCollider mc = mf.gameObject.GetComponent<MeshCollider>();
-            if (mc != null)
-            {
-                mc.sharedMesh = null;
-                mc.sharedMesh = walkableMesh;
-            }
+        GameObject parentObject = this.transform.parent.gameObject;
+        parentObject.GetComponent<MeshFilter>().sharedMesh = createdMesh;
+        MeshCollider mc = parentObject.GetComponent<MeshCollider>();
+        mc.sharedMesh = walkableMesh;
 
-            if (autosave)
-            {
-                string meshFilterName = "MeshFilter" + System.DateTime.Now.TimeOfDay.TotalSeconds;
-                AssetDatabase.CreateAsset(createdMesh, "Assets/Scenes/UtilScenes/Saved_Meshes/" + meshFilterName + ".asset");
-            }
-        }
+        //TO-DO: Test where to save the thing
+        string meshName = "Assets/Scenes/UtilScenes/Saved_Meshes/" + "Mesh" + System.DateTime.Now.TimeOfDay.TotalSeconds + ".asset";
+        AssetDatabase.CreateAsset(createdMesh, meshName);
 
-        foreach (Renderer rend in renderers)
-        {
-            rend.sharedMaterial.mainTexture = texture;
-        }
     }
 
     void OnValidate()
@@ -136,10 +125,29 @@ public class NewMapGenerator : MonoBehaviour
     }
 }
 
-[System.Serializable]
-public struct TerrainType
+
+/*
+foreach (MeshFilter mf in meshFilters)
 {
-    public string name;
-    public float height;
-    public Color colour;
+    mf.sharedMesh = createdMesh;
+
+    MeshCollider mc = mf.gameObject.GetComponent<MeshCollider>();
+    if (mc != null)
+    {
+        mc.sharedMesh = null;
+        mc.sharedMesh = walkableMesh;
+    }
+
+    if (autosave)
+    {
+        string meshFilterName = "MeshFilter" + System.DateTime.Now.TimeOfDay.TotalSeconds;
+        AssetDatabase.CreateAsset(createdMesh, "Assets/Scenes/UtilScenes/Saved_Meshes/" + meshFilterName + ".asset");
+    }
 }
+
+
+foreach (Renderer rend in renderers)
+{
+    rend.sharedMaterial.mainTexture = texture;
+}
+*/
