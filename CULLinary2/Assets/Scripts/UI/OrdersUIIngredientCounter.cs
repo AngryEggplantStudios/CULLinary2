@@ -17,7 +17,7 @@ public class OrdersUIIngredientCounter : MonoBehaviour
             numberToBeShown = numberRequired;
         }
 
-        itemIcon.sprite = GameData.GetItemById(itemId).icon;
+        itemIcon.sprite = DatabaseLoader.GetItemById(itemId).icon;
         text.text = numberToBeShown + separatorSymbol + numberRequired;
     }
 }

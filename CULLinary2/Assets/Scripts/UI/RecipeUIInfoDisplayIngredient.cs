@@ -11,7 +11,7 @@ public class RecipeUIInfoDisplayIngredient : MonoBehaviour
     public void DisplayIngredient(int itemId, bool isItemInInventory)
     {
         float opacity = isItemInInventory ? 1.0f : nonExistentItemOpacity;
-        ingredientIcon.sprite = GameData.GetItemById(itemId).icon;
+        ingredientIcon.sprite = DatabaseLoader.GetItemById(itemId).icon;
         ingredientIcon.color = new Color(
             ingredientIcon.color.r,
             ingredientIcon.color.g,
