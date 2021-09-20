@@ -48,11 +48,11 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         {
             if (recipesUnlocked[id])
             {
-                innerUnlockedRecipesList.Add(GameData.GetRecipeById(id));
+                innerUnlockedRecipesList.Add(DatabaseLoader.GetRecipeById(id));
             }
             else
             {
-                innerLockedRecipesList.Add(GameData.GetRecipeById(id));
+                innerLockedRecipesList.Add(DatabaseLoader.GetRecipeById(id));
             }
         }
         hasPopulatedUnlockedRecipes = true;
@@ -98,7 +98,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             Destroy(child.gameObject);
         }
         yield return null;
-        
+
         Dictionary<int, int> ordersByRecipe = OrdersManager.instance.GetNumberOfOrdersByRecipe();
         int GetNumberOfOrders(int recipeId)
         {

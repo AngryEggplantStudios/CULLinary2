@@ -42,7 +42,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         {
             for (int i = 0; i < item.count; i++)
             {
-                itemList.Add(GameData.GetItemById(item.id));
+                itemList.Add(DatabaseLoader.GetItemById(item.id));
             }
         }
     }

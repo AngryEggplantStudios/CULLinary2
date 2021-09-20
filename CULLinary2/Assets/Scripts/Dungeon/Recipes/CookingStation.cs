@@ -33,7 +33,7 @@ public class CookingStation : PlayerInteractable
             Debug.Log("Opening cooking menus");
             recipeManager.ActivateCooking();
             recipeBook.OpenRecipeBook();
-            inventory.OpenInventory();
+            UIController.instance.OpenInventory();
         }
     }
 

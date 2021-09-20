@@ -11,7 +11,6 @@ public class PlayerData
     public float meleeDamage = 20f;
     public bool[] recipesUnlocked = new bool[3] { true, true, true };
 
-
     public string ToJson()
     {
         return JsonUtility.ToJson(this);
