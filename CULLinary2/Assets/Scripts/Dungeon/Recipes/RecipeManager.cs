@@ -5,14 +5,18 @@ using UnityEngine.UI;
 
 public class RecipeManager : SingletonGeneric<RecipeManager>
 {
+    [Header("For Recipes UI")]
     // Container to attach recipes to
     public GameObject recipesContainer;
-
     // Prefab of a recipe book entry
     public GameObject recipeSlot;
-
     // Large info display of the recipe
     public RecipeUIInfoDisplay infoDisplay;
+
+    [Header("For Cooking UI")]
+    public GameObject cookingRecipesContainer;
+    public GameObject cookingUiSlot;
+    public RecipeUIInfoDisplay cookingInfoDisplay;
 
     private List<Recipe> innerUnlockedRecipesList = new List<Recipe>();
     private List<Recipe> innerLockedRecipesList = new List<Recipe>();
@@ -89,6 +93,12 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         {
             Destroy(child.gameObject);
         }
+        foreach (Transform child in cookingRecipesContainer.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        yield return null;
+        
         Dictionary<int, int> ordersByRecipe = OrdersManager.instance.GetNumberOfOrdersByRecipe();
         int GetNumberOfOrders(int recipeId)
         {
@@ -104,6 +114,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
 
         foreach (Recipe r in innerUnlockedRecipesList)
         {
+            // Add to Recipes UI
             GameObject recipeEntry = Instantiate(recipeSlot,
                                                  new Vector3(0, 0, 0),
                                                  Quaternion.identity,
@@ -117,6 +128,15 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
 
             recipeDetails.AddRecipe(r, areItemsInInventory, checkedIngs, GetNumberOfOrders(r.recipeId));
             recipeDetails.SetInfoDisplay(infoDisplay);
+
+            // Add to Cooking UI as well
+            GameObject cookingUiEntry = Instantiate(cookingUiSlot,
+                                                    new Vector3(0, 0, 0),
+                                                    Quaternion.identity,
+                                                    cookingRecipesContainer.transform) as GameObject;
+            CookingUISlot cookingRecipeDetails = cookingUiEntry.GetComponent<CookingUISlot>();
+            cookingRecipeDetails.AddRecipe(r, areItemsInInventory, checkedIngs, GetNumberOfOrders(r.recipeId));
+            cookingRecipeDetails.SetInfoDisplay(cookingInfoDisplay);
             yield return null;
         }
 

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7624554976303173295}
   - component: {fileID: 7624554976303173294}
   - component: {fileID: 7624554976303173281}
+  - component: {fileID: 4961391283460187433}
   m_Layer: 5
   m_Name: CookingUISlot
   m_TagString: Untagged
@@ -97,6 +98,22 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &4961391283460187433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7624554976303173283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a08603a01d1dc1a469d46f0f90547a52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cookableButton: {fileID: 7624554975678981421}
+  recipeIcon: {fileID: 7624554976586562883}
+  recipeDescription: {fileID: 7624554977404454818}
+  orderedIcon: {fileID: 7624554976284551780}
 --- !u!1001 &2280826960403295146
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -208,10 +225,70 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8532346930941955713, guid: 552abeb99da0cbc4d9286cd8260f6fed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8532346930941955713, guid: 552abeb99da0cbc4d9286cd8260f6fed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8532346930941955713, guid: 552abeb99da0cbc4d9286cd8260f6fed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 4961391283460187433}
+    - target: {fileID: 8532346930941955713, guid: 552abeb99da0cbc4d9286cd8260f6fed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8532346930941955713, guid: 552abeb99da0cbc4d9286cd8260f6fed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SelectRecipeForCooking
+      objectReference: {fileID: 0}
+    - target: {fileID: 8532346930941955713, guid: 552abeb99da0cbc4d9286cd8260f6fed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: CookingUISlot, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8532346930941955713, guid: 552abeb99da0cbc4d9286cd8260f6fed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 552abeb99da0cbc4d9286cd8260f6fed, type: 3}
 --- !u!224 &8113322469727224998 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8016248756002467596, guid: 552abeb99da0cbc4d9286cd8260f6fed, type: 3}
+  m_PrefabInstance: {fileID: 2280826960403295146}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7624554975678981421 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8532346930941955719, guid: 552abeb99da0cbc4d9286cd8260f6fed, type: 3}
+  m_PrefabInstance: {fileID: 2280826960403295146}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7624554976586562883 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8532346929698838249, guid: 552abeb99da0cbc4d9286cd8260f6fed, type: 3}
+  m_PrefabInstance: {fileID: 2280826960403295146}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7624554977404454818 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8532346930525236232, guid: 552abeb99da0cbc4d9286cd8260f6fed, type: 3}
+  m_PrefabInstance: {fileID: 2280826960403295146}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &7624554976284551780 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8532346931544342990, guid: 552abeb99da0cbc4d9286cd8260f6fed, type: 3}
   m_PrefabInstance: {fileID: 2280826960403295146}
   m_PrefabAsset: {fileID: 0}
