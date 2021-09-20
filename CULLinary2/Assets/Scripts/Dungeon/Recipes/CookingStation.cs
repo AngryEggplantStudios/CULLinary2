@@ -19,7 +19,7 @@ public class CookingStation : PlayerInteractable
     {
         return spCollider;
     }
-    public override void OnPlayerInteract(GameObject player)
+    public override void OnPlayerInteract()
     {
         // Open Cooking Menu
         if (!recipeManager.IsCookingActivated())
@@ -33,13 +33,14 @@ public class CookingStation : PlayerInteractable
         }
     }
 
-    public override void OnPlayerLeave(GameObject player)
+    public override void OnPlayerLeave()
     {
         // Stop cooking anim if player walks away halfway
         // Probably can remove this once we let player stop moving when cooking
         // (we'll leave it for now just in case)
         if (recipeManager.IsCookingActivated())
         {
+            recipeManager.DeactivateCooking();
             uiController.CloseCampfireInterface();
         }
     }

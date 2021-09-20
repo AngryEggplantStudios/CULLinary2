@@ -16,8 +16,15 @@ public class UIController : SingletonGeneric<UIController>
     private KeyCode openRecipesKeyCode;
     private KeyCode openCreaturesKeyCode;
     private KeyCode openMapKeyCode;
+    private KeyCode interactKeyCode;
+    private KeyCode rightUiTabKeyCode;
+    private KeyCode leftUiTabKeyCode;
+    private KeyCode closeUiKeyCode;
     private int currentUiPage;
     private bool isMenuActive = false;
+
+    // For interacting with objects
+    private PlayerInteractable currentInteractable = null;
 
     public override void Awake()
     {
@@ -27,6 +34,10 @@ public class UIController : SingletonGeneric<UIController>
         openRecipesKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.OpenRecipeBook);
         openCreaturesKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.OpenCreatures);
         openMapKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.OpenMap);
+        interactKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.Interact);
+        rightUiTabKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.UiMoveRight);
+        leftUiTabKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.UiMoveLeft);
+        closeUiKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.CloseMenu);
     }
 
     public void OpenInventory()
@@ -112,6 +123,22 @@ public class UIController : SingletonGeneric<UIController>
         cookingInterface.SetActive(false);
     }
 
+    // Remembers the current player interactable for interaction
+    public void SetPlayerInteractable(PlayerInteractable interactable)
+    {
+        currentInteractable = interactable;
+    }
+
+    // Triggers the OnPlayerLeave callback and clears the current interactable
+    public void TriggerLeaveAndClearPlayerInteractable()
+    {
+        if (currentInteractable != null)
+        {
+            currentInteractable.OnPlayerLeave();
+            currentInteractable = null;
+        }
+    }
+
     // Call this to update all the UI
     // 
     // This should be able to be called multiple times without 
@@ -120,9 +147,9 @@ public class UIController : SingletonGeneric<UIController>
     public static void UpdateAllUIs()
     {
         // Stop the coroutines that are currently running
-        InventoryManager.instance.StopCoroutine(InventoryManager.instance.UpdateUI());
-        RecipeManager.instance.StopCoroutine(RecipeManager.instance.UpdateUI());
-        OrdersManager.instance.StopCoroutine(OrdersManager.instance.UpdateUI());
+        InventoryManager.instance.StopAllCoroutines();
+        RecipeManager.instance.StopAllCoroutines();
+        OrdersManager.instance.StopAllCoroutines();
         
         // Start the coroutines again
         InventoryManager.instance.StartCoroutine(InventoryManager.instance.UpdateUI());
@@ -152,19 +179,23 @@ public class UIController : SingletonGeneric<UIController>
         {
             UIController.instance.OpenMap();
         }
+        else if (Input.GetKeyDown(interactKeyCode) && currentInteractable != null)
+        {
+            currentInteractable.OnPlayerInteract();
+        }
         else if (isMenuActive)
         {
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(rightUiTabKeyCode))
             {
                 currentUiPage = currentUiPage >= 4 ? 0 : currentUiPage + 1;
                 HandlePageChange();
             }
-            else if (Input.GetKeyDown(KeyCode.Q))
+            else if (Input.GetKeyDown(leftUiTabKeyCode))
             {
                 currentUiPage = currentUiPage <= 0 ? 4 : currentUiPage - 1;
                 HandlePageChange();
             }
-            else if (Input.GetKeyDown(KeyCode.Escape))
+            else if (Input.GetKeyDown(closeUiKeyCode))
             {
                 CloseMenu();
             }

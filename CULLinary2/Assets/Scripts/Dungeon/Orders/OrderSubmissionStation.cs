@@ -7,9 +7,6 @@ public class OrderSubmissionStation : PlayerInteractable
     public SpherePlayerCollider spCollider;
     public int uniqueId = -1;
 
-    private bool hasCached = false;
-    private PlayerPickup inventory;
-
     public void Awake()
     {
         // Set the unique ID of this station
@@ -43,22 +40,11 @@ public class OrderSubmissionStation : PlayerInteractable
         return spCollider;
     }
 
-    public override void OnPlayerInteract(GameObject player)
+    public override void OnPlayerInteract()
     {
-        CacheReferences(player);
         OrdersManager.Instance.CompleteOrder(uniqueId);
     }
 
-    public override void OnPlayerLeave(GameObject player)
+    public override void OnPlayerLeave()
     { }
-
-    // Helper function to cache useful references
-    private void CacheReferences(GameObject player)
-    {
-        if (!hasCached)
-        {
-            inventory = player.GetComponent<PlayerPickup>();
-            hasCached = true;
-        }
-    }
 }
