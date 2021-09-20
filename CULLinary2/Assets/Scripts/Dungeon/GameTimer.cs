@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameTimer : SingletonGeneric<GameTimer>
 {
     [SerializeField] private Light DirectionalLight;
     [SerializeField] private LightingPreset Preset;
+    [SerializeField] private TextMeshProUGUI DayText;
+    [SerializeField] private TextMeshProUGUI TimeText;
+
     // 0.2 of 1 minute = 10 seconds eg
     [SerializeField] private float dayLengthInMinutes;
     private static float gameTime;
@@ -23,7 +27,8 @@ public class GameTimer : SingletonGeneric<GameTimer>
     {
         gameTime = 0.25f; //day starts at 6 am 
         timeScale = 24 / (dayLengthInMinutes / 60);
-        Debug.Log("Starting class");
+        DayText.text = "DAY " + dayNum;
+        TimeText.text = "06:00";
     }
 
     private void Update()
@@ -35,11 +40,12 @@ public class GameTimer : SingletonGeneric<GameTimer>
         hourNum = Mathf.FloorToInt(actualTime);
         minuteNum = Mathf.FloorToInt((actualTime - (float)hourNum) * 60);
         timeAsString = hourNum + ":" + minuteNum.ToString("00");
+        TimeText.text = timeAsString;
         // Debug.Log("current time: " + timeAsString);
 
         if (timeAsString == "6:00" && isNewDay)
         {
-            Debug.Log("start of new day");
+            //Debug.Log("start of new day");
             isNewDay = false;
             OnStartNewDay?.Invoke();
         }
@@ -49,7 +55,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         {
             dayNum++;
             gameTime -= 1;
-            Debug.Log("day " + dayNum);
+            DayText.text = "DAY " + dayNum;
             isNewDay = true;
         }
     }
