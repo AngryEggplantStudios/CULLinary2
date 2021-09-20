@@ -67,9 +67,15 @@ public class Minimap : MonoBehaviour
                 orderSubmissionStationLocationsAndIcons.Remove(stationId);
             }
         });
-        OrdersManager.instance.AddOrderGenerationCallback(() => InstantiateMinimapIcons());
+        OrdersManager.instance.AddOrderGenerationCallback(() => ResetInstiantedIconsFlag());
 
         hasInstantiatedIcons = true;
+    }
+
+    // Calling this will trigger the minimap to redraw the icons
+    private void ResetInstiantedIconsFlag()
+    {
+        hasInstantiatedIcons = false;
     }
 
     void Update()
