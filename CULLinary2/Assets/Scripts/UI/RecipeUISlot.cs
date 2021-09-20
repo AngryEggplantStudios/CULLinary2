@@ -24,7 +24,7 @@ public class RecipeUISlot : MonoBehaviour
     private bool ordered;
 
     
-    (int, bool)[] checkedIngs;
+    private (int, bool)[] checkedIngs;
     private int numOfOrders;
 
     public void AddRecipe(

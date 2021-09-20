@@ -124,19 +124,48 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     {
         foreach (Transform child in ordersContainer.transform)
         {
-            yield return null;
             Destroy(child.gameObject);
         }
 
         foreach (Order o in innerOrdersList)
         {
-            yield return null;
             GameObject orderLog = Instantiate(orderSlot,
                                               new Vector3(0, 0, 0),
                                               Quaternion.identity,
                                               ordersContainer.transform) as GameObject;
-            OrderSlot orderDetails = orderLog.GetComponent<OrderSlot>();
-            orderDetails.AssignOrder(o);
+            
+            OrdersUISlot orderDetails = orderLog.GetComponent<OrdersUISlot>();
+            InventoryManager inv = InventoryManager.instance;
+            int[] ingsArr = o.GetIngredientIds();
+            (int, bool)[] missingItems = new (int, bool)[0];
+            bool isCookable = inv.CheckIfItemsExist(ingsArr, out _, out missingItems);
+
+            Dictionary<int, (int, int)> itemQuantities = new Dictionary<int, (int, int)>();
+            foreach ((int itemId, bool isPresent) in missingItems)
+            {
+                if (!itemQuantities.ContainsKey(itemId))
+                {
+                    itemQuantities.Add(itemId, (0, 0));
+                }
+                int newInvItemAmount = itemQuantities[itemId].Item1;
+                if (isPresent)
+                {
+                    newInvItemAmount++;
+                }
+                itemQuantities[itemId] = (newInvItemAmount, itemQuantities[itemId].Item2 + 1);
+            }
+
+            List<(int, int, int)> itemsCounted = new List<(int, int, int)>();
+            foreach (KeyValuePair<int, (int, int)> idCountPair in itemQuantities)
+            {
+                itemsCounted.Add((
+                    idCountPair.Key,
+                    idCountPair.Value.Item1,
+                    idCountPair.Value.Item2
+                ));
+            }
+            orderDetails.AssignOrder(o, isCookable, false, itemsCounted.ToArray());
+            yield return null;
         }
         // Show correct number of orders in recipes menu
         StartCoroutine(RecipeManager.instance.UpdateUI());

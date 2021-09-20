@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 9099668383442337975}
   - component: {fileID: 2600599711640223348}
   - component: {fileID: 1511147604748811719}
+  - component: {fileID: 7700477853377058955}
   m_Layer: 5
   m_Name: OrdersUISlot
   m_TagString: Untagged
@@ -100,6 +101,23 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &7700477853377058955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1090685044111329707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01c1cca1d2394e14fac2528537955e5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cookableButton: {fileID: 8371188941886964024}
+  productIcon: {fileID: 9146720370828950010}
+  mappedIcon: {fileID: 9174952641158780004}
+  ingredientsContainer: {fileID: 2401799020428282120}
+  ingredientCounterPrefab: {fileID: 688985649133994915, guid: 06ff182828509fe48a637afa2b295885, type: 3}
 --- !u!1 &2401799020428282120
 GameObject:
   m_ObjectHideFlags: 0
@@ -334,7 +352,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4355631340141370886
 RectTransform:
   m_ObjectHideFlags: 0
@@ -453,7 +471,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8018207271598952901
 RectTransform:
   m_ObjectHideFlags: 0
