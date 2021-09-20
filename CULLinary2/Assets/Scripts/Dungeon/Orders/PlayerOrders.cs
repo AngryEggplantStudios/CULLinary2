@@ -14,7 +14,6 @@ public class PlayerOrders : MonoBehaviour
 
     public void ToggleOrders()
     {
-        Debug.Log("orders toggled");
         OrdersManager.instance.FirstGenerationOfOrders();
         ordersUi.SetActive(!ordersUi.activeSelf);
     }
