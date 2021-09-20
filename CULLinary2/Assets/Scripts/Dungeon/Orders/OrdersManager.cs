@@ -113,8 +113,11 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             innerOrdersList.RemoveAt(orderIndex);
 
             Debug.Log("Money + $" + stationId + ", you win!");
-            orderSubmissionSound.Play();
-            orderSubmissionSound.SetScheduledEndTime(AudioSettings.dspTime + 11.15f);
+            if (orderSubmissionSound != null)
+            {
+                orderSubmissionSound.Play();
+                orderSubmissionSound.SetScheduledEndTime(AudioSettings.dspTime + 11.15f);
+            }
 
             UIController.UpdateAllUIs();
             onOrderCompleteCallback.Invoke(stationId);
