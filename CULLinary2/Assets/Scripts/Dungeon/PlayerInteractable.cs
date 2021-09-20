@@ -26,6 +26,11 @@ public abstract class PlayerInteractable : MonoBehaviour
 
     void Update()
     {
+        if (!BiomeGeneratorManager.IsGenerationComplete())
+        {
+            return;
+        }
+
         if (player == null && numberOfFailures < findGameObjectFailureLimit)
         {
             // Sometimes, it does not work in Awake or Start

@@ -34,6 +34,11 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
         }
     }
 
+    public static bool IsGenerationComplete()
+    {
+        return BiomeGeneratorManager.instance.isComplete;
+    }
+
     private IEnumerator StartGeneration()
     {
         Debug.Log("Starting Generation");

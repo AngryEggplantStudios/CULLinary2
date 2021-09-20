@@ -100,6 +100,18 @@ public class UIController : SingletonGeneric<UIController>
         mapTab.SetActive(false);
     }
 
+    public void OpenCampfireInterface()
+    {
+        // TODO: campfireMenu.SetActive(true);
+        cookingInterface.SetActive(true);
+    }
+
+    public void CloseCampfireInterface()
+    {
+        // TODO: campfireMenu.SetActive(false);
+        cookingInterface.SetActive(false);
+    }
+
     private void Update()
     {
         if (Input.GetKeyDown(openInventoryKeyCode))

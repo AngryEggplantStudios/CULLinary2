@@ -62,6 +62,14 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         };
     }
 
+    void Update()
+    {
+        if (!firstGeneration && BiomeGeneratorManager.IsGenerationComplete())
+        {
+            FirstGenerationOfOrders();
+        }
+    }
+
     public void AddOrder(Order order)
     {
         innerOrdersList.Add(order);

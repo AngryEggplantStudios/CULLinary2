@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657815, g: 0.49641192, b: 0.57481617, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0.99999946, b: 0.99999946, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -511,18 +511,6 @@ PrefabInstance:
       propertyPath: canvasDisplay
       value: 
       objectReference: {fileID: 2110931401}
-    - target: {fileID: 5620305572254198147, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
-      propertyPath: recipeBookUi
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5620305572254198147, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
-      propertyPath: cookingIndicator
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5620305572254198148, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
-      propertyPath: ordersUi
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 5620305572254198149, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
       propertyPath: inventoryUI
       value: 
@@ -567,9 +555,7 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 5620305572254198148, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
-    - {fileID: 5620305572254198147, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
 --- !u!1 &528618779
 GameObject:
@@ -756,12 +742,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c06224f2b0559148a04d6811b8c218e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ordersContainer: {fileID: 0}
-  orderSlot: {fileID: 5886313380595551692, guid: e2825d9424f57684799691d0359335d0, type: 3}
+  ordersContainer: {fileID: 674865433}
+  orderSlot: {fileID: 1090685044111329707, guid: 071eaffb05eeafd46a2bfa7b1145c207, type: 3}
   orderSubmissionSound: {fileID: 0}
   order1: {fileID: 11400000, guid: aa2466e04e824496ba409f9fbbcffdf4, type: 2}
   order2: {fileID: 11400000, guid: c38aa90e48cc842518ba551117062367, type: 2}
-  numberOfDailyOrders: 6
+  numberOfDailyOrders: 5
 --- !u!4 &633122593
 Transform:
   m_ObjectHideFlags: 0
@@ -3550,6 +3536,43 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6662030478773561089, guid: 146f72df1638140838a4412319be002a, type: 3}
   m_PrefabInstance: {fileID: 674865424}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &674865428 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1204830875311600031, guid: 146f72df1638140838a4412319be002a, type: 3}
+  m_PrefabInstance: {fileID: 674865424}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae0199c415359264b88c9fbdc56d48bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &674865430 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 799308412960787452, guid: 146f72df1638140838a4412319be002a, type: 3}
+  m_PrefabInstance: {fileID: 674865424}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &674865431 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8908541866945465835, guid: 146f72df1638140838a4412319be002a, type: 3}
+  m_PrefabInstance: {fileID: 674865424}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae0199c415359264b88c9fbdc56d48bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &674865432 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5218245463032244894, guid: 146f72df1638140838a4412319be002a, type: 3}
+  m_PrefabInstance: {fileID: 674865424}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &674865433 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2067718769517577656, guid: 146f72df1638140838a4412319be002a, type: 3}
+  m_PrefabInstance: {fileID: 674865424}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &696941727
 GameObject:
   m_ObjectHideFlags: 0
@@ -4710,8 +4733,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ff6fccb72d450f4b803619273f41cb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  recipesContainer: {fileID: 0}
-  recipeSlot: {fileID: 5886313380595551692, guid: 65e98f9d655818f4d8f43b218310a263, type: 3}
+  recipesContainer: {fileID: 674865432}
+  recipeSlot: {fileID: 7624554976303173283, guid: aa4beb72684b9ff4c8127b2afd6353ab, type: 3}
+  infoDisplay: {fileID: 674865431}
+  cookingRecipesContainer: {fileID: 674865430}
+  cookingUiSlot: {fileID: 7624554976303173283, guid: 07d5aa087990f364bbfb432922f5aea1, type: 3}
+  cookingInfoDisplay: {fileID: 674865428}
 --- !u!4 &2036658894
 Transform:
   m_ObjectHideFlags: 0
@@ -5106,9 +5133,9 @@ MonoBehaviour:
     density: 5000
   - name: Campfires
     prefabs:
-    - {fileID: 919132149155446097, guid: efa254563618a4ba7b271349033b0c17, type: 3}
+    - {fileID: 1696568650871794669, guid: 97b35b47b4cecae4cb044ed478fa8564, type: 3}
     density: 100
   - name: Houses
     prefabs:
-    - {fileID: 1683153878349635158, guid: 9272f48d4033b9d40ace66f2f2664c1e, type: 3}
+    - {fileID: 5112065047382128652, guid: 6e6733609255880429ebdb4b263552a8, type: 3}
     density: 300
