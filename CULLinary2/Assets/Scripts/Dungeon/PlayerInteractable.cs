@@ -4,61 +4,18 @@ using UnityEngine;
 
 public abstract class PlayerInteractable : MonoBehaviour
 {
-    private KeybindAction interactAction;
-    private GameObject player;
-    private bool hasInteracted = false;
-
-    // Keep track of game object failures
-    // for the error message
-    private const int findGameObjectFailureLimit = 10;
-    private int numberOfFailures = 0;
-
-    void Awake()
-    {
-        interactAction = KeybindAction.Interact;
-        hasInteracted = false;
-    }
-
-    void Start()
-    {
-        player = GameObject.FindGameObjectWithTag("Player");
-    }
+    private bool hasSetColliderParent = false;
 
     void Update()
     {
-        if (!BiomeGeneratorManager.IsGenerationComplete())
+        if (!hasSetColliderParent && BiomeGeneratorManager.IsGenerationComplete())
         {
-            return;
-        }
-
-        if (player == null && numberOfFailures < findGameObjectFailureLimit)
-        {
-            // Sometimes, it does not work in Awake or Start
-            // So finding the game object has to be done here
-            player = GameObject.FindGameObjectWithTag("Player");
-
-            numberOfFailures++;
-            if (numberOfFailures == findGameObjectFailureLimit)
-            {
-                Debug.Log("PlayerInteractable.cs: Could not find Player in scene");
-            }
-        }
-
-        if (hasInteracted && !PlayerWithinRange())
-        {
-            hasInteracted = false;
-            OnPlayerLeave(player);
-
-        }
-
-        if (!hasInteracted && PlayerKeybinds.WasTriggered(interactAction) && PlayerWithinRange())
-        {
-            hasInteracted = true;
-            OnPlayerInteract(player);
+            GetCollider().SetPlayerInteractable(this);
+            hasSetColliderParent = true;
         }
     }
 
-    private bool PlayerWithinRange()
+    public bool PlayerWithinRange()
     {
         return GetCollider().PlayerWithinRange();
     }
@@ -67,8 +24,8 @@ public abstract class PlayerInteractable : MonoBehaviour
     public abstract SpherePlayerCollider GetCollider();
 
     // Called when player is in range and interacts with this object
-    public abstract void OnPlayerInteract(GameObject player);
+    public abstract void OnPlayerInteract();
 
     // Called when player has interacted with the object and goes out of range
-    public abstract void OnPlayerLeave(GameObject player);
+    public abstract void OnPlayerLeave();
 }

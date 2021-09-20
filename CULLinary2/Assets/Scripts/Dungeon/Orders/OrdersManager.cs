@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class OrdersManager : SingletonGeneric<OrdersManager>
 {
@@ -23,13 +24,16 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
 
 
     // Define a callback for order completion
-    public delegate void OrderCompletionDelegate(int orderSubmissionStationId);
+    public delegate void OrderCompletionDelegate(int orderSubmissionStationId, int recipeId);
+    // Define a callback for order generation
+    public delegate void OrderGenerationDelegate();
 
     private List<Order> innerOrdersList;
     // Hash table that maps the ID of the order submission station to their transforms
     private Dictionary<int, Transform> orderSubmissionStations = new Dictionary<int, Transform>();
     private int numberOfOrders = 0;
     private event OrderCompletionDelegate onOrderCompleteCallback;
+    private event OrderGenerationDelegate onOrderGenerationCallback;
     // Random number generator for new orders
     private System.Random rand;
     // First generation of orders
@@ -113,11 +117,14 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             innerOrdersList.RemoveAt(orderIndex);
 
             Debug.Log("Money + $" + stationId + ", you win!");
-            orderSubmissionSound.Play();
-            orderSubmissionSound.SetScheduledEndTime(AudioSettings.dspTime + 11.15f);
+            if (orderSubmissionSound != null)
+            {
+                orderSubmissionSound.Play();
+                orderSubmissionSound.SetScheduledEndTime(AudioSettings.dspTime + 11.15f);
+            }
 
             UIController.UpdateAllUIs();
-            onOrderCompleteCallback.Invoke(stationId);
+            onOrderCompleteCallback.Invoke(stationId, orderToComplete.GetRecipe().recipeId);
 
             isCacheValid = false;
             return true;
@@ -148,6 +155,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             int[] ingsArr = o.GetIngredientIds();
             (int, bool)[] missingItems = new (int, bool)[0];
             bool isCookable = inv.CheckIfItemsExist(ingsArr, out _, out missingItems);
+            bool isInInv = inv.CheckIfExists(o.GetProduct().inventoryItemId);
 
             Dictionary<int, (int, int)> itemQuantities = new Dictionary<int, (int, int)>();
             foreach ((int itemId, bool isPresent) in missingItems)
@@ -173,7 +181,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
                     idCountPair.Value.Item2
                 ));
             }
-            orderDetails.AssignOrder(o, isCookable, false, itemsCounted.ToArray());
+            orderDetails.AssignOrder(o, isCookable, isInInv, false, itemsCounted.ToArray());
             yield return null;
         }
     }
@@ -194,15 +202,20 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         onOrderCompleteCallback += ocd;
     }
 
-    // Gets all relevant order stations
-    // Note this this loops through all the orders
-    public Dictionary<int, Transform> GetRelevantOrderStations()
+    public void AddOrderGenerationCallback(OrderGenerationDelegate ogd)
     {
-        Dictionary<int, Transform> relevantStations = new Dictionary<int, Transform>();
+        onOrderGenerationCallback += ogd;
+    }
+
+    // Gets all relevant order stations and icons
+    // Note this this loops through all the orders
+    public Dictionary<int, (Transform, Sprite)> GetRelevantOrderStations()
+    {
+        Dictionary<int, (Transform, Sprite)> relevantStations = new Dictionary<int, (Transform, Sprite)>();
         foreach (Order o in innerOrdersList)
         {
             int id = o.GetSubmissionStationId();
-            relevantStations.Add(id, orderSubmissionStations[id]);
+            relevantStations.Add(id, (orderSubmissionStations[id], o.GetProduct().icon));
         }
         return relevantStations;
     }
@@ -215,6 +228,13 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         {
             GenerateRandomOrders();
         }
+    }
+
+    // Returns true only if map and orders have been generated
+    // Map always generates first before orders
+    public bool IsOrderGenerationComplete()
+    {
+        return firstGeneration;
     }
 
     // Gets a dictionary of recipe IDs mapped to the number
@@ -262,5 +282,9 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         isCacheValid = false;
         StopCoroutine(UpdateUI());
         StartCoroutine(UpdateUI());
+        if (onOrderGenerationCallback != null)
+        {
+            onOrderGenerationCallback.Invoke();
+        }
     }
 }

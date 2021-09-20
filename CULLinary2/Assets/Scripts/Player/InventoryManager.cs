@@ -51,6 +51,8 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
     // Tries to remove an item, given the ID.
     // If the item was not found, return false.
     // Otherwise, remove the item and return true.
+    //
+    // Does not call UpdateAllUis, as completing the order will call it
     public bool RemoveIdIfPossible(int idToRemove)
     {
         for (int i = 0; i < itemListReference.Count; i++)
@@ -60,7 +62,6 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
             {
                 itemListReference.RemoveAt(i);
                 isCacheValid = false;
-                UIController.UpdateAllUIs();
                 return true;
             }
         }
@@ -126,6 +127,19 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
             isCacheValid = true;
         }
         return inventoryDictionaryCache;
+    }
+
+    // Checks if the inventory has this item
+    public bool CheckIfExists(int itemId)
+    {
+        foreach (InventoryItem i in itemListReference)
+        {
+            if (i.inventoryItemId == itemId)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Given a list of item IDs, check if those IDs exist in the
