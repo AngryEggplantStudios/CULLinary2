@@ -6,14 +6,13 @@ public class CookingStation : PlayerInteractable
 {
     public SpherePlayerCollider spCollider;
 
-    private bool hasCached = false;
-    private PlayerRecipeBook recipeBook;
-    private PlayerPickup inventory;
     private RecipeManager recipeManager;
+    private UIController uiController;
 
     void Start()
     {
         recipeManager = RecipeManager.Instance;
+        uiController = UIController.instance;
     }
 
     public override SpherePlayerCollider GetCollider()
@@ -22,8 +21,6 @@ public class CookingStation : PlayerInteractable
     }
     public override void OnPlayerInteract(GameObject player)
     {
-        CacheReferences(player);
-
         // Open Cooking Menu
         if (!recipeManager.IsCookingActivated())
         {
@@ -32,37 +29,18 @@ public class CookingStation : PlayerInteractable
             // DisableMovementOfPlayer(); // Disable movement of player when menu is open
             Debug.Log("Opening cooking menus");
             recipeManager.ActivateCooking();
-            recipeBook.OpenRecipeBook();
-            UIController.instance.OpenInventory();
+            uiController.OpenCampfireInterface();
         }
     }
 
     public override void OnPlayerLeave(GameObject player)
     {
-        CacheReferences(player);
-
         // Stop cooking anim if player walks away halfway
         // Probably can remove this once we let player stop moving when cooking
         // (we'll leave it for now just in case)
         if (recipeManager.IsCookingActivated())
         {
-            recipeManager.DeactivateCooking();
-            recipeBook.UpdateUI();
-        }
-    }
-
-    // Helper function to cache useful references
-    private void CacheReferences(GameObject player)
-    {
-        if (!hasCached)
-        {
-            if (player == null)
-            {
-                Debug.Log("player is null");
-            }
-            recipeBook = player.GetComponent<PlayerRecipeBook>();
-            inventory = player.GetComponent<PlayerPickup>();
-            hasCached = true;
+            uiController.CloseCampfireInterface();
         }
     }
 }

@@ -37,6 +37,10 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     // Do not rely on game timer for first day generation
     private bool firstDay = true;
 
+    // Cache for number of orders by recipe ID
+    private Dictionary<int, int> numberOfOrdersByRecipeCache;
+    private bool isCacheValid = false;
+
     void Start()
     {
         innerOrdersList = new List<Order>();
@@ -58,9 +62,19 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         };
     }
 
+    void Update()
+    {
+        if (!firstGeneration && BiomeGeneratorManager.IsGenerationComplete())
+        {
+            FirstGenerationOfOrders();
+        }
+    }
+
     public void AddOrder(Order order)
     {
         innerOrdersList.Add(order);
+        isCacheValid = false;
+        StopCoroutine(UpdateUI());
         StartCoroutine(UpdateUI());
     }
 
@@ -102,8 +116,10 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             orderSubmissionSound.Play();
             orderSubmissionSound.SetScheduledEndTime(AudioSettings.dspTime + 11.15f);
 
-            StartCoroutine(UpdateUI());
+            UIController.UpdateAllUIs();
             onOrderCompleteCallback.Invoke(stationId);
+
+            isCacheValid = false;
             return true;
         }
         else
@@ -117,19 +133,48 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     {
         foreach (Transform child in ordersContainer.transform)
         {
-            yield return null;
             Destroy(child.gameObject);
         }
 
         foreach (Order o in innerOrdersList)
         {
-            yield return null;
             GameObject orderLog = Instantiate(orderSlot,
                                               new Vector3(0, 0, 0),
                                               Quaternion.identity,
                                               ordersContainer.transform) as GameObject;
-            OrderSlot orderDetails = orderLog.GetComponent<OrderSlot>();
-            orderDetails.AssignOrder(o);
+            
+            OrdersUISlot orderDetails = orderLog.GetComponent<OrdersUISlot>();
+            InventoryManager inv = InventoryManager.instance;
+            int[] ingsArr = o.GetIngredientIds();
+            (int, bool)[] missingItems = new (int, bool)[0];
+            bool isCookable = inv.CheckIfItemsExist(ingsArr, out _, out missingItems);
+
+            Dictionary<int, (int, int)> itemQuantities = new Dictionary<int, (int, int)>();
+            foreach ((int itemId, bool isPresent) in missingItems)
+            {
+                if (!itemQuantities.ContainsKey(itemId))
+                {
+                    itemQuantities.Add(itemId, (0, 0));
+                }
+                int newInvItemAmount = itemQuantities[itemId].Item1;
+                if (isPresent)
+                {
+                    newInvItemAmount++;
+                }
+                itemQuantities[itemId] = (newInvItemAmount, itemQuantities[itemId].Item2 + 1);
+            }
+
+            List<(int, int, int)> itemsCounted = new List<(int, int, int)>();
+            foreach (KeyValuePair<int, (int, int)> idCountPair in itemQuantities)
+            {
+                itemsCounted.Add((
+                    idCountPair.Key,
+                    idCountPair.Value.Item1,
+                    idCountPair.Value.Item2
+                ));
+            }
+            orderDetails.AssignOrder(o, isCookable, false, itemsCounted.ToArray());
+            yield return null;
         }
     }
 
@@ -172,6 +217,28 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         }
     }
 
+    // Gets a dictionary of recipe IDs mapped to the number
+    // of orders that the player has currently for that recipe.
+    public Dictionary<int, int> GetNumberOfOrdersByRecipe()
+    {
+        if (!isCacheValid)
+        {
+            Dictionary<int, int> ordersByRecipe = new Dictionary<int, int>();
+            foreach (Order o in innerOrdersList)
+            {
+                int recipeId = o.GetRecipe().recipeId;
+                if (!ordersByRecipe.ContainsKey(recipeId))
+                {
+                    ordersByRecipe.Add(recipeId, 0);
+                }
+                ordersByRecipe[recipeId]++;
+            }
+            numberOfOrdersByRecipeCache = ordersByRecipe;
+            isCacheValid = true;
+        }
+        return numberOfOrdersByRecipeCache;
+    }
+
     // To be called when a new day begins
     // Generates random orders and populates the order list
     private void GenerateRandomOrders()
@@ -192,6 +259,8 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         }
 
         firstGeneration = true;
+        isCacheValid = false;
+        StopCoroutine(UpdateUI());
         StartCoroutine(UpdateUI());
     }
 }

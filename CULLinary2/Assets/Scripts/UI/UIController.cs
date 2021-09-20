@@ -100,6 +100,36 @@ public class UIController : SingletonGeneric<UIController>
         mapTab.SetActive(false);
     }
 
+    public void OpenCampfireInterface()
+    {
+        // TODO: campfireMenu.SetActive(true);
+        cookingInterface.SetActive(true);
+    }
+
+    public void CloseCampfireInterface()
+    {
+        // TODO: campfireMenu.SetActive(false);
+        cookingInterface.SetActive(false);
+    }
+
+    // Call this to update all the UI
+    // 
+    // This should be able to be called multiple times without 
+    // much performance penalty, as many small changes can
+    // cause an update to the UI
+    public static void UpdateAllUIs()
+    {
+        // Stop the coroutines that are currently running
+        InventoryManager.instance.StopCoroutine(InventoryManager.instance.UpdateUI());
+        RecipeManager.instance.StopCoroutine(RecipeManager.instance.UpdateUI());
+        OrdersManager.instance.StopCoroutine(OrdersManager.instance.UpdateUI());
+        
+        // Start the coroutines again
+        InventoryManager.instance.StartCoroutine(InventoryManager.instance.UpdateUI());
+        RecipeManager.instance.StartCoroutine(RecipeManager.instance.UpdateUI());
+        OrdersManager.instance.StartCoroutine(OrdersManager.instance.UpdateUI());
+    }
+
     private void Update()
     {
         if (Input.GetKeyDown(openInventoryKeyCode))
