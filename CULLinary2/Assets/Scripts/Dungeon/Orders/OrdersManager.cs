@@ -74,6 +74,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     {
         innerOrdersList.Add(order);
         isCacheValid = false;
+        StopCoroutine(UpdateUI());
         StartCoroutine(UpdateUI());
     }
 
@@ -115,7 +116,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             orderSubmissionSound.Play();
             orderSubmissionSound.SetScheduledEndTime(AudioSettings.dspTime + 11.15f);
 
-            StartCoroutine(UpdateUI());
+            UIController.UpdateAllUIs();
             onOrderCompleteCallback.Invoke(stationId);
 
             isCacheValid = false;
@@ -175,8 +176,6 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             orderDetails.AssignOrder(o, isCookable, false, itemsCounted.ToArray());
             yield return null;
         }
-        // Show correct number of orders in recipes menu
-        StartCoroutine(RecipeManager.instance.UpdateUI());
     }
 
     // Adds the order submission station to the hash table of stations and
@@ -261,6 +260,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
 
         firstGeneration = true;
         isCacheValid = false;
+        StopCoroutine(UpdateUI());
         StartCoroutine(UpdateUI());
     }
 }

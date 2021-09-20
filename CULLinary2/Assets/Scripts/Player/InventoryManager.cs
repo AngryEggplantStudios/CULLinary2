@@ -30,7 +30,8 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
         {
             itemListReference.Add(item);
             isCacheValid = false;
-            StartCoroutine(UpdateUI());
+            // May affect Recipe, Orders UI as well
+            UIController.UpdateAllUIs();
             return true;
         }
         else
@@ -43,7 +44,8 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
     {
         itemListReference.Remove(item);
         isCacheValid = false;
-        StartCoroutine(UpdateUI());
+        // May affect Recipe, Orders UI as well
+        UIController.UpdateAllUIs();
     }
 
     // Tries to remove an item, given the ID.
@@ -58,7 +60,7 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
             {
                 itemListReference.RemoveAt(i);
                 isCacheValid = false;
-                StartCoroutine(UpdateUI());
+                UIController.UpdateAllUIs();
                 return true;
             }
         }
@@ -68,7 +70,7 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
     public void PopulateUI(List<InventoryItem> items)
     {
         itemListReference = items;
-        StartCoroutine(UpdateUI());
+        UIController.UpdateAllUIs();
     }
 
     public IEnumerator UpdateUI()
@@ -90,7 +92,6 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
         }
     }
 
-    
     // Builds a hash table based on the current contents of the inventory
     // 
     // Returns a dictionary that maps an item ID to the number of those items,
@@ -217,8 +218,6 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
                 inventoryItems.Remove(inventoryItems[0]);
             }
         }
-
-        // StartCoroutine(UpdateUI());
         return true;
     }
 

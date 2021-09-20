@@ -22,6 +22,9 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
     private List<Recipe> innerLockedRecipesList = new List<Recipe>();
     private bool isCooking = false;
 
+    // Currently selected recipe in Cooking UI
+    private Recipe currentRecipe = null;
+
     // Random number generator for recipes
     private System.Random rand = new System.Random();
 
@@ -56,6 +59,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             }
         }
         hasPopulatedUnlockedRecipes = true;
+        StopCoroutine(UpdateUI());
         StartCoroutine(UpdateUI());
     }
 
@@ -80,11 +84,43 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
     public void DeactivateCooking()
     {
         isCooking = false;
+        currentRecipe = null;
     }
 
     public bool IsCookingActivated()
     {
         return isCooking;
+    }
+
+    public void SetCurrentlyCookingRecipe(Recipe r)
+    {
+        currentRecipe = r;
+    }
+
+    public void CookCurrentlySelected()
+    {
+        if (currentRecipe == null)
+        {
+            Debug.Log("RecipeManager: No recipe selected!");
+            return;
+        }
+        Recipe r = currentRecipe;
+
+        if (!isCooking)
+        {
+            Debug.Log("RecipeManager: Not at campfire!");
+            return;
+        }
+
+        if (InventoryManager.instance.RemoveIdsFromInventory(r.GetIngredientIds()))
+        {
+            InventoryManager.instance.AddItem(r.cookedDishItem);
+            // UI will be updated in AddItem
+        }
+        else
+        {
+            Debug.Log("RecipeManager: ingredients required!");
+        }
     }
 
     public IEnumerator UpdateUI()

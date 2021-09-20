@@ -49,6 +49,7 @@ public class CookingUISlot : MonoBehaviour
         else
         {
             infoDisplay.ShowRecipe(recipe, checkedIngs, numOfOrders);
+            RecipeManager.instance.SetCurrentlyCookingRecipe(recipe);
         }
     }
 
