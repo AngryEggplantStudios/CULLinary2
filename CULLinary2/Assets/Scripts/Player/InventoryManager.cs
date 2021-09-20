@@ -129,6 +129,19 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
         return inventoryDictionaryCache;
     }
 
+    // Checks if the inventory has this item
+    public bool CheckIfExists(int itemId)
+    {
+        foreach (InventoryItem i in itemListReference)
+        {
+            if (i.inventoryItemId == itemId)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // Given a list of item IDs, check if those IDs exist in the
     // inventory. The list is allowed to contain duplicates.
     // Returns true if all the items exist in the inventory.

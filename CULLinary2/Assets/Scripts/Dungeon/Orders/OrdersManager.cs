@@ -155,6 +155,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             int[] ingsArr = o.GetIngredientIds();
             (int, bool)[] missingItems = new (int, bool)[0];
             bool isCookable = inv.CheckIfItemsExist(ingsArr, out _, out missingItems);
+            bool isInInv = inv.CheckIfExists(o.GetProduct().inventoryItemId);
 
             Dictionary<int, (int, int)> itemQuantities = new Dictionary<int, (int, int)>();
             foreach ((int itemId, bool isPresent) in missingItems)
@@ -180,7 +181,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
                     idCountPair.Value.Item2
                 ));
             }
-            orderDetails.AssignOrder(o, isCookable, false, itemsCounted.ToArray());
+            orderDetails.AssignOrder(o, isCookable, isInInv, false, itemsCounted.ToArray());
             yield return null;
         }
     }
