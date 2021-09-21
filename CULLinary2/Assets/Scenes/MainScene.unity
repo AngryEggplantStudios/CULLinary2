@@ -5093,6 +5093,49 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1127697759
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1127697760}
+  - component: {fileID: 1127697761}
+  m_Layer: 0
+  m_Name: DungeonSpawnManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1127697760
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1127697759}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -29.425282, y: -30.653246, z: 19.400345}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1127805706}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1127697761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1127697759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb7edae49d66c8d4096831254c497ceb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1127805705
 GameObject:
   m_ObjectHideFlags: 0
@@ -5130,6 +5173,8 @@ Transform:
   - {fileID: 1147305466}
   - {fileID: 1258908276}
   - {fileID: 512057185}
+  - {fileID: 1293629225}
+  - {fileID: 1127697760}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5147,6 +5192,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   biomeGeneratorManager: {fileID: 1147305467}
   databaseLoader: {fileID: 1258908275}
+  dungeonSpawnManager: {fileID: 1127697761}
   playerCharacter: {fileID: 1719325387}
   uiCanvas: {fileID: 345556972}
   monsters: {fileID: 736698379}
@@ -5268,6 +5314,51 @@ Transform:
   m_Father: {fileID: 1127805706}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1293629224
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1293629225}
+  - component: {fileID: 1293629226}
+  m_Layer: 0
+  m_Name: EcosystemManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1293629225
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293629224}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -29.425282, y: -30.653246, z: 19.400345}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1127805706}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1293629226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293629224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1040a868c63d8894893535deea24f904, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numDaysBetweenLevelIncrease: 1
+  numDaysToIncreaseFromExtinct: 2
 --- !u!4 &1442335789 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7645934499838840842, guid: c6842ea22088da542ac77fec21ab95b5, type: 3}
@@ -6201,3 +6292,9 @@ MonoBehaviour:
     prefabs:
     - {fileID: 5112065047382128652, guid: 6e6733609255880429ebdb4b263552a8, type: 3}
     density: 300
+  - name: MonsterSpawner
+    prefabs:
+    - {fileID: 3108367928545360356, guid: 99af859978518544f8b2ea731c4456e2, type: 3}
+    - {fileID: 8676701523812636767, guid: 939eee34795b889468fc766d318d6eba, type: 3}
+    - {fileID: 1330886163194010156, guid: a6d172af75d7e354eaf3469d6160a2bb, type: 3}
+    density: 150

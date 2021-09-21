@@ -12,7 +12,6 @@ public class MonsterScript : Monster
     [SerializeField] private float distanceTriggered;
     [SerializeField] private float stopChase;
     [SerializeField] private GameObject lootDropped;
-    [SerializeField] private MonsterName monsterName;
     [HideInInspector] public GameObject spawner;
 
     [Header("UI Prefabs")]
@@ -32,6 +31,8 @@ public class MonsterScript : Monster
     [SerializeField] private MonsterAttack primaryEnemyAttack;
 
     // Variables
+    private MonsterName monsterName;
+    private bool hasAssignedName = false;
     private MonsterState currentState;
     private float currentHealth;
     private Transform playerTransform;
@@ -83,20 +84,31 @@ public class MonsterScript : Monster
             canvasDisplay = GameCanvas.instance.gameObject;
         }
         canvasDisplay = GameObject.FindGameObjectWithTag("GameCanvas");
-        FindMonsterName();
+        GetMonsterName();
+
+        if (TryGetComponent<MiniBoss>(out MiniBoss miniBossScript))
+        {
+            monsterHealth *= 2;
+            distanceTriggered *= 1.5f;
+        }
     }
 
-    private void FindMonsterName()
+    public MonsterName GetMonsterName()
     {
-        foreach (MonsterName currName in MonsterName.GetValues(typeof(MonsterName)))
+        if (!hasAssignedName)
         {
-            string currNameString = MonsterName.GetName(typeof(MonsterName), currName).ToLower();
-            if (name.ToLower().Contains(currNameString))
+            foreach (MonsterName currName in MonsterName.GetValues(typeof(MonsterName)))
             {
-                monsterName = currName;
-                break;
+                string currNameString = MonsterName.GetName(typeof(MonsterName), currName).ToLower();
+                if (name.ToLower().Contains(currNameString))
+                {
+                    monsterName = currName;
+                    hasAssignedName = true;
+                    break;
+                }
             }
         }
+        return monsterName;
     }
 
     private void Start()
@@ -250,7 +262,7 @@ public class MonsterScript : Monster
         // update spawn cap for the spawner it came from
         if (spawner)
         {
-            spawner.GetComponent<DungeonSpawn>().DecrementSpawnCap(1);
+            spawner.GetComponent<MonsterSpawn>().DecrementSpawnCap(1);
         }
 
         if (TryGetComponent<MiniBoss>(out MiniBoss miniBossScript))
@@ -320,8 +332,8 @@ public class MonsterScript : Monster
         Destroy(gameObject);
     }
 
-    public MonsterName GetMonsterName()
-    {
-        return monsterName;
-    }
+    // public MonsterName GetMonsterName()
+    // {
+    //     return monsterName;
+    // }
 }
