@@ -2,19 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectSpawner : MonoBehaviour
+public class BiomeObjectSpawner : MonoBehaviour
 {
-    public int seed;
-    public int size;
-    public float minY;
-    public Transform origin;
-    public Spawnable[] spawnables;
-    
-    RaycastHit hit;
-    List<GameObject> spawnedObjects = new List<GameObject>();
-    List<GameObject> parents = new List<GameObject>();
+    [SerializeField] private int size = 2000;
+    [SerializeField] private float minY = 8;
+    [SerializeField] private Spawnable[] spawnables;
+    private Transform origin;
 
-    public void SpawnObjects()
+    private RaycastHit hit;
+    private List<GameObject> spawnedObjects = new List<GameObject>();
+    private List<GameObject> parents = new List<GameObject>();
+
+    private void Awake()
+    {
+        origin = this.transform.parent.transform;
+    }
+
+    public IEnumerator SpawnObjects(int seed)
     {
         DestroyObjects();
         Random.InitState(seed);
@@ -29,7 +33,7 @@ public class ObjectSpawner : MonoBehaviour
             for (int i = 0; i < spawnable.density; i++)
             {
                 // Assign random location
-                Vector3 pos = new Vector3(Random.Range(-size/2f, size/2f), 100, Random.Range(-size/2f, size/2f));
+                Vector3 pos = new Vector3(Random.Range(-size / 2f, size / 2f), 100, Random.Range(-size / 2f, size / 2f));
                 pos += origin.transform.position;
 
                 // Check validity
@@ -42,14 +46,13 @@ public class ObjectSpawner : MonoBehaviour
                     spawnedObjects.Add(spawnedObject);
                 }
             }
+            yield return null;
         }
-
-        //Debug.Log(spawnedObjects.Count + " objects spawned");
+        Debug.Log(spawnedObjects.Count + " objects spawned");
     }
-
     public void DestroyObjects()
     {
-        //Debug.Log(spawnedObjects.Count + " objects destroyed");
+        Debug.Log(spawnedObjects.Count + " objects destroyed");
 
         foreach (GameObject parent in parents)
         {
@@ -57,12 +60,4 @@ public class ObjectSpawner : MonoBehaviour
         }
         spawnedObjects = new List<GameObject>();
     }
-}
-
-[System.Serializable]
-public struct Spawnable
-{
-    public string name;
-    public GameObject[] prefabs;
-    public int density;
 }

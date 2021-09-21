@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class OrdersManager : SingletonGeneric<OrdersManager>
 {
@@ -23,19 +24,26 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
 
 
     // Define a callback for order completion
-    public delegate void OrderCompletionDelegate(int orderSubmissionStationId);
+    public delegate void OrderCompletionDelegate(int orderSubmissionStationId, int recipeId);
+    // Define a callback for order generation
+    public delegate void OrderGenerationDelegate();
 
     private List<Order> innerOrdersList;
     // Hash table that maps the ID of the order submission station to their transforms
     private Dictionary<int, Transform> orderSubmissionStations = new Dictionary<int, Transform>();
     private int numberOfOrders = 0;
     private event OrderCompletionDelegate onOrderCompleteCallback;
+    private event OrderGenerationDelegate onOrderGenerationCallback;
     // Random number generator for new orders
     private System.Random rand;
     // First generation of orders
     private bool firstGeneration = false;
     // Do not rely on game timer for first day generation
     private bool firstDay = true;
+
+    // Cache for number of orders by recipe ID
+    private Dictionary<int, int> numberOfOrdersByRecipeCache;
+    private bool isCacheValid = false;
 
     void Start()
     {
@@ -58,9 +66,19 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         };
     }
 
+    void Update()
+    {
+        if (!firstGeneration && BiomeGeneratorManager.IsGenerationComplete())
+        {
+            FirstGenerationOfOrders();
+        }
+    }
+
     public void AddOrder(Order order)
     {
         innerOrdersList.Add(order);
+        isCacheValid = false;
+        StopCoroutine(UpdateUI());
         StartCoroutine(UpdateUI());
     }
 
@@ -99,11 +117,16 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             innerOrdersList.RemoveAt(orderIndex);
 
             Debug.Log("Money + $" + stationId + ", you win!");
-            orderSubmissionSound.Play();
-            orderSubmissionSound.SetScheduledEndTime(AudioSettings.dspTime + 11.15f);
+            if (orderSubmissionSound != null)
+            {
+                orderSubmissionSound.Play();
+                orderSubmissionSound.SetScheduledEndTime(AudioSettings.dspTime + 11.15f);
+            }
 
-            StartCoroutine(UpdateUI());
-            onOrderCompleteCallback.Invoke(stationId);
+            UIController.UpdateAllUIs();
+            onOrderCompleteCallback.Invoke(stationId, orderToComplete.GetRecipe().recipeId);
+
+            isCacheValid = false;
             return true;
         }
         else
@@ -117,19 +140,49 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     {
         foreach (Transform child in ordersContainer.transform)
         {
-            yield return null;
             Destroy(child.gameObject);
         }
 
         foreach (Order o in innerOrdersList)
         {
-            yield return null;
             GameObject orderLog = Instantiate(orderSlot,
                                               new Vector3(0, 0, 0),
                                               Quaternion.identity,
                                               ordersContainer.transform) as GameObject;
-            OrderSlot orderDetails = orderLog.GetComponent<OrderSlot>();
-            orderDetails.AssignOrder(o);
+            
+            OrdersUISlot orderDetails = orderLog.GetComponent<OrdersUISlot>();
+            InventoryManager inv = InventoryManager.instance;
+            int[] ingsArr = o.GetIngredientIds();
+            (int, bool)[] missingItems = new (int, bool)[0];
+            bool isCookable = inv.CheckIfItemsExist(ingsArr, out _, out missingItems);
+            bool isInInv = inv.CheckIfExists(o.GetProduct().inventoryItemId);
+
+            Dictionary<int, (int, int)> itemQuantities = new Dictionary<int, (int, int)>();
+            foreach ((int itemId, bool isPresent) in missingItems)
+            {
+                if (!itemQuantities.ContainsKey(itemId))
+                {
+                    itemQuantities.Add(itemId, (0, 0));
+                }
+                int newInvItemAmount = itemQuantities[itemId].Item1;
+                if (isPresent)
+                {
+                    newInvItemAmount++;
+                }
+                itemQuantities[itemId] = (newInvItemAmount, itemQuantities[itemId].Item2 + 1);
+            }
+
+            List<(int, int, int)> itemsCounted = new List<(int, int, int)>();
+            foreach (KeyValuePair<int, (int, int)> idCountPair in itemQuantities)
+            {
+                itemsCounted.Add((
+                    idCountPair.Key,
+                    idCountPair.Value.Item1,
+                    idCountPair.Value.Item2
+                ));
+            }
+            orderDetails.AssignOrder(o, isCookable, isInInv, false, itemsCounted.ToArray());
+            yield return null;
         }
     }
 
@@ -149,15 +202,20 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         onOrderCompleteCallback += ocd;
     }
 
-    // Gets all relevant order stations
-    // Note this this loops through all the orders
-    public Dictionary<int, Transform> GetRelevantOrderStations()
+    public void AddOrderGenerationCallback(OrderGenerationDelegate ogd)
     {
-        Dictionary<int, Transform> relevantStations = new Dictionary<int, Transform>();
+        onOrderGenerationCallback += ogd;
+    }
+
+    // Gets all relevant order stations and icons
+    // Note this this loops through all the orders
+    public Dictionary<int, (Transform, Sprite)> GetRelevantOrderStations()
+    {
+        Dictionary<int, (Transform, Sprite)> relevantStations = new Dictionary<int, (Transform, Sprite)>();
         foreach (Order o in innerOrdersList)
         {
             int id = o.GetSubmissionStationId();
-            relevantStations.Add(id, orderSubmissionStations[id]);
+            relevantStations.Add(id, (orderSubmissionStations[id], o.GetProduct().icon));
         }
         return relevantStations;
     }
@@ -170,6 +228,35 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         {
             GenerateRandomOrders();
         }
+    }
+
+    // Returns true only if map and orders have been generated
+    // Map always generates first before orders
+    public bool IsOrderGenerationComplete()
+    {
+        return firstGeneration;
+    }
+
+    // Gets a dictionary of recipe IDs mapped to the number
+    // of orders that the player has currently for that recipe.
+    public Dictionary<int, int> GetNumberOfOrdersByRecipe()
+    {
+        if (!isCacheValid)
+        {
+            Dictionary<int, int> ordersByRecipe = new Dictionary<int, int>();
+            foreach (Order o in innerOrdersList)
+            {
+                int recipeId = o.GetRecipe().recipeId;
+                if (!ordersByRecipe.ContainsKey(recipeId))
+                {
+                    ordersByRecipe.Add(recipeId, 0);
+                }
+                ordersByRecipe[recipeId]++;
+            }
+            numberOfOrdersByRecipeCache = ordersByRecipe;
+            isCacheValid = true;
+        }
+        return numberOfOrdersByRecipeCache;
     }
 
     // To be called when a new day begins
@@ -192,6 +279,12 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         }
 
         firstGeneration = true;
+        isCacheValid = false;
+        StopCoroutine(UpdateUI());
         StartCoroutine(UpdateUI());
+        if (onOrderGenerationCallback != null)
+        {
+            onOrderGenerationCallback.Invoke();
+        }
     }
 }

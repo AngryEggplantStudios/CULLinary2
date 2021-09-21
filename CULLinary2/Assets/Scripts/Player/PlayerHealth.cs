@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerHealth : MonoBehaviour
 {
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private GameObject damageCounter_prefab;
     [SerializeField] private Image healthBar;
-    [SerializeField] private Text healthText;
+    [SerializeField] private TMP_Text healthText;
     [SerializeField] private float invincibilityDurationSeconds;
     [SerializeField] private GameObject model;
     [SerializeField] private Outline outlineFlash;
@@ -38,8 +39,8 @@ public class PlayerHealth : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         SetupIFrame();
-        originalFlashColor = outlineFlash.effectColor;
-        outlineFlash.effectColor = deactivatedFlashColor;
+        //originalFlashColor = outlineFlash.effectColor;
+        //outlineFlash.effectColor = deactivatedFlashColor;
     }
 
     private void Start()
@@ -66,9 +67,9 @@ public class PlayerHealth : MonoBehaviour
     {
         while (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth < thresholdHealth)
         {
-            outlineFlash.effectColor = originalFlashColor;
+            //outlineFlash.effectColor = originalFlashColor;
             yield return new WaitForSeconds(0.5f);
-            outlineFlash.effectColor = deactivatedFlashColor;
+            //outlineFlash.effectColor = deactivatedFlashColor;
             yield return new WaitForSeconds(0.5f);
         }
     }

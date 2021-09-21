@@ -305,13 +305,13 @@ public class MonsterScript : Monster
     }
 
     public void destroyDamageNumbers()
-	{
+    {
         //Death Animation too long destroy earlier
         Destroy(damageCounter);
     }
 
     public void monsterDeathAnimation()
-	{
+    {
         DropLoot();
         foreach (GameObject uiElement in uiElements)
         {

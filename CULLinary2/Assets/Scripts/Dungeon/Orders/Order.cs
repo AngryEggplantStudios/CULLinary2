@@ -19,6 +19,11 @@ public class Order
         return new List<InventoryItem>(recipe.ingredientList);
     }
 
+    public int[] GetIngredientIds()
+    {
+        return recipe.GetIngredientIds();
+    }
+
     public InventoryItem GetProduct()
     {
         return recipe.cookedDishItem;
@@ -32,5 +37,10 @@ public class Order
     public int GetSubmissionStationId()
     {
         return submissionStationId;
+    }
+
+    public Recipe GetRecipe()
+    {
+        return recipe;
     }
 }
