@@ -91,7 +91,7 @@ public class Population
         {
             currentNumber -= value;
         }
-        Debug.Log(string.Format("current pop for {0} is: {1}", name, currentNumber));
+        Debug.Log(string.Format("population for {0} dropped to {1}", name, currentNumber));
     }
 
     public void IncreaseLevel()

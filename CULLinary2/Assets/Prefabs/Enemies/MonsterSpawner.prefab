@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 6916757179070320870}
   - component: {fileID: 6916757179070320868}
-  - component: {fileID: 6916757179070320869}
+  - component: {fileID: 4977319349221156191}
   m_Layer: 0
-  m_Name: EnemySpawn
-  m_TagString: EnemySpawn
+  m_Name: MonsterSpawner
+  m_TagString: MonsterSpawn
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -45,7 +45,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 15, y: 1, z: 15}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6916757179070320869
+--- !u!114 &4977319349221156191
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -57,11 +57,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10a397b3c13de940596ce0bc7ed5d049, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyToSpawn: {fileID: 4757314950517091208, guid: d7e3089f8be1b45dd8b57fdd38f71b68, type: 3}
-  minEnemy: 1
-  maxEnemy: 5
+  enemyToSpawn: {fileID: 0}
+  miniBoss: {fileID: 0}
   distRange: 2
   toLoop: 1
-  delayLoopTime: 20
-  spawnCap: 50
+  delayLoopTime: 10
   initialDelay: 10

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DungeonSpawn : MonoBehaviour
+public class MonsterSpawn : MonoBehaviour
 {
     private enum SpawnState
     {
@@ -13,26 +13,23 @@ public class DungeonSpawn : MonoBehaviour
 
     [SerializeField] private GameObject enemyToSpawn;
     [SerializeField] private GameObject miniBoss;
-    [Tooltip("Minimum amount of enemies to spawn per trigger")]
-    [SerializeField] private int minEnemy;
-    [Tooltip("Maximum amount of enemies to spawn per trigger")]
-    [SerializeField] private int maxEnemy;
     [Tooltip("Random displacement of enemy spawn in X/Z axes")]
     [SerializeField] private float distRange;
     [Tooltip("Is spawner able to be retriggered?")]
     [SerializeField] private bool toLoop;
     [Tooltip("Delay after triggering if toLoop is checked")]
     [SerializeField] private float delayLoopTime;
-    [Tooltip("Maximum number of enemies that can be spawned using this spawner")]
-    [SerializeField] private int localSpawnCap; //It will not spawn more than this amount in total
     [Tooltip("Initial Delay")]
     [SerializeField] private int initialDelay = 10;
+
+    private int minEnemy;
+    private int maxEnemy;
+    private int localSpawnCap; //It will not spawn more than this amount in total
     private bool delayFlag = false;
 
     private SpawnState state;
     private bool canSpawn = true;
     private int spawnAmount = 0;
-    private GameTimer gameTimer;
 
     private void Start()
     {
@@ -75,6 +72,7 @@ public class DungeonSpawn : MonoBehaviour
     private void SpawnEnemies()
     {
         int enemyNum = Random.Range(minEnemy, maxEnemy + 1);
+        // Debug.Log("spawning " + enemyNum + " for " + enemyToSpawn.name);
         for (int i = 0; i < enemyNum; i++)
         {
             InstantiateEnemy();
