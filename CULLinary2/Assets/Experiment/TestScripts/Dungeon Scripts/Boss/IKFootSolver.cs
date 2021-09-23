@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class IKFootSolver : Monster
 {
-    [SerializeField] Transform body = default;
-    [SerializeField] IKFootSolver otherFoot = default;
-    [SerializeField] float speed = 5;
-    [SerializeField] float stepDistance = 20;
-    [SerializeField] float stepLength = 20;
-    [SerializeField] float stepHeight = 5;
-    [SerializeField] Vector3 footOffset = default;
+    [SerializeField] Transform body;
+    [SerializeField] IKFootSolver otherFoot;
+    [SerializeField] float speed;
+    [SerializeField] float stepDistance;
+    [SerializeField] float stepLength;
+    [SerializeField] float stepHeight;
+    [SerializeField] Vector3 footOffset;
     [SerializeField] GameObject collision;
 
     // Audio
@@ -70,10 +70,10 @@ public class IKFootSolver : Monster
             }
 
             //Collission boxx isn't attached to IKFoot need to follow
+            //Debug.Log(newPosition.y);
             collision.transform.position = new Vector3(newPosition.x, newPosition.y, newPosition.z);
             Vector3 tempPosition = Vector3.Lerp(oldPosition, newPosition, lerp);
             tempPosition.y += Mathf.Sin(lerp * Mathf.PI) * stepHeight;
-
             currentPosition = tempPosition;
             currentNormal = Vector3.Lerp(oldNormal, newNormal, lerp);
             lerp += Time.deltaTime * speed;
@@ -103,6 +103,7 @@ public class IKFootSolver : Monster
         newPosition = pos;
         newNormal = normal;
     }
+
     public void meleeAttackStart()
     {
         isAttacking = true;

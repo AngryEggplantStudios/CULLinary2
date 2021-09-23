@@ -17,6 +17,8 @@ public class ClownController : MonoBehaviour
     [SerializeField] IKFootSolver leftFoot;
     [SerializeField] IKFootSolver rightFoot;
     [SerializeField] private float maxHealth;
+    [Tooltip("Distance Area for clown to be constrained in")]
+    [SerializeField] private float wanderRadius;
 
     [Header("UI Prefabs")]
     [SerializeField] private GameObject hpBar_prefab;
@@ -131,7 +133,6 @@ public class ClownController : MonoBehaviour
     {
         float interpolationRatio = (float)elapsedFrames / interpolationFramesCount;
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-        state = State.Roaming;
         switch (state)
         {
             default:
@@ -216,7 +217,6 @@ public class ClownController : MonoBehaviour
                 {
                     slowlyLookAt(player);
                 }
-
                 if (distanceToPlayer > stoppingDistance)
                 {
                     moveForward();
@@ -301,10 +301,10 @@ public class ClownController : MonoBehaviour
             default:
             case 1:
             case 2:
-                state = State.MeleeAttack;
+                state = State.RangedAttack;
                 break;
             case 3:
-                state = State.SpawnAttack;
+                state = State.RangedAttack;
                 break;
             case 4:
             case 5:
@@ -380,11 +380,11 @@ public class ClownController : MonoBehaviour
     {
         transform.position += transform.forward * movementSpeed * Time.deltaTime;
 
-        // HARDEDCODED BOUNDS so clown does not exceed arena
+        // HARDEDCODED BOUNDS so clown does not exceed arena NEED TO REHARDCODE THIS
         transform.position = new Vector3(
-                Mathf.Clamp(transform.position.x, -8.9f, 8.9f),
+                Mathf.Clamp(transform.position.x, transform.position.x - wanderRadius, transform.position.x + wanderRadius),
                 transform.position.y,
-                Mathf.Clamp(transform.position.z, -8.9f, 8.9f)
+                Mathf.Clamp(transform.position.z, transform.position.z - wanderRadius, transform.position.z + wanderRadius)
         );
     }
 
@@ -405,7 +405,7 @@ public class ClownController : MonoBehaviour
             Debug.Log("stepOn() target " + target.position + " is not above the ground");
             return;
         }
-        
+        info.point = new Vector3(info.point.x, info.point.y + 0.3f, info.point.z);
         // Find closer foot and step
         if (Vector3.Distance(leftFoot.currentPosition, info.point) < Vector3.Distance(rightFoot.currentPosition, info.point))
         {

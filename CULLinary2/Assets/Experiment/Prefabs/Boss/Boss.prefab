@@ -177,13 +177,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1220267129105049268}
-  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: 0.67559016, y: 0, z: 0, w: 0.7372774}
   m_LocalPosition: {x: 0, y: 0.01, z: 0}
   m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
   m_Children: []
   m_Father: {fileID: 1220267130317731892}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 85, y: 0, z: 0}
 --- !u!212 &1220267129105049274
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -288,7 +288,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1220267129222743471}
   m_LocalRotation: {x: -0.7071068, y: -0.00000007445852, z: -0.000000032311654, w: 0.7071067}
-  m_LocalPosition: {x: 0, y: 0.0084, z: -0.0245}
+  m_LocalPosition: {x: -0, y: 0.0207, z: -0.0245}
   m_LocalScale: {x: 0.05, y: 0.050000012, z: 0.050000012}
   m_Children: []
   m_Father: {fileID: 2514768130057361474}
@@ -381,11 +381,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   body: {fileID: 7928100406109814987}
   otherFoot: {fileID: 1220267129966022370}
-  speed: 1.5
-  stepDistance: 1.6
-  stepLength: 1.5
-  stepHeight: 1
-  footOffset: {x: 0, y: 0.3, z: 0}
+  speed: 7.5
+  stepDistance: 9
+  stepLength: 9
+  stepHeight: 5
+  footOffset: {x: 0, y: 3, z: 0}
   collision: {fileID: 1220267129105049268}
   audioSource: {fileID: 190780441956538258}
   meleeSound: {fileID: 8300000, guid: b27e425790eebc643bf37744875e751c, type: 3}
@@ -432,13 +432,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1220267129838108123}
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0.67559016, y: 0, z: 0, w: 0.7372774}
   m_LocalPosition: {x: 0, y: 0.01, z: 0}
   m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
   m_Children: []
   m_Father: {fileID: 1220267129014318317}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 85, y: 0, z: 0}
 --- !u!212 &1220267129838108120
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -562,11 +562,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   body: {fileID: 7928100406109814987}
   otherFoot: {fileID: 1220267129655490127}
-  speed: 1.5
-  stepDistance: 1.6
-  stepLength: 1.5
-  stepHeight: 1
-  footOffset: {x: 0, y: 0.3, z: 0}
+  speed: 7.5
+  stepDistance: 9
+  stepLength: 9
+  stepHeight: 5
+  footOffset: {x: 0, y: 3, z: 0}
   collision: {fileID: 1220267129838108123}
   audioSource: {fileID: 190780441956538258}
   meleeSound: {fileID: 8300000, guid: b27e425790eebc643bf37744875e751c, type: 3}
@@ -1347,7 +1347,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4366310945124798855}
   m_LocalRotation: {x: 0.7071068, y: 0.00000007445852, z: 0.000000032311654, w: 0.7071067}
-  m_LocalPosition: {x: -5.2694027e-10, y: -0.015, z: -0.008840591}
+  m_LocalPosition: {x: 0, y: -0.015, z: -0.008840591}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1673029259109527832}
@@ -2299,6 +2299,7 @@ MonoBehaviour:
   leftFoot: {fileID: 1220267129655490127}
   rightFoot: {fileID: 1220267129966022370}
   maxHealth: 1500
+  wanderRadius: 0
   hpBar_prefab: {fileID: 1085209639500972291, guid: 4614e0511cb49b14ebf0c58217d9d222, type: 3}
   damageCounter_prefab: {fileID: 1085209639500972291, guid: 24f41dda89c7bd648bd2796ac669721e, type: 3}
   enemyAlert_prefab: {fileID: 1085209639500972291, guid: 186234b88676f4b4f872f98d3ab0973c, type: 3}

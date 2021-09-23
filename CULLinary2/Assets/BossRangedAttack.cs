@@ -15,7 +15,7 @@ public class BossRangedAttack : MonsterAttack
     private float viewDistance = 50f;
     private List<LineRenderer> listOfRenderers;
     private List<Vector3> firePositions;
-    private const float LINE_HEIGHT_FROM_GROUND = 0.1f;
+    private float LINE_HEIGHT_FROM_GROUND = 8.5f;
     private int rayCount = 13;
     private int offsetRay = 0;
  
@@ -34,8 +34,8 @@ public class BossRangedAttack : MonsterAttack
             gameObjectChild.transform.parent = gameObject.transform;
             LineRenderer lRend = gameObjectChild.AddComponent<LineRenderer>();
             lRend.positionCount = 2;
-            lRend.startWidth = 0.01f;
-            lRend.endWidth = 0.01f;
+            lRend.startWidth = 0.1f;
+            lRend.endWidth = 0.1f;
             lRend.enabled = false;
             lRend.material = lineMaterial;
             lRend.SetColors(Color.red, Color.red);
@@ -87,16 +87,17 @@ public class BossRangedAttack : MonsterAttack
                 Vector3 sourcePosition;
                 Vector3 targetPosition;
                 sourcePosition = new Vector3(transform.position.x, LINE_HEIGHT_FROM_GROUND, transform.position.z);
-                if (Physics.Raycast(sourcePosition, finalDirection, out hit, viewDistance))
-                {
-                    LineRenderer lRend = listOfRenderers[i];
-                    targetPosition = new Vector3(hit.point.x, LINE_HEIGHT_FROM_GROUND, hit.point.z);
-                    lRend.SetPosition(0, sourcePosition);
-                    lRend.SetPosition(1, targetPosition);
-                }
-                else
-                {
-                    LineRenderer lRend = listOfRenderers[i];
+				if (Physics.Raycast(sourcePosition, finalDirection, out hit, viewDistance, layerMask))
+				{
+                    Debug.Log(hit.point);
+					LineRenderer lRend = listOfRenderers[i];
+					targetPosition = new Vector3(hit.point.x, LINE_HEIGHT_FROM_GROUND, hit.point.z);
+					lRend.SetPosition(0, sourcePosition);
+					lRend.SetPosition(1, targetPosition);
+				}
+				else
+				{
+					LineRenderer lRend = listOfRenderers[i];
                     targetPosition = finalDirection * viewDistance + sourcePosition;
                     targetPosition.y = LINE_HEIGHT_FROM_GROUND;
                     lRend.SetPosition(0, sourcePosition);

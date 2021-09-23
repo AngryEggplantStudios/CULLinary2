@@ -25,6 +25,8 @@ public class BiomeNavMeshGenerator : MonoBehaviour
         {
             if (child.gameObject != this.gameObject)
             {
+                child.gameObject.tag = "Environment";
+                child.gameObject.layer = 6;
                 yield return StartCoroutine(CombineMeshes(child.gameObject));
             }
         }

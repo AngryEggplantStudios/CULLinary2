@@ -33,6 +33,7 @@ public class BossMeleeAttack : MonoBehaviour
     public void enableCollider(bool toEnable)
     {
         attackCollider.enabled = toEnable;
+        //Debug.Log(attackCollider.enabled);
         if (!toEnable)
         {
             healthScript = null;
