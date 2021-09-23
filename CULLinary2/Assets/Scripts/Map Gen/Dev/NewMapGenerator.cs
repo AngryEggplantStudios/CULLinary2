@@ -81,7 +81,7 @@ public class NewMapGenerator : MonoBehaviour
 
         Texture2D texture = TextureGenerator.TextureFromColourMap(colourMap, mapWidth, mapHeight);
         MeshData meshData = MeshGenerator.GenerateTerrainMesh(noiseMap, meshHeightMultiplier);
-        MeshData walkableData = MeshGenerator.GenerateWalkableMesh(noiseMap, meshHeightMultiplier, 1.1f);
+        MeshData walkableData = MeshGenerator.GenerateWalkableMesh(noiseMap, meshHeightMultiplier, 1.1f, false);
 
         foreach (Transform trans in transforms)
         {

@@ -7,6 +7,7 @@ public class BiomeData
 {
     public string biomeCreatedMeshPath = "";
     public string biomeWalkableMeshPath = "";
+    public string biomeNavMeshPath = "";
     public string objectStringPath = "";
     public int seed;
 

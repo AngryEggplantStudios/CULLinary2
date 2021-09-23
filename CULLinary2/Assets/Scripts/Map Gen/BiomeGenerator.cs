@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.AI;
 
 public class BiomeGenerator : MonoBehaviour
 {
@@ -34,6 +35,9 @@ public class BiomeGenerator : MonoBehaviour
     [Header("Other Variables")]
     public Renderer[] renderers = new Renderer[0];
     public Transform[] transforms = new Transform[0];
+
+    [Header("Needed for strange Navmeshbug")]
+    [SerializeField] private NavMeshSurface navMeshSurfaceFromParent;
 
     //Private variables
     private float[,] falloffMap;
@@ -73,12 +77,17 @@ public class BiomeGenerator : MonoBehaviour
         yield return null;
         walkableMesh = AssetDatabase.LoadAssetAtPath<Mesh>(walkableMeshPath);
         yield return null;
+        Debug.Log(createdMeshPath);
 
         if (createdMesh == null || walkableMesh == null)
         {
             yield return StartCoroutine(GenerateMap(seed));
         }
-        yield return StartCoroutine(AttachMeshes());
+        yield return StartCoroutine(AttachCreatedMesh());
+        yield return StartCoroutine(AttachWalkableMesh());
+
+        //Deactivate and reactivate navmeshSurface due to strange bug NOTE if delete either NavMesh.asset walkable mesh or createdmesh all might cease to work. Assume user isn't stupid for now.
+        yield return StartCoroutine(ReactivateNavMesh());
     }
 
     public IEnumerator ReactivateMap()
@@ -86,7 +95,13 @@ public class BiomeGenerator : MonoBehaviour
         meshRenderer.enabled = false;
         yield return new WaitForSeconds(1f);
         meshRenderer.enabled = true;
+    }
 
+    public IEnumerator ReactivateNavMesh()
+    {
+        navMeshSurfaceFromParent.enabled = false;
+        yield return new WaitForSeconds(1f);
+        navMeshSurfaceFromParent.enabled = true;
     }
 
     private IEnumerator GenerateNoise()
@@ -141,7 +156,7 @@ public class BiomeGenerator : MonoBehaviour
         yield return StartCoroutine(GenerateNoise());
 
         MeshData meshData = MeshGenerator.GenerateTerrainMesh(noiseMap, meshHeightMultiplier);
-        MeshData walkableData = MeshGenerator.GenerateWalkableMesh(noiseMap, meshHeightMultiplier, 1.1f);
+        MeshData walkableData = MeshGenerator.GenerateWalkableMesh(noiseMap, meshHeightMultiplier, 1.1f, false);
 
         createdMesh = meshData.CreateMesh();
         walkableMesh = walkableData.CreateMesh();
@@ -150,13 +165,50 @@ public class BiomeGenerator : MonoBehaviour
 
 
         SaveMesh(createdMeshPath, createdMesh);
+        // Don't save walkable mesh yet as need for player to walk on water and drown
+        //SaveMesh(walkableMeshPath, walkableMesh);
+    }
+
+    public void CreateWalkableMeshWithWater()
+	{
+        Debug.Log(createdMeshPath);
+        MeshData walkableData = MeshGenerator.GenerateWalkableMesh(noiseMap, meshHeightMultiplier, 1.1f, true);
+        walkableMesh.Clear();
+        walkableMesh = walkableData.CreateMesh();
         SaveMesh(walkableMeshPath, walkableMesh);
+        StartCoroutine(AttachWalkableMesh());
+    }
+
+    private IEnumerator AttachCreatedMesh()
+	{
+        meshFilter.sharedMesh = createdMesh;
+        yield return null;
+    }
+
+    private IEnumerator AttachWalkableMesh()
+    {
+        if (meshCollider.sharedMesh != null)
+        {
+            meshCollider.sharedMesh.Clear();
+        }
+        meshCollider.sharedMesh = walkableMesh;
+        yield return null;
     }
 
     private IEnumerator AttachMeshes()
     {
+        if (meshFilter.sharedMesh != null)
+        {
+            meshFilter.sharedMesh.Clear();
+        }
         meshFilter.sharedMesh = createdMesh;
         yield return null;
+        Debug.Log(createdMesh);
+        //If on second round of creating walkable water 
+        if (meshCollider.sharedMesh != null)
+		{
+            meshCollider.sharedMesh.Clear();
+		}
         meshCollider.sharedMesh = walkableMesh;
         yield return null;
     }
