@@ -306,7 +306,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c6df2070dd98334387e96b38eb68542, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackDamage: 0
+  attackDamage: 40
   throwObject: {fileID: 8144963661413786971, guid: c40ff131eab2b37438534c0ce37539c1, type: 3}
   lineMaterial: {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &8376322052251266275
@@ -381,7 +381,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   body: {fileID: 7928100406109814987}
   otherFoot: {fileID: 1220267129966022370}
-  speed: 7.5
+  speed: 1
   stepDistance: 9
   stepLength: 9
   stepHeight: 5
@@ -562,7 +562,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   body: {fileID: 7928100406109814987}
   otherFoot: {fileID: 1220267129655490127}
-  speed: 7.5
+  speed: 1
   stepDistance: 9
   stepLength: 9
   stepHeight: 5
@@ -2290,16 +2290,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b5c86f6878bc047813f29261f26edd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 1
-  turningSpeed: 1
-  stoppingDistance: 1
-  lookingDistance: 0.3
-  meleeRange: 2
+  movementSpeed: 5
+  turningSpeed: 5
+  stoppingDistance: 5
+  lookingDistance: 3
+  meleeRange: 10
   lowerJaw: {fileID: 2514768130057361474}
   leftFoot: {fileID: 1220267129655490127}
   rightFoot: {fileID: 1220267129966022370}
   maxHealth: 1500
-  wanderRadius: 0
+  wanderRadius: 40
   hpBar_prefab: {fileID: 1085209639500972291, guid: 4614e0511cb49b14ebf0c58217d9d222, type: 3}
   damageCounter_prefab: {fileID: 1085209639500972291, guid: 24f41dda89c7bd648bd2796ac669721e, type: 3}
   enemyAlert_prefab: {fileID: 1085209639500972291, guid: 186234b88676f4b4f872f98d3ab0973c, type: 3}

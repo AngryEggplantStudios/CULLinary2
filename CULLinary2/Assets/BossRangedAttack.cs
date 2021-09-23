@@ -15,7 +15,7 @@ public class BossRangedAttack : MonsterAttack
     private float viewDistance = 50f;
     private List<LineRenderer> listOfRenderers;
     private List<Vector3> firePositions;
-    private float LINE_HEIGHT_FROM_GROUND = 8.5f;
+    private float LINE_HEIGHT_FROM_GROUND = 0.05f;
     private int rayCount = 13;
     private int offsetRay = 0;
  
@@ -75,7 +75,7 @@ public class BossRangedAttack : MonsterAttack
             Vector3 playerDirection = (player.transform.position - transform.position).normalized;
             float angleIncrease = fov / rayCount;
             float angle = angleIncrease * offsetRay * -1;
-            int layerMask = LayerMask.GetMask("Environment");
+            int layerMask = LayerMask.GetMask("Environment","Player");
             Vector3 finalDirection;
             firePositions = new List<Vector3>();
             for (int i = 0; i < rayCount; i++)

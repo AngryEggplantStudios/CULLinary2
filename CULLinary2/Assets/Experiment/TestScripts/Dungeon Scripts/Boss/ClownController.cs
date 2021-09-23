@@ -93,6 +93,7 @@ public class ClownController : MonoBehaviour
     {
         hpBar = Instantiate(hpBar_prefab);
         hpBarFull = hpBar.transform.Find("hpBar_full").gameObject.GetComponent<Image>();
+        uiList.Add(hpBar);
         SetupUI(hpBar);
     }
 
@@ -301,14 +302,14 @@ public class ClownController : MonoBehaviour
             default:
             case 1:
             case 2:
-                state = State.RangedAttack;
+                state = State.MeleeAttack;
                 break;
             case 3:
-                state = State.RangedAttack;
+                state = State.MeleeAttack;
                 break;
             case 4:
             case 5:
-                state = State.RangedAttack;
+                state = State.MeleeAttack;
                 break;
         }
         elapsedFrames = 0;
