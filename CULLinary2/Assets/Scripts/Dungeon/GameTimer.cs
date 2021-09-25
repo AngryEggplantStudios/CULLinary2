@@ -26,6 +26,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
     void Start()
     {
         gameTime = 0.25f; //day starts at 6 am 
+        Debug.Log("start game time");
         timeScale = 24 / (dayLengthInMinutes / 60);
         DayText.text = "DAY " + dayNum;
         TimeText.text = "06:00";
@@ -72,6 +73,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     private void OnDestroy()
     {
+        Debug.Log("game timer destroyed");
         gameTime = 0f;
     }
 

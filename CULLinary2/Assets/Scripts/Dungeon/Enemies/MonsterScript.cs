@@ -268,6 +268,8 @@ public class MonsterScript : Monster
         {
             miniBossScript.Die();
         }
+
+        DungeonSpawnManager.CheckIfExtinct(monsterName);
     }
 
     private IEnumerator FlashOnDamage()

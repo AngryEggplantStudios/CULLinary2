@@ -122,11 +122,20 @@ public class PlayerHealth : MonoBehaviour
         if (PlayerManager.instance.currentHealth <= 0f)
         {
             Debug.Log("You are dead.");
+            Invoke("Die", audioSource.clip.length); // Wait for damage sound effect to finish            
             return true;
         }
+
         StartCoroutine(BecomeTemporarilyInvincible());
         return true;
     }
+
+    private void Die()
+    {
+        PlayerDeath playerDeathScript = gameObject.GetComponent<PlayerDeath>();
+        playerDeathScript.Die();
+    }
+
     private void SetupIFrame()
     {
         if (rend != null)

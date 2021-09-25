@@ -105,4 +105,10 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         return JsonArrayParser.ToJson(items, true);
     }
 
+    public void RestoreHealthAndStamina()
+    {
+        currentHealth = maxHealth;
+        currentStamina = maxStamina;
+    }
+
 }
