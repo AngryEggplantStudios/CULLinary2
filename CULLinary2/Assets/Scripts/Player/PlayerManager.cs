@@ -9,13 +9,20 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     public float currentStamina = 100f;
     public float maxStamina = 100f;
     public float meleeDamage = 20f;
+    public int startingMoney = 100;
     public int inventoryLimit = 16;
     public bool[] recipesUnlocked = new bool[3] { true, true, true }; //use index
     public List<InventoryItem> itemList = new List<InventoryItem>();
 
     // Private variables
     private static PlayerData playerData = new PlayerData();
+    private int currentMoney;
     private GameTimer timer;
+
+    public PlayerManager()
+    {
+        currentMoney = startingMoney;
+    }
 
     public void SaveData(List<InventoryItem> itemList)
     {
@@ -31,6 +38,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.inventory = SerializeInventory(itemList);
         playerData.recipesUnlocked = recipesUnlocked;
         playerData.meleeDamage = meleeDamage;
+        playerData.currentMoney = currentMoney;
         SaveSystem.SaveData(playerData);
     }
 
@@ -56,6 +64,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         maxStamina = playerData.maxStamina;
         recipesUnlocked = playerData.recipesUnlocked;
         meleeDamage = playerData.meleeDamage;
+        currentMoney = playerData.currentMoney;
     }
 
     public PlayerData CreateBlankData()
@@ -74,6 +83,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         currentStamina = 100f;
         maxStamina = 100f;
         meleeDamage = 20f;
+        currentMoney = startingMoney;
         inventoryLimit = 16;
         playerData.inventory = "";
         recipesUnlocked = new bool[3] { true, true, true };
@@ -105,4 +115,21 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         return JsonArrayParser.ToJson(items, true);
     }
 
+    public int GetMoney()
+    {
+        return currentMoney;
+    }
+
+    // Returns true if money was successfully added or removed
+    // Otherwise, returns false
+    public bool AddMoney(int changeInMoney)
+    {
+        int newMoney = currentMoney + changeInMoney;
+        bool isSuccessful = newMoney >= 0;
+        if (isSuccessful)
+        {
+            currentMoney = newMoney;
+        }
+        return isSuccessful;
+    }
 }

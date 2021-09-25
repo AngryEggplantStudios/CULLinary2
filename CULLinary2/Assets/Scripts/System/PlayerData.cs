@@ -9,6 +9,7 @@ public class PlayerData
     public float maxStamina = 200f;
     public float currentStamina = 200f;
     public float meleeDamage = 20f;
+    public int currentMoney = 100;
     public bool[] recipesUnlocked = new bool[3] { true, true, true };
 
     public string ToJson()

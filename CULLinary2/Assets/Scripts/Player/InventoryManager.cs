@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class InventoryManager : SingletonGeneric<InventoryManager>
 {
     [Header("UI References")]
     [SerializeField] private GameObject inventoryPanel;
+    [SerializeField] private TextMeshProUGUI moneyText;
     private InventorySlot[] slots;
 
     private int inventoryLimit;
@@ -91,6 +93,8 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
                 }
             }
         }
+        // Update money
+        moneyText.text = PlayerManager.instance.GetMoney().ToString();
     }
 
     // Builds a hash table based on the current contents of the inventory
