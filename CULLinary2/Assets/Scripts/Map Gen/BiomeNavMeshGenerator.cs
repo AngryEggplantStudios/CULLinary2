@@ -9,7 +9,7 @@ public class BiomeNavMeshGenerator : MonoBehaviour
     private string savePath;
     private NavMeshSurface surfaceForNavMesh;
     private NavMeshData navMeshData;
-
+    private GameObject orderSubmissionStationParent;
     private void Awake()
     {
         parent = this.gameObject.transform.parent.gameObject;
@@ -25,10 +25,26 @@ public class BiomeNavMeshGenerator : MonoBehaviour
         {
             if (child.gameObject != this.gameObject)
             {
+                if (child.gameObject.name == "Houses")
+                {
+                    orderSubmissionStationParent = child.gameObject;
+                }
+                // NOTE Houses/Order submission station has a spherecollider that needs to be deactivated
+                child.gameObject.tag = "Environment";
+                child.gameObject.layer = 6;
                 yield return StartCoroutine(CombineMeshes(child.gameObject));
             }
         }
         parent.transform.localScale = originalScale;
+    }
+
+    private void ActivateSphereCollider(bool activate, GameObject parent)
+    {
+        foreach (Transform child in parent.transform)
+        {
+            SphereCollider sphere = child.GetComponentInChildren<SphereCollider>();
+            sphere.enabled = activate;
+        }
     }
 
     public IEnumerator GenerateMesh()
@@ -39,10 +55,16 @@ public class BiomeNavMeshGenerator : MonoBehaviour
 
         if (navMeshData == null)
         {
-            BiomeDataManager.instance.biomeCreatedMeshPath = savePath;
+            //disable sphere collider from order submissions
+            ActivateSphereCollider(false, orderSubmissionStationParent);
+            BiomeDataManager.instance.biomeNavMeshPath = savePath;
             BiomeDataManager.instance.SaveData();
             surfaceForNavMesh.BuildNavMesh();
             AssetDatabase.CreateAsset(surfaceForNavMesh.navMeshData, savePath);
+            ActivateSphereCollider(true, orderSubmissionStationParent);
+            Debug.Log("Starting Coroiutine");
+            //first time generation, create walkable mesh with water and delete previous walkable mesh without water
+            BiomeGenerator.Instance.CreateWalkableMeshWithWater();
         }
         else
         {
