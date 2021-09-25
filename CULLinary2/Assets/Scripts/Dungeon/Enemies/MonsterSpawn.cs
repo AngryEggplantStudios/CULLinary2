@@ -22,11 +22,11 @@ public class MonsterSpawn : MonoBehaviour
     [Tooltip("Initial Delay")]
     [SerializeField] private int initialDelay = 10;
 
+    private GameObject monstersParent;
     private int minEnemy;
     private int maxEnemy;
     private int localSpawnCap; //It will not spawn more than this amount in total
     private bool delayFlag = false;
-
     private SpawnState state;
     private bool canSpawn = true;
     private int spawnAmount = 0;

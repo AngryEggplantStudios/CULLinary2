@@ -12,8 +12,9 @@ public class DungeonSpawnManager : MonoBehaviour
         CheckForExtinctPopulations();
     }
 
-    public IEnumerator LoadSpawners()
+    public IEnumerator GetSpawners()
     {
+        // Get spawners and update spawning caps and spawning numbers
         GameObject[] spawnObjectsArray = GameObject.FindGameObjectsWithTag("MonsterSpawn");
         monsterSpawns = new List<GameObject>(spawnObjectsArray);
         UpdateSpawners();
@@ -178,4 +179,5 @@ public class DungeonSpawnManager : MonoBehaviour
         MonsterSpawn monsterSpawn = monsterSpawnGO.GetComponent<MonsterSpawn>();
         return monsterSpawn.GetMonsterName();
     }
+
 }
