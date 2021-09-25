@@ -94,7 +94,7 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
             }
         }
         // Update money
-        string currentMoney = PlayerManager.instance.GetMoney().ToString();
+        string currentMoney = PlayerManager.instance.currentMoney.ToString();
         moneyTextMenu.text = currentMoney;
         moneyTextHud.text = currentMoney;
     }

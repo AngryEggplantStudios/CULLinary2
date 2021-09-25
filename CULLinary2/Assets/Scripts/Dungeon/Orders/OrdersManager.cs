@@ -119,7 +119,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             // Update money
             int earnings = orderToComplete.GetRecipe().recipeEarnings;
             Debug.Log("Money + $" + earnings + ", you win!");
-            PlayerManager.instance.AddMoney(earnings);
+            PlayerManager.instance.currentMoney += earnings;
 
             if (orderSubmissionSound != null)
             {
