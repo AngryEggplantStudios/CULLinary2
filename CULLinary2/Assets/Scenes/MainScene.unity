@@ -5551,7 +5551,6 @@ MonoBehaviour:
   dungeonSpawnManager: {fileID: 1127697761}
   playerCharacter: {fileID: 1719325387}
   uiCanvas: {fileID: 345556972}
-  monsters: {fileID: 736698379}
   currentProgress: 0
 --- !u!1 &1147305465
 GameObject:
@@ -6906,7 +6905,6 @@ MonoBehaviour:
   renderers:
   - {fileID: 6060218616561705337}
   transforms: []
-  navMeshSurfaceFromParent: {fileID: 1543362255}
 --- !u!114 &6060218616651526438
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6950,7 +6948,7 @@ MonoBehaviour:
   - name: Campfires
     prefabs:
     - {fileID: 1696568650871794669, guid: 97b35b47b4cecae4cb044ed478fa8564, type: 3}
-    density: 100
+    density: 260
   - name: Houses
     prefabs:
     - {fileID: 5112065047382128652, guid: 6e6733609255880429ebdb4b263552a8, type: 3}
@@ -6960,4 +6958,4 @@ MonoBehaviour:
     - {fileID: 3108367928545360356, guid: 99af859978518544f8b2ea731c4456e2, type: 3}
     - {fileID: 8676701523812636767, guid: 939eee34795b889468fc766d318d6eba, type: 3}
     - {fileID: 1330886163194010156, guid: a6d172af75d7e354eaf3469d6160a2bb, type: 3}
-    density: 150
+    density: 500
