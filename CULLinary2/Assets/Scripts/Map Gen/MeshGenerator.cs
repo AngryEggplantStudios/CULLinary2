@@ -32,7 +32,7 @@ public static class MeshGenerator {
 
 	}
 
-	public static MeshData GenerateWalkableMesh(float[,] heightMap, float heightMultiplier, float walkableAboveY) {
+	public static MeshData GenerateWalkableMesh(float[,] heightMap, float heightMultiplier, float walkableAboveY, bool generateWithWater) {
 		int width = heightMap.GetLength (0);
 		int height = heightMap.GetLength (1);
 		float topLeftX = (width - 1) / -2f;
@@ -47,16 +47,17 @@ public static class MeshGenerator {
 				meshData.vertices [vertexIndex] = new Vector3 (topLeftX + x, heightMap [x, y] * heightMultiplier, topLeftZ - y);
 				meshData.uvs [vertexIndex] = new Vector2 (x / (float)width, y / (float)height);
 
-				if (meshData.vertices[vertexIndex].y < walkableAboveY) unwalkable.Add(vertexIndex);
+				if (meshData.vertices[vertexIndex].y < walkableAboveY && !generateWithWater) unwalkable.Add(vertexIndex);
 
 				vertexIndex++;
 			}
 		}
 
+		Debug.Log(unwalkable.Count);
 		vertexIndex = 0;
 		for (int y = 0; y < height - 1; y++) {
 			for (int x = 0; x < width - 1; x++) {
-				if (unwalkable.Contains(vertexIndex) || unwalkable.Contains(vertexIndex + width + 1))
+				if ((unwalkable.Contains(vertexIndex) || unwalkable.Contains(vertexIndex + width + 1)))
 				{
 					vertexIndex++;
 					continue;

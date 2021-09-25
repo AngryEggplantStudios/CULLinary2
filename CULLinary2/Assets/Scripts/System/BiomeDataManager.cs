@@ -5,6 +5,7 @@ using UnityEngine;
 public class BiomeDataManager : SingletonGeneric<BiomeDataManager>
 {
     public string biomeCreatedMeshPath = "";
+    public string biomeNavMeshPath = "";
     public string biomeWalkableMeshPath = "";
     public string objectStringPath = "";
     public int seed;
@@ -18,6 +19,7 @@ public class BiomeDataManager : SingletonGeneric<BiomeDataManager>
         }
         biomeData.biomeCreatedMeshPath = biomeCreatedMeshPath;
         biomeData.biomeWalkableMeshPath = biomeWalkableMeshPath;
+        biomeData.biomeNavMeshPath = biomeNavMeshPath;
         biomeData.objectStringPath = objectStringPath;
         biomeData.seed = seed;
         SaveSystem.SaveData(biomeData);
@@ -41,6 +43,7 @@ public class BiomeDataManager : SingletonGeneric<BiomeDataManager>
         }
         biomeCreatedMeshPath = biomeData.biomeCreatedMeshPath;
         biomeWalkableMeshPath = biomeData.biomeWalkableMeshPath;
+        biomeNavMeshPath = biomeData.biomeNavMeshPath;
         objectStringPath = biomeData.objectStringPath;
         seed = biomeData.seed;
         return true;

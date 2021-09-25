@@ -6,6 +6,7 @@ public class GameLoader : SingletonGeneric<GameLoader>
 {
     [SerializeField] private BiomeGeneratorManager biomeGeneratorManager;
     [SerializeField] private DatabaseLoader databaseLoader;
+    [SerializeField] private DungeonSpawnManager dungeonSpawnManager;
     [SerializeField] private GameObject playerCharacter;
     [SerializeField] private GameObject uiCanvas;
     [SerializeField] private GameObject monsters; //Temp, should be replaced by loading spawners instead
@@ -25,8 +26,9 @@ public class GameLoader : SingletonGeneric<GameLoader>
         currentProgress = 0.2f;
         yield return StartCoroutine(biomeGeneratorManager.LoadBiome());
         currentProgress = 0.9f;
+        yield return StartCoroutine(dungeonSpawnManager.LoadSpawners());
         playerCharacter.SetActive(true);
         uiCanvas.SetActive(true);
-        monsters.SetActive(true);
+        // monsters.SetActive(true);
     }
 }

@@ -10,7 +10,7 @@ public class InventorySlot : MonoBehaviour
     [SerializeField] private TMP_Text itemType;
     [SerializeField] private TMP_Text itemExpiry;
     [SerializeField] private TMP_Text itemEffect;
-    private InventoryItem item;
+    public InventoryItem item;
 
     public void AddItem(InventoryItem newItem)
     {

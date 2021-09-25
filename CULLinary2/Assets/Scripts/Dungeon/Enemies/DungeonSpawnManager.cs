@@ -4,22 +4,26 @@ using UnityEngine;
 
 public class DungeonSpawnManager : MonoBehaviour
 {
-    private static List<GameObject> dungeonSpawns;
-
-    void Awake()
-    {
-        GameObject[] spawnObjectsArray = GameObject.FindGameObjectsWithTag("EnemySpawn");
-        dungeonSpawns = new List<GameObject>(spawnObjectsArray);
-    }
-
-    void Start()
-    {
-        UpdateSpawners();
-    }
+    private static List<GameObject> monsterSpawns;
 
     void Update()
     {
+        // TODO: check only whenever an enemy dies
         CheckForExtinctPopulations();
+    }
+
+    public IEnumerator LoadSpawners()
+    {
+        GameObject[] spawnObjectsArray = GameObject.FindGameObjectsWithTag("MonsterSpawn");
+        monsterSpawns = new List<GameObject>(spawnObjectsArray);
+        UpdateSpawners();
+        yield return null;
+
+        // temp
+        List<GameObject> cornSpawners = GetSpawners(MonsterName.Corn);
+        List<GameObject> potatoSpawners = GetSpawners(MonsterName.Potato);
+        List<GameObject> eggplantSpawners = GetSpawners(MonsterName.Eggplant);
+        Debug.Log(string.Format("at loading: {0} corn spawners, {1} potato spawners, {2} eggplant spawners", cornSpawners.Count, potatoSpawners.Count, eggplantSpawners.Count));
     }
 
     private void CheckForExtinctPopulations()
@@ -36,8 +40,8 @@ public class DungeonSpawnManager : MonoBehaviour
             List<GameObject> spawners = GetSpawners(name);
             foreach (GameObject spawner in spawners)
             {
-                DungeonSpawn dungeonSpawnScript = spawner.GetComponent<DungeonSpawn>();
-                if (dungeonSpawnScript.GetSpawnCap() > 0)
+                MonsterSpawn monsterSpawn = spawner.GetComponent<MonsterSpawn>();
+                if (monsterSpawn.GetSpawnCap() > 0)
                 {
                     break;
                 }
@@ -86,8 +90,8 @@ public class DungeonSpawnManager : MonoBehaviour
                     localSpawnCap = popNumber;
                 }
 
-                DungeonSpawn dungeonSpawnScript = spawner.GetComponent<DungeonSpawn>();
-                dungeonSpawnScript.SetSpawnCap(localSpawnCap);
+                MonsterSpawn monsterSpawn = spawner.GetComponent<MonsterSpawn>();
+                monsterSpawn.SetSpawnCap(localSpawnCap);
 
                 popNumber -= localSpawnCap;
                 // Debug.Log(string.Format("spawn cap for {0} set to {1}", name, localSpawnCap));
@@ -104,12 +108,12 @@ public class DungeonSpawnManager : MonoBehaviour
             foreach (GameObject spawner in spawners)
             {
                 // set spawning numbers range
-                DungeonSpawn dungeonSpawnScript = spawner.GetComponent<DungeonSpawn>();
+                MonsterSpawn monsterSpawn = spawner.GetComponent<MonsterSpawn>();
                 int[] spawnAmtRange = GetSpawnAmountRange(name);
                 int minEnemies = spawnAmtRange[0];
                 int maxEnemies = spawnAmtRange[1];
-                dungeonSpawnScript.SetMinSpawn(minEnemies);
-                dungeonSpawnScript.SetMaxSpawn(maxEnemies);
+                monsterSpawn.SetMinSpawn(minEnemies);
+                monsterSpawn.SetMaxSpawn(maxEnemies);
             }
         }
     }
@@ -125,7 +129,7 @@ public class DungeonSpawnManager : MonoBehaviour
         {
             case PopulationLevel.Overpopulated:
                 minSpawnAmount = 5;
-                maxSpawnAmount = 8;
+                maxSpawnAmount = 6;
                 break;
             case PopulationLevel.Normal:
                 minSpawnAmount = 3;
@@ -151,11 +155,14 @@ public class DungeonSpawnManager : MonoBehaviour
     public static List<GameObject> GetSpawners(MonsterName name)
     {
         List<GameObject> spawners = new List<GameObject>();
-        foreach (GameObject dungeonSpawn in dungeonSpawns)
+        if (monsterSpawns != null)
         {
-            if (GetMonsterName(dungeonSpawn) == name)
+            foreach (GameObject monsterSpawn in monsterSpawns)
             {
-                spawners.Add(dungeonSpawn);
+                if (GetMonsterName(monsterSpawn) == name)
+                {
+                    spawners.Add(monsterSpawn);
+                }
             }
         }
         return spawners;
@@ -166,9 +173,9 @@ public class DungeonSpawnManager : MonoBehaviour
         return GetSpawners(name).Count;
     }
 
-    private static MonsterName GetMonsterName(GameObject dungeonSpawnGO)
+    private static MonsterName GetMonsterName(GameObject monsterSpawnGO)
     {
-        DungeonSpawn dungeonSpawnScript = dungeonSpawnGO.GetComponent<DungeonSpawn>();
-        return dungeonSpawnScript.GetMonsterName();
+        MonsterSpawn monsterSpawn = monsterSpawnGO.GetComponent<MonsterSpawn>();
+        return monsterSpawn.GetMonsterName();
     }
 }
