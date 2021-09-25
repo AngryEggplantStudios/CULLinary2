@@ -147,13 +147,13 @@ public class UIController : SingletonGeneric<UIController>
     public static void UpdateAllUIs()
     {
         // Stop the coroutines that are currently running
-        InventoryManager.instance.StopAllCoroutines();
+        //InventoryManager.instance.StopAllCoroutines();
         RecipeManager.instance.StopAllCoroutines();
         OrdersManager.instance.StopAllCoroutines();
-        
+
         // Start the coroutines again
-        InventoryManager.instance.StartCoroutine(InventoryManager.instance.UpdateUI());
-        RecipeManager.instance.StartCoroutine(RecipeManager.instance.UpdateUI());
+        //InventoryManager.instance.StartCoroutine(InventoryManager.instance.UpdateUI());
+        //RecipeManager.instance.StartCoroutine(RecipeManager.instance.UpdateUI());
         OrdersManager.instance.StartCoroutine(OrdersManager.instance.UpdateUI());
     }
 

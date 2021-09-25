@@ -2,9 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-
 public class InventoryManager : SingletonGeneric<InventoryManager>
 {
     [Header("UI References")]
@@ -21,7 +18,7 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
     private void Start()
     {
         slots = inventoryPanel.GetComponentsInChildren<InventorySlot>();
-        PopulateUI(PlayerManager.instance.itemList);
+        //PopulateUI(PlayerManager.);
     }
 
     public bool AddItem(InventoryItem item)

@@ -12,6 +12,11 @@ public class InventorySlotManager : MonoBehaviour
     [SerializeField] private TMP_Text itemDescription;
     private InventorySlot[] slots;
     private int selectedSlotId;
+
+    private void Awake()
+    {
+        slots = gameObject.GetComponentsInChildren<InventorySlot>();
+    }
     public void HandleClick(int slotId)
     {
         InventorySlot itemSlot = slots[slotId];
@@ -34,6 +39,7 @@ public class InventorySlotManager : MonoBehaviour
 
     private void OnEnable()
     {
+        InventoryManagerTwo.instance.UpdateInventory();
         selectedSlotId = -1;
         itemName.text = "";
         itemDescription.text = "";
@@ -41,10 +47,10 @@ public class InventorySlotManager : MonoBehaviour
 
     private void OnDisable()
     {
+        itemMainIcon.enabled = false;
+        itemMainIcon.sprite = null;
         if (selectedSlotId != -1)
         {
-            itemMainIcon.enabled = false;
-            itemMainIcon.sprite = null;
             slots[selectedSlotId].gameObject.GetComponent<Outline>().enabled = false;
         }
     }
@@ -67,23 +73,20 @@ public class InventorySlotManager : MonoBehaviour
     public void HandleDiscard()
     {
         InventoryItem item = slots[selectedSlotId].item;
-        if (InventoryManager.instance != null && item != null)
+        if (InventoryManagerTwo.instance != null && item != null)
         {
-            InventoryManager.instance.RemoveItem(item);
+            InventoryManagerTwo.instance.RemoveItem(item);
         }
     }
 
     public void HandleConsume()
     {
         InventoryItem item = slots[selectedSlotId].item;
-        if (InventoryManager.instance != null && item != null) //Need to check if item is consumable
+        if (InventoryManagerTwo.instance != null && item != null && item.isConsumable) //Need to check if item is consumable
         {
             Debug.Log("Consumed!");
         }
     }
 
-    private void Start()
-    {
-        slots = gameObject.GetComponentsInChildren<InventorySlot>();
-    }
+
 }

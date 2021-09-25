@@ -4,6 +4,8 @@ using UnityEngine;
 public class PlayerData
 {
     public string inventory;
+    public int inventoryLimit;
+    public int currentInventoryLimit;
     public float maxHealth;
     public float currentHealth;
     public float maxStamina;
@@ -14,6 +16,8 @@ public class PlayerData
     public PlayerData()
     {
         inventory = "";
+        inventoryLimit = 25;
+        currentInventoryLimit = 25;
         maxHealth = 200f;
         currentHealth = 200f;
         maxStamina = 200f;

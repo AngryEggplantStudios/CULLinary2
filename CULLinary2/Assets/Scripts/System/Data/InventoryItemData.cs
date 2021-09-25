@@ -1,12 +1,14 @@
 [System.Serializable]
 public class InventoryItemData
 {
-    public int id;
-    public int count;
+    //Inventory Slot ID
+    public int slotId;
+    //Item Id
+    public int itemId;
 
-    public InventoryItemData(int id, int count)
+    public InventoryItemData(int slotId, int itemId)
     {
-        this.id = id;
-        this.count = count;
+        this.slotId = slotId;
+        this.itemId = itemId;
     }
 }

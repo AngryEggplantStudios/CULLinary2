@@ -110,8 +110,8 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         }
 
         Order orderToComplete = innerOrdersList[orderIndex];
-        InventoryManager inventory = InventoryManager.instance;
-        if (inventory.RemoveIdIfPossible(orderToComplete.GetProduct().inventoryItemId))
+        InventoryManagerTwo inventory = InventoryManagerTwo.instance;
+        if (inventory.RemoveItemById(orderToComplete.GetProduct().inventoryItemId))
         {
             // Order completed successfully!
             innerOrdersList.RemoveAt(orderIndex);
@@ -149,13 +149,13 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
                                               new Vector3(0, 0, 0),
                                               Quaternion.identity,
                                               ordersContainer.transform) as GameObject;
-            
+
             OrdersUISlot orderDetails = orderLog.GetComponent<OrdersUISlot>();
-            InventoryManager inv = InventoryManager.instance;
+            InventoryManagerTwo inv = InventoryManagerTwo.instance;
             int[] ingsArr = o.GetIngredientIds();
             (int, bool)[] missingItems = new (int, bool)[0];
-            bool isCookable = inv.CheckIfItemsExist(ingsArr, out _, out missingItems);
-            bool isInInv = inv.CheckIfExists(o.GetProduct().inventoryItemId);
+            bool isCookable = inv.CheckIfAllItemsExist(ingsArr, out _, out missingItems);
+            bool isInInv = inv.CheckIfItemExists(o.GetProduct().inventoryItemId);
 
             Dictionary<int, (int, int)> itemQuantities = new Dictionary<int, (int, int)>();
             foreach ((int itemId, bool isPresent) in missingItems)

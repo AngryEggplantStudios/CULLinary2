@@ -11,13 +11,10 @@ public class Loot : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         PlayerPickup playerPickup = other.GetComponent<PlayerPickup>();
-        if (playerPickup != null)
+        if (playerPickup != null && InventoryManagerTwo.instance.AddItem(itemLoot))
         {
-            if (InventoryManager.instance.AddItem(itemLoot))
-            {
-                playerPickup.PickUp(itemLoot);
-                Destroy(gameObject);
-            }
+            playerPickup.PickUp(itemLoot);
+            Destroy(gameObject);
         }
     }
 }

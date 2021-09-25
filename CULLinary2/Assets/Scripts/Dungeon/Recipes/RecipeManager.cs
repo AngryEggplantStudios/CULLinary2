@@ -46,7 +46,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         bool[] recipesUnlocked = PlayerManager.instance
             ? PlayerManager.instance.recipesUnlocked
             : new bool[3] { true, true, true };
-        
+
         for (int id = 0; id < recipesUnlocked.Length; id++)
         {
             if (recipesUnlocked[id])
@@ -112,9 +112,9 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             return;
         }
 
-        if (InventoryManager.instance.RemoveIdsFromInventory(r.GetIngredientIds()))
+        if (InventoryManagerTwo.instance.RemoveItemArrayFromInventory(r.GetIngredientIds()))
         {
-            InventoryManager.instance.AddItem(r.cookedDishItem);
+            InventoryManagerTwo.instance.AddItem(r.cookedDishItem);
             // UI will be updated in AddItem
         }
         else
@@ -155,12 +155,12 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
                                                  new Vector3(0, 0, 0),
                                                  Quaternion.identity,
                                                  recipesContainer.transform) as GameObject;
-            
+
             RecipeUISlot recipeDetails = recipeEntry.GetComponent<RecipeUISlot>();
             int[] ingIds = r.GetIngredientIds();
-            (int, bool)[] checkedIngs = new (int, bool)[]{};
+            (int, bool)[] checkedIngs = new (int, bool)[] { };
             bool areItemsInInventory =
-                InventoryManager.instance.CheckIfItemsExist(ingIds, out _, out checkedIngs);
+                InventoryManagerTwo.instance.CheckIfAllItemsExist(ingIds, out _, out checkedIngs);
 
             recipeDetails.AddRecipe(r, areItemsInInventory, checkedIngs, GetNumberOfOrders(r.recipeId));
             recipeDetails.SetInfoDisplay(infoDisplay);
@@ -182,7 +182,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
                                                  new Vector3(0, 0, 0),
                                                  Quaternion.identity,
                                                  recipesContainer.transform) as GameObject;
-            
+
             RecipeUISlot recipeDetails = recipeEntry.GetComponent<RecipeUISlot>();
             recipeDetails.AddUnknownRecipe(r);
             recipeDetails.SetInfoDisplay(infoDisplay);

@@ -47,8 +47,8 @@ public class RecipeSlot : MonoBehaviour, IPointerEnterHandler,
             return;
         }
 
-        InventoryManager inventory = InventoryManager.instance;
-        bool didCookingSucceed = inventory.RemoveIdsFromInventory(ingredientsRequired);
+        InventoryManagerTwo inventory = InventoryManagerTwo.instance;
+        bool didCookingSucceed = inventory.RemoveItemArrayFromInventory(ingredientsRequired);
         if (!didCookingSucceed)
         {
             // Player does not have ingredients
