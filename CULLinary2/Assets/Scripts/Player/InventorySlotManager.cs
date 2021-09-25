@@ -87,7 +87,7 @@ public class InventorySlotManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    private void Awake()
     {
         slots = gameObject.GetComponentsInChildren<InventorySlot>();
     }

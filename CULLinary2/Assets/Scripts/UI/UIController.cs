@@ -192,6 +192,7 @@ public class UIController : SingletonGeneric<UIController>
         isFireplaceActive = false;
         campfireMenu.SetActive(false);
         cookingInterface.SetActive(false);
+        upgradesInterface.SetActive(false);
         weaponsInterface.SetActive(false);
     }
 

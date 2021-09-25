@@ -29,6 +29,4 @@ public class PauseMenuController : MonoBehaviour
         PlayerManager.instance.SaveData(InventoryManager.instance.itemListReference);
         SceneManager.LoadScene((int)SceneIndexes.MAIN_MENU);
     }
-
-
 }

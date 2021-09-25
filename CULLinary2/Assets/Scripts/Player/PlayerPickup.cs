@@ -9,7 +9,7 @@ public class PlayerPickup : MonoBehaviour
     [SerializeField] private GameObject itemPickupNotificationPrefab;
     [SerializeField] private GameObject canvasDisplay;
 
-    public void PickUp(Item itemLoot)
+    public void PickUp(InventoryItem itemLoot)
     {
         audioSource.Play();
         GameObject itemPickupNotificationObject = Instantiate(itemPickupNotificationPrefab, transform.position, Quaternion.identity);

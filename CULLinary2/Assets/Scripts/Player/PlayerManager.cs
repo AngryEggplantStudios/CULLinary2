@@ -9,20 +9,13 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     public float currentStamina = 100f;
     public float maxStamina = 100f;
     public float meleeDamage = 20f;
-    public int startingMoney = 100;
-    public int inventoryLimit = 16;
     public bool[] recipesUnlocked = new bool[3] { true, true, true }; //use index
+    public int[] upgradesArray = new int[2] { 1, 1 };
     public List<InventoryItem> itemList = new List<InventoryItem>();
+    public int currentMoney;
 
     // Private variables
     private static PlayerData playerData = new PlayerData();
-    private int currentMoney;
-    private GameTimer timer;
-
-    public PlayerManager()
-    {
-        currentMoney = startingMoney;
-    }
 
     public void SaveData(List<InventoryItem> itemList)
     {
@@ -37,6 +30,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.maxStamina = maxStamina;
         playerData.inventory = SerializeInventory(itemList);
         playerData.recipesUnlocked = recipesUnlocked;
+        playerData.upgradesArray = upgradesArray;
         playerData.meleeDamage = meleeDamage;
         playerData.currentMoney = currentMoney;
         SaveSystem.SaveData(playerData);
@@ -63,13 +57,13 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         currentStamina = playerData.currentStamina;
         maxStamina = playerData.maxStamina;
         recipesUnlocked = playerData.recipesUnlocked;
+        upgradesArray = playerData.upgradesArray;
         meleeDamage = playerData.meleeDamage;
         currentMoney = playerData.currentMoney;
     }
 
     public PlayerData CreateBlankData()
     {
-        //Create new data
         playerData = new PlayerData();
         SetupManager();
         return playerData;
@@ -84,6 +78,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         maxStamina = playerData.maxStamina;
         meleeDamage = playerData.meleeDamage;
         recipesUnlocked = playerData.recipesUnlocked;
+        upgradesArray = playerData.upgradesArray;
         currentMoney = playerData.currentMoney;
     }
 
@@ -113,21 +108,4 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         return JsonArrayParser.ToJson(items, true);
     }
 
-    public int GetMoney()
-    {
-        return currentMoney;
-    }
-
-    // Returns true if money was successfully added or removed
-    // Otherwise, returns false
-    public bool AddMoney(int changeInMoney)
-    {
-        int newMoney = currentMoney + changeInMoney;
-        bool isSuccessful = newMoney >= 0;
-        if (isSuccessful)
-        {
-            currentMoney = newMoney;
-        }
-        return isSuccessful;
-    }
 }

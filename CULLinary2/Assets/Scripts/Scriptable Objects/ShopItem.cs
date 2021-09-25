@@ -4,5 +4,7 @@ using UnityEngine;
 public class ShopItem : Item
 {
     public int shopItemId;
-    public int price;
+    public int[] price;
+    public string[] description;
+
 }

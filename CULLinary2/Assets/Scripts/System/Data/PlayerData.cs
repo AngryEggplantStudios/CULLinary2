@@ -11,6 +11,7 @@ public class PlayerData
     public float meleeDamage;
     public int currentMoney;
     public bool[] recipesUnlocked;
+    public int[] upgradesArray;
 
     public PlayerData()
     {
@@ -20,8 +21,9 @@ public class PlayerData
         maxStamina = 200f;
         currentStamina = 200f;
         meleeDamage = 20f;
-        currentMoney = 100;
+        currentMoney = 10000;
         recipesUnlocked = new bool[3] { true, true, true };
+        upgradesArray = new int[2] { 0, 0 };
     }
 
     public string ToJson()

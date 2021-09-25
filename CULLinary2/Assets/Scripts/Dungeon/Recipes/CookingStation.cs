@@ -15,7 +15,7 @@ public class CookingStation : PlayerInteractable
         // Open Cooking Menu
         if (!RecipeManager.instance.IsCookingActivated())
         {
-            Debug.Log("Opening cooking menus");
+            ShopManager.instance.LoadShop();
             RecipeManager.instance.ActivateCooking();
             UIController.instance.OpenCampfireInterface();
         }
