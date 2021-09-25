@@ -9,6 +9,8 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
 {
     [Header("UI References")]
     [SerializeField] private GameObject inventoryPanel;
+    [SerializeField] private TextMeshProUGUI moneyTextMenu;
+    [SerializeField] private TextMeshProUGUI moneyTextHud;
 
     private InventorySlot[] slots;
     private int inventoryLimit = 25;
@@ -91,6 +93,10 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
                 }
             }
         }
+        // Update money
+        string currentMoney = PlayerManager.instance.GetMoney().ToString();
+        moneyTextMenu.text = currentMoney;
+        moneyTextHud.text = currentMoney;
     }
 
     // Builds a hash table based on the current contents of the inventory

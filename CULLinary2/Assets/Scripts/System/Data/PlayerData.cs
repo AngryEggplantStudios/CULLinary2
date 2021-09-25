@@ -9,6 +9,7 @@ public class PlayerData
     public float maxStamina;
     public float currentStamina;
     public float meleeDamage;
+    public int currentMoney;
     public bool[] recipesUnlocked;
 
     public PlayerData()
@@ -19,6 +20,7 @@ public class PlayerData
         maxStamina = 200f;
         currentStamina = 200f;
         meleeDamage = 20f;
+        currentMoney = 100;
         recipesUnlocked = new bool[3] { true, true, true };
     }
 
