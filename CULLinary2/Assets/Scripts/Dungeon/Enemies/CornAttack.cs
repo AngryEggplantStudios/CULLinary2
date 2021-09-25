@@ -13,7 +13,7 @@ public class CornAttack : MonsterAttack
     private int rayCount = 1;
     private List<LineRenderer> listOfRenderers;
     private List<Vector3> firePositions;
-    private float LINE_HEIGHT_FROM_GROUND = 0f;
+    private float LINE_HEIGHT_FROM_GROUND = 0.1f;
     private bool projectAttack = false;
     private float viewDistance = 50f;
     private void Awake()
@@ -24,7 +24,6 @@ public class CornAttack : MonsterAttack
 
     private void Start()
     {
-        LINE_HEIGHT_FROM_GROUND = gameObject.transform.parent.position.y;
         listOfRenderers = new List<LineRenderer>();
         GameObject gameObjectChild = new GameObject();
         gameObjectChild.transform.parent = gameObject.transform;

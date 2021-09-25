@@ -14,14 +14,16 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private GameObject model;
     [SerializeField] private Outline outlineFlash;
     private bool flashIsActivated = false;
+    private bool isDrowningActivated = false;
 
     //To be ported over to somewhere
     [SerializeField] private GameObject canvasDisplay;
     [SerializeField] private Camera cam;
     [SerializeField] private float thresholdHealth = 0.25f;
     [SerializeField] private Renderer rend;
-    private Color originalFlashColor;
-    private Color deactivatedFlashColor = new Color(255, 0, 0, 0);
+    [SerializeField] private float minimumHeightToStartDrowning;
+
+    private float drowningDamage = 100f;
     private bool isInvincible = false;
 
     private Color[] originalColors;
@@ -52,6 +54,13 @@ public class PlayerHealth : MonoBehaviour
 
     private void Update()
     {
+        // check if height of player here as less references needed than checking height in player locomotion;
+        if (transform.position.y < minimumHeightToStartDrowning && !isDrowningActivated)
+		{
+            //Drowning animation
+            isDrowningActivated = true;
+            StartCoroutine(StartDrowning());
+		}
         if (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth < thresholdHealth && !flashIsActivated)
         {
             flashIsActivated = true;
@@ -61,6 +70,16 @@ public class PlayerHealth : MonoBehaviour
         {
             flashIsActivated = false;
         }
+    }
+    private IEnumerator StartDrowning()
+    {
+        Debug.Log("Start drowning");
+        PlayerManager.instance.currentHealth -= drowningDamage;
+        DisplayOnUI(PlayerManager.instance.currentHealth, PlayerManager.instance.maxHealth);
+        SpawnDamageCounter(drowningDamage);
+        audioSource.Play();
+        yield return new WaitForSeconds(1f);
+        isDrowningActivated = false;
     }
 
     private IEnumerator FlashBar()
