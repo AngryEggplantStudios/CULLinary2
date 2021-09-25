@@ -46,7 +46,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         bool[] recipesUnlocked = PlayerManager.instance
             ? PlayerManager.instance.recipesUnlocked
             : new bool[3] { true, true, true };
-        
+
         for (int id = 0; id < recipesUnlocked.Length; id++)
         {
             if (recipesUnlocked[id])
@@ -155,10 +155,10 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
                                                  new Vector3(0, 0, 0),
                                                  Quaternion.identity,
                                                  recipesContainer.transform) as GameObject;
-            
+
             RecipeUISlot recipeDetails = recipeEntry.GetComponent<RecipeUISlot>();
             int[] ingIds = r.GetIngredientIds();
-            (int, bool)[] checkedIngs = new (int, bool)[]{};
+            (int, bool)[] checkedIngs = new (int, bool)[] { };
             bool areItemsInInventory =
                 InventoryManager.instance.CheckIfItemsExist(ingIds, out _, out checkedIngs);
 
@@ -182,7 +182,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
                                                  new Vector3(0, 0, 0),
                                                  Quaternion.identity,
                                                  recipesContainer.transform) as GameObject;
-            
+
             RecipeUISlot recipeDetails = recipeEntry.GetComponent<RecipeUISlot>();
             recipeDetails.AddUnknownRecipe(r);
             recipeDetails.SetInfoDisplay(infoDisplay);

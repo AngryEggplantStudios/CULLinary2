@@ -1,16 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UIController : SingletonGeneric<UIController>
 {
-    [SerializeField] private GameObject inventoryTab;
+    [Header("Campfire UI")]
     [SerializeField] private GameObject campfireMenu;
     [SerializeField] private GameObject cookingInterface;
+    [SerializeField] private GameObject upgradesInterface;
+    [SerializeField] private GameObject weaponsInterface;
+    [Header("Main UI")]
+    [SerializeField] private GameObject inventoryTab;
     [SerializeField] private GameObject ordersTab;
     [SerializeField] private GameObject recipesTab;
     [SerializeField] private GameObject creaturesTab;
     [SerializeField] private GameObject mapTab;
+    [Header("Main HUD")]
+    [SerializeField] private GameObject mainHud;
+    [SerializeField] private GameObject pauseMenu;
+
     private KeyCode openInventoryKeyCode;
     private KeyCode openOrdersKeyCode;
     private KeyCode openRecipesKeyCode;
@@ -21,7 +30,10 @@ public class UIController : SingletonGeneric<UIController>
     private KeyCode leftUiTabKeyCode;
     private KeyCode closeUiKeyCode;
     private int currentUiPage;
+    private int currentFireplaceUiPage;
     private bool isMenuActive = false;
+    private bool isFireplaceActive = false;
+    private bool isPaused = false;
 
     // For interacting with objects
     private PlayerInteractable currentInteractable = null;
@@ -40,8 +52,23 @@ public class UIController : SingletonGeneric<UIController>
         closeUiKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.CloseMenu);
     }
 
+    public void TogglePauseMenu()
+    {
+        pauseMenu.SetActive(!pauseMenu.activeSelf);
+        isPaused = !isPaused;
+        Time.timeScale = isPaused ? 0 : 1;
+    }
+
+    public void SaveAndQuit()
+    {
+        Time.timeScale = 1;
+        PlayerManager.instance.SaveData(InventoryManager.instance.itemListReference);
+        SceneManager.LoadScene((int)SceneIndexes.MAIN_MENU);
+    }
+
     public void OpenInventory()
     {
+        mainHud.SetActive(false);
         Time.timeScale = inventoryTab.activeSelf ? 1f : 0f;
         isMenuActive = !inventoryTab.activeSelf;
         inventoryTab.SetActive(!inventoryTab.activeSelf);
@@ -54,6 +81,7 @@ public class UIController : SingletonGeneric<UIController>
 
     public void OpenOrders()
     {
+        mainHud.SetActive(false);
         Time.timeScale = ordersTab.activeSelf ? 1f : 0f;
         isMenuActive = !ordersTab.activeSelf;
         inventoryTab.SetActive(false);
@@ -66,6 +94,7 @@ public class UIController : SingletonGeneric<UIController>
 
     public void OpenRecipes()
     {
+        mainHud.SetActive(false);
         Time.timeScale = recipesTab.activeSelf ? 1f : 0f;
         isMenuActive = !recipesTab.activeSelf;
         inventoryTab.SetActive(false);
@@ -78,6 +107,8 @@ public class UIController : SingletonGeneric<UIController>
 
     public void OpenCreatures()
     {
+        mainHud.SetActive(false);
+        mainHud.SetActive(false);
         Time.timeScale = creaturesTab.activeSelf ? 1f : 0f;
         isMenuActive = !creaturesTab.activeSelf;
         inventoryTab.SetActive(false);
@@ -90,6 +121,7 @@ public class UIController : SingletonGeneric<UIController>
 
     public void OpenMap()
     {
+        mainHud.SetActive(false);
         Time.timeScale = mapTab.activeSelf ? 1f : 0f;
         isMenuActive = !mapTab.activeSelf;
         inventoryTab.SetActive(false);
@@ -102,6 +134,7 @@ public class UIController : SingletonGeneric<UIController>
 
     public void CloseMenu()
     {
+        mainHud.SetActive(true);
         Time.timeScale = 1f;
         isMenuActive = false;
         inventoryTab.SetActive(false);
@@ -113,14 +146,53 @@ public class UIController : SingletonGeneric<UIController>
 
     public void OpenCampfireInterface()
     {
-        // TODO: campfireMenu.SetActive(true);
+        mainHud.SetActive(false);
+        isFireplaceActive = true;
+        Time.timeScale = 0f;
+        campfireMenu.SetActive(true);
         cookingInterface.SetActive(true);
+        upgradesInterface.SetActive(false);
+        weaponsInterface.SetActive(false);
+        currentFireplaceUiPage = (int)FireplaceUIPage.COOKING;
     }
 
+    public void OpenUpgradesInterface()
+    {
+        mainHud.SetActive(false);
+        campfireMenu.SetActive(true);
+        upgradesInterface.SetActive(true);
+        cookingInterface.SetActive(false);
+        weaponsInterface.SetActive(false);
+        currentFireplaceUiPage = (int)FireplaceUIPage.UPGRADES;
+    }
+
+    public void OpenCookingInterface()
+    {
+        mainHud.SetActive(false);
+        campfireMenu.SetActive(true);
+        cookingInterface.SetActive(true);
+        upgradesInterface.SetActive(false);
+        weaponsInterface.SetActive(false);
+        currentFireplaceUiPage = (int)FireplaceUIPage.COOKING;
+    }
+
+    public void OpenWeaponsInterface()
+    {
+        mainHud.SetActive(false);
+        campfireMenu.SetActive(true);
+        cookingInterface.SetActive(false);
+        upgradesInterface.SetActive(false);
+        weaponsInterface.SetActive(true);
+        currentFireplaceUiPage = (int)FireplaceUIPage.WEAPONS;
+    }
     public void CloseCampfireInterface()
     {
-        // TODO: campfireMenu.SetActive(false);
+        mainHud.SetActive(true);
+        Time.timeScale = 1f;
+        isFireplaceActive = false;
+        campfireMenu.SetActive(false);
         cookingInterface.SetActive(false);
+        weaponsInterface.SetActive(false);
     }
 
     // Remembers the current player interactable for interaction
@@ -150,7 +222,7 @@ public class UIController : SingletonGeneric<UIController>
         InventoryManager.instance.StopAllCoroutines();
         RecipeManager.instance.StopAllCoroutines();
         OrdersManager.instance.StopAllCoroutines();
-        
+
         // Start the coroutines again
         InventoryManager.instance.StartCoroutine(InventoryManager.instance.UpdateUI());
         RecipeManager.instance.StartCoroutine(RecipeManager.instance.UpdateUI());
@@ -159,6 +231,18 @@ public class UIController : SingletonGeneric<UIController>
 
     private void Update()
     {
+        if (!isFireplaceActive && !isMenuActive)
+        {
+            if (Input.GetKeyDown(closeUiKeyCode))
+            {
+                TogglePauseMenu();
+            }
+        }
+        if (isPaused)
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(openInventoryKeyCode))
         {
             UIController.instance.OpenInventory();
@@ -187,18 +271,51 @@ public class UIController : SingletonGeneric<UIController>
         {
             if (Input.GetKeyDown(rightUiTabKeyCode))
             {
-                currentUiPage = currentUiPage >= 4 ? 0 : currentUiPage + 1;
+                currentUiPage = currentUiPage >= 4 ? 4 : currentUiPage + 1;
                 HandlePageChange();
             }
             else if (Input.GetKeyDown(leftUiTabKeyCode))
             {
-                currentUiPage = currentUiPage <= 0 ? 4 : currentUiPage - 1;
+                currentUiPage = currentUiPage <= 0 ? 0 : currentUiPage - 1;
                 HandlePageChange();
             }
             else if (Input.GetKeyDown(closeUiKeyCode))
             {
                 CloseMenu();
             }
+        }
+        else if (isFireplaceActive)
+        {
+            if (Input.GetKeyDown(rightUiTabKeyCode))
+            {
+                currentFireplaceUiPage = currentFireplaceUiPage >= 2 ? 2 : currentFireplaceUiPage + 1;
+                HandleFireplacePageChange();
+            }
+            else if (Input.GetKeyDown(leftUiTabKeyCode))
+            {
+                currentFireplaceUiPage = currentFireplaceUiPage <= 0 ? 0 : currentFireplaceUiPage - 1;
+                HandleFireplacePageChange();
+            }
+            else if (Input.GetKeyDown(closeUiKeyCode))
+            {
+                CloseCampfireInterface();
+            }
+        }
+    }
+
+    private void HandleFireplacePageChange()
+    {
+        switch (currentFireplaceUiPage)
+        {
+            case (int)FireplaceUIPage.COOKING:
+                OpenCookingInterface();
+                break;
+            case (int)FireplaceUIPage.UPGRADES:
+                OpenUpgradesInterface();
+                break;
+            case (int)FireplaceUIPage.WEAPONS:
+                OpenWeaponsInterface();
+                break;
         }
     }
 
@@ -223,6 +340,13 @@ public class UIController : SingletonGeneric<UIController>
                 break;
         }
     }
+}
+
+public enum FireplaceUIPage
+{
+    COOKING = 0,
+    UPGRADES = 1,
+    WEAPONS = 2
 }
 
 public enum UIPage
