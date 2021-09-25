@@ -113,6 +113,11 @@ public class MonsterScript : Monster
 
     private void Update()
     {
+        if (playerTransform == null)
+		{
+            playerTransform = GameObject.FindGameObjectWithTag("Player").transform; //Temp fix
+        }
+
         switch (currentState)
         {
             default:
