@@ -12,7 +12,7 @@ public class PlayerPickup : MonoBehaviour
     public void PickUp(Item itemLoot)
     {
         audioSource.Play();
-        GameObject itemPickupNotificationObject = Instantiate(itemPickupNotificationPrefab, transform.position, Quaternion.identity);
+        GameObject itemPickupNotificationObject = Instantiate(itemPickupNotificationPrefab);
         itemPickupNotificationObject.transform.SetParent(canvasDisplay.transform);
         itemPickupNotificationObject.transform.GetComponentInChildren<Image>().sprite = itemLoot.icon;
     }
