@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657815, g: 0.49641192, b: 0.57481617, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -407,7 +407,6 @@ MonoBehaviour:
   currentStamina: 500
   maxStamina: 500
   meleeDamage: 10
-  inventoryLimit: 16
   recipesUnlocked: 010101
   itemList: []
 --- !u!4 &489993154
@@ -1612,7 +1611,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1270445088379424412, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1357945025169587287, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1756,7 +1755,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2546666656859607894, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2682212797254284275, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1840,7 +1839,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3280800874949754294, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3386244981234110333, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1889,6 +1888,402 @@ PrefabInstance:
     - target: {fileID: 3601393587791240307, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -75
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080668830514596, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080668830514596, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080668830514596, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080668881183608, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080668881183608, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080668881183608, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080668881183608, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080668982839477, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080668982839477, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080668982839477, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080668982839477, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080668985239378, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080668985239378, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080668985239378, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080668985239378, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669252459138, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080669252459138, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669252459138, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669252459138, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669273278878, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080669273278878, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669273278878, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669273278878, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669451964508, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080669451964508, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669451964508, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669451964508, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669560316548, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080669560316548, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669560316548, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669560316548, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669599438527, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080669599438527, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669599438527, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669599438527, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669791334538, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080669791334538, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669791334538, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669791334538, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669816830645, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080669816830645, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669816830645, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669816830645, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669826739240, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080669826739240, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669826739240, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669826739240, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669902224043, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080669902224043, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669902224043, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669902224043, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669974720078, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080669974720078, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669974720078, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080669974720078, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670026492771, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080670026492771, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670026492771, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670026492771, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670075027640, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080670075027640, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670075027640, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670075027640, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670149253598, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080670149253598, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670149253598, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670149253598, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 23
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670202774845, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080670202774845, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670202774845, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670202774845, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670228274915, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080670228274915, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670228274915, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670228274915, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670245031694, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080670245031694, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670245031694, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670245031694, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670507585393, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080670507585393, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670507585393, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670507585393, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670511315759, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080670511315759, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670511315759, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670511315759, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670599053948, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080670599053948, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670599053948, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670599053948, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670841564718, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080670841564718, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670841564718, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670841564718, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670867141098, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674865429}
+    - target: {fileID: 3657080670867141098, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670867141098, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InventorySlotManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657080670867141098, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 3750826514290961574, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2792,7 +3187,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6068050740465961548, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6501937796749707068, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: m_IsActive
@@ -4370,6 +4765,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ae0199c415359264b88c9fbdc56d48bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &674865429 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7831725730443447143, guid: 146f72df1638140838a4412319be002a, type: 3}
+  m_PrefabInstance: {fileID: 674865424}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2070470905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5412cd12036b74d39a91c659f3bcd086, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &674865430 stripped

@@ -9,7 +9,6 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     public float currentStamina = 100f;
     public float maxStamina = 100f;
     public float meleeDamage = 20f;
-    public int inventoryLimit = 16;
     public bool[] recipesUnlocked = new bool[3] { true, true, true }; //use index
     public List<InventoryItem> itemList = new List<InventoryItem>();
 
@@ -62,21 +61,19 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     {
         //Create new data
         playerData = new PlayerData();
-        ClearManager();
+        SetupManager();
         return playerData;
     }
 
-    public void ClearManager()
+    public void SetupManager()
     {
         itemList.Clear();
-        currentHealth = 200f;
-        maxHealth = 200f;
-        currentStamina = 100f;
-        maxStamina = 100f;
-        meleeDamage = 20f;
-        inventoryLimit = 16;
-        playerData.inventory = "";
-        recipesUnlocked = new bool[3] { true, true, true };
+        currentHealth = playerData.currentHealth;
+        maxHealth = playerData.maxHealth;
+        currentStamina = playerData.currentStamina;
+        maxStamina = playerData.maxStamina;
+        meleeDamage = playerData.meleeDamage;
+        recipesUnlocked = playerData.recipesUnlocked;
     }
 
     private static string SerializeInventory(List<InventoryItem> itemList)
