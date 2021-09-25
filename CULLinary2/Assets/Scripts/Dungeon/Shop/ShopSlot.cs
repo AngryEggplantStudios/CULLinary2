@@ -13,6 +13,12 @@ public class ShopSlot : MonoBehaviour
     [SerializeField] private TMP_Text itemPrice;
     [SerializeField] private Outline outline;
     public ShopItem shopItem;
+    private Button button;
+
+    private void Awake()
+    {
+        button = GetComponentInChildren<Button>();
+    }
 
     public void Setup(ShopItem shopItem, int level)
     {
@@ -22,6 +28,13 @@ public class ShopSlot : MonoBehaviour
         levelText.text = "Level " + level;
         itemDescription.text = shopItem.description[level];
         itemPrice.text = "$" + shopItem.price[level];
+        button.interactable = true;
+    }
+
+    public void DisableSlot()
+    {
+        Button button = GetComponentInChildren<Button>();
+        button.interactable = false;
     }
 
 }

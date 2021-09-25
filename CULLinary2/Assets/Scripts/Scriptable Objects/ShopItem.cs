@@ -7,4 +7,7 @@ public class ShopItem : Item
     public int[] price;
     public string[] description;
 
+    //Effects
+    public int[] attackIncrement;
+
 }

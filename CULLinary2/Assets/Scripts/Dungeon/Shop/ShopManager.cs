@@ -9,7 +9,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
     [SerializeField] private GameObject slotsParentObject;
     [SerializeField] private GameObject slotPrefab;
     [SerializeField] private TMP_Text moneyText;
-    private int selectedSlotId;
+    private int selectedSlotId = -1;
     private List<ShopSlot> slots;
 
     public void HandlePurchase()
@@ -20,19 +20,12 @@ public class ShopManager : SingletonGeneric<ShopManager>
         {
             return;
         }
+        //Effects
+        PlayerManager.instance.meleeDamage += itemPurchased.attackIncrement[PlayerManager.instance.upgradesArray[itemPurchased.shopItemId]];
         PlayerManager.instance.currentMoney -= itemPrice;
         moneyText.text = PlayerManager.instance.currentMoney.ToString();
         PlayerManager.instance.upgradesArray[itemPurchased.shopItemId]++;
         LoadShop();
-    }
-
-    private void OnEnable()
-    {
-        foreach (ShopSlot slot in slots)
-        {
-            slot.gameObject.GetComponent<Outline>().enabled = false;
-        }
-        selectedSlotId = -1;
     }
 
     public void HandleClick(int slotId)
@@ -47,7 +40,6 @@ public class ShopManager : SingletonGeneric<ShopManager>
             slots[selectedSlotId].gameObject.GetComponent<Outline>().enabled = false;
         }
         selectedSlotId = slotId;
-
     }
 
     private void Update()
@@ -82,7 +74,12 @@ public class ShopManager : SingletonGeneric<ShopManager>
     {
         foreach (ShopSlot slot in slots)
         {
-            slot.Setup(slot.shopItem, PlayerManager.instance.upgradesArray[slot.shopItem.shopItemId]);
+            int level = PlayerManager.instance.upgradesArray[slot.shopItem.shopItemId];
+            slot.Setup(slot.shopItem, level);
+            if (PlayerManager.instance.currentMoney < slot.shopItem.price[level])
+            {
+                slot.DisableSlot();
+            }
         }
         moneyText.text = PlayerManager.instance.currentMoney.ToString();
     }
