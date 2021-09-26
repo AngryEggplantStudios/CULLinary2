@@ -6,6 +6,12 @@ public class CookingStation : PlayerInteractable
 {
     public SpherePlayerCollider spCollider;
 
+    public void Awake()
+    {
+        // Add to the list in RecipeManager for use in the minimap
+        RecipeManager.instance.AddCampfire(this.GetComponent<Transform>());
+    }
+
     public override SpherePlayerCollider GetCollider()
     {
         return spCollider;

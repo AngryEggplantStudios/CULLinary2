@@ -7,21 +7,44 @@ public class Minimap : MonoBehaviour
 {
     [SerializeField] public Camera minimapCamera;
     [SerializeField] public Transform navArrow;
-    [SerializeField] public GameObject orderSubmissionStationIconPrefab;
+    [SerializeField] public GameObject iconPrefab;
     [SerializeField] public Transform iconsParent;
+    [SerializeField] public Sprite campfireSprite;
 
     private Transform playerBody;
     // List of pairs of the actual station and the icon of that station
     private Dictionary<int, (Transform, Transform)> orderSubmissionStationLocationsAndIcons;
+    // List of campfire icons
+    private List<(Transform, Transform)> campfireIcons = new List<(Transform, Transform)>();
     private float width;
     private float height;
     private Vector3 playerOldPosition;
 
     private bool hasInstantiatedIcons = false;
+    // This flag ensures that campfires are only instantiated once 
+    private bool areCampfiresInstantiated = false;
+    // Ensures that icons are set when player enters the scene
+    private bool firstSettingOfIconPositions = false;
 
     void Awake()
     {
         playerBody = GameObject.FindGameObjectWithTag("PlayerBody").transform;
+    }
+
+    private void InstantiateCampfireIcons()
+    {
+        List<Transform> listOfCampfireLocations = RecipeManager.instance.GetAllCampfires();
+        foreach (Transform fire in listOfCampfireLocations)
+        {
+            GameObject icon = Instantiate(iconPrefab,
+                                          new Vector3(0, 0, 0),
+                                          Quaternion.identity,
+                                          iconsParent.transform) as GameObject;
+            // Set icon image
+            icon.GetComponent<Image>().sprite = campfireSprite;
+            campfireIcons.Add((fire, icon.transform));
+        }
+        areCampfiresInstantiated = true;
     }
 
     private void InstantiateMinimapIcons()
@@ -48,11 +71,10 @@ public class Minimap : MonoBehaviour
         {
             int stationId = order.Key;
             Transform stationTransform = order.Value.Item1;
-            GameObject minimapIcon = Instantiate(orderSubmissionStationIconPrefab,
+            GameObject minimapIcon = Instantiate(iconPrefab,
                                                  new Vector3(0, 0, 0),
                                                  Quaternion.identity,
                                                  iconsParent.transform) as GameObject;
-            SetIconPos(stationTransform, minimapIcon.transform);
             // Set icon image
             minimapIcon.GetComponent<Image>().sprite = order.Value.Item2;
             orderSubmissionStationLocationsAndIcons.Add(stationId, (stationTransform, minimapIcon.transform));
@@ -67,13 +89,19 @@ public class Minimap : MonoBehaviour
                 orderSubmissionStationLocationsAndIcons.Remove(stationId);
             }
         });
-        OrdersManager.instance.AddOrderGenerationCallback(() => ResetInstiantedIconsFlag());
+        OrdersManager.instance.AddOrderGenerationCallback(() => ResetInstiantedOrderIconsFlag());
+
+        // Add campfires
+        if (!areCampfiresInstantiated)
+        {
+            InstantiateCampfireIcons();
+        }
 
         hasInstantiatedIcons = true;
     }
 
     // Calling this will trigger the minimap to redraw the icons
-    private void ResetInstiantedIconsFlag()
+    private void ResetInstiantedOrderIconsFlag()
     {
         hasInstantiatedIcons = false;
     }
@@ -91,19 +119,24 @@ public class Minimap : MonoBehaviour
         }
 
         // Check if player has moved
-        if (playerOldPosition != playerBody.position)
+        if (playerOldPosition != playerBody.position || !firstSettingOfIconPositions)
         {
             playerOldPosition = playerBody.position;
             // Update positions of old icons
             foreach ((Transform station, Transform icon) in orderSubmissionStationLocationsAndIcons.Values)
             {
-                SetIconPos(station, icon);
+                SetIconPos(station, icon, false);
+            }
+            foreach ((Transform fire, Transform icon) in campfireIcons)
+            {
+                SetIconPos(fire, icon, true);
             }
             navArrow.eulerAngles = new Vector3(0, 0, -playerBody.eulerAngles.y);
+            firstSettingOfIconPositions = true;
         }
     }
 
-    private void SetIconPos(Transform target, Transform icon)
+    private void SetIconPos(Transform target, Transform icon, bool hideIfFarAway)
     {
         if (target == null)
         {
@@ -120,6 +153,11 @@ public class Minimap : MonoBehaviour
 
         if (localPos.magnitude > width / 2)
         {
+            if (hideIfFarAway)
+            {
+                icon.gameObject.SetActive(false);
+                return;
+            }
             localPos = localPos.normalized * width / 2;
         }
 
