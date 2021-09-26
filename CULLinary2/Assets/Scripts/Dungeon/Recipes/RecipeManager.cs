@@ -51,7 +51,6 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         {
             if (recipesUnlocked[id])
             {
-                Debug.Log("adding unlocked recipe id: " + id);
                 innerUnlockedRecipesList.Add(DatabaseLoader.GetRecipeById(id));
             }
             else

@@ -70,9 +70,9 @@ public class UIController : SingletonGeneric<UIController>
 
     public void ShowDeathMenu()
     {
+        Time.timeScale = 0;
         playerDeathMenu.SetActive(true);
         isDeathMenuActive = true;
-        Time.timeScale = 0;
     }
 
     public void RespawnPlayer()

@@ -87,7 +87,6 @@ public class BiomeGenerator : MonoBehaviour
         yield return StartCoroutine(AttachWalkableMesh());
 
         //Deactivate and reactivate navmeshSurface due to strange bug NOTE if delete either NavMesh.asset walkable mesh or createdmesh all might cease to work. Assume user isn't stupid for now.
-        Debug.Log("reactivating nav mesh");
         yield return StartCoroutine(ReactivateNavMesh());
 
     }
@@ -104,7 +103,6 @@ public class BiomeGenerator : MonoBehaviour
         navMeshSurfaceFromParent.enabled = false;
         yield return new WaitForSeconds(1f);
         navMeshSurfaceFromParent.enabled = true;
-        Debug.Log("reactivated nav mesh");
     }
 
     private IEnumerator GenerateNoise()
@@ -173,7 +171,7 @@ public class BiomeGenerator : MonoBehaviour
     }
 
     public void CreateWalkableMeshWithWater()
-	{
+    {
         Debug.Log(createdMeshPath);
         MeshData walkableData = MeshGenerator.GenerateWalkableMesh(noiseMap, meshHeightMultiplier, 1.1f, true);
         walkableMesh.Clear();
@@ -183,7 +181,7 @@ public class BiomeGenerator : MonoBehaviour
     }
 
     private IEnumerator AttachCreatedMesh()
-	{
+    {
         meshFilter.sharedMesh = createdMesh;
         yield return null;
     }
@@ -209,9 +207,9 @@ public class BiomeGenerator : MonoBehaviour
         Debug.Log(createdMesh);
         //If on second round of creating walkable water 
         if (meshCollider.sharedMesh != null)
-		{
+        {
             meshCollider.sharedMesh.Clear();
-		}
+        }
         meshCollider.sharedMesh = walkableMesh;
         yield return null;
     }

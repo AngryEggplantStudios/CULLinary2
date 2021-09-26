@@ -14,18 +14,26 @@ public class GameTimer : SingletonGeneric<GameTimer>
     [SerializeField] private float dayLengthInMinutes;
     private static float gameTime;
     private static float timeScale;
-    private static int dayNum = 1;
+    private static int dayNum = 1; // TODO: to get from saved data
     private int hourNum;
     private int minuteNum;
     private string timeAsString;
 
+    private float dayStartTime = 0.25f; //6am
+    private float dayEndTime = 1f; //12am
+
     public delegate void StartNewDayDelegate();
     public static event StartNewDayDelegate OnStartNewDay;
     private bool isNewDay = true; // prevent OnStartNewDay from being invoked multiple times
+    public delegate void EndOfDayDelegate();
+    public static event EndOfDayDelegate OnEndOfDay;
 
     void Start()
     {
-        gameTime = 0.25f; //day starts at 6 am 
+        Debug.Log("set timescale to 1");
+        Time.timeScale = 1;
+
+        gameTime = dayStartTime;
         Debug.Log("start game time");
         timeScale = 24 / (dayLengthInMinutes / 60);
         DayText.text = "DAY " + dayNum;
@@ -36,29 +44,37 @@ public class GameTimer : SingletonGeneric<GameTimer>
     {
         if (Preset == null)
             return;
+
         gameTime += Time.deltaTime * timeScale / 86400;
         float actualTime = gameTime * 24;
         hourNum = Mathf.FloorToInt(actualTime);
         minuteNum = Mathf.FloorToInt((actualTime - (float)hourNum) * 60);
         timeAsString = hourNum + ":" + minuteNum.ToString("00");
         TimeText.text = timeAsString;
-        // Debug.Log("current time: " + timeAsString);
+
+        UpdateLighting(gameTime);
 
         if (timeAsString == "6:00" && isNewDay)
         {
-            //Debug.Log("start of new day");
+            Debug.Log("start of new day");
             isNewDay = false;
             OnStartNewDay?.Invoke();
         }
 
-        UpdateLighting(gameTime);
-        if (gameTime > 1)
+        if (timeAsString == "23:59")
         {
-            dayNum++;
-            gameTime -= 1;
-            DayText.text = "DAY " + dayNum;
-            isNewDay = true;
+            OnEndOfDay?.Invoke();
+            Debug.Log("day ended");
+            GoToNextDay();
         }
+    }
+
+    private void GoToNextDay()
+    {
+        dayNum++;
+        gameTime -= 1;
+        DayText.text = "DAY " + dayNum;
+        isNewDay = true;
     }
 
     public static float GetTime()
