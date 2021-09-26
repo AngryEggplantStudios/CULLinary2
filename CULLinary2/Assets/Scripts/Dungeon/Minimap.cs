@@ -21,8 +21,6 @@ public class Minimap : MonoBehaviour
     private Vector3 playerOldPosition;
 
     private bool hasInstantiatedIcons = false;
-    // This flag ensures that campfires are only instantiated once 
-    private bool areCampfiresInstantiated = false;
     // Ensures that icons are set when player enters the scene
     private bool firstSettingOfIconPositions = false;
 
@@ -33,6 +31,7 @@ public class Minimap : MonoBehaviour
 
     private void InstantiateCampfireIcons()
     {
+        campfireIcons = new List<(Transform, Transform)>();
         List<Transform> listOfCampfireLocations = RecipeManager.instance.GetAllCampfires();
         foreach (Transform fire in listOfCampfireLocations)
         {
@@ -44,7 +43,6 @@ public class Minimap : MonoBehaviour
             icon.GetComponent<Image>().sprite = campfireSprite;
             campfireIcons.Add((fire, icon.transform));
         }
-        areCampfiresInstantiated = true;
     }
 
     private void InstantiateMinimapIcons()
@@ -58,7 +56,11 @@ public class Minimap : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+        
+        // Add campfires
+        InstantiateCampfireIcons();
 
+        // Add order icons
         RectTransform rt = this.GetComponent<RectTransform>();
         width = rt.sizeDelta.x;
         height = rt.sizeDelta.y;
@@ -90,13 +92,6 @@ public class Minimap : MonoBehaviour
             }
         });
         OrdersManager.instance.AddOrderGenerationCallback(() => ResetInstiantedOrderIconsFlag());
-
-        // Add campfires
-        if (!areCampfiresInstantiated)
-        {
-            InstantiateCampfireIcons();
-        }
-
         hasInstantiatedIcons = true;
     }
 
