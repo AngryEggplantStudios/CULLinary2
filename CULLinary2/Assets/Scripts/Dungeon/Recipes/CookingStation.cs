@@ -6,15 +6,6 @@ public class CookingStation : PlayerInteractable
 {
     public SpherePlayerCollider spCollider;
 
-    private RecipeManager recipeManager;
-    private UIController uiController;
-
-    void Start()
-    {
-        recipeManager = RecipeManager.Instance;
-        uiController = UIController.instance;
-    }
-
     public override SpherePlayerCollider GetCollider()
     {
         return spCollider;
@@ -22,14 +13,11 @@ public class CookingStation : PlayerInteractable
     public override void OnPlayerInteract()
     {
         // Open Cooking Menu
-        if (!recipeManager.IsCookingActivated())
+        if (!RecipeManager.instance.IsCookingActivated())
         {
-            // uiController.ShowCookingPanel();
-            //Debug.Log("why inventory NO SHOW UP on first F");
-            // DisableMovementOfPlayer(); // Disable movement of player when menu is open
-            Debug.Log("Opening cooking menus");
-            recipeManager.ActivateCooking();
-            uiController.OpenCampfireInterface();
+            ShopManager.instance.LoadShop();
+            RecipeManager.instance.ActivateCooking();
+            UIController.instance.OpenCampfireInterface();
         }
     }
 
@@ -38,10 +26,10 @@ public class CookingStation : PlayerInteractable
         // Stop cooking anim if player walks away halfway
         // Probably can remove this once we let player stop moving when cooking
         // (we'll leave it for now just in case)
-        if (recipeManager.IsCookingActivated())
+        if (RecipeManager.instance.IsCookingActivated())
         {
-            recipeManager.DeactivateCooking();
-            uiController.CloseCampfireInterface();
+            RecipeManager.instance.DeactivateCooking();
+            UIController.instance.CloseCampfireInterface();
         }
     }
 }

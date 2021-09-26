@@ -16,19 +16,23 @@ public class InventorySlotManager : MonoBehaviour
     {
         InventorySlot itemSlot = slots[slotId];
         InventoryItem item = itemSlot.item;
+
         if (item == null || slotId == selectedSlotId)
         {
             return;
         }
+
         itemMainIcon.enabled = true;
         itemMainIcon.sprite = item.icon;
         itemName.text = item.itemName;
         itemDescription.text = item.description;
         itemSlot.gameObject.GetComponent<Outline>().enabled = true;
+
         if (selectedSlotId != -1)
         {
             slots[selectedSlotId].gameObject.GetComponent<Outline>().enabled = false;
         }
+
         selectedSlotId = slotId;
     }
 
@@ -76,13 +80,14 @@ public class InventorySlotManager : MonoBehaviour
     public void HandleConsume()
     {
         InventoryItem item = slots[selectedSlotId].item;
-        if (InventoryManager.instance != null && item != null) //Need to check if item is consumable
+        if (InventoryManager.instance != null && item != null && item.isConsumable)
         {
+            InventoryManager.instance.RemoveItem(item);
             Debug.Log("Consumed!");
         }
     }
 
-    private void Start()
+    private void Awake()
     {
         slots = gameObject.GetComponentsInChildren<InventorySlot>();
     }
