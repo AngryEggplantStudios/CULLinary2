@@ -26,6 +26,7 @@ public class EggplantAttack : MonsterAttack
     public override void attackPlayerDealDamage()
     {
         canDealDamage = true;
+        ScreenShake.Instance.Shake(0.4f, 1f, 0.2f, 1f);
     }
 
     public override void attackPlayerEnd()

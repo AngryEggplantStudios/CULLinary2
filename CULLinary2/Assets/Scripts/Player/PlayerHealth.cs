@@ -22,8 +22,9 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private float thresholdHealth = 0.25f;
     [SerializeField] private Renderer rend;
     [SerializeField] private float minimumHeightToStartDrowning;
+    [SerializeField] private GameObject drowningAlert_prefab;
 
-    private float drowningDamage = 100f;
+    private float drowningDamage = 50f;
     private bool isInvincible = false;
 
     private Color[] originalColors;
@@ -58,8 +59,9 @@ public class PlayerHealth : MonoBehaviour
         if (transform.position.y < minimumHeightToStartDrowning && !isDrowningActivated)
 		{
             //Drowning animation
-            isDrowningActivated = true;
-            StartCoroutine(StartDrowning());
+            /* isDrowningActivated = true;
+            StartCoroutine(StartDrowning()); */
+            HandleHit(drowningDamage, true);
 		}
         if (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth < thresholdHealth && !flashIsActivated)
         {
@@ -71,16 +73,17 @@ public class PlayerHealth : MonoBehaviour
             flashIsActivated = false;
         }
     }
-    private IEnumerator StartDrowning()
+
+    /* private IEnumerator StartDrowning()
     {
         Debug.Log("Start drowning");
         PlayerManager.instance.currentHealth -= drowningDamage;
         DisplayOnUI(PlayerManager.instance.currentHealth, PlayerManager.instance.maxHealth);
         SpawnDamageCounter(drowningDamage);
         audioSource.Play();
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
         isDrowningActivated = false;
-    }
+    } */
 
     private IEnumerator FlashBar()
     {
@@ -103,7 +106,7 @@ public class PlayerHealth : MonoBehaviour
         return true;
     }
 
-    public bool HandleHit(float damage)
+    public bool HandleHit(float damage, bool drowning = false)
     {
         damage = damage < 0 ? 0 : Mathf.CeilToInt(damage); //Guard check
         if (isInvincible)
@@ -116,6 +119,9 @@ public class PlayerHealth : MonoBehaviour
         float maxHealth = PlayerManager.instance.maxHealth;
         DisplayOnUI(currentHealth, maxHealth);
         SpawnDamageCounter(damage);
+        if (drowning) { SpawnDrowningAlert(); }
+        ScreenFlash.Instance.Flash(0.01f * damage, 0.4f, 0.1f, 0.4f);
+        ScreenShake.Instance.Shake(0.01f * damage, 0.4f, 0.1f, 0.4f);
         audioSource.Play();
         animator.SetTrigger("isTakingDamage");
 
@@ -127,6 +133,7 @@ public class PlayerHealth : MonoBehaviour
         StartCoroutine(BecomeTemporarilyInvincible());
         return true;
     }
+
     private void SetupIFrame()
     {
         if (rend != null)
@@ -145,6 +152,15 @@ public class PlayerHealth : MonoBehaviour
         damageCounter.transform.GetComponentInChildren<Text>().text = damage.ToString();
         damageCounter.transform.SetParent(canvasDisplay.transform);
         damageCounter.transform.position = cam.WorldToScreenPoint(transform.position);
+    }
+
+    private void SpawnDrowningAlert()
+    {
+        GameObject drowningAlert = Instantiate(drowningAlert_prefab);
+        drowningAlert.transform.SetParent(canvasDisplay.transform);
+        Vector3 pos = cam.WorldToScreenPoint(transform.position);
+        pos.y += 50;
+        drowningAlert.transform.position = pos;
     }
 
     public void KnockbackPlayer(Vector3 positionOfEnemy)
