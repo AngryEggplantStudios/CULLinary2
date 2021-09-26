@@ -120,6 +120,8 @@ public class PlayerHealth : MonoBehaviour
         DisplayOnUI(currentHealth, maxHealth);
         SpawnDamageCounter(damage);
         if (drowning) { SpawnDrowningAlert(); }
+        ScreenFlash.Instance.Flash(0.01f * damage, 0.4f, 0.1f, 0.4f);
+        ScreenShake.Instance.Shake(0.01f * damage, 0.4f, 0.1f, 0.4f);
         audioSource.Play();
         animator.SetTrigger("isTakingDamage");
 
