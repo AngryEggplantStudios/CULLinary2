@@ -708,8 +708,6 @@ MonoBehaviour:
   currentStamina: 500
   maxStamina: 500
   meleeDamage: 10
-  startingMoney: 100
-  inventoryLimit: 16
   recipesUnlocked: 010101
   upgradesArray: 0000000000000000
   itemList: []
@@ -5710,8 +5708,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
-  m_Children:
-  - {fileID: 528618782}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7384,7 +7381,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2114604756}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c119376edd30405a89b97db713ecb86, type: 3}
+  m_Script: {fileID: 11500000, guid: a29ab5bd7ce019b40b9ab00031cbee2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   slotsParentObject: {fileID: 888698393}
@@ -7593,7 +7590,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5815e3e2dc3604b4dbf6bd06b10a5338, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: 2000
+  size: 950
   minY: 0
   spawnables:
   - name: Trees
