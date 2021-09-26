@@ -116,7 +116,11 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             // Order completed successfully!
             innerOrdersList.RemoveAt(orderIndex);
 
-            Debug.Log("Money + $" + stationId + ", you win!");
+            // Update money
+            int earnings = orderToComplete.GetRecipe().recipeEarnings;
+            Debug.Log("Money + $" + earnings + ", you win!");
+            PlayerManager.instance.currentMoney += earnings;
+
             if (orderSubmissionSound != null)
             {
                 orderSubmissionSound.Play();
@@ -149,7 +153,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
                                               new Vector3(0, 0, 0),
                                               Quaternion.identity,
                                               ordersContainer.transform) as GameObject;
-            
+
             OrdersUISlot orderDetails = orderLog.GetComponent<OrdersUISlot>();
             InventoryManager inv = InventoryManager.instance;
             int[] ingsArr = o.GetIngredientIds();

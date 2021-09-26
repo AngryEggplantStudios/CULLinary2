@@ -9,13 +9,13 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     public float currentStamina = 100f;
     public float maxStamina = 100f;
     public float meleeDamage = 20f;
-    public int inventoryLimit = 16;
     public bool[] recipesUnlocked = new bool[3] { true, true, true }; //use index
+    public int[] upgradesArray = new int[2] { 1, 1 };
     public List<InventoryItem> itemList = new List<InventoryItem>();
+    public int currentMoney;
 
     // Private variables
     private static PlayerData playerData = new PlayerData();
-    private GameTimer timer;
 
     public void SaveData(List<InventoryItem> itemList)
     {
@@ -30,7 +30,9 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.maxStamina = maxStamina;
         playerData.inventory = SerializeInventory(itemList);
         playerData.recipesUnlocked = recipesUnlocked;
+        playerData.upgradesArray = upgradesArray;
         playerData.meleeDamage = meleeDamage;
+        playerData.currentMoney = currentMoney;
         SaveSystem.SaveData(playerData);
     }
 
@@ -55,28 +57,29 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         currentStamina = playerData.currentStamina;
         maxStamina = playerData.maxStamina;
         recipesUnlocked = playerData.recipesUnlocked;
+        upgradesArray = playerData.upgradesArray;
         meleeDamage = playerData.meleeDamage;
+        currentMoney = playerData.currentMoney;
     }
 
     public PlayerData CreateBlankData()
     {
-        //Create new data
         playerData = new PlayerData();
-        ClearManager();
+        SetupManager();
         return playerData;
     }
 
-    public void ClearManager()
+    public void SetupManager()
     {
         itemList.Clear();
-        currentHealth = 200f;
-        maxHealth = 200f;
-        currentStamina = 100f;
-        maxStamina = 100f;
-        meleeDamage = 20f;
-        inventoryLimit = 16;
-        playerData.inventory = "";
-        recipesUnlocked = new bool[3] { true, true, true };
+        currentHealth = playerData.currentHealth;
+        maxHealth = playerData.maxHealth;
+        currentStamina = playerData.currentStamina;
+        maxStamina = playerData.maxStamina;
+        meleeDamage = playerData.meleeDamage;
+        recipesUnlocked = playerData.recipesUnlocked;
+        upgradesArray = playerData.upgradesArray;
+        currentMoney = playerData.currentMoney;
     }
 
     private static string SerializeInventory(List<InventoryItem> itemList)

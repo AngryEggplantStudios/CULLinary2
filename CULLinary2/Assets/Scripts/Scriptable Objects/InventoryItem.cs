@@ -8,4 +8,5 @@ public class InventoryItem : Item
     public float healHpAmount;
     public float increaseMaxHpAmount;
     public float increaseBaseDamageAmount;
+    public string description = "This is a new item";
 }

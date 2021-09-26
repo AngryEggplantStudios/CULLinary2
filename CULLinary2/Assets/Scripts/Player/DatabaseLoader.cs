@@ -10,6 +10,7 @@ public class DatabaseLoader : MonoBehaviour
     [Header("All Databases")]
     [SerializeField] private InventoryItemDatabase inventoryItemDatabase;
     [SerializeField] private RecipeDatabase recipeDatabase;
+    [SerializeField] private ShopItemDatabase shopItemDatabase;
 
     //Inventory Items
     private static Dictionary<int, InventoryItem> inventoryItemDict;
@@ -17,6 +18,9 @@ public class DatabaseLoader : MonoBehaviour
     //Recipes
     private static Dictionary<int, Recipe> recipeDict;
     private static List<Recipe> recipeList;
+    //Shop Items (Upgrades)
+    private static Dictionary<int, ShopItem> shopItemDict;
+    private static List<ShopItem> shopitemList;
 
     private void Start()
     {
@@ -24,6 +28,8 @@ public class DatabaseLoader : MonoBehaviour
         inventoryItemList = inventoryItemDatabase.allItems;
         recipeDict = new Dictionary<int, Recipe>();
         recipeList = recipeDatabase.recipes;
+        shopItemDict = new Dictionary<int, ShopItem>();
+        shopitemList = shopItemDatabase.allItems;
         if (isAutoload)
         {
             StartCoroutine(Populate());
@@ -34,6 +40,7 @@ public class DatabaseLoader : MonoBehaviour
     {
         yield return StartCoroutine(PopulateInventoryItemDatabase());
         yield return StartCoroutine(PopulateRecipeDatabase());
+        yield return StartCoroutine(PopulateShopItemDatabase());
     }
 
     private IEnumerator PopulateInventoryItemDatabase()
@@ -46,7 +53,7 @@ public class DatabaseLoader : MonoBehaviour
             }
             catch
             {
-                Debug.Log("Unable to add item: " + i.name);
+                Debug.Log("Unable to add item: " + i.itemName);
             }
             yield return null;
         }
@@ -107,5 +114,41 @@ public class DatabaseLoader : MonoBehaviour
     public static Dictionary<int, Recipe> GetRecipeDict()
     {
         return recipeDict;
+    }
+
+    private IEnumerator PopulateShopItemDatabase()
+    {
+        foreach (ShopItem i in shopitemList)
+        {
+            try
+            {
+                shopItemDict.Add(i.shopItemId, i);
+            }
+            catch
+            {
+                Debug.Log("Unable to add shop item: " + i.itemName);
+            }
+            yield return null;
+        }
+        if (ShopManager.instance != null)
+        {
+            ShopManager.instance.SetupShop();
+        }
+        Debug.Log("Shop Item Database populated.");
+    }
+
+    public static ShopItem GetShopItemById(int id)
+    {
+        return shopItemDict[id];
+    }
+
+    public static List<ShopItem> GetAllShopItems()
+    {
+        return shopitemList;
+    }
+
+    public static Dictionary<int, ShopItem> GetShopItemDict()
+    {
+        return shopItemDict;
     }
 }
