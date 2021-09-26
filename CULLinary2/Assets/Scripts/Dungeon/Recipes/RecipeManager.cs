@@ -31,6 +31,10 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
     // Only populate the unlocked recipes list once
     private bool hasPopulatedUnlockedRecipes = false;
 
+    // List of all campfire locations for the minimap
+    private List<Transform> campfires = new List<Transform>();
+    
+
     // To be called when save data is loaded
     public void FilterUnlockedRecipes()
     {
@@ -121,6 +125,16 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         {
             Debug.Log("RecipeManager: ingredients required!");
         }
+    }
+
+    public void AddCampfire(Transform fire)
+    {
+        campfires.Add(fire);
+    }
+
+    public List<Transform> GetAllCampfires()
+    {
+        return campfires;
     }
 
     public IEnumerator UpdateUI()
