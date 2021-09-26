@@ -50,24 +50,24 @@ public class MonsterSpawn : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider collider)
-    {
-        if (collider.CompareTag("Player") && delayFlag)
-        {
-            if (this.state == SpawnState.Inactive)
-            {
-                this.state = SpawnState.Active;
-                SpawnEnemies();
-            }
-            else if (this.state == SpawnState.Loop && canSpawn)
-            {
-                canSpawn = false;
-                StartCoroutine(SpawnTimer(delayLoopTime));
-                SpawnEnemies();
-            }
-        }
+    //private void OnTriggerEnter(Collider collider)
+    //{
+    //    if (collider.CompareTag("Player") && delayFlag)
+    //    {
+    //        if (this.state == SpawnState.Inactive)
+    //        {
+    //            this.state = SpawnState.Active;
+    //            SpawnEnemies();
+    //        }
+    //        else if (this.state == SpawnState.Loop && canSpawn)
+    //        {
+    //            canSpawn = false;
+    //            StartCoroutine(SpawnTimer(delayLoopTime));
+    //            SpawnEnemies();
+    //        }
+    //    }
 
-    }
+    //}
 
     private void SpawnEnemies()
     {
