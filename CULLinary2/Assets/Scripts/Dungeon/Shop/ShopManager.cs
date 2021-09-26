@@ -23,8 +23,12 @@ public class ShopManager : SingletonGeneric<ShopManager>
         //Effects
         PlayerManager.instance.meleeDamage += itemPurchased.attackIncrement[PlayerManager.instance.upgradesArray[itemPurchased.shopItemId]];
         PlayerManager.instance.currentMoney -= itemPrice;
-        moneyText.text = PlayerManager.instance.currentMoney.ToString();
         PlayerManager.instance.upgradesArray[itemPurchased.shopItemId]++;
+
+        // Update all money UIs
+        InventoryManager.instance.StopAllCoroutines();
+        InventoryManager.instance.StartCoroutine(InventoryManager.instance.UpdateUI());
+        
         LoadShop();
     }
 
