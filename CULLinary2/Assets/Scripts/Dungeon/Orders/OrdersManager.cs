@@ -51,19 +51,21 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         rand = new System.Random();
 
         // Generate random orders daily
-        GameTimer.OnStartNewDay += () =>
+        GameTimer.OnStartNewDay += CheckFirstDay;
+    }
+
+    private void CheckFirstDay()
+    {
+        if (firstDay)
         {
-            if (firstDay)
-            {
-                Debug.Log("First day");
-                firstDay = false;
-            }
-            else
-            {
-                Debug.Log("No es first day");
-                GenerateRandomOrders();
-            }
-        };
+            Debug.Log("First day");
+            firstDay = false;
+        }
+        else
+        {
+            Debug.Log("No es first day");
+            GenerateRandomOrders();
+        }
     }
 
     void Update()
@@ -290,5 +292,10 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         {
             onOrderGenerationCallback.Invoke();
         }
+    }
+
+    public void OnDestroy()
+    {
+        GameTimer.OnStartNewDay -= CheckFirstDay;
     }
 }

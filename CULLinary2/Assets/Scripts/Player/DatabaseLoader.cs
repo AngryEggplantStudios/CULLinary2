@@ -88,7 +88,7 @@ public class DatabaseLoader : MonoBehaviour
             }
             catch
             {
-                Debug.Log("Unable to add recipe: " + r.cookedDishItem.itemName);
+                Debug.Log("Unable to add recipe: " + r.cookedDishItem.itemName + "| id: " + r.recipeId);
             }
             yield return null;
         }

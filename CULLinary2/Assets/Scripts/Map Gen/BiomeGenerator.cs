@@ -87,7 +87,9 @@ public class BiomeGenerator : MonoBehaviour
         yield return StartCoroutine(AttachWalkableMesh());
 
         //Deactivate and reactivate navmeshSurface due to strange bug NOTE if delete either NavMesh.asset walkable mesh or createdmesh all might cease to work. Assume user isn't stupid for now.
+        Debug.Log("reactivating nav mesh");
         yield return StartCoroutine(ReactivateNavMesh());
+
     }
 
     public IEnumerator ReactivateMap()
@@ -102,6 +104,7 @@ public class BiomeGenerator : MonoBehaviour
         navMeshSurfaceFromParent.enabled = false;
         yield return new WaitForSeconds(1f);
         navMeshSurfaceFromParent.enabled = true;
+        Debug.Log("reactivated nav mesh");
     }
 
     private IEnumerator GenerateNoise()

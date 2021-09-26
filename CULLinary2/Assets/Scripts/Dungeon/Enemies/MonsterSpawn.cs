@@ -148,4 +148,9 @@ public class MonsterSpawn : MonoBehaviour
             localSpawnCap -= value;
         }
     }
+
+    public void OnDestroy()
+    {
+        GameTimer.OnStartNewDay -= SpawnEnemies;
+    }
 }

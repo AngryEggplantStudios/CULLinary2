@@ -19,6 +19,7 @@ public class UIController : SingletonGeneric<UIController>
     [Header("Main HUD")]
     [SerializeField] private GameObject mainHud;
     [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private GameObject playerDeathMenu;
 
     private KeyCode openInventoryKeyCode;
     private KeyCode openOrdersKeyCode;
@@ -34,6 +35,7 @@ public class UIController : SingletonGeneric<UIController>
     private bool isMenuActive = false;
     private bool isFireplaceActive = false;
     private bool isPaused = false;
+    private bool isDeathMenuActive = false;
 
     // For interacting with objects
     private PlayerInteractable currentInteractable = null;
@@ -64,6 +66,19 @@ public class UIController : SingletonGeneric<UIController>
         Time.timeScale = 1;
         PlayerManager.instance.SaveData(InventoryManager.instance.itemListReference);
         SceneManager.LoadScene((int)SceneIndexes.MAIN_MENU);
+    }
+
+    public void ShowDeathMenu()
+    {
+        playerDeathMenu.SetActive(true);
+        isDeathMenuActive = true;
+        Time.timeScale = 0;
+    }
+
+    public void RespawnPlayer()
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene((int)SceneIndexes.MAIN_SCENE);
     }
 
     public void OpenInventory()
@@ -232,6 +247,11 @@ public class UIController : SingletonGeneric<UIController>
 
     private void Update()
     {
+        if (isDeathMenuActive)
+        {
+            return;
+        }
+
         if (!isFireplaceActive && !isMenuActive)
         {
             if (Input.GetKeyDown(closeUiKeyCode))

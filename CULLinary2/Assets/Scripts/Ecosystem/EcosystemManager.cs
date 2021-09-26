@@ -108,4 +108,9 @@ public class EcosystemManager : MonoBehaviour
         pop.SetExtinct();
     }
 
+    public void OnDestroy()
+    {
+        GameTimer.OnStartNewDay -= CheckNaturalPopulationIncrease;
+    }
+
 }

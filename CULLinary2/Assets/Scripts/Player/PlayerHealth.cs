@@ -70,6 +70,17 @@ public class PlayerHealth : MonoBehaviour
         {
             flashIsActivated = false;
         }
+
+        if (PlayerManager.instance.currentHealth <= 0f)
+        {
+            if (audioSource.isPlaying)
+            {
+                Invoke("Die", audioSource.clip.length);
+            } else
+            {
+                Die();
+            }
+        }
     }
     private IEnumerator StartDrowning()
     {
@@ -122,7 +133,7 @@ public class PlayerHealth : MonoBehaviour
         if (PlayerManager.instance.currentHealth <= 0f)
         {
             Debug.Log("You are dead.");
-            Invoke("Die", audioSource.clip.length); // Wait for damage sound effect to finish            
+            //Invoke("Die", audioSource.clip.length); // Wait for damage sound effect to finish            
             return true;
         }
 
@@ -132,8 +143,7 @@ public class PlayerHealth : MonoBehaviour
 
     private void Die()
     {
-        PlayerDeath playerDeathScript = gameObject.GetComponent<PlayerDeath>();
-        playerDeathScript.Die();
+        UIController.instance.ShowDeathMenu();
     }
 
     private void SetupIFrame()
