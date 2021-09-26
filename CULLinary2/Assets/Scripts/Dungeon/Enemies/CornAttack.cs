@@ -6,6 +6,7 @@ public class CornAttack : MonsterAttack
 {
     [SerializeField] private Transform throwObject;
     [SerializeField] private Material lineMaterial;
+    [SerializeField] private Color lineColor;
     private PlayerHealth healthScript;
     private bool canDealDamage;
     private Transform playerTransform;
@@ -29,11 +30,11 @@ public class CornAttack : MonsterAttack
         gameObjectChild.transform.parent = gameObject.transform;
         LineRenderer lRend = gameObjectChild.AddComponent<LineRenderer>();
         lRend.positionCount = 2;
-        lRend.startWidth = 0.4f;
-        lRend.endWidth = 0.4f;
+        lRend.startWidth = 0.5f;
+        lRend.endWidth = 0f;
         lRend.enabled = false;
         lRend.material = lineMaterial;
-        lRend.SetColors(Color.red, Color.red);
+        lRend.SetColors(Color.red, Color.clear);
         listOfRenderers.Add(lRend);
     }
 
