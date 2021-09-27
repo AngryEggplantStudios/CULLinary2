@@ -62,7 +62,7 @@ public class PlayerHealth : MonoBehaviour
             /* isDrowningActivated = true;
             StartCoroutine(StartDrowning()); */
             HandleHit(drowningDamage, true);
-		}
+        }
         if (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth < thresholdHealth && !flashIsActivated)
         {
             flashIsActivated = true;
@@ -75,14 +75,15 @@ public class PlayerHealth : MonoBehaviour
 
         if (PlayerManager.instance.currentHealth <= 0f)
         {
-            if (audioSource.isPlaying)
-            {
-                Invoke("Die", audioSource.clip.length); // Wait for damage sound effect to finish
-            }
-            else
-            {
-                Die();
-            }
+            Die();
+            // if (audioSource.isPlaying)
+            // {
+            //     Invoke("Die", audioSource.clip.length); // Wait for damage sound effect to finish
+            // }
+            // else
+            // {
+            //     Die();
+            // }
         }
     }
 
@@ -139,7 +140,7 @@ public class PlayerHealth : MonoBehaviour
 
         if (PlayerManager.instance.currentHealth <= 0f)
         {
-            Debug.Log("You are dead.");
+            // Debug.Log("You are dead.");
             return true;
         }
 

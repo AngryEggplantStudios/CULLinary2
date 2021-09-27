@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerSleep : MonoBehaviour
 {
-    [SerializeField] private GameObject sceneTransition;
+    // [SerializeField] private GameObject sceneTransition;
 
     void Start()
     {

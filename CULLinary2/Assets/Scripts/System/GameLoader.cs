@@ -30,5 +30,6 @@ public class GameLoader : SingletonGeneric<GameLoader>
         playerCharacter.SetActive(true);
         uiCanvas.SetActive(true);
         // monsters.SetActive(true);
+        GameTimer.instance.Run();
     }
 }

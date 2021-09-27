@@ -20,9 +20,9 @@ public class UIController : SingletonGeneric<UIController>
     [SerializeField] private GameObject mainHud;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject playerDeathMenu;
-    [Header("Scene Transition")]
-    [SerializeField] private GameObject sceneTransition;
-
+    [SerializeField] private GameObject player;
+    // [Header("Scene Transition")]
+    // [SerializeField] private GameObject sceneTransition;
 
     private KeyCode ToggleInventoryKeyCode;
     private KeyCode ToggleOrdersKeyCode;
@@ -73,17 +73,38 @@ public class UIController : SingletonGeneric<UIController>
 
     public void ShowDeathMenu()
     {
-        Time.timeScale = 0;
-        playerDeathMenu.SetActive(true);
-        isDeathMenuActive = true;
+        if (!isDeathMenuActive)
+        {
+            Debug.Log("show death screen");
+            Time.timeScale = 0;
+            playerDeathMenu.SetActive(true);
+            isDeathMenuActive = true;
+        }
     }
 
     public void RespawnPlayer()
     {
+        Debug.Log("go to next day");
+        GameTimer.instance.GoToNextDay();
+
+        Debug.Log("heal player");
+        PlayerManager.instance.currentHealth = PlayerManager.instance.maxHealth;
+        PlayerManager.instance.currentStamina = PlayerManager.instance.maxStamina;
+
+        // Transform player = GameObject.FindGameObjectWithTag("Player").transform;
+        // Transform respawnPoint = GameObject.FindWithTag("RespawnPoint").transform;
+        player.transform.position = new Vector3(0f, 1f, 0f);
+
+        // Debug.Log("move player to " + respawnPoint.position);
+        Debug.Log("player is now at " + player.transform.position);
+        playerDeathMenu.SetActive(false);
+        isDeathMenuActive = false;
         Time.timeScale = 1;
+        Debug.Log("done respawning player, timescale: " + Time.timeScale);
+
         // sceneTransition.SetActive(true);
         // SceneManager.LoadScene((int)SceneIndexes.MAIN_SCENE);
-        StartCoroutine(ReloadMainScene());
+        // StartCoroutine(ReloadMainScene());
     }
 
     private IEnumerator ReloadMainScene()

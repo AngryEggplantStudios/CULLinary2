@@ -23,7 +23,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
     private float dayEndTime = 1f; //12am
 
     private bool isNewDay = true; // prevent OnStartNewDay from being invoked multiple times
-    public bool isActivated = true;
+    private bool isRunning = false;
 
     public delegate void StartNewDayDelegate();
     public static event StartNewDayDelegate OnStartNewDay;
@@ -44,7 +44,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     private void Update()
     {
-        if (Preset == null || !isActivated)
+        if (Preset == null || !isRunning)
             return;
 
         gameTime += Time.deltaTime * timeScale / 86400;
@@ -56,27 +56,38 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
         UpdateLighting(gameTime);
 
-        if (timeAsString == "6:00" && isNewDay)
+        // if (timeAsString == "6:00" && isNewDay)
+        if (gameTime >= dayStartTime && isNewDay)
         {
-            Debug.Log("start of new day");
+            Debug.Log("start of day " + dayNum);
             isNewDay = false;
             OnStartNewDay?.Invoke();
         }
 
-        if (timeAsString == "23:59")
+        if (gameTime >= 1f)
         {
-            OnEndOfDay?.Invoke();
             Debug.Log("day ended");
+            OnEndOfDay?.Invoke();
             GoToNextDay();
         }
     }
 
-    private void GoToNextDay()
+    public void GoToNextDay()
     {
         dayNum++;
         gameTime = dayStartTime;
         DayText.text = "DAY " + dayNum;
         isNewDay = true;
+    }
+
+    public void Run()
+    {
+        isRunning = true;
+    }
+
+    public void Pause()
+    {
+        isRunning = false;
     }
 
     public static float GetTime()
