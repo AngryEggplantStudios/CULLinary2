@@ -12,7 +12,7 @@ public class BossRangedAttack : MonsterAttack
     private bool projectAttack = false;
     private float startingAngle;
     private float fov = 90f;
-    private float viewDistance = 50f;
+    private float viewDistance = 150f;
     private List<LineRenderer> listOfRenderers;
     private List<Vector3> firePositions;
     private float LINE_HEIGHT_FROM_GROUND = 0.05f;

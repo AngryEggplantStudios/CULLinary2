@@ -58,6 +58,7 @@ public class ClownController : MonoBehaviour
     private bool idleCooldownRunning = false;
     private bool coroutineMeleeRunning = false;
     private bool coroutineSpawnRunning = false;
+    private string prevFoot = "leftFoot";
 
     public enum State
     {
@@ -89,10 +90,20 @@ public class ClownController : MonoBehaviour
         SetupHpBar();
     }
 
+    //SpawnsClown at player position
     public void SpawnClown()
 	{
-
+        gameObject.transform.parent.gameObject.SetActive(true);
+        transform.position = player.position;
 	}
+
+    //Destroys any spawned mosnters when player dies
+    public void DeSpawnClown()
+    {
+        gameObject.transform.parent.gameObject.SetActive(false);
+        transform.position = player.position;
+        spawnAttackScript.destroySpawnPoints();
+    }
 
     private void SetupHpBar()
     {
@@ -197,6 +208,7 @@ public class ClownController : MonoBehaviour
                 }
                 break;
             case State.Roaming:
+                coroutineMeleeRunning = false;
                 if (distanceToPlayer > lookingDistance)
                 {
                     slowlyLookAt(player);
@@ -204,7 +216,6 @@ public class ClownController : MonoBehaviour
 
                 if (distanceToPlayer > stoppingDistance)
                 {
-                    Debug.Log("Trying to move forward");
                     moveForward();
                 }
 
@@ -212,8 +223,9 @@ public class ClownController : MonoBehaviour
                 if (distanceToPlayer < meleeRange)
                 {
                     stepOn(player);
-
+                    state = State.MeleeAttack;
                 }
+
 
                 // Bob head and jaw for demostration
                 transform.position = new Vector3(
@@ -235,6 +247,12 @@ public class ClownController : MonoBehaviour
                     moveForward();
                     leftFoot.meleeAttackEnd();
                     rightFoot.meleeAttackEnd();
+                    if (coroutineMeleeRunning)
+					{
+                        StopCoroutine("meleeCoroutine");
+                        coroutineMeleeRunning = false;
+                    }
+                    state = State.Roaming;
                 }
 
                 if (!coroutineMeleeRunning)
@@ -246,12 +264,12 @@ public class ClownController : MonoBehaviour
                     leftFoot.meleeAttackStart();
                     rightFoot.meleeAttackStart();
                     stepOn(player);
-                } else
+                } 
+                else
                 {
                     leftFoot.meleeAttackEnd();
                     rightFoot.meleeAttackEnd();
                 }
-
                 // Bob head and jaw for demostration
                 transform.position = new Vector3(
                         transform.position.x,
@@ -301,6 +319,11 @@ public class ClownController : MonoBehaviour
 
     IEnumerator idleCooldownCoroutine()
     {
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        if (distanceToPlayer > stoppingDistance)
+        {
+            moveForward();
+        }
         idleCooldownRunning = true;
         yield return new WaitForSeconds(2);
         SetupUI(Instantiate(enemyAlert_prefab));
@@ -315,14 +338,14 @@ public class ClownController : MonoBehaviour
             default:
             case 1:
             case 2:
-                state = State.SpawnAttack;
+                state = State.MeleeAttack;
                 break;
             case 3:
                 state = State.SpawnAttack;
                 break;
             case 4:
             case 5:
-                state = State.SpawnAttack;
+                state = State.RangedAttack;
                 break;
         }
         elapsedFrames = 0;
@@ -420,16 +443,32 @@ public class ClownController : MonoBehaviour
             return;
         }
         info.point = new Vector3(info.point.x, info.point.y + 0.3f, info.point.z);
-        // Find closer foot and step
-        if (Vector3.Distance(leftFoot.currentPosition, info.point) < Vector3.Distance(rightFoot.currentPosition, info.point))
-        {
-            leftFoot.SetTarget(info.point, info.normal);
-        }
-        else
-        {
-            rightFoot.SetTarget(info.point, info.normal);
-        }
-    }
+		// Find closer foot and step
+
+		/*			if (Vector3.Distance(leftFoot.currentPosition, info.point) < Vector3.Distance(rightFoot.currentPosition, info.point))
+					{
+						leftFoot.SetTarget(info.point, info.normal);
+						prevFoot = "leftFoot";
+					}
+					else
+					{
+						rightFoot.SetTarget(info.point, info.normal);
+						prevFoot = "rightFoot";
+					}*/
+
+
+		//Take turns to step with different foot
+		if (prevFoot == "rightFoot")
+		{
+			leftFoot.SetTarget(info.point, info.normal);
+			prevFoot = "leftFoot";
+		}
+		else
+		{
+			rightFoot.SetTarget(info.point, info.normal);
+			prevFoot = "rightFoot";
+		}
+	}
 
 
 }

@@ -16,8 +16,12 @@ public class BossSpawn : MonoBehaviour
 
 	public void Start()
 	{
-        //Create gameobject to contain all spawns
-        GameObject gameObject = new GameObject(this.gameObject.name + "Container");
+        //Create gameobject to contain all spawns, if not available, if available retrieve from scene. Needed in case clown is respawned
+        GameObject gameObject = GameObject.Find(this.gameObject.name + "Container");
+        if (gameObject == null)
+		{
+            gameObject = new GameObject(this.gameObject.name + "Container");
+        }
         gameObject.transform.parent = parentWhichContainsAllMobs.transform;
         gameObject.AddComponent<BossSpawnSuicideScript>();
         parentWhichContainsAllMobs = gameObject;
