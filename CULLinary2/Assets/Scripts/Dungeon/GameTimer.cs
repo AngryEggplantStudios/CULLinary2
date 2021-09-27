@@ -97,8 +97,8 @@ public class GameTimer : SingletonGeneric<GameTimer>
     private void UpdateLighting(float timePercent)
     {
         //Set ambient and fog
-        RenderSettings.ambientLight = Preset.AmbientColor.Evaluate(timePercent);
-        RenderSettings.fogColor = Preset.FogColor.Evaluate(timePercent);
+        //RenderSettings.ambientLight = Preset.AmbientColor.Evaluate(timePercent);
+        //RenderSettings.fogColor = Preset.FogColor.Evaluate(timePercent);
 
         //If the directional light is set then rotate and set it's color, I actually rarely use the rotation because it casts tall shadows unless you clamp the value
         if (DirectionalLight != null)

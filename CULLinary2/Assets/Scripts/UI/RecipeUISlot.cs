@@ -61,7 +61,7 @@ public class RecipeUISlot : MonoBehaviour
     {
         if (known && infoDisplay != null)
         {
-            infoDisplay.ShowRecipe(recipe, checkedIngs, numOfOrders);
+            infoDisplay.ShowRecipe(recipe, checkedIngs, numOfOrders, cookable);
         }
         if (infoDisplay == null)
         {

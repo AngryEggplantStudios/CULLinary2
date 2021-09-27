@@ -24,11 +24,11 @@ public class UIController : SingletonGeneric<UIController>
     [SerializeField] private GameObject sceneTransition;
 
 
-    private KeyCode openInventoryKeyCode;
-    private KeyCode openOrdersKeyCode;
-    private KeyCode openRecipesKeyCode;
-    private KeyCode openCreaturesKeyCode;
-    private KeyCode openMapKeyCode;
+    private KeyCode ToggleInventoryKeyCode;
+    private KeyCode ToggleOrdersKeyCode;
+    private KeyCode ToggleRecipesKeyCode;
+    private KeyCode ToggleCreaturesKeyCode;
+    private KeyCode ToggleMapKeyCode;
     private KeyCode interactKeyCode;
     private KeyCode rightUiTabKeyCode;
     private KeyCode leftUiTabKeyCode;
@@ -46,11 +46,11 @@ public class UIController : SingletonGeneric<UIController>
     public override void Awake()
     {
         base.Awake();
-        openInventoryKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.OpenInventory);
-        openOrdersKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.OpenOrders);
-        openRecipesKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.OpenRecipeBook);
-        openCreaturesKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.OpenCreatures);
-        openMapKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.OpenMap);
+        ToggleInventoryKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.OpenInventory);
+        ToggleOrdersKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.OpenOrders);
+        ToggleRecipesKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.OpenRecipeBook);
+        ToggleCreaturesKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.OpenCreatures);
+        ToggleMapKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.OpenMap);
         interactKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.Interact);
         rightUiTabKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.UiMoveRight);
         leftUiTabKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.UiMoveLeft);
@@ -97,9 +97,9 @@ public class UIController : SingletonGeneric<UIController>
         }
     }
 
-    public void OpenInventory()
+    public void ToggleInventory()
     {
-        mainHud.SetActive(false);
+        mainHud.SetActive(inventoryTab.activeSelf);
         Time.timeScale = inventoryTab.activeSelf ? 1f : 0f;
         isMenuActive = !inventoryTab.activeSelf;
         inventoryTab.SetActive(!inventoryTab.activeSelf);
@@ -110,9 +110,9 @@ public class UIController : SingletonGeneric<UIController>
         currentUiPage = (int)UIPage.INVENTORY;
     }
 
-    public void OpenOrders()
+    public void ToggleOrders()
     {
-        mainHud.SetActive(false);
+        mainHud.SetActive(ordersTab.activeSelf);
         Time.timeScale = ordersTab.activeSelf ? 1f : 0f;
         isMenuActive = !ordersTab.activeSelf;
         inventoryTab.SetActive(false);
@@ -123,9 +123,9 @@ public class UIController : SingletonGeneric<UIController>
         currentUiPage = (int)UIPage.ORDERS;
     }
 
-    public void OpenRecipes()
+    public void ToggleRecipes()
     {
-        mainHud.SetActive(false);
+        mainHud.SetActive(recipesTab.activeSelf);
         Time.timeScale = recipesTab.activeSelf ? 1f : 0f;
         isMenuActive = !recipesTab.activeSelf;
         inventoryTab.SetActive(false);
@@ -136,10 +136,9 @@ public class UIController : SingletonGeneric<UIController>
         currentUiPage = (int)UIPage.RECIPES;
     }
 
-    public void OpenCreatures()
+    public void ToggleCreatures()
     {
-        mainHud.SetActive(false);
-        mainHud.SetActive(false);
+        mainHud.SetActive(creaturesTab.activeSelf);
         Time.timeScale = creaturesTab.activeSelf ? 1f : 0f;
         isMenuActive = !creaturesTab.activeSelf;
         inventoryTab.SetActive(false);
@@ -150,9 +149,9 @@ public class UIController : SingletonGeneric<UIController>
         currentUiPage = (int)UIPage.CREATURES;
     }
 
-    public void OpenMap()
+    public void ToggleMap()
     {
-        mainHud.SetActive(false);
+        mainHud.SetActive(mapTab.activeSelf);
         Time.timeScale = mapTab.activeSelf ? 1f : 0f;
         isMenuActive = !mapTab.activeSelf;
         inventoryTab.SetActive(false);
@@ -280,25 +279,25 @@ public class UIController : SingletonGeneric<UIController>
             return;
         }
 
-        if (Input.GetKeyDown(openInventoryKeyCode))
+        if (Input.GetKeyDown(ToggleInventoryKeyCode))
         {
-            UIController.instance.OpenInventory();
+            UIController.instance.ToggleInventory();
         }
-        else if (Input.GetKeyDown(openOrdersKeyCode))
+        else if (Input.GetKeyDown(ToggleOrdersKeyCode))
         {
-            UIController.instance.OpenOrders();
+            UIController.instance.ToggleOrders();
         }
-        else if (Input.GetKeyDown(openRecipesKeyCode))
+        else if (Input.GetKeyDown(ToggleRecipesKeyCode))
         {
-            UIController.instance.OpenRecipes();
+            UIController.instance.ToggleRecipes();
         }
-        else if (Input.GetKeyDown(openCreaturesKeyCode))
+        else if (Input.GetKeyDown(ToggleCreaturesKeyCode))
         {
-            UIController.instance.OpenCreatures();
+            UIController.instance.ToggleCreatures();
         }
-        else if (Input.GetKeyDown(openMapKeyCode))
+        else if (Input.GetKeyDown(ToggleMapKeyCode))
         {
-            UIController.instance.OpenMap();
+            UIController.instance.ToggleMap();
         }
         else if (Input.GetKeyDown(interactKeyCode) && currentInteractable != null)
         {
@@ -308,12 +307,12 @@ public class UIController : SingletonGeneric<UIController>
         {
             if (Input.GetKeyDown(rightUiTabKeyCode))
             {
-                currentUiPage = currentUiPage >= 4 ? 4 : currentUiPage + 1;
+                currentUiPage = (currentUiPage + 1) % 5;
                 HandlePageChange();
             }
             else if (Input.GetKeyDown(leftUiTabKeyCode))
             {
-                currentUiPage = currentUiPage <= 0 ? 0 : currentUiPage - 1;
+                currentUiPage = (currentUiPage + 4) % 5;
                 HandlePageChange();
             }
             else if (Input.GetKeyDown(closeUiKeyCode))
@@ -325,12 +324,12 @@ public class UIController : SingletonGeneric<UIController>
         {
             if (Input.GetKeyDown(rightUiTabKeyCode))
             {
-                currentFireplaceUiPage = currentFireplaceUiPage >= 2 ? 2 : currentFireplaceUiPage + 1;
+                currentFireplaceUiPage = (currentFireplaceUiPage + 1) % 3;
                 HandleFireplacePageChange();
             }
             else if (Input.GetKeyDown(leftUiTabKeyCode))
             {
-                currentFireplaceUiPage = currentFireplaceUiPage <= 0 ? 0 : currentFireplaceUiPage - 1;
+                currentFireplaceUiPage = (currentFireplaceUiPage + 2) % 3;
                 HandleFireplacePageChange();
             }
             else if (Input.GetKeyDown(closeUiKeyCode))
@@ -361,19 +360,19 @@ public class UIController : SingletonGeneric<UIController>
         switch (currentUiPage)
         {
             case (int)UIPage.INVENTORY:
-                OpenInventory();
+                ToggleInventory();
                 break;
             case (int)UIPage.ORDERS:
-                OpenOrders();
+                ToggleOrders();
                 break;
             case (int)UIPage.RECIPES:
-                OpenRecipes();
+                ToggleRecipes();
                 break;
             case (int)UIPage.CREATURES:
-                OpenCreatures();
+                ToggleCreatures();
                 break;
             case (int)UIPage.MAP:
-                OpenMap();
+                ToggleMap();
                 break;
         }
     }
