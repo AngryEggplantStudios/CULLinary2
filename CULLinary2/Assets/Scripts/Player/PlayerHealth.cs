@@ -56,11 +56,11 @@ public class PlayerHealth : MonoBehaviour
     {
         // check if height of player here as less references needed than checking height in player locomotion;
         if (transform.position.y < minimumHeightToStartDrowning && !isDrowningActivated)
-		{
+        {
             //Drowning animation
             isDrowningActivated = true;
             StartCoroutine(StartDrowning());
-		}
+        }
         if (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth < thresholdHealth && !flashIsActivated)
         {
             flashIsActivated = true;
@@ -75,8 +75,9 @@ public class PlayerHealth : MonoBehaviour
         {
             if (audioSource.isPlaying)
             {
-                Invoke("Die", audioSource.clip.length);
-            } else
+                Invoke("Die", audioSource.clip.length); // Wait for damage sound effect to finish
+            }
+            else
             {
                 Die();
             }
@@ -133,7 +134,6 @@ public class PlayerHealth : MonoBehaviour
         if (PlayerManager.instance.currentHealth <= 0f)
         {
             Debug.Log("You are dead.");
-            //Invoke("Die", audioSource.clip.length); // Wait for damage sound effect to finish            
             return true;
         }
 

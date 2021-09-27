@@ -28,8 +28,10 @@ public class FadeInFadeOut : MonoBehaviour
     [SerializeField] private float fadePause;
 
 
-    public void Start()
+    public void OnEnable()
     {
+        // Debug.Log("fade in fade out activated");
+
         if (fadeType == FadeAction.FadeIn)
         {
 

@@ -22,9 +22,11 @@ public class GameTimer : SingletonGeneric<GameTimer>
     private float dayStartTime = 0.25f; //6am
     private float dayEndTime = 1f; //12am
 
+    private bool isNewDay = true; // prevent OnStartNewDay from being invoked multiple times
+    public bool isActivated = true;
+
     public delegate void StartNewDayDelegate();
     public static event StartNewDayDelegate OnStartNewDay;
-    private bool isNewDay = true; // prevent OnStartNewDay from being invoked multiple times
     public delegate void EndOfDayDelegate();
     public static event EndOfDayDelegate OnEndOfDay;
 
@@ -42,7 +44,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     private void Update()
     {
-        if (Preset == null)
+        if (Preset == null || !isActivated)
             return;
 
         gameTime += Time.deltaTime * timeScale / 86400;
@@ -72,7 +74,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
     private void GoToNextDay()
     {
         dayNum++;
-        gameTime -= 1;
+        gameTime = dayStartTime;
         DayText.text = "DAY " + dayNum;
         isNewDay = true;
     }
@@ -89,7 +91,6 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     private void OnDestroy()
     {
-        Debug.Log("game timer destroyed");
         gameTime = 0f;
     }
 
@@ -105,6 +106,8 @@ public class GameTimer : SingletonGeneric<GameTimer>
             DirectionalLight.color = Preset.DirectionalColor.Evaluate(timePercent);
 
             DirectionalLight.transform.localRotation = Quaternion.Euler(new Vector3((timePercent * 360f) - 90f, 170f, 0));
+
+            // Debug.Log("color: " + DirectionalLight.color + " | transform.localRotation: " + DirectionalLight.transform.localRotation);
         }
 
     }

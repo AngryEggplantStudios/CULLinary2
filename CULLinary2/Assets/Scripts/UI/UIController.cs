@@ -20,6 +20,9 @@ public class UIController : SingletonGeneric<UIController>
     [SerializeField] private GameObject mainHud;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject playerDeathMenu;
+    [Header("Scene Transition")]
+    [SerializeField] private GameObject sceneTransition;
+
 
     private KeyCode openInventoryKeyCode;
     private KeyCode openOrdersKeyCode;
@@ -78,7 +81,20 @@ public class UIController : SingletonGeneric<UIController>
     public void RespawnPlayer()
     {
         Time.timeScale = 1;
-        SceneManager.LoadScene((int)SceneIndexes.MAIN_SCENE);
+        // sceneTransition.SetActive(true);
+        // SceneManager.LoadScene((int)SceneIndexes.MAIN_SCENE);
+        StartCoroutine(ReloadMainScene());
+    }
+
+    private IEnumerator ReloadMainScene()
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync((int)SceneIndexes.MAIN_SCENE);
+        asyncLoad.allowSceneActivation = true;
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
     }
 
     public void OpenInventory()
