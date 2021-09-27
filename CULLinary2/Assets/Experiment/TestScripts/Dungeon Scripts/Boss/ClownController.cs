@@ -226,7 +226,6 @@ public class ClownController : MonoBehaviour
                     state = State.MeleeAttack;
                 }
 
-
                 // Bob head and jaw for demostration
                 transform.position = new Vector3(
                         transform.position.x,
@@ -319,11 +318,6 @@ public class ClownController : MonoBehaviour
 
     IEnumerator idleCooldownCoroutine()
     {
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-        if (distanceToPlayer > stoppingDistance)
-        {
-            moveForward();
-        }
         idleCooldownRunning = true;
         yield return new WaitForSeconds(2);
         SetupUI(Instantiate(enemyAlert_prefab));
@@ -397,6 +391,7 @@ public class ClownController : MonoBehaviour
     void slowlyLookAt(Transform targetPlayer)
     {
         Vector3 target = targetPlayer.position;
+        target.y = transform.position.y;
         transform.rotation = Quaternion.Lerp(
             transform.rotation,
             Quaternion.Euler(Quaternion.LookRotation(target - transform.position).eulerAngles),

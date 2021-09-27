@@ -89,7 +89,6 @@ public class BossRangedAttack : MonsterAttack
                 sourcePosition = new Vector3(transform.position.x, LINE_HEIGHT_FROM_GROUND, transform.position.z);
 				if (Physics.Raycast(sourcePosition, finalDirection, out hit, viewDistance, layerMask))
 				{
-                    Debug.Log(hit.point);
 					LineRenderer lRend = listOfRenderers[i];
 					targetPosition = new Vector3(hit.point.x, LINE_HEIGHT_FROM_GROUND, hit.point.z);
 					lRend.SetPosition(0, sourcePosition);
