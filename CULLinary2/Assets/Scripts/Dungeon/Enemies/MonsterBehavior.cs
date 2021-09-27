@@ -125,13 +125,11 @@ public class MonsterBehavior : MonoBehaviour
     {
         Vector3 playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
         slowlyRotateToLookAt(playerPositionWithoutYOffset);
-        animator.SetBool("isMoving", false);
-        animator.ResetTrigger("attack");
+
         if (canAttack == true)
         {
-            animator.SetTrigger("attack");
             canAttack = false;
-            StartCoroutine(DelayFire());
+            StartCoroutine(DelayAttack(playerPositionWithoutYOffset));
         }
         float directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
         if (directionVector > navMeshAgent.stoppingDistance && ableToMove)
@@ -139,7 +137,15 @@ public class MonsterBehavior : MonoBehaviour
             // Target within attack range
             monsterScript.SetStateMachine(MonsterState.ChaseTarget);
         }
-
+    }
+    private IEnumerator DelayAttack(Vector3 playerPositionWithoutYOffset)
+	{
+        yield return new WaitForSeconds(1);
+        slowlyRotateToLookAt(playerPositionWithoutYOffset);
+        animator.SetBool("isMoving", false);
+        animator.ResetTrigger("attack");
+        animator.SetTrigger("attack");
+        StartCoroutine(DelayFire());
     }
 
     private void EnemyReturn()

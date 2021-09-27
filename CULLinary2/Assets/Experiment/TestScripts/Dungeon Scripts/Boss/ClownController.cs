@@ -89,6 +89,11 @@ public class ClownController : MonoBehaviour
         SetupHpBar();
     }
 
+    public void SpawnClown()
+	{
+
+	}
+
     private void SetupHpBar()
     {
         hpBar = Instantiate(hpBar_prefab);
@@ -123,10 +128,17 @@ public class ClownController : MonoBehaviour
         {
             //die
             spawnAttackScript.destroySpawnPoints();
-            endingBurgers.GetComponent<SpawnBurger>().callRainBurger();
-            Destroy(hpBar);
-            Destroy(gameObject);
+            //Don't rainburgers yet
+            //endingBurgers.GetComponent<SpawnBurger>().callRainBurger();
+            StartCoroutine("WaitOneSecondBeforeKilling");
         }
+    }
+
+    private IEnumerator WaitOneSecondBeforeKilling()
+	{
+        yield return new WaitForSeconds(0.1f);
+        Destroy(hpBar);
+        Destroy(gameObject);
     }
 
 
@@ -292,6 +304,7 @@ public class ClownController : MonoBehaviour
         idleCooldownRunning = true;
         yield return new WaitForSeconds(2);
         SetupUI(Instantiate(enemyAlert_prefab));
+        uiList.Add(enemyAlert_prefab);
         audioSourceAttack.clip = alertSound;
         audioSourceAttack.Play();
         yield return new WaitForSeconds(1);
@@ -302,14 +315,14 @@ public class ClownController : MonoBehaviour
             default:
             case 1:
             case 2:
-                state = State.MeleeAttack;
+                state = State.SpawnAttack;
                 break;
             case 3:
-                state = State.MeleeAttack;
+                state = State.SpawnAttack;
                 break;
             case 4:
             case 5:
-                state = State.MeleeAttack;
+                state = State.SpawnAttack;
                 break;
         }
         elapsedFrames = 0;
