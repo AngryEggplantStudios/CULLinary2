@@ -35,7 +35,6 @@ public class NoFog : MonoBehaviour {
 
     void OnPreRender()
     {
-        Debug.Log("hi");
         RenderSettings.fog = false;
     }
     

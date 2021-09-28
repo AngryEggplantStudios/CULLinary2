@@ -10,6 +10,13 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
 
     // Prefab of an order book entry
     public GameObject orderSlot;
+    
+    // For UI display
+    public GameObject canvasDisplay;
+    public Camera cam;
+
+    // Prefab to spawn on successful order
+    public GameObject moneyNotif_prefab;
 
     // Order submission sound
     public AudioSource orderSubmissionSound;
@@ -118,15 +125,9 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
 
             // Update money
             int earnings = orderToComplete.GetRecipe().recipeEarnings;
-            Debug.Log("Money + $" + earnings + ", you win!");
+            SpawnMoneyNotif(earnings);
             PlayerManager.instance.currentMoney += earnings;
-
-            if (orderSubmissionSound != null)
-            {
-                orderSubmissionSound.Play();
-                orderSubmissionSound.SetScheduledEndTime(AudioSettings.dspTime + 11.15f);
-            }
-
+            orderSubmissionSound.Play();
             UIController.UpdateAllUIs();
             onOrderCompleteCallback.Invoke(stationId, orderToComplete.GetRecipe().recipeId);
 
@@ -138,6 +139,14 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             Debug.Log("OOPS! You do not have the required " + orderToComplete.GetProduct().name);
             return false;
         }
+    }
+
+    private void SpawnMoneyNotif(float money)
+    {
+        GameObject moneyNotif = Instantiate(moneyNotif_prefab);
+        moneyNotif.transform.GetComponentInChildren<Text>().text = "+$" + money.ToString();
+        moneyNotif.transform.SetParent(canvasDisplay.transform);
+        moneyNotif.transform.localPosition = Vector3.zero;
     }
 
     public IEnumerator UpdateUI()
