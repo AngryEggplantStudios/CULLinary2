@@ -11,16 +11,16 @@ public class Minimap : MonoBehaviour
     [SerializeField] public Transform iconsParent;
     [SerializeField] public Sprite campfireSprite;
 
+    protected bool hasInstantiatedIcons = false;
     private Transform playerBody;
     // List of pairs of the actual station and the icon of that station
     private Dictionary<int, (Transform, Transform)> orderSubmissionStationLocationsAndIcons;
     // List of campfire icons
     private List<(Transform, Transform)> campfireIcons = new List<(Transform, Transform)>();
-    private float width;
-    private float height;
+    protected float width;
+    protected float height;
     private Vector3 playerOldPosition;
 
-    private bool hasInstantiatedIcons = false;
     // Ensures that icons are set when player enters the scene
     private bool firstSettingOfIconPositions = false;
 
@@ -45,7 +45,7 @@ public class Minimap : MonoBehaviour
         }
     }
 
-    private void InstantiateMinimapIcons()
+    protected void InstantiateMinimapIcons()
     {
         if (hasInstantiatedIcons)
         {
@@ -57,14 +57,13 @@ public class Minimap : MonoBehaviour
             Destroy(child.gameObject);
         }
         
+        width = GetMapHeight();
+        height = GetMapWidth();
+        
         // Add campfires
         InstantiateCampfireIcons();
 
         // Add order icons
-        RectTransform rt = this.GetComponent<RectTransform>();
-        width = rt.sizeDelta.x;
-        height = rt.sizeDelta.y;
-
         orderSubmissionStationLocationsAndIcons = new Dictionary<int, (Transform, Transform)>();
         playerOldPosition = playerBody.position;
 
@@ -91,17 +90,17 @@ public class Minimap : MonoBehaviour
                 orderSubmissionStationLocationsAndIcons.Remove(stationId);
             }
         });
-        OrdersManager.instance.AddOrderGenerationCallback(() => ResetInstiantedOrderIconsFlag());
+        OrdersManager.instance.AddOrderGenerationCallback(() => ResetInstantiatedOrderIconsFlag());
         hasInstantiatedIcons = true;
     }
 
     // Calling this will trigger the minimap to redraw the icons
-    private void ResetInstiantedOrderIconsFlag()
+    private void ResetInstantiatedOrderIconsFlag()
     {
         hasInstantiatedIcons = false;
     }
 
-    void Update()
+    public virtual void Update()
     {
         if (OrdersManager.instance.IsOrderGenerationComplete() && !hasInstantiatedIcons)
         {
@@ -112,8 +111,12 @@ public class Minimap : MonoBehaviour
         {
             return;
         }
+        CheckIfPlayerHasMoved();   
+    }
 
-        // Check if player has moved
+    // Check if player has moved and perform the relevant updates
+    protected void CheckIfPlayerHasMoved()
+    {
         if (playerOldPosition != playerBody.position || !firstSettingOfIconPositions)
         {
             playerOldPosition = playerBody.position;
@@ -129,6 +132,20 @@ public class Minimap : MonoBehaviour
             navArrow.eulerAngles = new Vector3(0, 0, -playerBody.eulerAngles.y);
             firstSettingOfIconPositions = true;
         }
+    }
+
+    // Gets the width of the minimap
+    protected virtual float GetMapWidth()
+    {
+        RectTransform rt = this.GetComponent<RectTransform>();
+        return rt.sizeDelta.x;
+    }
+
+    // Gets the height of the minimap
+    protected virtual float GetMapHeight()
+    {
+        RectTransform rt = this.GetComponent<RectTransform>();
+        return rt.sizeDelta.y;
     }
 
     private void SetIconPos(Transform target, Transform icon, bool hideIfFarAway)
