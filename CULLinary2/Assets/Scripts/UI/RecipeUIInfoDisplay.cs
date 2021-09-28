@@ -9,6 +9,7 @@ public class RecipeUIInfoDisplay : MonoBehaviour
     public TextMeshProUGUI recipeName;
     public TextMeshProUGUI recipeDescription;
     public TextMeshProUGUI recipeEffect;
+    public GameObject notEnoughIngredientsNotif = null;
     [Header("Order Information")]
     public TextMeshProUGUI orderCount;
     public string beforeOrderCount = "You have ";
@@ -25,7 +26,7 @@ public class RecipeUIInfoDisplay : MonoBehaviour
 
     private Recipe recipe;
 
-    public void ShowRecipe(Recipe r, (int, bool)[] checkedIngredients, int numberOfOrders)
+    public void ShowRecipe(Recipe r, (int, bool)[] checkedIngredients, int numberOfOrders, bool isCookable)
     {
         recipe = r;
         recipeIcon.sprite = recipe.cookedDishItem.icon;
@@ -48,6 +49,12 @@ public class RecipeUIInfoDisplay : MonoBehaviour
             RecipeUIInfoDisplayIngredient infoDisplayIngredient =
                 ingredientEntry.GetComponent<RecipeUIInfoDisplayIngredient>();
             infoDisplayIngredient.DisplayIngredient(ingredientId, isPresent);
+        }
+
+        // Show a notification if recipe is not cookable
+        if (notEnoughIngredientsNotif != null)
+        {
+            notEnoughIngredientsNotif.SetActive(!isCookable);
         }
     }
 }
