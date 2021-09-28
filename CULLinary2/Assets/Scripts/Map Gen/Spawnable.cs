@@ -8,5 +8,6 @@ public struct Spawnable
     public string name;
     public GameObject[] prefabs;
     public int density;
+    public float intersectRadius;
     public bool removeCollider;
 }
