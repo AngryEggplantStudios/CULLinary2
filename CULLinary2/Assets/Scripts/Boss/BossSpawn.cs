@@ -12,8 +12,22 @@ public class BossSpawn : MonoBehaviour
     [SerializeField] private int maxEnemy;
     [Tooltip("Random displacement of enemy spawn in X/Z axes")]
     [SerializeField] private float distRange;
+    [SerializeField] GameObject parentWhichContainsAllMobs;
 
-    public void activateSpawn()
+	public void Start()
+	{
+        //Create gameobject to contain all spawns, if not available, if available retrieve from scene. Needed in case clown is respawned
+        GameObject gameObject = GameObject.Find(this.gameObject.name + "Container");
+        if (gameObject == null)
+		{
+            gameObject = new GameObject(this.gameObject.name + "Container");
+        }
+        gameObject.transform.parent = parentWhichContainsAllMobs.transform;
+        gameObject.AddComponent<BossSpawnSuicideScript>();
+        parentWhichContainsAllMobs = gameObject;
+    }
+
+	public void activateSpawn()
     {
         int enemyNum = Random.Range(minEnemy, maxEnemy + 1);
         instantiateEnemy();
@@ -25,17 +39,12 @@ public class BossSpawn : MonoBehaviour
         float distZ = Random.Range(-distRange, distRange);
         Vector3 enemyTransform = new Vector3(transform.position.x + distX, transform.position.y, transform.position.z + distZ);
         GameObject mobSpawned = Instantiate(enemyToSpawn, enemyTransform, Quaternion.identity);
-        mobSpawned.transform.SetParent(gameObject.transform);
+        mobSpawned.transform.SetParent(parentWhichContainsAllMobs.transform);
     }
     
     public void destroyAllSpawns()
     {
-        int children = transform.childCount;
-        for (int i = 0; i < children; i++)
-        {
-            BossSpawnMinionScript minion = transform.GetChild(i).GetComponent<BossSpawnMinionScript>();
-            minion.Die();
-        }
+        parentWhichContainsAllMobs.GetComponent<BossSpawnSuicideScript>().destroyAllMobs();
     }
 
 }

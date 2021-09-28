@@ -28,31 +28,8 @@ public class BossSpawnMinionScript : Monster
     [SerializeField] private GameObject canvasDisplay;
 
     private List<GameObject> uiList = new List<GameObject>();
+    private List<GameObject> damageUiElements = new List<GameObject>();
 
-    [System.Serializable]
-    private class LootTuple
-    {
-        [SerializeField] private GameObject loot;
-        [SerializeField] private int ratio;
-
-        public LootTuple(GameObject loot, int ratio)
-        {
-            this.loot = loot;
-            this.ratio = ratio;
-        }
-
-        public GameObject GetLoot()
-        {
-            return loot;
-        }
-
-        public int GetRatio()
-        {
-            return ratio;
-        }
-    }
-
-    [SerializeField] private LootTuple[] lootTuples;
     [SerializeField] private float wanderRadius;
 
     [SerializeField] private AudioSource audioSourceDamage;
@@ -61,24 +38,31 @@ public class BossSpawnMinionScript : Monster
     [SerializeField] private AudioClip alertSound;
     [SerializeField] private AudioClip attackSound;
 
-    private float dist;
     private float health;
     private Animator animator;
     private Camera cam;
     private State state;
     private Transform player;
-    private GameObject lootDropped;
     private MonsterAttack refScript;
     private bool canAttack = true;
     private Renderer rend;
     private Color[] originalColors;
     private Color onDamageColor = Color.white;
     private bool canMoveDuringAttack = true;
+    private Collider monsterCollider;
+    // Store a reference to final damage counter when death
+    private GameObject damageCounter;
+    private bool deathCoroutine = false;
 
     private void Awake()
     {
         state = State.ChaseTarget;
         health = maxHealth;
+    }
+    public void destroyDamageNumbers()
+    {
+        //Death Animation too long destroy earlier
+        Destroy(damageCounter);
     }
 
     private void Start()
@@ -87,8 +71,11 @@ public class BossSpawnMinionScript : Monster
         refScript = attackRadius.GetComponent<MonsterAttack>();
         animator = GetComponentInChildren<Animator>();
         SetupFlash();
-        SetupLoot();
-
+        if (GameCanvas.instance != null)
+        {
+            canvasDisplay = GameCanvas.instance.gameObject;
+        }
+        canvasDisplay = GameObject.FindGameObjectWithTag("GameCanvas");
         // Make sure player exists (finished loading) before running these
         player = GameObject.FindGameObjectWithTag("Player").transform;
         cam = player.GetComponentInChildren<Camera>();
@@ -97,9 +84,13 @@ public class BossSpawnMinionScript : Monster
             canvasDisplay = GameCanvas.instance.gameObject;
         }
         SetupHpBar();
-        SetupUI(Instantiate(enemyAlert_prefab));
+        GameObject enemyAlertObject = Instantiate(enemyAlert_prefab);
+        SetupUI(enemyAlertObject);
+        uiList.Add(enemyAlertObject);
         audioSourceAttack.clip = alertSound;
         audioSourceAttack.Play();
+        monsterCollider = GetComponent<Collider>();
+
     }
 
     private void SetupFlash()
@@ -112,32 +103,11 @@ public class BossSpawnMinionScript : Monster
         }
     }
 
-    private void SetupLoot()
-    {
-        int currentWeight = 0;
-        Dictionary<GameObject, int> dropTuples = new Dictionary<GameObject, int>();
-        foreach (var loot in lootTuples)
-        {
-            currentWeight += loot.GetRatio();
-            dropTuples.Add(loot.GetLoot(), currentWeight);
-        }
-        int randomWeight = Random.Range(1, currentWeight + 1);
-        foreach (var tpl in dropTuples)
-        {
-            if (randomWeight <= tpl.Value)
-            {
-                lootDropped = tpl.Key;
-                return;
-            }
-        }
-        lootDropped = lootTuples[0].GetLoot();
-        return;
-    }
-
     private void SetupHpBar()
     {
         hpBar = Instantiate(hpBar_prefab);
         hpBarFull = hpBar.transform.Find("hpBar_full").gameObject.GetComponent<Image>();
+        uiList.Add(hpBar);
         SetupUI(hpBar);
     }
 
@@ -155,11 +125,15 @@ public class BossSpawnMinionScript : Monster
         {
             default:
             case State.ChaseTarget:
+                checkIfDead();
                 animator.SetBool("isMoving", true);
                 directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
                 if (directionVector <= agent.stoppingDistance)
                 {
                     transform.LookAt(playerPositionWithoutYOffset);
+                    slowlyRotateToLookAt(playerPositionWithoutYOffset);
+                    agent.SetDestination(gameObject.transform.position);
+
                     // Target within attack range
                     state = State.AttackTarget;
                     // Add new state to attack player
@@ -171,14 +145,14 @@ public class BossSpawnMinionScript : Monster
                 }
                 break;
             case State.AttackTarget:
+                checkIfDead();
                 transform.LookAt(playerPositionWithoutYOffset);
                 animator.SetBool("isMoving", false);
                 animator.ResetTrigger("attack");
                 if (canAttack == true)
                 {
-                    animator.SetTrigger("attack");
                     canAttack = false;
-                    StartCoroutine(DelayFire());
+                    StartCoroutine(DelayAttack(playerPositionWithoutYOffset));
                 }
                 directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
                 if (directionVector > agent.stoppingDistance && canMoveDuringAttack)
@@ -186,7 +160,6 @@ public class BossSpawnMinionScript : Monster
                     // Target within attack range
                     state = State.ChaseTarget;
                 }
-
                 break;
         }
 
@@ -205,9 +178,44 @@ public class BossSpawnMinionScript : Monster
                     uiList.Remove(null);
                 }
             }
+            foreach (GameObject ui in damageUiElements)
+            {
+                if (ui != null)
+                {
+                    ui.transform.position = screenPos;
+                }
+                else
+                {
+                    damageUiElements.Remove(null);
+                }
+            }
         }
 
 
+    }
+
+    private IEnumerator DelayAttack(Vector3 playerPositionWithoutYOffset)
+    {
+        yield return new WaitForSeconds(1);
+        slowlyRotateToLookAt(playerPositionWithoutYOffset);
+        animator.SetBool("isMoving", false);
+        animator.ResetTrigger("attack");
+        animator.SetTrigger("attack");
+        StartCoroutine(DelayFire());
+    }
+
+    private void checkIfDead()
+    {
+        if (this.health < 0)
+        {
+            if (!deathCoroutine)
+            {
+                // need this due to buggy triggers for death animation: Attack animation may be triggered immediately after death
+                Debug.Log("Calling death");
+                deathCoroutine = true;
+                DieAnimation();
+            }
+        }
     }
 
     private IEnumerator DelayFire()
@@ -228,21 +236,41 @@ public class BossSpawnMinionScript : Monster
 
         if (this.health <= 0)
         {
-            Die();
+            animator.ResetTrigger("attack");
+            animator.SetTrigger("death");
+            // Disable collider to prevent spam hitting damage
+            monsterCollider.enabled = false;
         }
     }
 
     private void SpawnDamageCounter(float damage)
     {
-        GameObject damageCounter = Instantiate(damageCounter_prefab);
+        damageCounter = Instantiate(damageCounter_prefab);
         damageCounter.transform.GetComponentInChildren<Text>().text = damage.ToString();
         SetupUI(damageCounter);
+        damageUiElements.Add(damageCounter);
     }
 
-    public void Die()
+    public void DieAnimation()
     {
-        DropLoot();
-        Destroy(hpBar);
+        animator.ResetTrigger("attack");
+        animator.SetTrigger("death");
+        // Disable collider to prevent spam hitting damage
+        monsterCollider.enabled = false;
+    }
+
+    public void monsterDeathAnimation()
+    {
+        Debug.Log("Calling Death Trigger");
+        foreach (GameObject uiElement in uiList)
+        {
+            Debug.Log("Removing Trigger");
+            Destroy(uiElement);
+        }
+        foreach (GameObject uiElement in damageUiElements)
+        {
+            Destroy(uiElement);
+        }
         Destroy(gameObject);
     }
 
@@ -266,10 +294,6 @@ public class BossSpawnMinionScript : Monster
         }
     }
 
-    private void DropLoot()
-    {
-        Instantiate(lootDropped, transform.position, Quaternion.identity);
-    }
 
     public void attackPlayerStart()
     {
@@ -289,5 +313,13 @@ public class BossSpawnMinionScript : Monster
     {
         canMoveDuringAttack = true;
         refScript.attackPlayerEnd();
+    }
+
+    private void slowlyRotateToLookAt(Vector3 target)
+    {
+        transform.rotation = Quaternion.Lerp(
+            transform.rotation,
+            Quaternion.Euler(Quaternion.LookRotation(target - transform.position).eulerAngles),
+            Time.deltaTime * 3.0f);
     }
 }

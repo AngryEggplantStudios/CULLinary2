@@ -30,6 +30,7 @@ public class BossSpawnAttack : MonoBehaviour
 
     public void activateStage2()
     {
+        Debug.Log("Activate Stage 2");
         stage2On = true;
     }
 
