@@ -62,12 +62,12 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         {
             if (firstDay)
             {
-                Debug.Log("First day");
+                // Debug.Log("First day");
                 firstDay = false;
             }
             else
             {
-                Debug.Log("No es first day");
+                // Debug.Log("No es first day");
                 GenerateRandomOrders();
             }
         };
