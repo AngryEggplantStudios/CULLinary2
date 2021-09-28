@@ -37,7 +37,7 @@ public class BiomeObjectSpawner : MonoBehaviour
                 pos += origin.transform.position;
 
                 // Check validity
-                if (Physics.Raycast(pos, Vector3.down, out hit) && hit.point.y >= minY)
+                if (Physics.Raycast(pos, Vector3.down, out hit, Mathf.Infinity, LayerMask.GetMask("Ground")) && hit.point.y >= minY)
                 {
                     // Spawn Object
                     GameObject spawnedObject = Instantiate(spawnable.prefabs[Random.Range(0, spawnable.prefabs.Length)], parent.transform);
