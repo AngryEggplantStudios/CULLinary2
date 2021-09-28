@@ -52,9 +52,14 @@ public class BiomeObjectSpawner : MonoBehaviour
                     spawnedObjects.Add(spawnedObject);
 
                     // Only wait if intersections are important
-                    if (spawnable.intersectRadius != 0 && !spawnable.removeCollider) { yield return null; }
+                    if (spawnable.intersectRadius != 0 && !spawnable.removeCollider)
+                    {
+                        yield return null;
+                    }
                 }
             }
+            SpawnableHelper helper = parent.AddComponent<SpawnableHelper>() as SpawnableHelper;
+            helper.removeCollider = spawnable.removeCollider;
             yield return null;
         }
         // Debug.Log(spawnedObjects.Count + " objects spawned");
