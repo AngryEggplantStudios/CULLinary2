@@ -12,6 +12,8 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     // 0.2 of 1 minute = 10 seconds eg
     [SerializeField] private float dayLengthInMinutes;
+    [SerializeField, Range(0, 1)] private float sunrise;
+    [SerializeField, Range(0, 1)] private float sunset;
     private static float gameTime;
     private static float timeScale;
     private static int dayNum = 1;
@@ -25,10 +27,10 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     void Start()
     {
-        gameTime = 0.25f; //day starts at 6 am 
+        if (sunrise > sunset) { Debug.LogError("Sunrise is after Sunset!"); }
+
+        gameTime = sunrise;
         timeScale = 24 / (dayLengthInMinutes / 60);
-        DayText.text = "DAY " + dayNum;
-        TimeText.text = "06:00";
     }
 
     private void Update()
@@ -43,14 +45,15 @@ public class GameTimer : SingletonGeneric<GameTimer>
         TimeText.text = timeAsString;
         // Debug.Log("current time: " + timeAsString);
 
-        if (timeAsString == "6:00" && isNewDay)
+        if (gameTime > sunrise && isNewDay)
         {
-            //Debug.Log("start of new day");
+            Debug.Log("start of new day");
             isNewDay = false;
             OnStartNewDay?.Invoke();
         }
 
         UpdateLighting(gameTime);
+
         if (gameTime > 1)
         {
             dayNum++;
@@ -77,19 +80,30 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     private void UpdateLighting(float timePercent)
     {
-        //Set ambient and fog
-        //RenderSettings.ambientLight = Preset.AmbientColor.Evaluate(timePercent);
-        //RenderSettings.fogColor = Preset.FogColor.Evaluate(timePercent);
+        // Set ambient and fog
+        RenderSettings.ambientSkyColor = Preset.AmbientSkyColor.Evaluate(timePercent);
+        RenderSettings.ambientEquatorColor = Preset.AmbientEquatorColor.Evaluate(timePercent);
+        RenderSettings.ambientGroundColor = Preset.AmbientGroundColor.Evaluate(timePercent);
+        RenderSettings.fogColor = Preset.FogColor.Evaluate(timePercent);
 
         //If the directional light is set then rotate and set it's color, I actually rarely use the rotation because it casts tall shadows unless you clamp the value
         if (DirectionalLight != null)
         {
             DirectionalLight.color = Preset.DirectionalColor.Evaluate(timePercent);
 
-            DirectionalLight.transform.localRotation = Quaternion.Euler(new Vector3((timePercent * 360f) - 90f, 170f, 0));
+            DirectionalLight.transform.localRotation = Quaternion.Euler(new Vector3(TimeToSunAngle(timePercent), -110f, 0));
         }
-
     }
+
+    private float TimeToSunAngle(float time)
+    {
+        // No sun
+        if (time < sunrise || time > sunset) { return -90; }
+
+        // Remap from 20 to 160
+        return (time - sunrise) / (sunset - sunrise) * (160 - 20) + 20;
+    }
+
     //Try to find a directional light to use if we haven't set one
     private void OnValidate()
     {
