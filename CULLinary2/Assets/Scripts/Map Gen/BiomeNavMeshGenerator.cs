@@ -25,10 +25,6 @@ public class BiomeNavMeshGenerator : MonoBehaviour
         {
             if (child.gameObject != this.gameObject)
             {
-                if (child.gameObject.name == "Flowers" || child.gameObject.name == "MonsterSpawner")
-				{
-                    continue;
-				}
                 if (child.gameObject.name == "Houses")
                 {
                     orderSubmissionStationParent = child.gameObject;
@@ -66,8 +62,6 @@ public class BiomeNavMeshGenerator : MonoBehaviour
 
     public IEnumerator GenerateMesh()
     {
-        Debug.Log("GenerateMesh()");
-
         savePath = "Assets/Scenes/UtilScenes/Saved_Meshes/" + "NavMesh" + ".asset";
         yield return StartCoroutine(CombineAllMeshes());
         navMeshData = AssetDatabase.LoadAssetAtPath<NavMeshData>(savePath);

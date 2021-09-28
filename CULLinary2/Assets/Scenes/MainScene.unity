@@ -688,6 +688,11 @@ AudioSource:
   m_CorrespondingSourceObject: {fileID: 778855638484749070, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
   m_PrefabInstance: {fileID: 510496869}
   m_PrefabAsset: {fileID: 0}
+--- !u!20 &510496871 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 7397233300641621773, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
+  m_PrefabInstance: {fileID: 510496869}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &512057183
 GameObject:
   m_ObjectHideFlags: 0
@@ -741,6 +746,17 @@ Transform:
 --- !u!114 &527871621 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3654222995347787955, guid: 146f72df1638140838a4412319be002a, type: 3}
+  m_PrefabInstance: {fileID: 674865424}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &563418742 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1410177374926223144, guid: 146f72df1638140838a4412319be002a, type: 3}
   m_PrefabInstance: {fileID: 674865424}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
@@ -868,6 +884,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ordersContainer: {fileID: 674865433}
   orderSlot: {fileID: 1090685044111329707, guid: 071eaffb05eeafd46a2bfa7b1145c207, type: 3}
+  canvasDisplay: {fileID: 0}
+  cam: {fileID: 0}
+  moneyNotif_prefab: {fileID: 0}
   orderSubmissionSound: {fileID: 510496870}
   order1: {fileID: 11400000, guid: aa2466e04e824496ba409f9fbbcffdf4, type: 2}
   order2: {fileID: 11400000, guid: c38aa90e48cc842518ba551117062367, type: 2}
@@ -5404,7 +5423,7 @@ PrefabInstance:
     - target: {fileID: 8818321284094838062, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: minimapCamera
       value: 
-      objectReference: {fileID: 821087055}
+      objectReference: {fileID: 510496871}
     - target: {fileID: 8820303761463202142, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -5997,7 +6016,7 @@ MonoBehaviour:
   - {fileID: 527871621}
   - {fileID: 234002048}
   - {fileID: 1939725938}
-  - {fileID: 0}
+  - {fileID: 563418742}
 --- !u!4 &1111925686
 Transform:
   m_ObjectHideFlags: 0
@@ -7285,4 +7304,4 @@ MonoBehaviour:
     - {fileID: 1330886163194010156, guid: a6d172af75d7e354eaf3469d6160a2bb, type: 3}
     density: 150
     intersectRadius: 0
-    removeCollider: 0
+    removeCollider: 1
