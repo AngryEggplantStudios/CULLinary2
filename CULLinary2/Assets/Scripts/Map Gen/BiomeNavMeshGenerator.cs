@@ -27,6 +27,7 @@ public class BiomeNavMeshGenerator : MonoBehaviour
             {
                 if (child.gameObject.name == "Houses")
                 {
+                    continue; // Just skip houses!!!!!
                     orderSubmissionStationParent = child.gameObject;
                 }
                 // NOTE Houses/Order submission station has a spherecollider that needs to be deactivated
