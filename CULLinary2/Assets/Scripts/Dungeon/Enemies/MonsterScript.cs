@@ -49,7 +49,7 @@ public class MonsterScript : Monster
     private GameObject damageCounter;
     // Store refference to collider so can disable when death
     private Collider monsterCollider;
-
+    private bool deathCoroutine = false;
     // Events & Delegates
 
     public delegate void EnemyIdleDelegate();
@@ -127,27 +127,32 @@ public class MonsterScript : Monster
         switch (currentState)
         {
             default:
-            case MonsterState.Idle:
-                FindTarget();
-                onEnemyIdle?.Invoke();
-                break;
-            case MonsterState.Roaming:
-                FindTarget();
-                onEnemyRoaming?.Invoke();
-                break;
-            case MonsterState.ChaseTarget:
-                onEnemyChase?.Invoke(stopChase, playerTransform.position);
-                break;
-            case MonsterState.AttackTarget:
-                // Hack to ensure attack trigger isn't triggered
-                if (this.currentHealth > 0)
-                {
-                    onEnemyAttack?.Invoke(playerTransform.position, canMoveDuringAttack);
-                }
-                break;
-            case MonsterState.GoingBackToStart:
-                onEnemyReturn?.Invoke();
-                break;
+                case MonsterState.Idle:
+                    checkIfDead();
+                    FindTarget();
+                    onEnemyIdle?.Invoke();
+                    break;
+                case MonsterState.Roaming:
+                    checkIfDead();
+                    FindTarget();
+                    onEnemyRoaming?.Invoke();
+                    break;
+                case MonsterState.ChaseTarget:
+                    checkIfDead();
+                    onEnemyChase?.Invoke(stopChase, playerTransform.position);
+                    break;
+                case MonsterState.AttackTarget:
+                    checkIfDead();
+                    // Hack to ensure attack trigger isn't triggered
+                    if (this.currentHealth > 0)
+                    {
+                        onEnemyAttack?.Invoke(playerTransform.position, canMoveDuringAttack);
+                    }
+                    break;
+                case MonsterState.GoingBackToStart:
+                    checkIfDead();
+                    onEnemyReturn?.Invoke();
+                    break;
         }
 
         //Need to find a better way to update this?
@@ -180,6 +185,19 @@ public class MonsterScript : Monster
         }
     }
 
+    private void checkIfDead()
+	{
+        if (this.currentHealth < 0)
+        {
+            if (!deathCoroutine)
+            {
+                // need this due to buggy triggers for death animation: Attack animation may be triggered immediately after death
+                Debug.Log("Calling death");
+                deathCoroutine = true;
+                DieAnimation();
+            }
+        }
+    }
     public void SetStateMachine(MonsterState newState)
     {
         currentState = newState;
@@ -242,12 +260,7 @@ public class MonsterScript : Monster
         audioSourceDamage.Play();
         if (this.currentHealth <= 0)
         {
-            // Reset all triggers first to prevent interference of other animation states before deathj
-            animator.ResetTrigger("attack");
-            animator.SetBool("isMoving", false);
-            animator.SetTrigger("death");
-            // Disable collider to prevent spam hitting damage
-            monsterCollider.enabled = false;
+            DieAnimation();
             Die();
         }
     }
@@ -258,6 +271,16 @@ public class MonsterScript : Monster
         damageCounter.transform.GetComponentInChildren<Text>().text = damage.ToString();
         SetupUI(damageCounter);
         damageUiElements.Add(damageCounter);
+    }
+    
+    private void DieAnimation()
+	{
+        // Reset all triggers first to prevent interference of other animation states before deathj
+        animator.ResetTrigger("attack");
+        animator.SetBool("isMoving", false);
+        animator.SetTrigger("death");
+        // Disable collider to prevent spam hitting damage
+        monsterCollider.enabled = false;
     }
 
     public void Die()

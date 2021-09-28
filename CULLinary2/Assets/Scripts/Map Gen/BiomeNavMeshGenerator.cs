@@ -25,6 +25,10 @@ public class BiomeNavMeshGenerator : MonoBehaviour
         {
             if (child.gameObject != this.gameObject)
             {
+                if (child.gameObject.name == "Flowers" || child.gameObject.name == "MonsterSpawner")
+				{
+                    continue;
+				}
                 if (child.gameObject.name == "Houses")
                 {
                     orderSubmissionStationParent = child.gameObject;

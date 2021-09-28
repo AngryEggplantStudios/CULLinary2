@@ -12,7 +12,7 @@ public class BossRangedAttack : MonsterAttack
     private bool projectAttack = false;
     private float startingAngle;
     private float fov = 90f;
-    private float viewDistance = 50f;
+    private float viewDistance = 150f;
     private List<LineRenderer> listOfRenderers;
     private List<Vector3> firePositions;
     private float LINE_HEIGHT_FROM_GROUND = 0.05f;
@@ -89,7 +89,6 @@ public class BossRangedAttack : MonsterAttack
                 sourcePosition = new Vector3(transform.position.x, LINE_HEIGHT_FROM_GROUND, transform.position.z);
 				if (Physics.Raycast(sourcePosition, finalDirection, out hit, viewDistance, layerMask))
 				{
-                    Debug.Log(hit.point);
 					LineRenderer lRend = listOfRenderers[i];
 					targetPosition = new Vector3(hit.point.x, LINE_HEIGHT_FROM_GROUND, hit.point.z);
 					lRend.SetPosition(0, sourcePosition);

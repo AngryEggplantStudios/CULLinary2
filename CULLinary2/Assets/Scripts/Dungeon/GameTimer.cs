@@ -47,7 +47,6 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
         if (gameTime > sunrise && isNewDay)
         {
-            // Debug.Log("start of new day");
             isNewDay = false;
             OnStartNewDay?.Invoke();
         }
