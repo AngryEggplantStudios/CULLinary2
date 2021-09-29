@@ -37,7 +37,7 @@ public class FadeInFadeOut : MonoBehaviour
 
     public void Activate()
     {
-        Debug.Log("fade in fade out activated");
+        // Debug.Log("fade in fade out activated");
 
         if (fadeType == FadeAction.FadeIn)
         {

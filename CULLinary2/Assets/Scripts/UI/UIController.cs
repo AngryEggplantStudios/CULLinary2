@@ -73,7 +73,6 @@ public class UIController : SingletonGeneric<UIController>
     {
         if (!playerDeathMenu.activeSelf)
         {
-            Debug.Log("show death screen");
             Time.timeScale = 0;
             playerDeathMenu.SetActive(true);
         }
@@ -98,27 +97,13 @@ public class UIController : SingletonGeneric<UIController>
         Time.timeScale = 1;
         Debug.Log("done respawning player, timescale: " + Time.timeScale);
 
-        // sceneTransition.SetActive(true);
-        // SceneManager.LoadScene((int)SceneIndexes.MAIN_SCENE);
-        // StartCoroutine(ReloadMainScene());
     }
 
-    private IEnumerator ReloadMainScene()
-    {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync((int)SceneIndexes.MAIN_SCENE);
-        asyncLoad.allowSceneActivation = true;
-
-        while (!asyncLoad.isDone)
-        {
-            yield return null;
-        }
-    }
 
     public void ShowEndOfDayMenu()
     {
         if (endOfDayMenu)
         {
-            Debug.Log("show menu");
             endOfDayMenu.SetActive(true);
         }
     }
@@ -126,37 +111,14 @@ public class UIController : SingletonGeneric<UIController>
     public void ContinueToNextDay()
     {
         endOfDayMenu.SetActive(false);
-        Debug.Log("fading scene in");
         SceneTransitionManager.instance.FadeSceneOut();
-        // StartCoroutine(StartNextDay());
         Invoke("ResumeGameTimer", 1);
-        // yield return new WaitForSeconds(1);
     }
-
-    // private IEnumerator StartNextDay()
-    // {
-
-    //     yield return new WaitForSecondsRealtime(1);
-    //     Debug.Log("waited 1sec, resuming game");
-    //     // Time.timeScale = 1; //resume game
-    // }
 
     private void ResumeGameTimer()
     {
         GameTimer.instance.Run();
     }
-
-    // public IEnumerator FadeSceneIn()
-    // {
-    //     fadeIn.StartPlayback();
-    //     yield return new WaitForSeconds(fadeIn.playbackTime);
-    // }
-
-    // public IEnumerator FadeSceneOut()
-    // {
-    //     fadeOut.StartPlayback();
-    //     yield return new WaitForSeconds(fadeOut.playbackTime);
-    // }
 
     public void ToggleInventory()
     {

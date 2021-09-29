@@ -37,11 +37,10 @@ public class GameTimer : SingletonGeneric<GameTimer>
         Debug.Log("set timescale to 1");
         Time.timeScale = 1;
 
-        gameTime = dayStartTime;
-        Debug.Log("start game time");
+        gameTime = (float)System.Math.Round(dayStartTime, 2);
         timeScale = 24 / (dayLengthInMinutes / 60);
         DayText.text = "DAY " + dayNum;
-        TimeText.text = "06:00";
+        UpdateTimerText();
     }
 
     private void Update()
@@ -49,11 +48,16 @@ public class GameTimer : SingletonGeneric<GameTimer>
         if (Preset == null || !isRunning)
             return;
 
-        UpdateGameTime();
+        gameTime += Time.deltaTime * timeScale / 86400;
+        if (gameTime > 1f)
+        {
+            gameTime = 1f;
+        }
+
+        UpdateTimerText();
 
         UpdateLighting(gameTime);
 
-        // if (timeAsString == "6:00" && isNewDay)
         if (gameTime >= dayStartTime && isNewDay)
         {
             Debug.Log("start of day " + dayNum);
@@ -69,12 +73,11 @@ public class GameTimer : SingletonGeneric<GameTimer>
         }
     }
 
-    private void UpdateGameTime()
+    private void UpdateTimerText()
     {
-        gameTime += Time.deltaTime * timeScale / 86400;
         float actualTime = gameTime * 24;
-        hourNum = Mathf.FloorToInt(actualTime);
-        minuteNum = Mathf.FloorToInt((actualTime - (float)hourNum) * 60);
+        hourNum = Mathf.FloorToInt(actualTime) % 24;
+        minuteNum = Mathf.FloorToInt((actualTime - (float)hourNum) * 60) % 60;
         timeAsString = hourNum + ":" + minuteNum.ToString("00");
         TimeText.text = timeAsString;
     }
@@ -82,52 +85,40 @@ public class GameTimer : SingletonGeneric<GameTimer>
     private void StartSceneFadeOut()
     {
         Pause();
-        Debug.Log("StartSceneFadeOut()");
-        // Time.timeScale = 0; //pause game
-        //fade to black
-        Debug.Log("fading scene out");
         SceneTransitionManager.instance.FadeSceneIn();
-        // yield return new WaitForSecondsRealtime(1);
-        // Debug.Log("waited 1 sec");
         Invoke("ShowEndOfDayMenu", 1);
-        GoToNextDay();
     }
 
     private void ShowEndOfDayMenu()
     {
-        Debug.Log("fade end");
         UIController.instance.ShowEndOfDayMenu();
+        GoToNextDay();
     }
 
     public void GoToNextDay()
     {
-        // triggered from continue button on the end of day menu
-        // TriggerEndOfDaySequence();
-        // is next day, player at 0, 0, 0   
+        // happens after end of day screen is shown
+        // reset player health and change to next day
 
-        Debug.Log("start go to next day");
         PlayerManager.instance.currentHealth = PlayerManager.instance.maxHealth;
         PlayerManager.instance.currentStamina = PlayerManager.instance.maxStamina;
 
         dayNum++;
-        gameTime = dayStartTime;
+        gameTime = (float)System.Math.Round(dayStartTime, 2);
         DayText.text = "DAY " + dayNum;
         isNewDay = true;
-        UpdateGameTime();
+
+        UpdateTimerText();
         UpdateLighting(gameTime);
-        // Run();
-        Debug.Log("end go to next day");
     }
 
     public void Run()
     {
-        Debug.Log("running game timer");
         isRunning = true;
     }
 
     public void Pause()
     {
-        Debug.Log("pausing game timer");
         isRunning = false;
     }
 
@@ -159,7 +150,6 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
             DirectionalLight.transform.localRotation = Quaternion.Euler(new Vector3((timePercent * 360f) - 90f, 170f, 0));
 
-            // Debug.Log("color: " + DirectionalLight.color + " | transform.localRotation: " + DirectionalLight.transform.localRotation);
         }
 
     }
