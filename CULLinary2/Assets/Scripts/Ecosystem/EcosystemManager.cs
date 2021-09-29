@@ -9,9 +9,9 @@ public class EcosystemManager : MonoBehaviour
     [SerializeField] private int numDaysToIncreaseFromExtinct = 2; // num days it takes to increase pop level naturally from extinct
 
     private static List<Population> populations = new List<Population> {
-        new Population(MonsterName.Potato, 10, 20, PopulationLevel.Normal),
-        new Population(MonsterName.Corn, 10, 20, PopulationLevel.Normal),
-        new Population(MonsterName.Eggplant, 10, 20, PopulationLevel.Normal)
+        new Population(MonsterName.Potato, 20, 40, PopulationLevel.Normal),
+        new Population(MonsterName.Corn, 20, 40, PopulationLevel.Normal),
+        new Population(MonsterName.Eggplant, 30, 60, PopulationLevel.Normal)
     };
 
     void Awake()
@@ -59,7 +59,7 @@ public class EcosystemManager : MonoBehaviour
         {
             GameObject randomSpawner = spawners[Random.Range(0, spawners.Count)];
             randomSpawner.GetComponent<MonsterSpawn>().SpawnMiniBoss();
-            Debug.Log("spawning miniboss for " + pop.GetName() + " at " + randomSpawner.transform.position);
+            // Debug.Log("spawning miniboss for " + pop.GetName() + " at " + randomSpawner.transform.position);
             pop.SetHasSpawnedMiniboss(true);
         }
     }
@@ -106,6 +106,11 @@ public class EcosystemManager : MonoBehaviour
     {
         Population pop = GetPopulation(name);
         pop.SetExtinct();
+    }
+
+    public void OnDestroy()
+    {
+        GameTimer.OnStartNewDay -= CheckNaturalPopulationIncrease;
     }
 
 }

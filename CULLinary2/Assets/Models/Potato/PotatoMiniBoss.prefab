@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 281a8af603257604d9094bdf7fbe58fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 200
+  distanceTriggered: 45
 --- !u!1001 &4719525978094539048
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19,6 +21,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3032895445469368953, guid: c6842ea22088da542ac77fec21ab95b5, type: 3}
+      propertyPath: stopChase
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3032895445469368953, guid: c6842ea22088da542ac77fec21ab95b5, type: 3}
+      propertyPath: distanceTriggered
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: 7645934499838840842, guid: c6842ea22088da542ac77fec21ab95b5, type: 3}
       propertyPath: m_RootOrder
       value: 0

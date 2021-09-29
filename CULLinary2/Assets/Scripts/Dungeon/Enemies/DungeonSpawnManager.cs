@@ -8,12 +8,11 @@ public class DungeonSpawnManager : MonoBehaviour
 
     void Update()
     {
-        // TODO: check only whenever an enemy dies
-        CheckForExtinctPopulations();
     }
 
-    public IEnumerator LoadSpawners()
+    public IEnumerator GetSpawners()
     {
+        // Get spawners and update spawning caps and spawning numbers
         GameObject[] spawnObjectsArray = GameObject.FindGameObjectsWithTag("MonsterSpawn");
         monsterSpawns = new List<GameObject>(spawnObjectsArray);
         UpdateSpawners();
@@ -26,28 +25,33 @@ public class DungeonSpawnManager : MonoBehaviour
         Debug.Log(string.Format("at loading: {0} corn spawners, {1} potato spawners, {2} eggplant spawners", cornSpawners.Count, potatoSpawners.Count, eggplantSpawners.Count));
     }
 
-    private void CheckForExtinctPopulations()
+    public static void CheckIfExtinct(MonsterName name)
     {
-        // check if any population is extinct and update accordingly
-        foreach (MonsterName name in MonsterName.GetValues(typeof(MonsterName)))
+        // Updates population level if found to be extinct and population level is not already Extinct
+        
+        Population pop = EcosystemManager.GetPopulation(name);
+        if (pop.GetLevel() == PopulationLevel.Extinct)
         {
-            Population pop = EcosystemManager.GetPopulation(name);
-            if (pop.GetLevel() == PopulationLevel.Extinct)
-            {
-                continue;
-            }
+            return;
+        }
 
-            List<GameObject> spawners = GetSpawners(name);
-            foreach (GameObject spawner in spawners)
+        List<GameObject> spawners = GetSpawners(name);
+        bool isExtinct = true;
+        
+        foreach (GameObject spawner in spawners)
+        {
+            MonsterSpawn monsterSpawn = spawner.GetComponent<MonsterSpawn>();
+            if (monsterSpawn.GetSpawnCap() > 0)
             {
-                MonsterSpawn monsterSpawn = spawner.GetComponent<MonsterSpawn>();
-                if (monsterSpawn.GetSpawnCap() > 0)
-                {
-                    break;
-                }
-                // all spawn caps for this enemy is 0
-                EcosystemManager.SetExtinct(name);
+                isExtinct = false;
+                break;
             }
+        }
+
+        if (isExtinct)
+        {
+            // All spawn caps for this enemy are 0
+            EcosystemManager.SetExtinct(name);
         }
     }
 
@@ -178,4 +182,5 @@ public class DungeonSpawnManager : MonoBehaviour
         MonsterSpawn monsterSpawn = monsterSpawnGO.GetComponent<MonsterSpawn>();
         return monsterSpawn.GetMonsterName();
     }
+
 }

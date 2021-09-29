@@ -57,12 +57,12 @@ public class PlayerHealth : MonoBehaviour
     {
         // check if height of player here as less references needed than checking height in player locomotion;
         if (transform.position.y < minimumHeightToStartDrowning && !isDrowningActivated)
-		{
+        {
             //Drowning animation
             /* isDrowningActivated = true;
             StartCoroutine(StartDrowning()); */
             HandleHit(drowningDamage, true);
-		}
+        }
         if (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth < thresholdHealth && !flashIsActivated)
         {
             flashIsActivated = true;
@@ -71,6 +71,11 @@ public class PlayerHealth : MonoBehaviour
         else if (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth >= thresholdHealth)
         {
             flashIsActivated = false;
+        }
+
+        if (PlayerManager.instance.currentHealth <= 0f)
+        {
+            Die();
         }
     }
 
@@ -106,6 +111,12 @@ public class PlayerHealth : MonoBehaviour
         return true;
     }
 
+    public void RestoreToFull()
+    {
+        PlayerManager.instance.currentHealth = PlayerManager.instance.maxHealth;
+        DisplayOnUI(PlayerManager.instance.currentHealth, PlayerManager.instance.maxHealth);
+    }
+
     public bool HandleHit(float damage, bool drowning = false)
     {
         damage = damage < 0 ? 0 : Mathf.CeilToInt(damage); //Guard check
@@ -127,11 +138,18 @@ public class PlayerHealth : MonoBehaviour
 
         if (PlayerManager.instance.currentHealth <= 0f)
         {
-            Debug.Log("You are dead.");
+            // Debug.Log("You are dead.");
             return true;
         }
+
         StartCoroutine(BecomeTemporarilyInvincible());
         return true;
+    }
+
+    private void Die()
+    {
+        animator.SetTrigger("isDead");
+        UIController.instance.ShowDeathMenu();
     }
 
     private void SetupIFrame()

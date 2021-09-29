@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 281a8af603257604d9094bdf7fbe58fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 200
+  distanceTriggered: 45
 --- !u!1001 &3486008725511839847
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -78,6 +80,14 @@ PrefabInstance:
     - target: {fileID: 4943754348278179382, guid: 4180c73d6e91a2048826a68a1d901107, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6106420228487427490, guid: 4180c73d6e91a2048826a68a1d901107, type: 3}
+      propertyPath: stopChase
+      value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 6106420228487427490, guid: 4180c73d6e91a2048826a68a1d901107, type: 3}
+      propertyPath: distanceTriggered
+      value: 24
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4180c73d6e91a2048826a68a1d901107, type: 3}

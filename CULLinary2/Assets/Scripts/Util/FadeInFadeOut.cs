@@ -27,9 +27,18 @@ public class FadeInFadeOut : MonoBehaviour
     [Tooltip("The amount of pause for the delay")]
     [SerializeField] private float fadePause;
 
+    public delegate void FinishedDelegate(FadeAction type);
+    public event FinishedDelegate OnFinished;
 
-    public void Start()
+    public void OnEnable()
     {
+        Activate();
+    }
+
+    public void Activate()
+    {
+        // Debug.Log("fade in fade out activated");
+
         if (fadeType == FadeAction.FadeIn)
         {
 
@@ -62,15 +71,16 @@ public class FadeInFadeOut : MonoBehaviour
     // fade from transparent to opaque
     IEnumerator FadeIn()
     {
-
         // loop over 1 second
         for (float i = 0; i <= 1; i += Time.deltaTime)
         {
             // set color with i as alpha
-            img.color = new Color(1, 1, 1, i);
+            // img.color = new Color(1, 1, 1, i);
+            img.color = new Color(img.color.r, img.color.g, img.color.b, i);
             yield return null;
         }
         isFinished = true;
+        OnFinished?.Invoke(FadeAction.FadeIn);
     }
 
     // fade from opaque to transparent
@@ -80,10 +90,12 @@ public class FadeInFadeOut : MonoBehaviour
         for (float i = 1; i >= 0; i -= Time.deltaTime)
         {
             // set color with i as alpha
-            img.color = new Color(1, 1, 1, i);
+            // img.color = new Color(1, 1, 1, i);
+            img.color = new Color(img.color.r, img.color.g, img.color.b, i);
             yield return null;
         }
         isFinished = true;
+        OnFinished?.Invoke(FadeAction.FadeOut);
     }
 
     IEnumerator FadeInAndOut()

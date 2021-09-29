@@ -19,6 +19,8 @@ public class UIController : SingletonGeneric<UIController>
     [Header("Main HUD")]
     [SerializeField] private GameObject mainHud;
     [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private GameObject playerDeathMenu;
+    [SerializeField] private GameObject endOfDayMenu;
 
     private KeyCode ToggleInventoryKeyCode;
     private KeyCode ToggleOrdersKeyCode;
@@ -64,6 +66,43 @@ public class UIController : SingletonGeneric<UIController>
         Time.timeScale = 1;
         PlayerManager.instance.SaveData(InventoryManager.instance.itemListReference);
         SceneManager.LoadScene((int)SceneIndexes.MAIN_MENU);
+    }
+
+    public void ShowDeathMenu()
+    {
+        if (!playerDeathMenu.activeSelf)
+        {
+            Time.timeScale = 0;
+            playerDeathMenu.SetActive(true);
+        }
+    }
+
+    public void RespawnPlayer()
+    {
+        GameTimer.instance.GoToNextDay();
+        playerDeathMenu.SetActive(false);
+        Time.timeScale = 1;
+    }
+
+
+    public void ShowEndOfDayMenu()
+    {
+        if (endOfDayMenu)
+        {
+            endOfDayMenu.SetActive(true);
+        }
+    }
+
+    public void ContinueToNextDay()
+    {
+        endOfDayMenu.SetActive(false);
+        SceneTransitionManager.instance.FadeOutImage();
+        Invoke("ResumeGameTimer", 1);
+    }
+
+    private void ResumeGameTimer()
+    {
+        GameTimer.instance.Run();
     }
 
     public void ToggleInventory()
@@ -231,6 +270,11 @@ public class UIController : SingletonGeneric<UIController>
 
     private void Update()
     {
+        if (playerDeathMenu.activeSelf)
+        {
+            return;
+        }
+
         if (!isFireplaceActive && !isMenuActive)
         {
             if (Input.GetKeyDown(closeUiKeyCode))

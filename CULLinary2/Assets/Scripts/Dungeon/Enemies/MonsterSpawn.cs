@@ -14,7 +14,7 @@ public class MonsterSpawn : MonoBehaviour
     [SerializeField] private GameObject enemyToSpawn;
     [SerializeField] private GameObject miniBoss;
     [Tooltip("Random displacement of enemy spawn in X/Z axes")]
-    [SerializeField] private float distRange;
+    [SerializeField] private float spawningRadius;
     [Tooltip("Is spawner able to be retriggered?")]
     [SerializeField] private bool toLoop;
     [Tooltip("Delay after triggering if toLoop is checked")]
@@ -22,11 +22,11 @@ public class MonsterSpawn : MonoBehaviour
     [Tooltip("Initial Delay")]
     [SerializeField] private int initialDelay = 10;
 
+    private GameObject monstersParent;
     private int minEnemy;
     private int maxEnemy;
     private int localSpawnCap; //It will not spawn more than this amount in total
     private bool delayFlag = false;
-
     private SpawnState state;
     private bool canSpawn = true;
     private int spawnAmount = 0;
@@ -50,24 +50,24 @@ public class MonsterSpawn : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider collider)
-    {
-        if (collider.CompareTag("Player") && delayFlag)
-        {
-            if (this.state == SpawnState.Inactive)
-            {
-                this.state = SpawnState.Active;
-                SpawnEnemies();
-            }
-            else if (this.state == SpawnState.Loop && canSpawn)
-            {
-                canSpawn = false;
-                StartCoroutine(SpawnTimer(delayLoopTime));
-                SpawnEnemies();
-            }
-        }
+    //private void OnTriggerEnter(Collider collider)
+    //{
+    //    if (collider.CompareTag("Player") && delayFlag)
+    //    {
+    //        if (this.state == SpawnState.Inactive)
+    //        {
+    //            this.state = SpawnState.Active;
+    //            SpawnEnemies();
+    //        }
+    //        else if (this.state == SpawnState.Loop && canSpawn)
+    //        {
+    //            canSpawn = false;
+    //            StartCoroutine(SpawnTimer(delayLoopTime));
+    //            SpawnEnemies();
+    //        }
+    //    }
 
-    }
+    //}
 
     private void SpawnEnemies()
     {
@@ -83,8 +83,8 @@ public class MonsterSpawn : MonoBehaviour
     {
         if (spawnAmount < localSpawnCap)
         {
-            float distX = Random.Range(-distRange, distRange);
-            float distZ = Random.Range(-distRange, distRange);
+            float distX = Random.Range(-spawningRadius, spawningRadius);
+            float distZ = Random.Range(-spawningRadius, spawningRadius);
             Vector3 enemyTransform = new Vector3(transform.position.x + distX, transform.position.y, transform.position.z + distZ);
             Instantiate(enemyToSpawn, enemyTransform, Quaternion.identity);
             enemyToSpawn.GetComponent<MonsterScript>().spawner = gameObject;
@@ -147,5 +147,10 @@ public class MonsterSpawn : MonoBehaviour
         {
             localSpawnCap -= value;
         }
+    }
+
+    public void OnDestroy()
+    {
+        GameTimer.OnStartNewDay -= SpawnEnemies;
     }
 }

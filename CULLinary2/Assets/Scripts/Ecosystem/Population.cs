@@ -11,6 +11,7 @@ public class Population
     private int currentNumber;
     private PopulationLevel level;
     private const float chanceOfOverpopulation = 0.5f;
+    private const float overpopulationMultiplier = 1.5f;
     private int numDaysBetweenLevelIncrease = 1; // num days it takes to increase pop level naturally (for endangered, vulnerable and normal (50% chance))
     private int numDaysLeftToIncreaseLevel; // counter to checking next increase in level
     private int numDaysToIncreaseFromExtinct; // num days it takes to increase pop level naturally from extinct
@@ -57,7 +58,7 @@ public class Population
         switch (level)
         {
             case PopulationLevel.Overpopulated:
-                currentNumber = Mathf.RoundToInt(upperBound * 1.5f); // how much more to increase?
+                currentNumber = Mathf.RoundToInt(upperBound * overpopulationMultiplier);
                 break;
             case PopulationLevel.Normal:
                 min = this.optimalNumber;

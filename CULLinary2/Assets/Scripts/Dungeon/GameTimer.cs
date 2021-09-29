@@ -12,38 +12,52 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     // 0.2 of 1 minute = 10 seconds eg
     [SerializeField] private float dayLengthInMinutes;
-    [SerializeField, Range(0, 1)] private float sunrise;
+    [SerializeField, Range(0, 1), Tooltip("e.g. 0.25 for 6am")] private float sunrise;
     [SerializeField, Range(0, 1)] private float sunset;
     private static float gameTime;
     private static float timeScale;
-    private static int dayNum = 1;
+    private static int dayNum = 1; // TODO: to get from saved data
     private int hourNum;
     private int minuteNum;
     private string timeAsString;
 
+    private float dayEndTime = 1f; //12am
+
+    private bool isNewDay = true; // prevent OnStartNewDay from being invoked multiple times
+    private bool isRunning = false;
+
     public delegate void StartNewDayDelegate();
     public static event StartNewDayDelegate OnStartNewDay;
-    private bool isNewDay = true; // prevent OnStartNewDay from being invoked multiple times
+    public delegate void EndOfDayDelegate();
+    public static event EndOfDayDelegate OnEndOfDay;
 
     void Start()
     {
         if (sunrise > sunset) { Debug.LogError("Sunrise is after Sunset!"); }
 
-        gameTime = sunrise;
+        Debug.Log("set timescale to 1");
+        Time.timeScale = 1;
+
+        gameTime = (float)System.Math.Round(sunrise, 2);
         timeScale = 24 / (dayLengthInMinutes / 60);
+
+        DayText.text = "DAY " + dayNum;
+        UpdateTimerText();
     }
 
     private void Update()
     {
-        if (Preset == null)
+        if (Preset == null || !isRunning)
             return;
+
         gameTime += Time.deltaTime * timeScale / 86400;
-        float actualTime = gameTime * 24;
-        hourNum = Mathf.FloorToInt(actualTime);
-        minuteNum = Mathf.FloorToInt((actualTime - (float)hourNum) * 60);
-        timeAsString = hourNum + ":" + minuteNum.ToString("00");
-        TimeText.text = timeAsString;
-        // Debug.Log("current time: " + timeAsString);
+        if (gameTime > 1f)
+        {
+            gameTime = 1f;
+        }
+
+        UpdateTimerText();
+        UpdateLighting(gameTime);
 
         if (gameTime > sunrise && isNewDay)
         {
@@ -51,15 +65,63 @@ public class GameTimer : SingletonGeneric<GameTimer>
             OnStartNewDay?.Invoke();
         }
 
-        UpdateLighting(gameTime);
-
-        if (gameTime > 1)
+        if (gameTime >= 1)
         {
-            dayNum++;
-            gameTime -= 1;
-            DayText.text = "DAY " + dayNum;
-            isNewDay = true;
+            Debug.Log("day ended");
+            OnEndOfDay?.Invoke();
+            StartSceneFadeOut();
         }
+    }
+
+    private void UpdateTimerText()
+    {
+        float actualTime = gameTime * 24;
+        hourNum = Mathf.FloorToInt(actualTime) % 24;
+        minuteNum = Mathf.FloorToInt((actualTime - (float)hourNum) * 60) % 60;
+        timeAsString = hourNum + ":" + minuteNum.ToString("00");
+        TimeText.text = timeAsString;
+    }
+
+    private void StartSceneFadeOut()
+    {
+        Pause(); // TODO: pause entire game using timeScale
+        SceneTransitionManager.instance.FadeInImage();
+        Invoke("ShowEndOfDayMenu", 1);
+    }
+
+    private void ShowEndOfDayMenu()
+    {
+        UIController.instance.ShowEndOfDayMenu();
+        GoToNextDay();
+    }
+
+    public void GoToNextDay()
+    {
+        // happens after end of day screen is shown
+        // reset player health and teleport player to origin for now
+        GameObject player = GameObject.FindWithTag("Player");
+        player.GetComponent<PlayerHealth>().RestoreToFull();
+        player.GetComponent<PlayerStamina>().RestoreToFull();
+        player.transform.position = new Vector3(0f, 0f, 0f); // TODO: go back to last saved campfire
+
+        // change time to next day
+        gameTime = (float)System.Math.Round(sunrise, 2);
+        dayNum++;
+        DayText.text = "DAY " + dayNum;
+        isNewDay = true;
+
+        UpdateTimerText();
+        UpdateLighting(gameTime);
+    }
+
+    public void Run()
+    {
+        isRunning = true;
+    }
+
+    public void Pause()
+    {
+        isRunning = false;
     }
 
     public static float GetTime()

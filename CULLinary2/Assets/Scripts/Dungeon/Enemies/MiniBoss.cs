@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MiniBoss : MonoBehaviour
 {
+    [SerializeField] private int health = 200;
+    [SerializeField] private float distanceTriggered = 45f;
     private MonsterName monsterName;
 
     void Start()
@@ -12,6 +14,7 @@ public class MiniBoss : MonoBehaviour
         if (monsterScript)
         {
             monsterName = monsterScript.GetMonsterName();
+            monsterScript.SetMiniBossValues(health, distanceTriggered);
         }
     }
 

@@ -85,12 +85,6 @@ public class MonsterScript : Monster
         }
         canvasDisplay = GameObject.FindGameObjectWithTag("GameCanvas");
         GetMonsterName();
-
-        if (TryGetComponent<MiniBoss>(out MiniBoss miniBossScript))
-        {
-            monsterHealth *= 2;
-            distanceTriggered *= 1.5f;
-        }
     }
 
     public MonsterName GetMonsterName()
@@ -297,6 +291,8 @@ public class MonsterScript : Monster
         {
             miniBossScript.Die();
         }
+
+        DungeonSpawnManager.CheckIfExtinct(monsterName);
     }
 
     private IEnumerator FlashOnDamage()
@@ -360,8 +356,9 @@ public class MonsterScript : Monster
         Destroy(gameObject);
     }
 
-    // public MonsterName GetMonsterName()
-    // {
-    //     return monsterName;
-    // }
+    public void SetMiniBossValues(int health, float miniBossDistanceTriggered)
+    {
+        monsterHealth = health;
+        distanceTriggered = miniBossDistanceTriggered;
+    }
 }
