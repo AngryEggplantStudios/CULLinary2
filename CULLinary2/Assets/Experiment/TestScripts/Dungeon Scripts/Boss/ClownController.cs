@@ -58,7 +58,9 @@ public class ClownController : MonoBehaviour
     private bool idleCooldownRunning = false;
     private bool coroutineMeleeRunning = false;
     private bool coroutineSpawnRunning = false;
-
+    private bool damageCoroutine = false;
+    private string prevFoot = "leftFoot";
+ 
     public enum State
     {
         Roaming,
@@ -89,6 +91,21 @@ public class ClownController : MonoBehaviour
         SetupHpBar();
     }
 
+    //SpawnsClown at player position
+    public void SpawnClown()
+	{
+        gameObject.transform.parent.gameObject.SetActive(true);
+        transform.position = player.position;
+	}
+
+    //Destroys any spawned mosnters when player dies
+    public void DeSpawnClown()
+    {
+        gameObject.transform.parent.gameObject.SetActive(false);
+        transform.position = player.position;
+        spawnAttackScript.destroySpawnPoints();
+    }
+
     private void SetupHpBar()
     {
         hpBar = Instantiate(hpBar_prefab);
@@ -113,20 +130,39 @@ public class ClownController : MonoBehaviour
 
     public void HandleHit(float damage)
     {
-        this.health -= damage;
-        hpBarFull.fillAmount = health / maxHealth;
-        SpawnDamageCounter(damage);
-        audioSourceDamage.clip = stabSounds[Random.Range(0, stabSounds.Length)];
-        audioSourceDamage.Play();
+        if (!damageCoroutine)
+		{
+            damageCoroutine = true;
+            StartCoroutine(invincibilityFrame());
+            this.health -= damage;
+            hpBarFull.fillAmount = health / maxHealth;
+            SpawnDamageCounter(damage);
+            audioSourceDamage.clip = stabSounds[Random.Range(0, stabSounds.Length)];
+            audioSourceDamage.Play();
 
-        if (this.health <= 0)
-        {
-            //die
-            spawnAttackScript.destroySpawnPoints();
-            endingBurgers.GetComponent<SpawnBurger>().callRainBurger();
-            Destroy(hpBar);
-            Destroy(gameObject);
+            if (this.health <= 0)
+            {
+                //die
+                spawnAttackScript.destroySpawnPoints();
+                //Don't rainburgers yet
+                //endingBurgers.GetComponent<SpawnBurger>().callRainBurger();
+                StartCoroutine("WaitOneSecondBeforeKilling");
+            }
         }
+
+    }
+
+    private IEnumerator invincibilityFrame()
+    {
+        yield return new WaitForSeconds(0.3f);
+        damageCoroutine = false;
+    }
+
+    private IEnumerator WaitZeroPointOneSecondBeforeKilling()
+	{
+        yield return new WaitForSeconds(0.1f);
+        Destroy(hpBar);
+        Destroy(gameObject);
     }
 
 
@@ -137,6 +173,35 @@ public class ClownController : MonoBehaviour
         switch (state)
         {
             default:
+            case State.Roaming:
+                coroutineMeleeRunning = false;
+                if (distanceToPlayer > lookingDistance)
+                {
+                    slowlyLookAt(player);
+                }
+
+                if (distanceToPlayer >= stoppingDistance)
+                {
+                    moveForward();
+                }
+
+
+                if (distanceToPlayer < stoppingDistance)
+                {
+                    //stepOn(player);
+                    state = State.Idle;
+                }
+
+                // Bob head and jaw for demostration
+                transform.position = new Vector3(
+                        transform.position.x,
+                        originalY + Mathf.Sin(Time.fixedTime * Mathf.PI * 1) * 0.2f,
+                        transform.position.z);
+                lowerJaw.localPosition = new Vector3(
+                        lowerJaw.localPosition.x,
+                        jawOriginalY - Mathf.Abs(Mathf.Sin(Time.fixedTime * Mathf.PI * 2) * 0.01f),
+                        lowerJaw.localPosition.z);
+                break;
             case State.Idle:
                 if (!openingMouth)
                 {
@@ -147,6 +212,10 @@ public class ClownController : MonoBehaviour
                         lowerJaw.localPosition.x,
                         jawOriginalY - Mathf.Abs(Mathf.Sin(Time.fixedTime * Mathf.PI * 2) * 0.01f),
                         lowerJaw.localPosition.z);
+                }
+                if (distanceToPlayer >= stoppingDistance)
+                {
+                    state = State.Roaming;
                 }
                 if (!idleCooldownRunning)
                 {
@@ -184,62 +253,24 @@ public class ClownController : MonoBehaviour
                     StartCoroutine("rangedCoroutine");
                 }
                 break;
-            case State.Roaming:
-                if (distanceToPlayer > lookingDistance)
-                {
-                    slowlyLookAt(player);
-                }
-
-                if (distanceToPlayer > stoppingDistance)
-                {
-                    Debug.Log("Trying to move forward");
-                    moveForward();
-                }
-
-
-                if (distanceToPlayer < meleeRange)
-                {
-                    stepOn(player);
-
-                }
-
-                // Bob head and jaw for demostration
-                transform.position = new Vector3(
-                        transform.position.x,
-                        originalY + Mathf.Sin(Time.fixedTime * Mathf.PI * 1) * 0.2f,
-                        transform.position.z);
-                lowerJaw.localPosition = new Vector3(
-                        lowerJaw.localPosition.x,
-                        jawOriginalY - Mathf.Abs(Mathf.Sin(Time.fixedTime * Mathf.PI * 2) * 0.01f),
-                        lowerJaw.localPosition.z);
-                break;
             case State.MeleeAttack:
                 if (distanceToPlayer > lookingDistance)
                 {
                     slowlyLookAt(player);
                 }
-                if (distanceToPlayer > stoppingDistance)
-                {
-                    moveForward();
-                    leftFoot.meleeAttackEnd();
-                    rightFoot.meleeAttackEnd();
-                }
+
 
                 if (!coroutineMeleeRunning)
                 {
                     StartCoroutine("meleeCoroutine");
                 }
-                if (distanceToPlayer < meleeRange)
+                if (distanceToPlayer < stoppingDistance)
                 {
+                    // Let melee coroutine run finish before changing states
                     leftFoot.meleeAttackStart();
                     rightFoot.meleeAttackStart();
                     stepOn(player);
-                } else
-                {
-                    leftFoot.meleeAttackEnd();
-                    rightFoot.meleeAttackEnd();
                 }
-
                 // Bob head and jaw for demostration
                 transform.position = new Vector3(
                         transform.position.x,
@@ -287,31 +318,47 @@ public class ClownController : MonoBehaviour
         }
     }
 
+    // Returns state for clownController for foot
+    public State GetState()
+	{
+        return state;
+	}
+
     IEnumerator idleCooldownCoroutine()
     {
         idleCooldownRunning = true;
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(3);
         SetupUI(Instantiate(enemyAlert_prefab));
+        uiList.Add(enemyAlert_prefab);
         audioSourceAttack.clip = alertSound;
         audioSourceAttack.Play();
         yield return new WaitForSeconds(1);
         idleCooldownRunning = false;
-        int chooseAttack = Random.Range(1, 6);
-        switch (chooseAttack)
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        // Continue to run after player if player too far, else go to attack
+        if (distanceToPlayer >= stoppingDistance)
         {
-            default:
-            case 1:
-            case 2:
-                state = State.MeleeAttack;
-                break;
-            case 3:
-                state = State.MeleeAttack;
-                break;
-            case 4:
-            case 5:
-                state = State.MeleeAttack;
-                break;
+            state = State.Roaming;
+        } else
+		{
+            int chooseAttack = Random.Range(1, 6);
+            switch (chooseAttack)
+            {
+                default:
+                case 1:
+                case 2:
+                    state = State.RangedAttack;
+                    break;
+                case 3:
+                    state = State.SpawnAttack;
+                    break;
+                case 4:
+                case 5:
+                    state = State.MeleeAttack;
+                    break;
+            }
         }
+
         elapsedFrames = 0;
         openingMouth = true;
     }
@@ -361,6 +408,7 @@ public class ClownController : MonoBehaviour
     void slowlyLookAt(Transform targetPlayer)
     {
         Vector3 target = targetPlayer.position;
+        target.y = transform.position.y;
         transform.rotation = Quaternion.Lerp(
             transform.rotation,
             Quaternion.Euler(Quaternion.LookRotation(target - transform.position).eulerAngles),
@@ -380,7 +428,6 @@ public class ClownController : MonoBehaviour
     void moveForward()
     {
         transform.position += transform.forward * movementSpeed * Time.deltaTime;
-
         // HARDEDCODED BOUNDS so clown does not exceed arena NEED TO REHARDCODE THIS
         transform.position = new Vector3(
                 Mathf.Clamp(transform.position.x, transform.position.x - wanderRadius, transform.position.x + wanderRadius),
@@ -398,7 +445,6 @@ public class ClownController : MonoBehaviour
         {
             return;
         }
-
         // Find target on ground
         Ray ray = new Ray(target.position, Vector3.down);
         if (!Physics.Raycast(ray, out RaycastHit info, 100, ~(1 << 5)))
@@ -408,15 +454,31 @@ public class ClownController : MonoBehaviour
         }
         info.point = new Vector3(info.point.x, info.point.y + 0.3f, info.point.z);
         // Find closer foot and step
-        if (Vector3.Distance(leftFoot.currentPosition, info.point) < Vector3.Distance(rightFoot.currentPosition, info.point))
+
+        /*			if (Vector3.Distance(leftFoot.currentPosition, info.point) < Vector3.Distance(rightFoot.currentPosition, info.point))
+                    {
+                        leftFoot.SetTarget(info.point, info.normal);
+                        prevFoot = "leftFoot";
+                    }
+                    else
+                    {
+                        rightFoot.SetTarget(info.point, info.normal);
+                        prevFoot = "rightFoot";
+                    }*/
+
+
+        //Take turns to step with different foot, else clown will drag one foot behind and only step using nearest foot to player
+        if (prevFoot == "rightFoot")
         {
             leftFoot.SetTarget(info.point, info.normal);
+            prevFoot = "leftFoot";
         }
         else
         {
             rightFoot.SetTarget(info.point, info.normal);
+            prevFoot = "rightFoot";
         }
-    }
+	}
 
 
 }

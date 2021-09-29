@@ -13,7 +13,7 @@ public class BiomeObjectSpawner : MonoBehaviour
     private List<GameObject> spawnedObjects = new List<GameObject>();
     private List<GameObject> parents = new List<GameObject>();
 
-    private void Awake()
+    void Awake()
     {
         origin = this.transform.parent.transform;
     }
@@ -25,6 +25,7 @@ public class BiomeObjectSpawner : MonoBehaviour
 
         foreach (Spawnable spawnable in spawnables)
         {
+            // Debug.Log("Spawning " + spawnable.name + "...");
             GameObject parent = new GameObject(spawnable.name);
             parent.transform.SetParent(origin);
             parent.transform.localScale = Vector3.one;
@@ -37,27 +38,58 @@ public class BiomeObjectSpawner : MonoBehaviour
                 pos += origin.transform.position;
 
                 // Check validity
-                if (Physics.Raycast(pos, Vector3.down, out hit) && hit.point.y >= minY)
+                //      On the ground
+                //      Above sea level
+                //      Non intersecting
+                if (Physics.Raycast(pos, Vector3.down, out hit, Mathf.Infinity, LayerMask.GetMask("Ground"))
+                        && hit.point.y >= minY
+                        && !IsIntersecting(hit.point, spawnable.intersectRadius))
                 {
                     // Spawn Object
                     GameObject spawnedObject = Instantiate(spawnable.prefabs[Random.Range(0, spawnable.prefabs.Length)], parent.transform);
                     spawnedObject.transform.position = hit.point;
                     spawnedObject.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
                     spawnedObjects.Add(spawnedObject);
+
+                    // Only wait if intersections are important
+                    if (spawnable.intersectRadius != 0 && !spawnable.removeCollider)
+                    {
+                        yield return null;
+                    }
                 }
             }
+            SpawnableHelper helper = parent.AddComponent<SpawnableHelper>() as SpawnableHelper;
+            helper.removeCollider = spawnable.removeCollider;
             yield return null;
         }
-        Debug.Log(spawnedObjects.Count + " objects spawned");
+        // Debug.Log(spawnedObjects.Count + " objects spawned");
     }
+
     public void DestroyObjects()
     {
-        Debug.Log(spawnedObjects.Count + " objects destroyed");
+        // Debug.Log(spawnedObjects.Count + " objects destroyed");
 
         foreach (GameObject parent in parents)
         {
             DestroyImmediate(parent);
         }
         spawnedObjects = new List<GameObject>();
+    }
+
+    bool IsIntersecting(Vector3 position, float obstacleCheckRadius)
+    {
+        if (obstacleCheckRadius <= 0) { return false; }
+
+        Collider[] colliders = Physics.OverlapSphere(position, obstacleCheckRadius);
+
+        foreach (Collider col in colliders)
+        {
+            if(col.gameObject.layer != LayerMask.NameToLayer("Ground"))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -14,8 +14,8 @@ public class PlayerSlash : PlayerAction
     [SerializeField] private GameObject playerBody;
     [SerializeField] private float rotateSpeed = 5f;
     [SerializeField] private Camera mainCamera;
+    [SerializeField] private TrailRenderer weaponTrail;
 
-    private const float MAX_DIST_CAM_TO_GROUND = 10000f;
     private const float MELEE_ANIMATION_TIME_SECONDS = 0.10f;
 
     private Collider weaponCollider;
@@ -31,6 +31,8 @@ public class PlayerSlash : PlayerAction
 
         playerLocomotion = GetComponent<PlayerLocomotion>();
         animator = GetComponent<Animator>();
+        
+        weaponTrail.emitting = false;
     }
 
     private IEnumerator RotatePlayer()
@@ -50,7 +52,7 @@ public class PlayerSlash : PlayerAction
         bool hitGround;
 
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        hitGround = Physics.Raycast(ray, out hit, MAX_DIST_CAM_TO_GROUND, ~(1 << 5));
+        hitGround = Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask("Ground"));
         if (hitGround)
         {
             rotateToFaceDirection = new Vector3(hit.point.x - playerBody.transform.position.x,
@@ -71,12 +73,14 @@ public class PlayerSlash : PlayerAction
         weaponCollider.enabled = true;
         audioSource.clip = attackSounds[Random.Range(0, attackSounds.Length)];
         audioSource.Play();
+        weaponTrail.emitting = true;
     }
 
     public void AttackFinish()
     {
         weaponCollider.enabled = false;
         animator.SetBool("isMelee", false);
+        weaponTrail.emitting = false;
     }
 
     public void AttackEnd()
@@ -89,6 +93,7 @@ public class PlayerSlash : PlayerAction
         animator.SetBool("isMelee", false);
         playerMelee.StopInvoking();
         weaponCollider.enabled = false;
+        weaponTrail.emitting = false;
     }
 
 }

@@ -49,8 +49,13 @@ public class IKFootSolver : Monster
             if (Vector3.Distance(newPosition, info.point) > stepDistance && !otherFoot.IsMoving() && !IsMoving())
             {
                 int direction = body.InverseTransformPoint(info.point).z > body.InverseTransformPoint(newPosition).z ? 1 : -1;
-                SetTarget(info.point + (body.forward * stepLength * direction) + footOffset,
-                        info.normal);
+                if (!(parentController.GetState() == ClownController.State.Idle))
+				{
+                    // Don't step if clown is in idle;
+                    SetTarget(info.point + (body.forward * stepLength * direction) + footOffset,
+                            info.normal);
+                }
+
             }
         }
         else

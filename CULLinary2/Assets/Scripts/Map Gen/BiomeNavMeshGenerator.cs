@@ -27,6 +27,7 @@ public class BiomeNavMeshGenerator : MonoBehaviour
             {
                 if (child.gameObject.name == "Houses")
                 {
+                    continue; // Just skip houses!!!!!
                     orderSubmissionStationParent = child.gameObject;
                 }
                 // NOTE Houses/Order submission station has a spherecollider that needs to be deactivated
@@ -47,6 +48,19 @@ public class BiomeNavMeshGenerator : MonoBehaviour
         }
     }
 
+    private void ActivateSpawnableWithoutCollider(bool activate, GameObject parent)
+    {
+        foreach (Transform child in parent.transform)
+        {
+            SpawnableHelper spawnable = child.GetComponent<SpawnableHelper>();
+            if (spawnable != null && spawnable.removeCollider)
+            {
+                spawnable.enabled = activate;
+                Debug.Log("disabling " + spawnable.name);
+            }
+        }
+    }
+
     public IEnumerator GenerateMesh()
     {
         savePath = "Assets/Scenes/UtilScenes/Saved_Meshes/" + "NavMesh" + ".asset";
@@ -57,11 +71,14 @@ public class BiomeNavMeshGenerator : MonoBehaviour
         {
             //disable sphere collider from order submissions
             ActivateSphereCollider(false, orderSubmissionStationParent);
+            //disable spawnables that have no colliders
+            ActivateSpawnableWithoutCollider(false, parent);
             BiomeDataManager.instance.biomeNavMeshPath = savePath;
             BiomeDataManager.instance.SaveData();
             surfaceForNavMesh.BuildNavMesh();
             AssetDatabase.CreateAsset(surfaceForNavMesh.navMeshData, savePath);
             ActivateSphereCollider(true, orderSubmissionStationParent);
+            ActivateSpawnableWithoutCollider(true, parent);
             Debug.Log("Starting Coroiutine");
             //first time generation, create walkable mesh with water and delete previous walkable mesh without water
             BiomeGenerator.Instance.CreateWalkableMeshWithWater();
@@ -168,11 +185,15 @@ public class BiomeNavMeshGenerator : MonoBehaviour
         }
         yield return null;
 
-        MeshFilter mf = gameObjectToGenerateMesh.GetComponent<MeshFilter>();
-        gameObjectToGenerateMesh.AddComponent<MeshCollider>();
-        // Have to use this since Unity does not allow adding a component that's already created first to a game object
-        MeshCollider combinedMeshCollider = gameObjectToGenerateMesh.GetComponent<MeshCollider>();
-        combinedMeshCollider.sharedMesh = mf.mesh;
+        SpawnableHelper spawnable = gameObjectToGenerateMesh.GetComponent<SpawnableHelper>();
+        if (!spawnable.removeCollider)
+        {
+            MeshFilter mf = gameObjectToGenerateMesh.GetComponent<MeshFilter>();
+            gameObjectToGenerateMesh.AddComponent<MeshCollider>();
+            // Have to use this since Unity does not allow adding a component that's already created first to a game object
+            MeshCollider combinedMeshCollider = gameObjectToGenerateMesh.GetComponent<MeshCollider>();
+            combinedMeshCollider.sharedMesh = mf.mesh;
+        }
 
         gameObjectToGenerateMesh.transform.position = basePosition;
         gameObjectToGenerateMesh.transform.rotation = baseRotation;

@@ -333,8 +333,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.88679373, y: 1, z: 0.43117988}
+  m_Center: {x: 0.056604907, y: -4.9729186e-15, z: -0.28441012}
 --- !u!1 &1220267129655490121
 GameObject:
   m_ObjectHideFlags: 0
@@ -2290,16 +2290,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b5c86f6878bc047813f29261f26edd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 5
+  movementSpeed: 15
   turningSpeed: 5
-  stoppingDistance: 5
+  stoppingDistance: 15
   lookingDistance: 3
-  meleeRange: 10
+  meleeRange: 15
   lowerJaw: {fileID: 2514768130057361474}
   leftFoot: {fileID: 1220267129655490127}
   rightFoot: {fileID: 1220267129966022370}
-  maxHealth: 1500
-  wanderRadius: 40
+  maxHealth: 1000
+  wanderRadius: 1500
   hpBar_prefab: {fileID: 1085209639500972291, guid: 4614e0511cb49b14ebf0c58217d9d222, type: 3}
   damageCounter_prefab: {fileID: 1085209639500972291, guid: 24f41dda89c7bd648bd2796ac669721e, type: 3}
   enemyAlert_prefab: {fileID: 1085209639500972291, guid: 186234b88676f4b4f872f98d3ab0973c, type: 3}
