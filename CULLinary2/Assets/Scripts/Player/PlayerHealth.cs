@@ -76,14 +76,6 @@ public class PlayerHealth : MonoBehaviour
         if (PlayerManager.instance.currentHealth <= 0f)
         {
             Die();
-            // if (audioSource.isPlaying)
-            // {
-            //     Invoke("Die", audioSource.clip.length); // Wait for damage sound effect to finish
-            // }
-            // else
-            // {
-            //     Die();
-            // }
         }
     }
 
@@ -156,6 +148,7 @@ public class PlayerHealth : MonoBehaviour
 
     private void Die()
     {
+        animator.SetTrigger("isDead");
         UIController.instance.ShowDeathMenu();
     }
 
