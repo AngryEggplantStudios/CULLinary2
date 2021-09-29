@@ -14,7 +14,7 @@ public class MonsterSpawn : MonoBehaviour
     [SerializeField] private GameObject enemyToSpawn;
     [SerializeField] private GameObject miniBoss;
     [Tooltip("Random displacement of enemy spawn in X/Z axes")]
-    [SerializeField] private float distRange;
+    [SerializeField] private float spawningRadius;
     [Tooltip("Is spawner able to be retriggered?")]
     [SerializeField] private bool toLoop;
     [Tooltip("Delay after triggering if toLoop is checked")]
@@ -83,8 +83,8 @@ public class MonsterSpawn : MonoBehaviour
     {
         if (spawnAmount < localSpawnCap)
         {
-            float distX = Random.Range(-distRange, distRange);
-            float distZ = Random.Range(-distRange, distRange);
+            float distX = Random.Range(-spawningRadius, spawningRadius);
+            float distZ = Random.Range(-spawningRadius, spawningRadius);
             Vector3 enemyTransform = new Vector3(transform.position.x + distX, transform.position.y, transform.position.z + distZ);
             Instantiate(enemyToSpawn, enemyTransform, Quaternion.identity);
             enemyToSpawn.GetComponent<MonsterScript>().spawner = gameObject;

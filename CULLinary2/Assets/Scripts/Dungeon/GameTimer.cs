@@ -12,10 +12,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     // 0.2 of 1 minute = 10 seconds eg
     [SerializeField] private float dayLengthInMinutes;
-    [Tooltip("e.g. 0.25 for 6am")]
-    [Range(0, 1f)]
-    [SerializeField] private float dayStartTime = 0.25f; //6am
-    [SerializeField, Range(0, 1)] private float sunrise;
+    [SerializeField, Range(0, 1), Tooltip("e.g. 0.25 for 6am")] private float sunrise;
     [SerializeField, Range(0, 1)] private float sunset;
     private static float gameTime;
     private static float timeScale;
@@ -59,15 +56,16 @@ public class GameTimer : SingletonGeneric<GameTimer>
             gameTime = 1f;
         }
 
+        UpdateTimerText();
+        UpdateLighting(gameTime);
+
         if (gameTime > sunrise && isNewDay)
         {
             isNewDay = false;
             OnStartNewDay?.Invoke();
         }
 
-        UpdateLighting(gameTime);
-
-        if (gameTime > 1)
+        if (gameTime >= 1)
         {
             Debug.Log("day ended");
             OnEndOfDay?.Invoke();
@@ -107,7 +105,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         player.transform.position = new Vector3(0f, 0f, 0f); // TODO: go back to last saved campfire
 
         // change time to next day
-        gameTime = (float)System.Math.Round(dayStartTime, 2);
+        gameTime = (float)System.Math.Round(sunrise, 2);
         dayNum++;
         DayText.text = "DAY " + dayNum;
         isNewDay = true;
