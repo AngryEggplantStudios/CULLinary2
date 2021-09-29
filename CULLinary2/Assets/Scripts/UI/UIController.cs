@@ -21,8 +21,7 @@ public class UIController : SingletonGeneric<UIController>
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject playerDeathMenu;
     [SerializeField] private GameObject player;
-    // [Header("Scene Transition")]
-    // [SerializeField] private GameObject sceneTransition;
+    [SerializeField] private GameObject endOfDayMenu;
 
     private KeyCode ToggleInventoryKeyCode;
     private KeyCode ToggleOrdersKeyCode;
@@ -38,7 +37,6 @@ public class UIController : SingletonGeneric<UIController>
     private bool isMenuActive = false;
     private bool isFireplaceActive = false;
     private bool isPaused = false;
-    private bool isDeathMenuActive = false;
 
     // For interacting with objects
     private PlayerInteractable currentInteractable = null;
@@ -73,12 +71,11 @@ public class UIController : SingletonGeneric<UIController>
 
     public void ShowDeathMenu()
     {
-        if (!isDeathMenuActive)
+        if (!playerDeathMenu.activeSelf)
         {
             Debug.Log("show death screen");
             Time.timeScale = 0;
             playerDeathMenu.SetActive(true);
-            isDeathMenuActive = true;
         }
     }
 
@@ -98,7 +95,6 @@ public class UIController : SingletonGeneric<UIController>
         // Debug.Log("move player to " + respawnPoint.position);
         Debug.Log("player is now at " + player.transform.position);
         playerDeathMenu.SetActive(false);
-        isDeathMenuActive = false;
         Time.timeScale = 1;
         Debug.Log("done respawning player, timescale: " + Time.timeScale);
 
@@ -117,6 +113,50 @@ public class UIController : SingletonGeneric<UIController>
             yield return null;
         }
     }
+
+    public void ShowEndOfDayMenu()
+    {
+        if (endOfDayMenu)
+        {
+            Debug.Log("show menu");
+            endOfDayMenu.SetActive(true);
+        }
+    }
+
+    public void ContinueToNextDay()
+    {
+        endOfDayMenu.SetActive(false);
+        Debug.Log("fading scene in");
+        SceneTransitionManager.instance.FadeSceneOut();
+        // StartCoroutine(StartNextDay());
+        Invoke("ResumeGameTimer", 1);
+        // yield return new WaitForSeconds(1);
+    }
+
+    // private IEnumerator StartNextDay()
+    // {
+
+    //     yield return new WaitForSecondsRealtime(1);
+    //     Debug.Log("waited 1sec, resuming game");
+    //     // Time.timeScale = 1; //resume game
+    // }
+
+    private void ResumeGameTimer()
+    {
+        GameTimer.instance.Run();
+    }
+
+    // public IEnumerator FadeSceneIn()
+    // {
+    //     fadeIn.StartPlayback();
+    //     yield return new WaitForSeconds(fadeIn.playbackTime);
+    // }
+
+    // public IEnumerator FadeSceneOut()
+    // {
+    //     fadeOut.StartPlayback();
+    //     yield return new WaitForSeconds(fadeOut.playbackTime);
+    // }
 
     public void ToggleInventory()
     {
@@ -283,7 +323,7 @@ public class UIController : SingletonGeneric<UIController>
 
     private void Update()
     {
-        if (isDeathMenuActive)
+        if (playerDeathMenu.activeSelf)
         {
             return;
         }

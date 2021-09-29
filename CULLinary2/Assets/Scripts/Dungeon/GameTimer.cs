@@ -12,6 +12,9 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     // 0.2 of 1 minute = 10 seconds eg
     [SerializeField] private float dayLengthInMinutes;
+    [Tooltip("e.g. 0.25 for 6am")]
+    [Range(0, 1f)]
+    [SerializeField] private float dayStartTime = 0.25f; //6am
     private static float gameTime;
     private static float timeScale;
     private static int dayNum = 1; // TODO: to get from saved data
@@ -19,7 +22,6 @@ public class GameTimer : SingletonGeneric<GameTimer>
     private int minuteNum;
     private string timeAsString;
 
-    private float dayStartTime = 0.25f; //6am
     private float dayEndTime = 1f; //12am
 
     private bool isNewDay = true; // prevent OnStartNewDay from being invoked multiple times
@@ -47,12 +49,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         if (Preset == null || !isRunning)
             return;
 
-        gameTime += Time.deltaTime * timeScale / 86400;
-        float actualTime = gameTime * 24;
-        hourNum = Mathf.FloorToInt(actualTime);
-        minuteNum = Mathf.FloorToInt((actualTime - (float)hourNum) * 60);
-        timeAsString = hourNum + ":" + minuteNum.ToString("00");
-        TimeText.text = timeAsString;
+        UpdateGameTime();
 
         UpdateLighting(gameTime);
 
@@ -68,25 +65,69 @@ public class GameTimer : SingletonGeneric<GameTimer>
         {
             Debug.Log("day ended");
             OnEndOfDay?.Invoke();
-            GoToNextDay();
+            StartSceneFadeOut();
         }
+    }
+
+    private void UpdateGameTime()
+    {
+        gameTime += Time.deltaTime * timeScale / 86400;
+        float actualTime = gameTime * 24;
+        hourNum = Mathf.FloorToInt(actualTime);
+        minuteNum = Mathf.FloorToInt((actualTime - (float)hourNum) * 60);
+        timeAsString = hourNum + ":" + minuteNum.ToString("00");
+        TimeText.text = timeAsString;
+    }
+
+    private void StartSceneFadeOut()
+    {
+        Pause();
+        Debug.Log("StartSceneFadeOut()");
+        // Time.timeScale = 0; //pause game
+        //fade to black
+        Debug.Log("fading scene out");
+        SceneTransitionManager.instance.FadeSceneIn();
+        // yield return new WaitForSecondsRealtime(1);
+        // Debug.Log("waited 1 sec");
+        Invoke("ShowEndOfDayMenu", 1);
+        GoToNextDay();
+    }
+
+    private void ShowEndOfDayMenu()
+    {
+        Debug.Log("fade end");
+        UIController.instance.ShowEndOfDayMenu();
     }
 
     public void GoToNextDay()
     {
+        // triggered from continue button on the end of day menu
+        // TriggerEndOfDaySequence();
+        // is next day, player at 0, 0, 0   
+
+        Debug.Log("start go to next day");
+        PlayerManager.instance.currentHealth = PlayerManager.instance.maxHealth;
+        PlayerManager.instance.currentStamina = PlayerManager.instance.maxStamina;
+
         dayNum++;
         gameTime = dayStartTime;
         DayText.text = "DAY " + dayNum;
         isNewDay = true;
+        UpdateGameTime();
+        UpdateLighting(gameTime);
+        // Run();
+        Debug.Log("end go to next day");
     }
 
     public void Run()
     {
+        Debug.Log("running game timer");
         isRunning = true;
     }
 
     public void Pause()
     {
+        Debug.Log("pausing game timer");
         isRunning = false;
     }
 

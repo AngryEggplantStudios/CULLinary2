@@ -41,7 +41,7 @@ public class EcosystemManager : MonoBehaviour
             foreach (Population pop in populations)
             {
                 pop.CheckNaturalPopulationIncrease();
-                Debug.Log(string.Format("{0} population level: {1} ({2})", pop.GetName(), pop.GetLevel(), pop.GetCurrentNumber()));
+                // Debug.Log(string.Format("{0} population level: {1} ({2})", pop.GetName(), pop.GetLevel(), pop.GetCurrentNumber()));
                 if (pop.IsOverpopulated() && !pop.HasSpawnedMiniboss())
                 {
                     SpawnMiniBoss(pop);
@@ -59,7 +59,7 @@ public class EcosystemManager : MonoBehaviour
         {
             GameObject randomSpawner = spawners[Random.Range(0, spawners.Count)];
             randomSpawner.GetComponent<MonsterSpawn>().SpawnMiniBoss();
-            Debug.Log("spawning miniboss for " + pop.GetName() + " at " + randomSpawner.transform.position);
+            // Debug.Log("spawning miniboss for " + pop.GetName() + " at " + randomSpawner.transform.position);
             pop.SetHasSpawnedMiniboss(true);
         }
     }
