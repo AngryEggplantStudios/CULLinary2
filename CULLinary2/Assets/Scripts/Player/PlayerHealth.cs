@@ -119,6 +119,12 @@ public class PlayerHealth : MonoBehaviour
         return true;
     }
 
+    public void RestoreToFull()
+    {
+        PlayerManager.instance.currentHealth = PlayerManager.instance.maxHealth;
+        DisplayOnUI(PlayerManager.instance.currentHealth, PlayerManager.instance.maxHealth);
+    }
+
     public bool HandleHit(float damage, bool drowning = false)
     {
         damage = damage < 0 ? 0 : Mathf.CeilToInt(damage); //Guard check

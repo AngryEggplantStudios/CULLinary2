@@ -41,7 +41,7 @@ public class EcosystemManager : MonoBehaviour
             foreach (Population pop in populations)
             {
                 pop.CheckNaturalPopulationIncrease();
-                // Debug.Log(string.Format("{0} population level: {1} ({2})", pop.GetName(), pop.GetLevel(), pop.GetCurrentNumber()));
+                Debug.Log(string.Format("{0} population level: {1} ({2})", pop.GetName(), pop.GetLevel(), pop.GetCurrentNumber()));
                 if (pop.IsOverpopulated() && !pop.HasSpawnedMiniboss())
                 {
                     SpawnMiniBoss(pop);

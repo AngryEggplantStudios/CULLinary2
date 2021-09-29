@@ -19,16 +19,14 @@ public class SceneTransitionManager : SingletonGeneric<SceneTransitionManager>
         fadeOutScript.OnFinished += HideFade;
     }
 
-    public void FadeSceneIn()
+    public void FadeInImage()
     {
         fadeInChild.SetActive(true);
-        Debug.Log("end fade in");
     }
 
-    public void FadeSceneOut()
+    public void FadeOutImage()
     {
         fadeOutChild.SetActive(true);
-        Debug.Log("end fade out");
     }
 
     private void OnDestroy()
@@ -41,13 +39,11 @@ public class SceneTransitionManager : SingletonGeneric<SceneTransitionManager>
     {
         if (type == FadeAction.FadeIn)
         {
-            Debug.Log("fade finished, hiding fade in");
             fadeInChild.SetActive(false);
         }
 
         if (type == FadeAction.FadeOut)
         {
-            Debug.Log("fade finished, hiding fade out");
             fadeOutChild.SetActive(false);
         }
     }

@@ -84,8 +84,8 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     private void StartSceneFadeOut()
     {
-        Pause();
-        SceneTransitionManager.instance.FadeSceneIn();
+        Pause(); // TODO: pause entire game using timeScale
+        SceneTransitionManager.instance.FadeInImage();
         Invoke("ShowEndOfDayMenu", 1);
     }
 
@@ -98,13 +98,15 @@ public class GameTimer : SingletonGeneric<GameTimer>
     public void GoToNextDay()
     {
         // happens after end of day screen is shown
-        // reset player health and change to next day
+        // reset player health and teleport player to origin for now
+        GameObject player = GameObject.FindWithTag("Player");
+        player.GetComponent<PlayerHealth>().RestoreToFull();
+        player.GetComponent<PlayerStamina>().RestoreToFull();
+        player.transform.position = new Vector3(0f, 0f, 0f); // TODO: go back to last saved campfire
 
-        PlayerManager.instance.currentHealth = PlayerManager.instance.maxHealth;
-        PlayerManager.instance.currentStamina = PlayerManager.instance.maxStamina;
-
-        dayNum++;
+        // change time to next day
         gameTime = (float)System.Math.Round(dayStartTime, 2);
+        dayNum++;
         DayText.text = "DAY " + dayNum;
         isNewDay = true;
 

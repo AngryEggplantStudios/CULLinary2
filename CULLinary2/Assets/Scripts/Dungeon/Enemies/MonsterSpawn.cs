@@ -75,7 +75,7 @@ public class MonsterSpawn : MonoBehaviour
         // Debug.Log("spawning " + enemyNum + " for " + enemyToSpawn.name);
         for (int i = 0; i < enemyNum; i++)
         {
-            // InstantiateEnemy();
+            InstantiateEnemy();
         }
     }
 

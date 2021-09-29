@@ -20,7 +20,6 @@ public class UIController : SingletonGeneric<UIController>
     [SerializeField] private GameObject mainHud;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject playerDeathMenu;
-    [SerializeField] private GameObject player;
     [SerializeField] private GameObject endOfDayMenu;
 
     private KeyCode ToggleInventoryKeyCode;
@@ -80,23 +79,9 @@ public class UIController : SingletonGeneric<UIController>
 
     public void RespawnPlayer()
     {
-        Debug.Log("go to next day");
         GameTimer.instance.GoToNextDay();
-
-        Debug.Log("heal player");
-        PlayerManager.instance.currentHealth = PlayerManager.instance.maxHealth;
-        PlayerManager.instance.currentStamina = PlayerManager.instance.maxStamina;
-
-        // Transform player = GameObject.FindGameObjectWithTag("Player").transform;
-        // Transform respawnPoint = GameObject.FindWithTag("RespawnPoint").transform;
-        player.transform.position = new Vector3(0f, 1f, 0f);
-
-        // Debug.Log("move player to " + respawnPoint.position);
-        Debug.Log("player is now at " + player.transform.position);
         playerDeathMenu.SetActive(false);
         Time.timeScale = 1;
-        Debug.Log("done respawning player, timescale: " + Time.timeScale);
-
     }
 
 
@@ -111,7 +96,7 @@ public class UIController : SingletonGeneric<UIController>
     public void ContinueToNextDay()
     {
         endOfDayMenu.SetActive(false);
-        SceneTransitionManager.instance.FadeSceneOut();
+        SceneTransitionManager.instance.FadeOutImage();
         Invoke("ResumeGameTimer", 1);
     }
 

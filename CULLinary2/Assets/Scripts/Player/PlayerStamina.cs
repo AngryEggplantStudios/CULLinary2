@@ -52,6 +52,12 @@ public class PlayerStamina : MonoBehaviour
         staminaCircle.SetActive(true);
     }
 
+    public void RestoreToFull()
+    {
+        PlayerManager.instance.currentStamina = PlayerManager.instance.maxStamina;
+        DisplayOnUI(PlayerManager.instance.currentStamina, PlayerManager.instance.maxStamina);
+    }
+
     private void Update()
     {
         /*
