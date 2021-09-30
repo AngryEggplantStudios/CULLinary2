@@ -37,7 +37,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
     {
         if (sunrise > sunset) { Debug.LogError("Sunrise is after Sunset!"); }
 
-        Debug.Log("set timescale to 1");
+        // Debug.Log("set timescale to 1");
         Time.timeScale = 1;
 
         gameTime = (float)System.Math.Round(sunrise, 2);
@@ -67,9 +67,9 @@ public class GameTimer : SingletonGeneric<GameTimer>
             OnStartNewDay?.Invoke();
         }
 
-        if (gameTime >= 1)
+        if (gameTime >= dayEndTime)
         {
-            Debug.Log("day ended");
+            // Debug.Log("day ended");
             OnEndOfDay?.Invoke();
             StartSceneFadeOut();
         }

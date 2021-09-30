@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraObstacleManager : MonoBehaviour
 {
-    public Transform camera;
+    public Transform cam;
     public Transform player;
 
     private List<CameraObstacle> blocking;
@@ -20,10 +20,10 @@ public class CameraObstacleManager : MonoBehaviour
     {
         blocking.Clear();
 
-        float dist = Vector3.Magnitude(camera.position - player.position);
+        float dist = Vector3.Magnitude(cam.position - player.position);
 
-        Ray rayF = new Ray(camera.position, player.position - camera.position);
-        Ray rayB = new Ray(player.position, camera.position - player.position);
+        Ray rayF = new Ray(cam.position, player.position - cam.position);
+        Ray rayB = new Ray(player.position, cam.position - player.position);
 
         var hitsF = Physics.RaycastAll(rayF, dist);
         var hitsB = Physics.RaycastAll(rayB, dist);

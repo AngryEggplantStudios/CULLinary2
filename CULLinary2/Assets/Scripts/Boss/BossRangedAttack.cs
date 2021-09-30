@@ -34,11 +34,12 @@ public class BossRangedAttack : MonsterAttack
             gameObjectChild.transform.parent = gameObject.transform;
             LineRenderer lRend = gameObjectChild.AddComponent<LineRenderer>();
             lRend.positionCount = 2;
-            lRend.startWidth = 0.1f;
-            lRend.endWidth = 0.1f;
+            lRend.startWidth = 0.2f;
+            lRend.endWidth = 0f;
             lRend.enabled = false;
             lRend.material = lineMaterial;
-            lRend.SetColors(Color.red, Color.red);
+            lRend.startColor = Color.red;
+            lRend.endColor = Color.red;
             listOfRenderers.Add(lRend);
         }
         activateStage1();

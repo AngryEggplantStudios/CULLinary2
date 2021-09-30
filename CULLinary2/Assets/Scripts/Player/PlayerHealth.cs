@@ -22,9 +22,9 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private float thresholdHealth = 0.25f;
     [SerializeField] private Renderer rend;
     [SerializeField] private float minimumHeightToStartDrowning;
+    [SerializeField] private float drowningDamage = 20f;
     [SerializeField] private GameObject drowningAlert_prefab;
 
-    private float drowningDamage = 50f;
     private bool isInvincible = false;
 
     private Color[] originalColors;

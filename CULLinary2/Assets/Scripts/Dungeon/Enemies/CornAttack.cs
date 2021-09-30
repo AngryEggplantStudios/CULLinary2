@@ -34,7 +34,8 @@ public class CornAttack : MonsterAttack
         lRend.endWidth = 0f;
         lRend.enabled = false;
         lRend.material = lineMaterial;
-        lRend.SetColors(Color.red, Color.clear);
+        lRend.startColor = Color.red;
+        lRend.endColor = Color.clear;
         listOfRenderers.Add(lRend);
     }
 
