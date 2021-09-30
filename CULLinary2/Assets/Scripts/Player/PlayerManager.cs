@@ -2,71 +2,110 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : SingletonGeneric<PlayerManager>
 {
-
-    public static PlayerManager instance;
-
-    // Player Stats and default values
     public float currentHealth = 200f;
     public float maxHealth = 200f;
     public float currentStamina = 100f;
     public float maxStamina = 100f;
     public float meleeDamage = 20f;
+    public bool[] recipesUnlocked = new bool[3] { true, true, true }; //use index
+    public int[] upgradesArray = new int[2] { 1, 1 };
+    public List<InventoryItem> itemList = new List<InventoryItem>();
+    public int currentMoney;
 
-    private static PlayerData playerData;
-    private GameTimer timer;
+    // Private variables
+    private static PlayerData playerData = new PlayerData();
 
-    // Force singleton reference to be the first PlayerManager being instantiated
-    private void Awake()
+    public void SaveData(List<InventoryItem> itemList)
     {
-        DontDestroyOnLoad(this.gameObject);
-        if (instance == null)
+        if (playerData == null)
         {
-            instance = this;
-            timer = GameTimer.instance;
-            Debug.Log("Creating instance of Player Manager");
+            playerData = new PlayerData();
         }
-        else
-        {
-            Debug.Log("Duplicate Player Manager Detected. Deleting new Player Manager");
-            Destroy(this.gameObject);
-        }
-    }
-
-    public void SaveData()
-    {
         // Save Player Stats
         playerData.currentHealth = currentHealth;
         playerData.maxHealth = maxHealth;
         playerData.currentStamina = currentStamina;
         playerData.maxStamina = maxStamina;
-        //TODO: Add GameTime after completing
-        // Save Data into Save System
+        playerData.inventory = SerializeInventory(itemList);
+        playerData.recipesUnlocked = recipesUnlocked;
+        playerData.upgradesArray = upgradesArray;
+        playerData.meleeDamage = meleeDamage;
+        playerData.currentMoney = currentMoney;
         SaveSystem.SaveData(playerData);
+    }
+
+    public void LoadInventory()
+    {
+        InventoryItemData[] inventory = JsonArrayParser.FromJson<InventoryItemData>(playerData.inventory);
+        itemList.Clear();
+        foreach (InventoryItemData item in inventory)
+        {
+            for (int i = 0; i < item.count; i++)
+            {
+                itemList.Add(DatabaseLoader.GetItemById(item.id));
+            }
+        }
     }
 
     public void LoadData()
     {
-        // Load Data from Save System
         playerData = SaveSystem.LoadData();
-        // Load Player Stats
         currentHealth = playerData.currentHealth;
         maxHealth = playerData.maxHealth;
         currentStamina = playerData.currentStamina;
         maxStamina = playerData.maxStamina;
+        recipesUnlocked = playerData.recipesUnlocked;
+        upgradesArray = playerData.upgradesArray;
+        meleeDamage = playerData.meleeDamage;
+        currentMoney = playerData.currentMoney;
     }
 
-    public void CreateBlankData()
+    public PlayerData CreateBlankData()
     {
-        //Create new data
         playerData = new PlayerData();
-        //Load Default stats
-        playerData.currentHealth = currentHealth;
-        playerData.maxHealth = maxHealth;
-        playerData.currentStamina = currentStamina;
-        playerData.maxStamina = maxStamina;
-        SaveSystem.SaveData(playerData);
+        SetupManager();
+        return playerData;
+    }
+
+    public void SetupManager()
+    {
+        itemList.Clear();
+        currentHealth = playerData.currentHealth;
+        maxHealth = playerData.maxHealth;
+        currentStamina = playerData.currentStamina;
+        maxStamina = playerData.maxStamina;
+        meleeDamage = playerData.meleeDamage;
+        recipesUnlocked = playerData.recipesUnlocked;
+        upgradesArray = playerData.upgradesArray;
+        currentMoney = playerData.currentMoney;
+    }
+
+    private static string SerializeInventory(List<InventoryItem> itemList)
+    {
+        Dictionary<int, int> inventory = new Dictionary<int, int>();
+
+        foreach (InventoryItem item in itemList)
+        {
+            if (inventory.ContainsKey(item.inventoryItemId))
+            {
+                inventory[item.inventoryItemId] += 1;
+            }
+            else
+            {
+                inventory.Add(item.inventoryItemId, 1);
+            }
+        }
+        InventoryItemData[] items = new InventoryItemData[inventory.Count];
+        int i = 0;
+        foreach (var item in inventory)
+        {
+            InventoryItemData gameItem = new InventoryItemData(item.Key, item.Value);
+            items[i] = gameItem;
+            i++;
+        }
+        return JsonArrayParser.ToJson(items, true);
     }
 
 }

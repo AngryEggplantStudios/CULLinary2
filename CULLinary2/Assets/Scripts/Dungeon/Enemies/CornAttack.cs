@@ -2,26 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CornAttack : EnemyAttack
+public class CornAttack : MonsterAttack
 {
     [SerializeField] private Transform throwObject;
     [SerializeField] private Material lineMaterial;
-    private SphereCollider attackCollider;
+    [SerializeField] private Color lineColor;
     private PlayerHealth healthScript;
     private bool canDealDamage;
-    private Transform player;
+    private Transform playerTransform;
 
     private int rayCount = 1;
     private List<LineRenderer> listOfRenderers;
     private List<Vector3> firePositions;
-    private const float LINE_HEIGHT_FROM_GROUND = 0.09f;
+    private float LINE_HEIGHT_FROM_GROUND = 0.1f;
     private bool projectAttack = false;
     private float viewDistance = 50f;
     private void Awake()
     {
-        attackCollider = gameObject.GetComponent<SphereCollider>();
         canDealDamage = false;
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     private void Start()
@@ -31,11 +30,12 @@ public class CornAttack : EnemyAttack
         gameObjectChild.transform.parent = gameObject.transform;
         LineRenderer lRend = gameObjectChild.AddComponent<LineRenderer>();
         lRend.positionCount = 2;
-        lRend.startWidth = 0.01f;
-        lRend.endWidth = 0.01f;
+        lRend.startWidth = 0.5f;
+        lRend.endWidth = 0f;
         lRend.enabled = false;
         lRend.material = lineMaterial;
-        lRend.SetColors(Color.red, Color.red);
+        lRend.startColor = Color.red;
+        lRend.endColor = Color.clear;
         listOfRenderers.Add(lRend);
     }
 
@@ -43,7 +43,7 @@ public class CornAttack : EnemyAttack
     {
         if (projectAttack)
         {
-            Vector3 playerDirection = (player.transform.position - transform.position).normalized;
+            Vector3 playerDirection = (playerTransform.position - transform.position).normalized;
             float angle = 0;
             int layerMask = LayerMask.GetMask("Environment");
             Vector3 finalDirection;
@@ -71,12 +71,9 @@ public class CornAttack : EnemyAttack
                 lRend.SetPosition(1, targetPosition);
             }
             firePositions.Add(targetPosition);
-
         }
-
-
     }
-    private IEnumerator prepareToFire()
+    private IEnumerator PrepareToFire()
     {
         while (true)
         {
@@ -88,26 +85,22 @@ public class CornAttack : EnemyAttack
         }
 
     }
-    
+
     public override void attackPlayerStart()
     {
-        //this.selectionCircleActual = Instantiate(this.selectionCirclePrefab);
-        //this.selectionCircleActual.transform.SetParent(this.transform, false);
-        //this.selectionCircleActual.transform.eulerAngles = new Vector3(90, 0, 0);
-        //attackCollider.enabled = true;
         projectAttack = true;
         for (int i = 0; i < rayCount; i++)
         {
             listOfRenderers[i].enabled = true;
         }
-        StartCoroutine("prepareToFire");
+        StartCoroutine("PrepareToFire");
     }
 
 
-    private void throwCorn(Vector3 sourcePosition, Vector3 targetPosition)
+    private void ThrowCorn(Vector3 sourcePosition, Vector3 targetPosition)
     {
         Transform cornTransform = Instantiate(throwObject, sourcePosition, Quaternion.identity);
-        cornTransform.GetComponent<EnemyProjectile>().Setup(sourcePosition, targetPosition);
+        cornTransform.GetComponent<MonsterProjectile>().Setup(sourcePosition, targetPosition);
     }
 
     public override void attackPlayerDealDamage()
@@ -116,13 +109,13 @@ public class CornAttack : EnemyAttack
         canDealDamage = true;
         for (int i = 0; i < firePositions.Count; i++)
         {
-            throwCorn(transform.position, firePositions[i]);
+            ThrowCorn(transform.position, firePositions[i]);
         }
+        StopCoroutine("PrepareToFire");
         for (int i = 0; i < listOfRenderers.Count; i++)
         {
             listOfRenderers[i].enabled = false;
         }
-        StopCoroutine("prepareToFire");
     }
 
 
@@ -133,36 +126,10 @@ public class CornAttack : EnemyAttack
 
     private void OnTriggerStay(Collider other)
     {
-        if (canDealDamage)
+        PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+        if (canDealDamage && playerHealth != null)
         {
-
-            if (healthScript != null)
-            {
-                bool hitSuccess = healthScript.HandleHit(attackDamage);
-                if (hitSuccess)
-                {
-                    healthScript.KnockbackPlayer(transform.position);
-                }
-            }
-        }
-
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        PlayerHealth target = other.GetComponent<PlayerHealth>();
-        if (target != null)
-        {
-            healthScript = target;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        PlayerHealth target = other.GetComponent<PlayerHealth>();
-        if (target != null)
-        {
-            healthScript = null;
+            healthScript.HandleHit(attackDamage);
         }
     }
 

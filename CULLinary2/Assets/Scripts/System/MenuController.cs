@@ -11,7 +11,6 @@ using UnityEngine.SceneManagement;
 public class MenuController : MonoBehaviour
 {
     [Header("Audio")]
-    [SerializeField] private AudioSource selectSound;
     [SerializeField] private AudioSource hoverSound;
 
     [Header("Button References")]
@@ -39,7 +38,6 @@ public class MenuController : MonoBehaviour
 
     public void NewGame()
     {
-        selectSound.Play();
         if (!isSaveFilePresent)
         {
             StartNewGame();
@@ -50,22 +48,17 @@ public class MenuController : MonoBehaviour
         }
     }
 
-    public void ToggleSaveGamePresentWarning()
-    {
-        saveGamePresentWarning.SetActive(!saveGamePresentWarning.activeSelf);
-    }
-
     public void StartNewGame()
     {
         //TO DO: Place the fade on audio/foreground once the main menu scene is set up properly
-        PlayerManager.instance.CreateBlankData();
+        PlayerData playerData = PlayerManager.instance.CreateBlankData();
+        SaveSystem.SaveData(playerData);
         PlayerPrefs.SetInt("nextScene", (int)SceneIndexes.DEMO_SCENE);
         SceneManager.LoadScene((int)SceneIndexes.LOADING_SCENE);
     }
 
     public void LoadGame()
     {
-        selectSound.Play();
         //TO DO: Place the fade on audio/foreground once the main menu scene is set up properly
         PlayerManager.instance.LoadData();
         PlayerPrefs.SetInt("nextScene", (int)SceneIndexes.DEMO_SCENE);
@@ -74,7 +67,6 @@ public class MenuController : MonoBehaviour
 
     public void ExitGame()
     {
-        selectSound.Play();
         //TO DO: Place the fade on audio/foreground once the main menu scene is set up properly
         Application.Quit();
     }

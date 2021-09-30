@@ -59,6 +59,8 @@ namespace Nicoplv.Characters.Demo
         [SerializeField]
         private GameObject inputPickup;
         [SerializeField]
+        private GameObject inputAttack;
+        [SerializeField]
         private GameObject inputClimbX;
         [SerializeField]
         private GameObject inputClimbY;
@@ -124,6 +126,7 @@ namespace Nicoplv.Characters.Demo
                         inputSpeed.SetActive(true);
                         inputJump.SetActive(true);
                         inputPickup.SetActive(true);
+                        inputAttack.SetActive(true);
                         inputClimbX.SetActive(false);
                         inputClimbY.SetActive(false);
                         break;
@@ -131,6 +134,7 @@ namespace Nicoplv.Characters.Demo
                         inputSpeed.SetActive(true);
                         inputJump.SetActive(false);
                         inputPickup.SetActive(false);
+                        inputAttack.SetActive(false);
                         inputClimbX.SetActive(false);
                         inputClimbY.SetActive(false);
                         break;
@@ -138,6 +142,7 @@ namespace Nicoplv.Characters.Demo
                         inputSpeed.SetActive(false);
                         inputJump.SetActive(false);
                         inputPickup.SetActive(false);
+                        inputAttack.SetActive(false);
                         inputClimbX.SetActive(true);
                         inputClimbY.SetActive(true);
                         break;
@@ -165,20 +170,42 @@ namespace Nicoplv.Characters.Demo
 
         public void SpeedChange(float _value)
         {
-            animator.SetFloat("Speed", _value);
-            animatorMobile.SetFloat("Speed", _value);
+            if(animator.gameObject.activeSelf)
+            {
+                animator.SetFloat("Speed", _value);
+            } else {
+                animatorMobile.SetFloat("Speed", _value);
+            }
         }
 
         public void Jump()
         {
-            animator.SetTrigger("Jump");
-            animatorMobile.SetTrigger("Jump");
+            if(animator.gameObject.activeSelf)
+            {
+                animator.SetTrigger("Jump");
+            } else {
+                animatorMobile.SetTrigger("Jump");
+            }
         }
 
         public void Pickup()
         {
-            animator.SetTrigger("Pickup");
-            animatorMobile.SetTrigger("Pickup");
+            if(animator.gameObject.activeSelf)
+            {
+                animator.SetTrigger("Pickup");
+            } else {
+                animatorMobile.SetTrigger("Pickup");
+            }
+        }
+        
+        public void Attack()
+        {
+            if(animator.gameObject.activeSelf)
+            {
+                animator.SetTrigger("Attack");
+            } else {
+                animatorMobile.SetTrigger("Attack");
+            }
         }
 
         public void ClimbXChange(float _value)

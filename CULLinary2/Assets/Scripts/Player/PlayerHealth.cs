@@ -2,29 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerHealth : MonoBehaviour
 {
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private GameObject damageCounter_prefab;
     [SerializeField] private Image healthBar;
-    [SerializeField] private Text healthText;
+    [SerializeField] private TMP_Text healthText;
     [SerializeField] private float invincibilityDurationSeconds;
     [SerializeField] private GameObject model;
     [SerializeField] private Outline outlineFlash;
     private bool flashIsActivated = false;
+    private bool isDrowningActivated = false;
 
     //To be ported over to somewhere
     [SerializeField] private GameObject canvasDisplay;
     [SerializeField] private Camera cam;
     [SerializeField] private float thresholdHealth = 0.25f;
-    private Color originalFlashColor;
-    private Color deactivatedFlashColor = new Color(255, 0, 0, 0);
+    [SerializeField] private Renderer rend;
+    [SerializeField] private float minimumHeightToStartDrowning;
+    [SerializeField] private float drowningDamage = 20f;
+    [SerializeField] private GameObject drowningAlert_prefab;
+
     private bool isInvincible = false;
-    private Renderer rend;
+
     private Color[] originalColors;
     private Color onDamageColor = Color.white;
     private float invincibilityDeltaTime = 0.025f;
+    private Animator animator;
 
     private void DisplayOnUI(float currentHealth, float maxHealth)
     {
@@ -34,9 +40,10 @@ public class PlayerHealth : MonoBehaviour
 
     private void Awake()
     {
+        animator = GetComponent<Animator>();
         SetupIFrame();
-        originalFlashColor = outlineFlash.effectColor;
-        outlineFlash.effectColor = deactivatedFlashColor;
+        //originalFlashColor = outlineFlash.effectColor;
+        //outlineFlash.effectColor = deactivatedFlashColor;
     }
 
     private void Start()
@@ -48,24 +55,48 @@ public class PlayerHealth : MonoBehaviour
 
     private void Update()
     {
+        // check if height of player here as less references needed than checking height in player locomotion;
+        if (transform.position.y < minimumHeightToStartDrowning && !isDrowningActivated)
+        {
+            //Drowning animation
+            /* isDrowningActivated = true;
+            StartCoroutine(StartDrowning()); */
+            HandleHit(drowningDamage, true);
+        }
         if (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth < thresholdHealth && !flashIsActivated)
         {
             flashIsActivated = true;
-            StartCoroutine(flashBar());
+            StartCoroutine(FlashBar());
         }
         else if (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth >= thresholdHealth)
         {
             flashIsActivated = false;
         }
+
+        if (PlayerManager.instance.currentHealth <= 0f)
+        {
+            Die();
+        }
     }
 
-    private IEnumerator flashBar()
+    /* private IEnumerator StartDrowning()
+    {
+        Debug.Log("Start drowning");
+        PlayerManager.instance.currentHealth -= drowningDamage;
+        DisplayOnUI(PlayerManager.instance.currentHealth, PlayerManager.instance.maxHealth);
+        SpawnDamageCounter(drowningDamage);
+        audioSource.Play();
+        yield return new WaitForSeconds(0.5f);
+        isDrowningActivated = false;
+    } */
+
+    private IEnumerator FlashBar()
     {
         while (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth < thresholdHealth)
         {
-            outlineFlash.effectColor = originalFlashColor;
+            //outlineFlash.effectColor = originalFlashColor;
             yield return new WaitForSeconds(0.5f);
-            outlineFlash.effectColor = deactivatedFlashColor;
+            //outlineFlash.effectColor = deactivatedFlashColor;
             yield return new WaitForSeconds(0.5f);
         }
     }
@@ -80,7 +111,13 @@ public class PlayerHealth : MonoBehaviour
         return true;
     }
 
-    public bool HandleHit(float damage)
+    public void RestoreToFull()
+    {
+        PlayerManager.instance.currentHealth = PlayerManager.instance.maxHealth;
+        DisplayOnUI(PlayerManager.instance.currentHealth, PlayerManager.instance.maxHealth);
+    }
+
+    public bool HandleHit(float damage, bool drowning = false)
     {
         damage = damage < 0 ? 0 : Mathf.CeilToInt(damage); //Guard check
         if (isInvincible)
@@ -93,20 +130,31 @@ public class PlayerHealth : MonoBehaviour
         float maxHealth = PlayerManager.instance.maxHealth;
         DisplayOnUI(currentHealth, maxHealth);
         SpawnDamageCounter(damage);
+        if (drowning) { SpawnDrowningAlert(); }
+        ScreenFlash.Instance.Flash(0.01f * damage, 0.4f, 0.1f, 0.4f);
+        ScreenShake.Instance.Shake(0.01f * damage, 0.4f, 0.1f, 0.4f);
         audioSource.Play();
+        animator.SetTrigger("isTakingDamage");
 
         if (PlayerManager.instance.currentHealth <= 0f)
         {
-            Debug.Log("You are dead.");
+            // Debug.Log("You are dead.");
             return true;
         }
+
         StartCoroutine(BecomeTemporarilyInvincible());
         return true;
     }
+
+    private void Die()
+    {
+        animator.SetTrigger("isDead");
+        UIController.instance.ShowDeathMenu();
+    }
+
     private void SetupIFrame()
     {
-        rend = model.GetComponentInChildren<Renderer>();
-        if (rend)
+        if (rend != null)
         {
             originalColors = new Color[rend.materials.Length];
             for (var i = 0; i < rend.materials.Length; i++)
@@ -122,7 +170,15 @@ public class PlayerHealth : MonoBehaviour
         damageCounter.transform.GetComponentInChildren<Text>().text = damage.ToString();
         damageCounter.transform.SetParent(canvasDisplay.transform);
         damageCounter.transform.position = cam.WorldToScreenPoint(transform.position);
-        Debug.Log("I'm damaged by " + damage);
+    }
+
+    private void SpawnDrowningAlert()
+    {
+        GameObject drowningAlert = Instantiate(drowningAlert_prefab);
+        drowningAlert.transform.SetParent(canvasDisplay.transform);
+        Vector3 pos = cam.WorldToScreenPoint(transform.position);
+        pos.y += 50;
+        drowningAlert.transform.position = pos;
     }
 
     public void KnockbackPlayer(Vector3 positionOfEnemy)

@@ -23,14 +23,24 @@ public class PlayerController : PlayerAction
     private bool isGrounded = true;
     private KeyCode runKeyCode;
     private PlayerMelee playerMelee;
+    private PlayerSkill playerSkill;
     private void Awake()
     {
         playerMelee = GetComponent<PlayerMelee>();
+        playerSkill = GetComponent<PlayerSkill>();
         runKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.Run);
     }
 
     private void Update()
     {
+        bool isMeleeInvoked = playerMelee != null ? playerMelee.GetIsInvoking() : false;
+        bool isSkillInvoked = playerSkill != null ? playerSkill.GetIsInvoking() : false;
+
+        if (isMeleeInvoked || isSkillInvoked)
+        {
+            this.SetIsInvoking(false);
+            return;
+        }
 
         float moveVertical = Input.GetAxisRaw("Vertical");
         float moveHorizontal = Input.GetAxisRaw("Horizontal");
@@ -41,44 +51,35 @@ public class PlayerController : PlayerAction
 
         isGrounded = Physics.CheckSphere(transform.position, groundCheckDistance, groundMask);
 
-        bool isMeleeInvoked = playerMelee ? playerMelee.GetIsInvoking() : false;
+        this.SetIsInvoking(true);
 
-        if (!isMeleeInvoked)
+        if (Input.GetKey(KeyCode.Space))
         {
-            this.SetIsInvoking(true);
+            OnPlayerJump?.Invoke(moveDirection.normalized, isGrounded);
+        }
 
-            if (Input.GetKey(KeyCode.Space))
-            {
-                OnPlayerJump?.Invoke(moveDirection.normalized, isGrounded);
-            }
-
-            if (direction == Vector3.zero)
-            {
-                OnPlayerStop?.Invoke(moveDirection.normalized, isGrounded);
-            }
-            else
-            {
-                if (Input.GetKey(runKeyCode))
-                {
-                    OnPlayerRun?.Invoke(moveDirection.normalized, isGrounded);
-                }
-                else
-                {
-                    OnPlayerMove?.Invoke(moveDirection.normalized, isGrounded);
-                }
-            }
-
-            if (direction != Vector3.zero)
-            {
-                OnPlayerRotate?.Invoke(direction.normalized, turnSpeed);
-            }
+        if (direction == Vector3.zero)
+        {
+            OnPlayerStop?.Invoke(moveDirection.normalized, isGrounded);
         }
         else
         {
-            this.SetIsInvoking(false);
+            if (Input.GetKey(runKeyCode))
+            {
+                OnPlayerRun?.Invoke(moveDirection.normalized, isGrounded);
+            }
+            else
+            {
+                OnPlayerMove?.Invoke(moveDirection.normalized, isGrounded);
+            }
         }
 
-
+        if (direction != Vector3.zero)
+        {
+            OnPlayerRotate?.Invoke(direction.normalized, turnSpeed);
+        }
     }
 
 }
+
+

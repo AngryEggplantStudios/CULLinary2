@@ -5,49 +5,19 @@ using UnityEngine.UI;
 
 public class Loot : MonoBehaviour
 {
-    [SerializeField] private Item itemForLoot;
-
-    private GameObject player;
-    private AudioSource audioSource;
-
-    [SerializeField] private AudioClip itemPickupSound;
-
+    [SerializeField] private InventoryItem itemLoot;
     [SerializeField] private GameObject itemPickupNotif_prefab;
-
-    private void Start()
-    {
-        player = GameObject.FindGameObjectWithTag("Player");
-        audioSource = player.transform.GetComponentInChildren<AudioSource>();
-    }
-
-    public Item GetItem()
-    {
-        return itemForLoot;
-    }
-
-    public void PickUp()
-    {
-        // Notif Disable FOR NOW TODO RESTORE
-/*        GameObject itemPickupNotif = Instantiate(itemPickupNotif_prefab);
-        itemPickupNotif.transform.SetParent(GameObject.Find("UI").transform);
-        itemPickupNotif.transform.GetComponentInChildren<Image>().sprite = itemForLoot.icon;
-
-        // Sound
-        audioSource.clip = itemPickupSound;
-        audioSource.Play();*/
-
-        Destroy(gameObject);
-    }
 
     private void OnTriggerEnter(Collider other)
     {
-        // Debug.Log("loot colliding with: " + other.tag);
-        if ((other.CompareTag("Player") || other.CompareTag("MeleeWeapon"))) 
+        PlayerPickup playerPickup = other.GetComponent<PlayerPickup>();
+        if (playerPickup != null)
         {
-			if (InventoryUI.instance.AddItem(this.GetItem()))
-			{
-				PickUp();
-			}
-		}
+            if (InventoryManager.instance.AddItem(itemLoot))
+            {
+                playerPickup.PickUp(itemLoot);
+                Destroy(gameObject);
+            }
+        }
     }
 }

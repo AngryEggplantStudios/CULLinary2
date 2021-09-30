@@ -2,16 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EggplantAttack : EnemyAttack
+public class EggplantAttack : MonsterAttack
 {
-    private GameObject attackRadius;
     private SpriteRenderer attackSprite;
     private SphereCollider attackCollider;
     private PlayerHealth healthScript;
     private bool canDealDamage;
-    public GameObject selectionCirclePrefab;
-    public GameObject selectionCircleActual;
-
 
     private void Awake()
     {
@@ -24,17 +20,14 @@ public class EggplantAttack : EnemyAttack
     public override void attackPlayerStart()
     {
         attackSprite.enabled = true;
-        //this.selectionCircleActual = Instantiate(this.selectionCirclePrefab);
-        //this.selectionCircleActual.transform.SetParent(this.transform, false);
-        //this.selectionCircleActual.transform.eulerAngles = new Vector3(90, 0, 0);
         attackCollider.enabled = true;
     }
 
     public override void attackPlayerDealDamage()
     {
         canDealDamage = true;
+        ScreenShake.Instance.Shake(0.4f, 1f, 0.2f, 1f);
     }
-
 
     public override void attackPlayerEnd()
     {
@@ -46,37 +39,10 @@ public class EggplantAttack : EnemyAttack
 
     private void OnTriggerStay(Collider other)
     {
-        if (canDealDamage)
+        PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+        if (canDealDamage && playerHealth != null)
         {
-
-            if (healthScript != null)
-            {
-                bool hitSuccess = healthScript.HandleHit(attackDamage);
-                if (hitSuccess)
-                {
-                    healthScript.KnockbackPlayer(transform.position);
-                }
-            }
-        }
-
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        PlayerHealth target = other.GetComponent<PlayerHealth>();
-        if (target != null)
-        {
-            healthScript = target;
+            playerHealth.HandleHit(attackDamage);
         }
     }
-
-    private void OnTriggerExit(Collider other)
-    {
-        PlayerHealth target = other.GetComponent<PlayerHealth>();
-        if (target != null)
-        {
-            healthScript = null;
-        }
-    }
-
 }
