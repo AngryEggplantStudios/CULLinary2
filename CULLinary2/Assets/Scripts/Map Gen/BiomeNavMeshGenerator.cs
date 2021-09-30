@@ -25,26 +25,39 @@ public class BiomeNavMeshGenerator : MonoBehaviour
         {
             if (child.gameObject != this.gameObject)
             {
-                if (child.gameObject.name == "Houses")
-                {
-                    continue; // Just skip houses!!!!!
-                    orderSubmissionStationParent = child.gameObject;
-                }
                 // NOTE Houses/Order submission station has a spherecollider that needs to be deactivated
                 child.gameObject.tag = "Environment";
                 child.gameObject.layer = 6;
+                if (child.gameObject.name == "Houses")
+                {
+                    orderSubmissionStationParent = child.gameObject;
+                    continue;
+                }
                 yield return StartCoroutine(CombineMeshes(child.gameObject));
             }
         }
         parent.transform.localScale = originalScale;
     }
 
-    private void ActivateSphereCollider(bool activate, GameObject parent)
+    private void ActivateBoxCollider(bool activate, GameObject parent)
     {
+        Debug.Log(parent);
+        //Iterate through all ordersubmissionstations
         foreach (Transform child in parent.transform)
         {
-            SphereCollider sphere = child.GetComponentInChildren<SphereCollider>();
-            sphere.enabled = activate;
+            //Deactivate the two boxcolliders on ordersubmissionstations
+            foreach (Transform grandchild in child.transform)
+			{
+                if (grandchild.name == "Interactive Collider" || grandchild.name == "Camera Obstacle")
+                {
+                    BoxCollider sphere = grandchild.GetComponentInChildren<BoxCollider>();
+                    sphere.enabled = activate;
+                } else
+				{
+                    grandchild.gameObject.tag = "Environment";
+                    grandchild.gameObject.layer = 6;
+                }
+            }
         }
     }
 
@@ -70,14 +83,14 @@ public class BiomeNavMeshGenerator : MonoBehaviour
         if (navMeshData == null)
         {
             //disable sphere collider from order submissions
-            ActivateSphereCollider(false, orderSubmissionStationParent);
+            ActivateBoxCollider(false, orderSubmissionStationParent);
             //disable spawnables that have no colliders
             ActivateSpawnableWithoutCollider(false, parent);
             BiomeDataManager.instance.biomeNavMeshPath = savePath;
             BiomeDataManager.instance.SaveData();
             surfaceForNavMesh.BuildNavMesh();
             AssetDatabase.CreateAsset(surfaceForNavMesh.navMeshData, savePath);
-            ActivateSphereCollider(true, orderSubmissionStationParent);
+            ActivateBoxCollider(true, orderSubmissionStationParent);
             ActivateSpawnableWithoutCollider(true, parent);
             Debug.Log("Starting Coroiutine");
             //first time generation, create walkable mesh with water and delete previous walkable mesh without water
