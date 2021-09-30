@@ -8,8 +8,8 @@ public class PlayerStamina : MonoBehaviour
     [SerializeField] private Image staminaCircleImage;
     [SerializeField] private GameObject staminaCircle;
     [SerializeField] private float regenerationRate = 1f;
-    [SerializeField] private Outline outlineFlash;
-    [SerializeField] private Outline outlineCircleFlash;
+    [SerializeField] private float pauseBeforeRegen = 1.5f;
+    [SerializeField] private Animator staminaCircleAnimator;
     [SerializeField] private float thresholdStamina = 0.25f;
     [SerializeField] private GameObject canvasDisplay;
     [SerializeField] private Camera playerCamera;
@@ -87,7 +87,7 @@ public class PlayerStamina : MonoBehaviour
         ui.transform.position = playerCamera.WorldToScreenPoint(transform.position);
     }
 
-    private IEnumerator flashBar()
+    /* private IEnumerator flashBar()
     {
         while (PlayerManager.instance.currentStamina / PlayerManager.instance.maxStamina < thresholdStamina)
         {
@@ -98,11 +98,11 @@ public class PlayerStamina : MonoBehaviour
             outlineCircleFlash.effectColor = deactivatedFlashColor;
             yield return new WaitForSeconds(0.5f);
         }
-    }
+    } */
 
     private IEnumerator checkRegenerate()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(pauseBeforeRegen);
         while (PlayerManager.instance.currentStamina < (PlayerManager.instance.maxStamina))
         {
             //StartCoroutine(WaitOneSecond());
@@ -127,6 +127,7 @@ public class PlayerStamina : MonoBehaviour
         float currentStamina = PlayerManager.instance.currentStamina;
         float maxStamina = PlayerManager.instance.maxStamina;
         DisplayOnUI(currentStamina, maxStamina);
+        staminaCircleAnimator.SetBool("flashing", PlayerManager.instance.currentStamina / PlayerManager.instance.maxStamina < thresholdStamina);
         resetStaminaRegeneration();
     }
 
@@ -138,5 +139,4 @@ public class PlayerStamina : MonoBehaviour
         }
         regenerationCoroutine = StartCoroutine(checkRegenerate());
     }
-
 }

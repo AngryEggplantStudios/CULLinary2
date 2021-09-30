@@ -506,10 +506,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cd1314ded2a14fa79c5f504f76054e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 500
-  maxHealth: 500
-  currentStamina: 500
-  maxStamina: 500
+  currentHealth: 200
+  maxHealth: 200
+  currentStamina: 100
+  maxStamina: 100
   meleeDamage: 10
   recipesUnlocked: 010101
   upgradesArray: 0000000000000000
@@ -661,10 +661,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5620305572254198150, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
-      propertyPath: outlineFlash
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5620305572254198150, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
       propertyPath: canvasDisplay
       value: 
       objectReference: {fileID: 2110931401}
@@ -673,13 +669,13 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 674865426}
     - target: {fileID: 5620305572254198150, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
-      propertyPath: outlineCircleFlash
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5620305572254198150, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
       propertyPath: staminaCircleImage
       value: 
       objectReference: {fileID: 1886224292}
+    - target: {fileID: 5620305572254198150, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
+      propertyPath: staminaCircleAnimator
+      value: 
+      objectReference: {fileID: 674865450}
     - target: {fileID: 5620305572254198155, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
       propertyPath: m_Name
       value: Chef_New_Playable
@@ -1891,6 +1887,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -25
       objectReference: {fileID: 0}
+    - target: {fileID: 1865426351085986349, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_Color.a
+      value: 0.5019608
+      objectReference: {fileID: 0}
     - target: {fileID: 2019951405038867127, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1986,6 +1986,22 @@ PrefabInstance:
     - target: {fileID: 2401816507754421439, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2439226794796611432, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2439226794796611432, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_Color.b
+      value: 0.2548
+      objectReference: {fileID: 0}
+    - target: {fileID: 2439226794796611432, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_Color.g
+      value: 0.98
+      objectReference: {fileID: 0}
+    - target: {fileID: 2439226794796611432, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_Color.r
+      value: 0.54676366
       objectReference: {fileID: 0}
     - target: {fileID: 2478453676611401594, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: m_SizeDelta.x
@@ -4367,6 +4383,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6662030478116561632, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -75
+      objectReference: {fileID: 0}
     - target: {fileID: 6662030478132346298, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -5619,6 +5639,25 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2067718769517577656, guid: 146f72df1638140838a4412319be002a, type: 3}
   m_PrefabInstance: {fileID: 674865424}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &674865450
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 674865426}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: aeb566f7c4ffd6840b70567103f506ed, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &712404181 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6662030479076259731, guid: 146f72df1638140838a4412319be002a, type: 3}
