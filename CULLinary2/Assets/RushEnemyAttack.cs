@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RushEnemyAttack : EnemyAttack
+public class RushEnemyAttack : MonsterAttack
 {
     private SphereCollider attackCollider;
     private PlayerHealth healthScript;
