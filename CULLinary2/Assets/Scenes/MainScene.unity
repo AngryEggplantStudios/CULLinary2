@@ -7497,7 +7497,7 @@ MonoBehaviour:
   - name: Campfires
     prefabs:
     - {fileID: 1696568650871794669, guid: 97b35b47b4cecae4cb044ed478fa8564, type: 3}
-    density: 100
+    density: 20
     intersectRadius: 20
     removeCollider: 0
   - name: Houses
@@ -7506,6 +7506,12 @@ MonoBehaviour:
     density: 200
     intersectRadius: 20
     removeCollider: 0
+  - name: Grass
+    prefabs:
+    - {fileID: 6012312926119733914, guid: f25ed080c168c6e4dafb4089a3361ab2, type: 3}
+    density: 5000
+    intersectRadius: 3
+    removeCollider: 1
   - name: Trees
     prefabs:
     - {fileID: 919132149155446097, guid: ac9869c7cfb004efe8cee71205a35f86, type: 3}

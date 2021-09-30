@@ -1,4 +1,5 @@
 using UnityEditor;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
@@ -25,7 +26,7 @@ public class BiomeNavMeshGenerator : MonoBehaviour
         {
             if (child.gameObject != this.gameObject)
             {
-                if (child.gameObject.name == "Houses")
+                if (child.gameObject.name == "Houses" || child.gameObject.name == "Grass")
                 {
                     continue; // Just skip houses!!!!!
                     //orderSubmissionStationParent = child.gameObject;
@@ -151,7 +152,7 @@ public class BiomeNavMeshGenerator : MonoBehaviour
         {
             CombineInstance[] combineInstanceArray = (combineInstanceArrays[m] as ArrayList).ToArray(typeof(CombineInstance)) as CombineInstance[];
             meshes[m] = new Mesh();
-            meshes[m].indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            meshes[m].indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;                
             meshes[m].CombineMeshes(combineInstanceArray, true, true);
 
             combineInstances[m] = new CombineInstance();
@@ -168,7 +169,7 @@ public class BiomeNavMeshGenerator : MonoBehaviour
         foreach (Mesh oldMesh in meshes)
         {
             oldMesh.Clear();
-            Object.Destroy(oldMesh);
+            Destroy(oldMesh);
         }
         yield return null;
 
@@ -180,7 +181,7 @@ public class BiomeNavMeshGenerator : MonoBehaviour
         {
             if (meshFilter)
             {
-                Object.Destroy(meshFilter.gameObject);
+                Destroy(meshFilter.gameObject);
             }
         }
         yield return null;
