@@ -13,6 +13,8 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
     [SerializeField] private GameObject inventoryPanel;
     // All money texts go here
     [SerializeField] private List<TextMeshProUGUI> moneyTexts;
+    [SerializeField] private Image healthBar;
+    [SerializeField] private TMP_Text healthAmount;
 
     private InventorySlot[] slots;
     private int inventoryLimit = 25;
@@ -79,6 +81,15 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
 
     public IEnumerator UpdateUI()
     {
+        string currentMoney = PlayerManager.instance.currentMoney.ToString();
+        foreach (TextMeshProUGUI text in moneyTexts)
+        {
+            text.text = currentMoney;
+        }
+
+        healthBar.fillAmount = PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth;
+        healthAmount.text = Mathf.CeilToInt(PlayerManager.instance.currentHealth) + "/" + Mathf.CeilToInt(PlayerManager.instance.maxHealth);
+
         if (slots != null)
         {
             for (int i = 0; i < slots.Length; i++)
@@ -93,13 +104,6 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
                     slots[i].ClearSlot();
                 }
             }
-        }
-
-        // Update money
-        string currentMoney = PlayerManager.instance.currentMoney.ToString();
-        foreach (TextMeshProUGUI text in moneyTexts)
-        {
-            text.text = currentMoney;
         }
     }
 
