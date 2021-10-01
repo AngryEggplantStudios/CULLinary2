@@ -6,27 +6,29 @@ using TMPro;
 
 public class PlayerHealth : MonoBehaviour
 {
+    [Header("References")]
+    [SerializeField] private Camera cam;
+    [SerializeField] private GameObject canvasDisplay;
     [SerializeField] private AudioSource audioSource;
+
+    [Header("UI References")]
     [SerializeField] private GameObject damageCounter_prefab;
     [SerializeField] private Image healthBar;
     [SerializeField] private TMP_Text healthText;
-    [SerializeField] private float invincibilityDurationSeconds;
-    [SerializeField] private GameObject model;
-    [SerializeField] private Outline outlineFlash;
-    private bool flashIsActivated = false;
-    private bool isDrowningActivated = false;
-
-    //To be ported over to somewhere
-    [SerializeField] private GameObject canvasDisplay;
-    [SerializeField] private Camera cam;
-    [SerializeField] private float thresholdHealth = 0.25f;
     [SerializeField] private Renderer rend;
+
+    [Header("Variables")]
+    [SerializeField] private float invincibilityDurationSeconds;
+    [SerializeField] private float thresholdHealth = 0.25f;
+
+    [Header("Drowning Event")]
     [SerializeField] private float minimumHeightToStartDrowning;
+    [SerializeField] private float drowningDamage = 20f;
     [SerializeField] private GameObject drowningAlert_prefab;
 
-    private float drowningDamage = 50f;
     private bool isInvincible = false;
-
+    private bool flashIsActivated = false;
+    private bool isDrowningActivated = false;
     private Color[] originalColors;
     private Color onDamageColor = Color.white;
     private float invincibilityDeltaTime = 0.025f;
@@ -42,8 +44,6 @@ public class PlayerHealth : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         SetupIFrame();
-        //originalFlashColor = outlineFlash.effectColor;
-        //outlineFlash.effectColor = deactivatedFlashColor;
     }
 
     private void Start()

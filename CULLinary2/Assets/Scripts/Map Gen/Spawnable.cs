@@ -5,6 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public struct Spawnable
 {
+    public bool isSpawnable;
     public string name;
     public GameObject[] prefabs;
     public int density;

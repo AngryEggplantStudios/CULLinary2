@@ -10,7 +10,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     public float maxStamina = 100f;
     public float meleeDamage = 20f;
     public bool[] recipesUnlocked = new bool[3] { true, true, true }; //use index
-    public int[] upgradesArray = new int[2] { 1, 1 };
+    public int[] upgradesArray = new int[3] { 0, 0, 0 };
     public List<InventoryItem> itemList = new List<InventoryItem>();
     public int currentMoney;
 

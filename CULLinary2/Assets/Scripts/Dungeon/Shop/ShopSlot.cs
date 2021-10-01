@@ -25,16 +25,31 @@ public class ShopSlot : MonoBehaviour
         this.shopItem = shopItem;
         shopItemName.text = shopItem.itemName;
         shopItemIcon.sprite = shopItem.icon;
-        levelText.text = "Level " + level;
-        itemDescription.text = shopItem.description[level];
-        itemPrice.text = "$" + shopItem.price[level];
+        levelText.text = "Current: Level " + level;
         button.interactable = true;
     }
 
     public void DisableSlot()
     {
-        Button button = GetComponentInChildren<Button>();
+        //Button button = GetComponentInChildren<Button>();
+        outline.enabled = false;
         button.interactable = false;
+    }
+
+    public void IncrementLevel(ShopItem shopItem, int level)
+    {
+        itemDescription.text = shopItem.description[level];
+        itemPrice.text = "$" + shopItem.price[level];
+    }
+
+    public void HandleMaxLevel(ShopItem shopItem, int level)
+    {
+        itemDescription.text = "";
+        itemPrice.text = "Max Level Reached";
+        //Button button = GetComponentInChildren<Button>();
+        outline.enabled = false;
+        button.interactable = false;
+
     }
 
 }

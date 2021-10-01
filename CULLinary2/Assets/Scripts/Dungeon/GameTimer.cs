@@ -8,12 +8,14 @@ public class GameTimer : SingletonGeneric<GameTimer>
     [SerializeField] private Light DirectionalLight;
     [SerializeField] private LightingPreset Preset;
     [SerializeField] private TextMeshProUGUI DayText;
+    [SerializeField] private GameObject DayIcon;
+    [SerializeField] private GameObject NightIcon;
     [SerializeField] private TextMeshProUGUI TimeText;
 
     // 0.2 of 1 minute = 10 seconds eg
     [SerializeField] private float dayLengthInMinutes;
     [SerializeField, Range(0, 1), Tooltip("e.g. 0.25 for 6am")] private float sunrise;
-    [SerializeField, Range(0, 1)] private float sunset;
+    [SerializeField, Range(0, 1), Tooltip("e.g. 0.75 for 6pm")] private float sunset;
     private static float gameTime;
     private static float timeScale;
     private static int dayNum = 1; // TODO: to get from saved data
@@ -35,7 +37,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
     {
         if (sunrise > sunset) { Debug.LogError("Sunrise is after Sunset!"); }
 
-        Debug.Log("set timescale to 1");
+        // Debug.Log("set timescale to 1");
         Time.timeScale = 1;
 
         gameTime = (float)System.Math.Round(sunrise, 2);
@@ -65,9 +67,9 @@ public class GameTimer : SingletonGeneric<GameTimer>
             OnStartNewDay?.Invoke();
         }
 
-        if (gameTime >= 1)
+        if (gameTime >= dayEndTime)
         {
-            Debug.Log("day ended");
+            // Debug.Log("day ended");
             OnEndOfDay?.Invoke();
             StartSceneFadeOut();
         }
@@ -80,6 +82,17 @@ public class GameTimer : SingletonGeneric<GameTimer>
         minuteNum = Mathf.FloorToInt((actualTime - (float)hourNum) * 60) % 60;
         timeAsString = hourNum + ":" + minuteNum.ToString("00");
         TimeText.text = timeAsString;
+
+        if (gameTime < sunrise || gameTime > sunset)
+        {
+            DayIcon.SetActive(false);
+            NightIcon.SetActive(true);
+        }
+        else
+        {
+            DayIcon.SetActive(true);
+            NightIcon.SetActive(false);
+        }
     }
 
     private void StartSceneFadeOut()

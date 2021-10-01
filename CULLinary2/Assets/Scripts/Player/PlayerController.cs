@@ -36,12 +36,6 @@ public class PlayerController : PlayerAction
         bool isMeleeInvoked = playerMelee != null ? playerMelee.GetIsInvoking() : false;
         bool isSkillInvoked = playerSkill != null ? playerSkill.GetIsInvoking() : false;
 
-        if (isMeleeInvoked || isSkillInvoked)
-        {
-            this.SetIsInvoking(false);
-            return;
-        }
-
         float moveVertical = Input.GetAxisRaw("Vertical");
         float moveHorizontal = Input.GetAxisRaw("Horizontal");
 
@@ -51,11 +45,23 @@ public class PlayerController : PlayerAction
 
         isGrounded = Physics.CheckSphere(transform.position, groundCheckDistance, groundMask);
 
+        if (isMeleeInvoked || isSkillInvoked)
+        {
+            OnPlayerStop?.Invoke(moveDirection.normalized, isGrounded);
+            this.SetIsInvoking(false);
+            return;
+        }
+
         this.SetIsInvoking(true);
 
         if (Input.GetKey(KeyCode.Space))
         {
             OnPlayerJump?.Invoke(moveDirection.normalized, isGrounded);
+        }
+
+        if (direction != Vector3.zero)
+        {
+            OnPlayerRotate?.Invoke(direction.normalized, turnSpeed);
         }
 
         if (direction == Vector3.zero)
@@ -74,10 +80,7 @@ public class PlayerController : PlayerAction
             }
         }
 
-        if (direction != Vector3.zero)
-        {
-            OnPlayerRotate?.Invoke(direction.normalized, turnSpeed);
-        }
+
     }
 
 }

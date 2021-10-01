@@ -25,6 +25,10 @@ public class BiomeObjectSpawner : MonoBehaviour
 
         foreach (Spawnable spawnable in spawnables)
         {
+            if (!spawnable.isSpawnable)
+            {
+                continue;
+            }
             // Debug.Log("Spawning " + spawnable.name + "...");
             GameObject parent = new GameObject(spawnable.name);
             parent.transform.SetParent(origin);
@@ -84,7 +88,7 @@ public class BiomeObjectSpawner : MonoBehaviour
 
         foreach (Collider col in colliders)
         {
-            if(col.gameObject.layer != LayerMask.NameToLayer("Ground"))
+            if (col.gameObject.layer != LayerMask.NameToLayer("Ground"))
             {
                 return true;
             }
