@@ -11,4 +11,7 @@ public class ShopItem : Item
     //Effects
     public int[] attackIncrement;
 
+    //Event Id
+    public int[] events;
+
 }

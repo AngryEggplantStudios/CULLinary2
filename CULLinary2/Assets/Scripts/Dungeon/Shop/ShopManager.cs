@@ -21,15 +21,20 @@ public class ShopManager : SingletonGeneric<ShopManager>
         }
 
         ShopItem itemPurchased = slots[selectedSlotId].shopItem;
-        int itemPrice = itemPurchased.price[PlayerManager.instance.upgradesArray[itemPurchased.shopItemId]];
+        int currentLevel = PlayerManager.instance.upgradesArray[itemPurchased.shopItemId];
+        int itemPrice = itemPurchased.price[currentLevel];
         if (itemPrice > PlayerManager.instance.currentMoney)
         {
             return;
         }
         //Effects
-        PlayerManager.instance.meleeDamage += itemPurchased.attackIncrement[PlayerManager.instance.upgradesArray[itemPurchased.shopItemId]];
+        PlayerManager.instance.meleeDamage += itemPurchased.attackIncrement[currentLevel];
 
         //Handle Special Events
+        if (itemPurchased.events[currentLevel] != 0 && SpecialEventManager.instance != null)
+        {
+            SpecialEventManager.instance.PlayEvent(itemPurchased.events[currentLevel]);
+        }
 
         // Update all money UIs
         PlayerManager.instance.upgradesArray[itemPurchased.shopItemId]++;
