@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerPickup : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private GameObject itemPickupNotificationPrefab;
     [SerializeField] private GameObject canvasDisplay;
