@@ -10,6 +10,8 @@ public class Minimap : MonoBehaviour
     [SerializeField] public GameObject iconPrefab;
     [SerializeField] public Transform iconsParent;
     [SerializeField] public Sprite campfireSprite;
+    // Set the icons not to go all the way to the edge
+    [SerializeField] public float borderPadding = 11.0f;
 
     protected bool hasInstantiatedIcons = false;
     private Transform playerBody;
@@ -57,8 +59,8 @@ public class Minimap : MonoBehaviour
             Destroy(child.gameObject);
         }
         
-        width = GetMapHeight();
-        height = GetMapWidth();
+        width = GetMapWidth();
+        height = GetMapHeight();
         
         // Add campfires
         InstantiateCampfireIcons();
@@ -163,14 +165,24 @@ public class Minimap : MonoBehaviour
                                        screenPos.y,
                                        0);
 
-        if (localPos.magnitude > width / 2)
+        float halfWidth = width / 2 - borderPadding;
+        float halfHeight = height / 2 - borderPadding;
+        bool exceedX = Mathf.Abs(localPos.x) > halfWidth;
+        bool exceedY = Mathf.Abs(localPos.y) > halfHeight;
+
+        if ((exceedX || exceedY) && hideIfFarAway)
         {
-            if (hideIfFarAway)
-            {
-                icon.gameObject.SetActive(false);
-                return;
-            }
-            localPos = localPos.normalized * width / 2;
+            icon.gameObject.SetActive(false);
+            return;
+        }
+
+        if (exceedX)
+        {
+            localPos.x = Mathf.Sign(localPos.x) * halfWidth;
+        }
+        if (exceedY)
+        {
+            localPos.y = Mathf.Sign(localPos.y) * halfHeight;
         }
 
         icon.GetComponent<RectTransform>().anchoredPosition = localPos;
