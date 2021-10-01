@@ -7494,25 +7494,29 @@ MonoBehaviour:
   size: 950
   minY: 0
   spawnables:
-  - name: Campfires
+  - isSpawnable: 1
+    name: Campfires
     prefabs:
     - {fileID: 1696568650871794669, guid: 97b35b47b4cecae4cb044ed478fa8564, type: 3}
     density: 20
     intersectRadius: 20
     removeCollider: 0
-  - name: Houses
+  - isSpawnable: 1
+    name: Houses
     prefabs:
     - {fileID: 5112065047382128652, guid: 6e6733609255880429ebdb4b263552a8, type: 3}
     density: 200
     intersectRadius: 20
     removeCollider: 0
-  - name: Grass
+  - isSpawnable: 0
+    name: Grass
     prefabs:
     - {fileID: 6012312926119733914, guid: f25ed080c168c6e4dafb4089a3361ab2, type: 3}
     density: 5000
     intersectRadius: 3
     removeCollider: 1
-  - name: Trees
+  - isSpawnable: 1
+    name: Trees
     prefabs:
     - {fileID: 919132149155446097, guid: ac9869c7cfb004efe8cee71205a35f86, type: 3}
     - {fileID: 919132149155446097, guid: 2f63419abef2e4c07ad967bd56ae81bb, type: 3}
@@ -7539,7 +7543,8 @@ MonoBehaviour:
     density: 5000
     intersectRadius: 0
     removeCollider: 0
-  - name: Flowers
+  - isSpawnable: 1
+    name: Flowers
     prefabs:
     - {fileID: 919132149155446097, guid: 40862e326087f440aad948c84b2bb083, type: 3}
     - {fileID: 919132149155446097, guid: dd758b7bf441b46139d29f45c967911f, type: 3}
@@ -7553,7 +7558,8 @@ MonoBehaviour:
     density: 5000
     intersectRadius: 0
     removeCollider: 1
-  - name: MonsterSpawners
+  - isSpawnable: 1
+    name: MonsterSpawners
     prefabs:
     - {fileID: 3108367928545360356, guid: 99af859978518544f8b2ea731c4456e2, type: 3}
     - {fileID: 8676701523812636767, guid: 939eee34795b889468fc766d318d6eba, type: 3}
