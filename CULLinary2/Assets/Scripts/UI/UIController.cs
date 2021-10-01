@@ -107,6 +107,7 @@ public class UIController : SingletonGeneric<UIController>
 
     public void ToggleInventory()
     {
+        StartCoroutine(InventoryManager.instance.UpdateUI());
         mainHud.SetActive(inventoryTab.activeSelf);
         Time.timeScale = inventoryTab.activeSelf ? 1f : 0f;
         isMenuActive = !inventoryTab.activeSelf;

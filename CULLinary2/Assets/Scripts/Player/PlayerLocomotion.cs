@@ -4,7 +4,21 @@ using UnityEngine;
 
 public class PlayerLocomotion : PlayerAction
 {
+    [Header("References")]
+    [SerializeField] private GameObject playerBody;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip[] stepSounds;
+
+    [Header("Variables")]
+    [SerializeField] private float gravity;
+    [SerializeField] private float acceleration = 5f;
+    [SerializeField] private float deceleration = 7f;
+    [SerializeField] private float staminaCost = 0.001f; //supposed to be 0.1f
+    [SerializeField] private float speedThreshold = 0.05f;
+    [SerializeField] private float walkSpeed = 1.0f;
+    [SerializeField] private float runSpeed = 2.0f;
     private Animator animator;
     private PlayerController playerController;
     private CharacterController controller;
@@ -12,17 +26,6 @@ public class PlayerLocomotion : PlayerAction
     private float currSpeed = 0f;
     private Vector3 prevDirection = Vector3.zero;
     private PlayerStamina playerStamina;
-    [SerializeField] private GameObject playerBody;
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip[] stepSounds;
-    [SerializeField] private float gravity;
-    [SerializeField] private float acceleration = 5f;
-    [SerializeField] private float deceleration = 7f;
-    [SerializeField] private float staminaCost = 0.001f; //suupposed to be 0.1f
-    [SerializeField] private float speedThreshold = 0.05f;
-    [SerializeField] private float walkSpeed = 1.0f;
-    [SerializeField] private float runSpeed = 2.0f;
-
 
     private void Awake()
     {

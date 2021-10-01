@@ -4,20 +4,22 @@ using UnityEngine;
 
 public class PlayerSlash : PlayerAction
 {
-    private Animator animator;
-    private PlayerMelee playerMelee;
-    private PlayerLocomotion playerLocomotion;
-
+    [Header("References")]
     [SerializeField] private GameObject weapon;
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip[] attackSounds;
     [SerializeField] private GameObject playerBody;
-    [SerializeField] private float rotateSpeed = 5f;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private TrailRenderer weaponTrail;
 
-    private const float MELEE_ANIMATION_TIME_SECONDS = 0.10f;
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip[] attackSounds;
 
+    [Header("Variables")]
+    [SerializeField] private float rotateSpeed = 5f;
+    private Animator animator;
+    private PlayerMelee playerMelee;
+    private PlayerLocomotion playerLocomotion;
+    private const float MELEE_ANIMATION_TIME_SECONDS = 0.10f;
     private Collider weaponCollider;
     private Vector3 rotateToFaceDirection;
 
@@ -31,7 +33,7 @@ public class PlayerSlash : PlayerAction
 
         playerLocomotion = GetComponent<PlayerLocomotion>();
         animator = GetComponent<Animator>();
-        
+
         weaponTrail.emitting = false;
     }
 
@@ -49,10 +51,9 @@ public class PlayerSlash : PlayerAction
     private void Slash()
     {
         RaycastHit hit;
-        bool hitGround;
 
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        hitGround = Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask("Ground"));
+        bool hitGround = Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask("Ground"));
         if (hitGround)
         {
             rotateToFaceDirection = new Vector3(hit.point.x - playerBody.transform.position.x,
@@ -67,6 +68,8 @@ public class PlayerSlash : PlayerAction
     {
         playerMelee.OnPlayerMelee -= Slash;
     }
+
+    //Animation events
 
     public void AttackStart()
     {
