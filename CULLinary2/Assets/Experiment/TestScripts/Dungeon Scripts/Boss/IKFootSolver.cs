@@ -43,7 +43,6 @@ public class IKFootSolver : Monster
         transform.up = -currentNormal;
 
         Ray ray = new Ray(body.position + (body.right * footSpacing), Vector3.down);
-
         if (Physics.Raycast(ray, out RaycastHit info, 100, ~(1 << 5)))
         {
             if (Vector3.Distance(newPosition, info.point) > stepDistance && !otherFoot.IsMoving() && !IsMoving())
