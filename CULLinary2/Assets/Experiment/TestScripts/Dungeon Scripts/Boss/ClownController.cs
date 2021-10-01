@@ -146,7 +146,7 @@ public class ClownController : MonoBehaviour
                 spawnAttackScript.destroySpawnPoints();
                 //Don't rainburgers yet
                 //endingBurgers.GetComponent<SpawnBurger>().callRainBurger();
-                StartCoroutine("WaitOneSecondBeforeKilling");
+                StartCoroutine("WaitZeroPointOneSecondBeforeKilling");
             }
         }
 
@@ -195,7 +195,7 @@ public class ClownController : MonoBehaviour
                 // Bob head and jaw for demostration
                 transform.position = new Vector3(
                         transform.position.x,
-                        originalY + Mathf.Sin(Time.fixedTime * Mathf.PI * 1) * 0.2f,
+                        originalY + Mathf.Sin(Time.fixedTime * Mathf.PI * 1) * 0.2f + 15.0f,
                         transform.position.z);
                 lowerJaw.localPosition = new Vector3(
                         lowerJaw.localPosition.x,
@@ -274,7 +274,7 @@ public class ClownController : MonoBehaviour
                 // Bob head and jaw for demostration
                 transform.position = new Vector3(
                         transform.position.x,
-                        originalY + Mathf.Sin(Time.fixedTime * Mathf.PI * 1) * 0.2f,
+                        originalY + Mathf.Sin(Time.fixedTime * Mathf.PI * 1) * 0.2f ,
                         transform.position.z);
                 lowerJaw.localPosition = new Vector3(
                         lowerJaw.localPosition.x,
@@ -347,10 +347,10 @@ public class ClownController : MonoBehaviour
                 default:
                 case 1:
                 case 2:
-                    state = State.RangedAttack;
+                    state = State.MeleeAttack;
                     break;
                 case 3:
-                    state = State.SpawnAttack;
+                    state = State.MeleeAttack;
                     break;
                 case 4:
                 case 5:
@@ -372,13 +372,19 @@ public class ClownController : MonoBehaviour
         while (barrage < 3)
         {
             rangedAttackScript.attackPlayerStart();
-            yield return new WaitForSeconds(2f);
+            if (barrage == 0)
+			{
+                yield return new WaitForSeconds(1f);
+            } else
+			{
+                yield return new WaitForSeconds(0.5f);
+            }
             rangedAttackScript.attackPlayerStartFlashing();
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.5f);
             rangedAttackScript.attackPlayerDealDamage();
             audioSourceAttack.clip = rangedSound;
             audioSourceAttack.Play();
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.25f);
             rangedAttackScript.attackPlayerEnd();
             barrage++;
         }

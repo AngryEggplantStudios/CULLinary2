@@ -181,12 +181,11 @@ public class MonsterScript : Monster
 
     private void checkIfDead()
 	{
-        if (this.currentHealth < 0)
+        if (this.currentHealth <= 0)
         {
             if (!deathCoroutine)
             {
                 // need this due to buggy triggers for death animation: Attack animation may be triggered immediately after death
-                Debug.Log("Calling death");
                 deathCoroutine = true;
                 DieAnimation();
             }
