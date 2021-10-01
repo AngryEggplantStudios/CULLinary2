@@ -21,21 +21,29 @@ public class ShopManager : SingletonGeneric<ShopManager>
         }
 
         ShopItem itemPurchased = slots[selectedSlotId].shopItem;
-        int itemPrice = itemPurchased.price[PlayerManager.instance.upgradesArray[itemPurchased.shopItemId]];
+        int currentLevel = PlayerManager.instance.upgradesArray[itemPurchased.shopItemId];
+        int itemPrice = itemPurchased.price[currentLevel];
         if (itemPrice > PlayerManager.instance.currentMoney)
         {
             return;
         }
         //Effects
-        PlayerManager.instance.meleeDamage += itemPurchased.attackIncrement[PlayerManager.instance.upgradesArray[itemPurchased.shopItemId]];
-        PlayerManager.instance.currentMoney -= itemPrice;
-        PlayerManager.instance.upgradesArray[itemPurchased.shopItemId]++;
+        PlayerManager.instance.meleeDamage += itemPurchased.attackIncrement[currentLevel];
+
+        //Handle Special Events
+        if (itemPurchased.events[currentLevel] != 0 && SpecialEventManager.instance != null)
+        {
+            SpecialEventManager.instance.PlayEvent(itemPurchased.events[currentLevel]);
+        }
 
         // Update all money UIs
+        PlayerManager.instance.upgradesArray[itemPurchased.shopItemId]++;
+        PlayerManager.instance.currentMoney -= itemPrice;
+
         InventoryManager.instance.StopAllCoroutines();
         InventoryManager.instance.StartCoroutine(InventoryManager.instance.UpdateUI());
 
-        LoadShop();
+        UpdateShop();
     }
 
     public void HandleClick(int slotId)
@@ -77,17 +85,34 @@ public class ShopManager : SingletonGeneric<ShopManager>
         moneyText.text = PlayerManager.instance.currentMoney.ToString();
     }
 
-    public void LoadShop()
+    public void UpdateShop()
     {
         foreach (ShopSlot slot in slots)
         {
             int level = PlayerManager.instance.upgradesArray[slot.shopItem.shopItemId];
             slot.Setup(slot.shopItem, level);
+
+            if (level >= slot.shopItem.maxLevel)
+            {
+                slot.DisableSlot();
+                slot.HandleMaxLevel(slot.shopItem, level);
+                return;
+            }
+
+            slot.IncrementLevel(slot.shopItem, level);
+
             if (PlayerManager.instance.currentMoney < slot.shopItem.price[level])
             {
                 slot.DisableSlot();
             }
+
         }
         moneyText.text = PlayerManager.instance.currentMoney.ToString();
+    }
+
+    public void LoadShop()
+    {
+        selectedSlotId = -1;
+        UpdateShop();
     }
 }
