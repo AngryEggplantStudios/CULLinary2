@@ -34,6 +34,7 @@ public class ShopSlot : MonoBehaviour
     public void DisableSlot()
     {
         Button button = GetComponentInChildren<Button>();
+        outline.enabled = false;
         button.interactable = false;
     }
 
