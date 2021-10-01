@@ -7,7 +7,6 @@ public class RushEnemyScript : MonoBehaviour
 {
     [SerializeField] private MonsterScript enemyScript;
     [SerializeField] private RushEnemyAttack enemyAttack;
-    [SerializeField] private float distanceTriggered;
 
     // Variables for idle
     [SerializeField] private float idleTimer;
@@ -19,10 +18,10 @@ public class RushEnemyScript : MonoBehaviour
     public LineRenderer debugLine;
     // Variables for goingBackToStart
     private float goingBackToStartTimer;
-    private float presetSpeed = 30.0f;
-    private float presetAccel = 90.0f;
-    private float chargingSpeed = 300.0f;
-    private float chargingAccel = 1500.0f;
+    private float presetSpeed = 10.0f;
+    private float presetAccel = 30.0f;
+    private float chargingSpeed = 50.0f;
+    private float chargingAccel = 150.0f;
     // Variables for roaming
     private Vector3 roamPosition;
     [Header("Test")]
@@ -35,14 +34,13 @@ public class RushEnemyScript : MonoBehaviour
     private Animator animator;
     private NavMeshAgent agent;
     private NavMeshHit navHit;
-    private Transform player;
     private float timer;
     private Vector3 startingPosition;
     private Vector3? chargeDirection;
     private bool amInAttackState;
     [Tooltip("The minimum distance to stop. Has to be equal to Stopping distance. Cannot use stopping distance directly else navmesh agent will keep bumping into player/")]
     private float reachedPositionDistance;
-    private float stopChaseDistance;
+    private float stopChaseDistance = 50f;
 
     // Start is called before the first frame update
     void Start()
@@ -143,10 +141,10 @@ public class RushEnemyScript : MonoBehaviour
     private void EnemyAttackPlayer(Vector3 playerPosition, bool ableToMove)
     {
         Vector3 playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
-        animator.SetBool("isMoving", false);
         animator.ResetTrigger("attack");
         if (canAttack == true)
         {
+            // Debug.Log("Setting attack trigger");
             animator.SetTrigger("attack");
             amInAttackState = true;
             canAttack = false;
@@ -154,19 +152,20 @@ public class RushEnemyScript : MonoBehaviour
         }
 
         if (!enemyAttack.attackStarted())
-		{
-            Debug.Log("Setting charge diirection to null"); 
+        {
+            //Debug.Log("Setting charge diirection to null"); 
             amInAttackState = false;
             chargeDirection = null;
             //agent.speed = presetSpeed;
             //agent.acceleration = presetAccel;
-/*            enemyScript.setStateMachine(State.Idle);*/
+            /*            enemyScript.setStateMachine(State.Idle);*/
         }
         var points = new Vector3[2];
 
         bool canStartCharging = enemyAttack.getCanDealDamage();
         if (canStartCharging && !chargeDirection.HasValue)
-		{
+        {
+            Debug.Log("In charging");
             agent.speed = chargingSpeed;
             agent.acceleration = chargingAccel;
             Debug.Log("StartCharging");
@@ -174,33 +173,32 @@ public class RushEnemyScript : MonoBehaviour
             //chargeDirection = playerPositionWithoutYOffset;
             chargeDirection = new Vector3(playerPositionWithoutYOffset.x, playerPositionWithoutYOffset.y, playerPositionWithoutYOffset.z) - transform.position;
             Vector3 unitVectorForChargePosition = Vector3.Normalize(chargeDirection.Value);
-            
+
             chargeDirection = unitVectorForChargePosition * distToCharge;
             chargeDirection = chargeDirection + transform.position;
 
             //charge towards nearest obstacle if hit
             bool blocked = NavMesh.Raycast(transform.position, chargeDirection.Value, out navHit, NavMesh.AllAreas);
-
             if (blocked)
             {
                 //charge to the limit of nearest obstacle
                 chargeDirection = new Vector3(navHit.position.x - 0.01f, playerPositionWithoutYOffset.y, navHit.position.z - 0.01f);
             }
-			points[0] = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-			points[1] = chargeDirection.Value;
+            points[0] = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            points[1] = chargeDirection.Value;
             //transform.position = chargeDirection.Value;
-			agent.SetDestination(chargeDirection.Value);
+            agent.SetDestination(chargeDirection.Value);
             debugLine.SetPositions(points);
         }
         else if (canStartCharging && chargeDirection.HasValue)
-		{
+        {
             //Destination of charge already set, continue charging
             agent.SetDestination(chargeDirection.Value);
-        } 
+        }
         else
-		{
+        {
             // am revving up to charge, do nothing
-		}
+        }
         if (!chargeDirection.HasValue)
         {
             //means not charging
