@@ -9,11 +9,17 @@ public class ShopManager : SingletonGeneric<ShopManager>
     [SerializeField] private GameObject slotsParentObject;
     [SerializeField] private GameObject slotPrefab;
     [SerializeField] private TMP_Text moneyText;
+    [SerializeField] private GameObject shopPanel;
     private int selectedSlotId = -1;
     private List<ShopSlot> slots;
 
     public void HandlePurchase()
     {
+        if (selectedSlotId == -1)
+        {
+            return;
+        }
+
         ShopItem itemPurchased = slots[selectedSlotId].shopItem;
         int itemPrice = itemPurchased.price[PlayerManager.instance.upgradesArray[itemPurchased.shopItemId]];
         if (itemPrice > PlayerManager.instance.currentMoney)
@@ -28,7 +34,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
         // Update all money UIs
         InventoryManager.instance.StopAllCoroutines();
         InventoryManager.instance.StartCoroutine(InventoryManager.instance.UpdateUI());
-        
+
         LoadShop();
     }
 
@@ -48,12 +54,9 @@ public class ShopManager : SingletonGeneric<ShopManager>
 
     private void Update()
     {
-        if (selectedSlotId != -1)
+        if (Input.GetKeyDown(KeyCode.F) && shopPanel.activeSelf)
         {
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                HandlePurchase();
-            }
+            HandlePurchase();
         }
     }
 
