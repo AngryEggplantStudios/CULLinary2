@@ -915,7 +915,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &221907580
 MonoBehaviour:
@@ -929,7 +929,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41c73111642ff46d18eb3ccfb6664ece, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectSound: {fileID: 1458615792}
   hoverSound: {fileID: 82233582}
   loadGameButton: {fileID: 104264471}
   saveGamePresentWarning: {fileID: 1270332178}
@@ -2566,7 +2565,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1495750915390864128, guid: 0436484ca60b5453188fb1e05553f0e9, type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1495750915390864128, guid: 0436484ca60b5453188fb1e05553f0e9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3406,71 +3405,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5aace0bb147044df7bd0ca5d7797cabc, type: 3}
   m_PrefabInstance: {fileID: 1613031334}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1686257645
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1686257646}
-  - component: {fileID: 1686257647}
-  - component: {fileID: 1686257648}
-  m_Layer: 0
-  m_Name: PlayerManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1686257646
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1686257645}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 946.7759, y: 540, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1686257647
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1686257645}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4cd1314ded2a14fa79c5f504f76054e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHealth: 200
-  maxHealth: 200
-  currentStamina: 100
-  maxStamina: 100
-  meleeDamage: 20
-  recipesUnlocked: 010101
-  upgradesArray: 0100000001000000
-  itemList: []
-  currentMoney: 0
---- !u!114 &1686257648
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1686257645}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e02bd01dab41434f8f0c758cf21cafa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1705436943
 GameObject:
   m_ObjectHideFlags: 0
@@ -3505,7 +3439,7 @@ Transform:
   - {fileID: 1056549175}
   - {fileID: 1717091723}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1713308293
 GameObject:
@@ -4217,7 +4151,7 @@ RectTransform:
   - {fileID: 1537706564}
   - {fileID: 1270332179}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

@@ -9,30 +9,12 @@ using UnityEngine.UI;
 /// </summary>
 public class LoadScene : MonoBehaviour
 {
-    [SerializeField] private Text loadingText;
-
-    private bool isAbleToProceed = false;
-    private bool isAbleToActivate = false;
     private AsyncOperation operation;
     private Scene scene;
 
     private void Start()
     {
         StartCoroutine(LoadNextScene());
-    }
-
-    private void Update()
-    {
-        if (isAbleToActivate && Input.GetKeyDown(KeyCode.Space))
-        {
-            isAbleToProceed = true;
-        }
-        if (isAbleToProceed && isAbleToActivate)
-        {
-            this.operation.allowSceneActivation = true;
-            StartCoroutine(ActivateScene());
-
-        }
     }
 
     private IEnumerator ActivateScene()
@@ -50,16 +32,16 @@ public class LoadScene : MonoBehaviour
         this.operation = SceneManager.LoadSceneAsync(PlayerPrefs.GetInt("nextScene", (int)SceneIndexes.MAIN_MENU));
         this.scene = SceneManager.GetSceneByBuildIndex(PlayerPrefs.GetInt("nextScene", (int)SceneIndexes.MAIN_MENU));
         this.operation.allowSceneActivation = false;
-        while (true)
+
+        // Loading
+        while (operation.progress < 0.9f)
         {
-            if (operation.progress >= 0.9f)
-            {
-                this.isAbleToActivate = true;
-                loadingText.text = "Press Space to continue.";
-                break;
-            }
             yield return null;
         }
+
+        // Done
+        this.operation.allowSceneActivation = true;
+        StartCoroutine(ActivateScene());
     }
 }
 
