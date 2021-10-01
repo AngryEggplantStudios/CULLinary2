@@ -5,22 +5,17 @@ using UnityEngine.UI;
 
 public class PlayerStamina : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private Image staminaCircleImage;
     [SerializeField] private GameObject staminaCircle;
+    [SerializeField] private Animator staminaCircleAnimator;
+
+    [Header("Variables")]
     [SerializeField] private float regenerationRate = 1f;
     [SerializeField] private float pauseBeforeRegen = 1.5f;
-    [SerializeField] private Animator staminaCircleAnimator;
     [SerializeField] private float thresholdStamina = 0.25f;
-    [SerializeField] private GameObject canvasDisplay;
-    [SerializeField] private Camera playerCamera;
-
     private Coroutine regenerationCoroutine;
-    private Color originalFlashColor;
-    private Color deactivatedFlashColor = new Color(255, 0, 0, 0);
-    private Color dangerCircleFlashColor;
     private WaitForSeconds timeTakenRegen = new WaitForSeconds(0.05f);
-    private GameObject parentGameObject;
-
     private void Start()
     {
         float currentStamina = PlayerManager.instance ? PlayerManager.instance.currentStamina : 100f;
@@ -43,12 +38,6 @@ public class PlayerStamina : MonoBehaviour
     {
         PlayerManager.instance.currentStamina = PlayerManager.instance.maxStamina;
         DisplayOnUI(PlayerManager.instance.currentStamina, PlayerManager.instance.maxStamina);
-    }
-
-    private void SetupUI(GameObject ui)
-    {
-        ui.transform.SetParent(canvasDisplay.transform);
-        ui.transform.position = playerCamera.WorldToScreenPoint(transform.position);
     }
 
     private IEnumerator checkRegenerate()
