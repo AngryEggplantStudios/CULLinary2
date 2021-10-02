@@ -14,13 +14,14 @@ public class Minimap : MonoBehaviour
     [SerializeField] public float borderPadding = 11.0f;
 
     protected bool hasInstantiatedIcons = false;
-    private Transform playerBody;
+    protected float width;
+    protected float height;
+    protected Transform playerBody;
+    
     // List of pairs of the actual station and the icon of that station
     private Dictionary<int, (Transform, Transform)> orderSubmissionStationLocationsAndIcons;
     // List of campfire icons
     private List<(Transform, Transform)> campfireIcons = new List<(Transform, Transform)>();
-    protected float width;
-    protected float height;
     private Vector3 playerOldPosition;
 
     // Ensures that icons are set when player enters the scene
@@ -133,8 +134,10 @@ public class Minimap : MonoBehaviour
             }
             foreach ((Transform fire, Transform icon) in campfireIcons)
             {
-                SetIconPos(fire, icon, true);
+                SetIconPos(fire, icon, false);
             }
+            // Update player icon
+            SetPlayerIconPos();
             navArrow.eulerAngles = new Vector3(0, 0, -playerBody.eulerAngles.y);
             forceReupdate = false;
         }
@@ -154,7 +157,17 @@ public class Minimap : MonoBehaviour
         return rt.sizeDelta.y;
     }
 
-    private void SetIconPos(Transform target, Transform icon, bool hideIfFarAway)
+    // Do nothing, player is always in the centre of the minimap
+    protected virtual void SetPlayerIconPos()
+    { }
+
+    // The centre point of the minimap
+    protected virtual Vector3 GetCentrePointOfMap()
+    {
+        return minimapCamera.WorldToScreenPoint(playerOldPosition);
+    }
+
+    protected void SetIconPos(Transform target, Transform icon, bool hideIfFarAway)
     {
         if (target == null)
         {
@@ -164,7 +177,7 @@ public class Minimap : MonoBehaviour
 
         icon.gameObject.SetActive(true);
         Vector3 screenPos = minimapCamera.WorldToScreenPoint(target.position) -
-                            minimapCamera.WorldToScreenPoint(playerOldPosition);
+                            GetCentrePointOfMap();
         Vector3 localPos = new Vector3(screenPos.x,
                                        screenPos.y,
                                        0);
