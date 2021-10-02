@@ -15,7 +15,7 @@ public class OrdersUIMap : Minimap
         {
             InstantiateMinimapIcons();
         }
-        CheckIfPlayerHasMoved();
+        UpdateUI();
     }
 
     protected override float GetMapWidth()

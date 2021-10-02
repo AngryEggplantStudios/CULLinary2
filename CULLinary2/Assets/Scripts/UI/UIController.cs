@@ -89,7 +89,13 @@ public class UIController : SingletonGeneric<UIController>
     {
         if (endOfDayMenu)
         {
-            endOfDayMenu.SetActive(true);
+            endOfDayMenu.SetActive(true);            
+            EndOfDayPanelStatistics stats = endOfDayMenu.GetComponent<EndOfDayPanelStatistics>();
+            stats.UpdateStatistics(GameTimer.GetDayNumber(),
+                                   OrdersManager.GetNumberOfOrdersCompletedToday(),
+                                   OrdersManager.GetNumberOfOrdersGeneratedDaily(),
+                                   OrdersManager.GetMoneyEarnedToday(),
+                                   EcosystemManager.GetNumberOfMonstersKilledToday());
         }
     }
 

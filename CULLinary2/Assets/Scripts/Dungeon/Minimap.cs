@@ -24,7 +24,7 @@ public class Minimap : MonoBehaviour
     private Vector3 playerOldPosition;
 
     // Ensures that icons are set when player enters the scene
-    private bool firstSettingOfIconPositions = false;
+    private bool forceReupdate = true;
 
     void Awake()
     {
@@ -94,6 +94,9 @@ public class Minimap : MonoBehaviour
         });
         OrdersManager.instance.AddOrderGenerationCallback(() => ResetInstantiatedOrderIconsFlag());
         hasInstantiatedIcons = true;
+
+        // Force reupdate of the UI
+        forceReupdate = true;
     }
 
     // Calling this will trigger the minimap to redraw the icons
@@ -113,13 +116,14 @@ public class Minimap : MonoBehaviour
         {
             return;
         }
-        CheckIfPlayerHasMoved();   
+        UpdateUI();   
     }
 
     // Check if player has moved and perform the relevant updates
-    protected void CheckIfPlayerHasMoved()
+    // Or, update the UI if it is forced to
+    protected void UpdateUI()
     {
-        if (playerOldPosition != playerBody.position || !firstSettingOfIconPositions)
+        if (playerOldPosition != playerBody.position || forceReupdate)
         {
             playerOldPosition = playerBody.position;
             // Update positions of old icons
@@ -132,7 +136,7 @@ public class Minimap : MonoBehaviour
                 SetIconPos(fire, icon, true);
             }
             navArrow.eulerAngles = new Vector3(0, 0, -playerBody.eulerAngles.y);
-            firstSettingOfIconPositions = true;
+            forceReupdate = false;
         }
     }
 
