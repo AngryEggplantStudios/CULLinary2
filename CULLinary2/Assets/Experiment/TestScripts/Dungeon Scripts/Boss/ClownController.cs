@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class ClownController : MonoBehaviour
 {
@@ -34,6 +35,9 @@ public class ClownController : MonoBehaviour
     [SerializeField] private AudioSource audioSourceAttack;
     [SerializeField] private AudioClip alertSound;
     [SerializeField] private AudioClip rangedSound;
+
+    // Called when the clown dies
+    [SerializeField] private UnityEvent whenClownKilledCallback;
 
     private GameObject hpBar;
     private Image hpBarFull;
@@ -106,6 +110,11 @@ public class ClownController : MonoBehaviour
         spawnAttackScript.destroySpawnPoints();
     }
 
+    public void AddClownKilledCallback(UnityEvent evnt)
+    {
+        whenClownKilledCallback = evnt;
+    }
+
     private void SetupHpBar()
     {
         hpBar = Instantiate(hpBar_prefab);
@@ -146,6 +155,7 @@ public class ClownController : MonoBehaviour
                 spawnAttackScript.destroySpawnPoints();
                 //Don't rainburgers yet
                 //endingBurgers.GetComponent<SpawnBurger>().callRainBurger();
+                whenClownKilledCallback.Invoke();
                 StartCoroutine("WaitZeroPointOneSecondBeforeKilling");
             }
         }

@@ -14,6 +14,9 @@ public class EcosystemManager : MonoBehaviour
         new Population(MonsterName.Eggplant, 30, 60, PopulationLevel.Normal)
     };
 
+    // Statistics for number of monsters killed
+    private static int numOfMonstersKilledToday = 0;
+
     void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
@@ -31,6 +34,9 @@ public class EcosystemManager : MonoBehaviour
             Debug.Log(string.Format("{0} population level: {1} ({2})", pop.GetName(), pop.GetLevel(), pop.GetCurrentNumber()));
         }
         GameTimer.OnStartNewDay += CheckNaturalPopulationIncrease;
+        GameTimer.OnStartNewDay += () => {
+            EcosystemManager.numOfMonstersKilledToday = 0;
+        };
     }
 
     private void CheckNaturalPopulationIncrease()
@@ -95,6 +101,7 @@ public class EcosystemManager : MonoBehaviour
 
     public static void DecreasePopulation(MonsterName name, int value)
     {
+        EcosystemManager.numOfMonstersKilledToday += value;
         Population pop = GetPopulation(name);
         if (pop != null)
         {
@@ -106,6 +113,12 @@ public class EcosystemManager : MonoBehaviour
     {
         Population pop = GetPopulation(name);
         pop.SetExtinct();
+    }
+    
+    // Gets the amount of monsters killed today so far
+    public static int GetNumberOfMonstersKilledToday()
+    {
+        return EcosystemManager.numOfMonstersKilledToday;
     }
 
     public void OnDestroy()

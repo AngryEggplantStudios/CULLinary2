@@ -38,7 +38,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     private List<Order> innerOrdersList;
     // Hash table that maps the ID of the order submission station to their transforms
     private Dictionary<int, Transform> orderSubmissionStations = new Dictionary<int, Transform>();
-    private int numberOfOrders = 0;
+    private int numberOfOrderSubStations = 0;
     private event OrderCompletionDelegate onOrderCompleteCallback;
     private event OrderGenerationDelegate onOrderGenerationCallback;
     // Random number generator for new orders
@@ -52,34 +52,39 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     private Dictionary<int, int> numberOfOrdersByRecipeCache;
     private bool isCacheValid = false;
 
+    // Track number of orders completed in a day for statistics
+    private int numOfOrdersCompletedToday = 0;
+
+    // Track amount of money earned today
+    private int moneyEarnedToday = 0;
+
     void Start()
     {
         innerOrdersList = new List<Order>();
         rand = new System.Random();
 
         // Generate random orders daily
-        GameTimer.OnStartNewDay += CheckFirstDay;
+        GameTimer.OnStartNewDay += OnNewDay;
     }
 
-    private void CheckFirstDay()
+    // A function to be run every new day 
+    private void OnNewDay()
     {
-        if (firstDay)
+        if (!firstDay)
         {
-            if (firstDay)
-            {
-                // Debug.Log("First day");
-                firstDay = false;
-            }
-            else
-            {
-                // Debug.Log("No es first day");
-                GenerateRandomOrders();
-            }
-        };
+            GenerateRandomOrders();
+            numOfOrdersCompletedToday = 0;
+            moneyEarnedToday = 0;
+        }
+        else
+        {
+            firstDay = false;
+        }
     }
 
     void Update()
     {
+        // Generate orders for the first day in MainScene
         if (!firstGeneration && BiomeGeneratorManager.IsGenerationComplete())
         {
             FirstGenerationOfOrders();
@@ -132,10 +137,19 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             int earnings = orderToComplete.GetRecipe().recipeEarnings;
             SpawnMoneyNotif(earnings);
             PlayerManager.instance.currentMoney += earnings;
-            orderSubmissionSound.Play();
+
+            // Update UI and play sounds
             UIController.UpdateAllUIs();
+            orderSubmissionSound.Play();
+
+            // Invoke additional callbacks given to OrdersManager
             onOrderCompleteCallback.Invoke(stationId, orderToComplete.GetRecipe().recipeId);
 
+            // Update statistics
+            numOfOrdersCompletedToday++;
+            moneyEarnedToday = moneyEarnedToday + earnings; 
+
+            // Invalidate the cache of number of orders for each recipe
             isCacheValid = false;
             return true;
         }
@@ -208,9 +222,9 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     // returns an unique ID (also the key of the station in the hash table)
     public int AddOrderSubmissionStation(Transform stationTransform)
     {
-        int orderIndex = numberOfOrders;
+        int orderIndex = numberOfOrderSubStations;
         orderSubmissionStations.Add(orderIndex, stationTransform);
-        numberOfOrders++;
+        numberOfOrderSubStations++;
         return orderIndex;
     }
 
@@ -238,13 +252,14 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         return relevantStations;
     }
 
-    // Opening the orders menu for the first time will generate the orders
+    // Generate the orders for the first time in MainScene
     // TODO: Load from save game/player data instead
     public void FirstGenerationOfOrders()
     {
         if (!firstGeneration)
         {
             GenerateRandomOrders();
+            firstGeneration = true;
         }
     }
 
@@ -277,6 +292,24 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         return numberOfOrdersByRecipeCache;
     }
 
+    // Gets the number of orders that are generated automatically every day
+    public static int GetNumberOfOrdersGeneratedDaily()
+    {
+        return OrdersManager.instance.numberOfDailyOrders;
+    }
+
+    // Gets the number of orders that were completed today so far
+    public static int GetNumberOfOrdersCompletedToday()
+    {
+        return OrdersManager.instance.numOfOrdersCompletedToday;
+    }
+
+    // Gets the amount of money earned from completing orders today so far
+    public static int GetMoneyEarnedToday()
+    {
+        return OrdersManager.instance.moneyEarnedToday;
+    }
+
     // To be called when a new day begins
     // Generates random orders and populates the order list
     private void GenerateRandomOrders()
@@ -296,7 +329,6 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             innerOrdersList.Add(newOrder);
         }
 
-        firstGeneration = true;
         isCacheValid = false;
         StopCoroutine(UpdateUI());
         StartCoroutine(UpdateUI());
@@ -308,6 +340,6 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
 
     public void OnDestroy()
     {
-        GameTimer.OnStartNewDay -= CheckFirstDay;
+        GameTimer.OnStartNewDay -= OnNewDay;
     }
 }
