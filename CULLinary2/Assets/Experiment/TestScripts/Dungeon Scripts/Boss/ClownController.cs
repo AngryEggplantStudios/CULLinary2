@@ -353,10 +353,10 @@ public class ClownController : MonoBehaviour
                 default:
                 case 1:
                 case 2:
-                    state = State.RangedAttack;
+                    state = State.MeleeAttack;
                     break;
                 case 3:
-                    state = State.RangedAttack;
+                    state = State.SpawnAttack;
                     break;
                 case 4:
                 case 5:
