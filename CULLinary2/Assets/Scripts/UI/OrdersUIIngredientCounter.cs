@@ -11,9 +11,15 @@ public class OrdersUIIngredientCounter : MonoBehaviour
     public void SetIngredient(int itemId, int numberInInventory, int numberRequired)
     {
         int numberToBeShown = numberInInventory;
-        // Clamp the number to the maximum
-        if (numberInInventory > numberRequired)
+
+        if (numberInInventory < numberRequired)
         {
+            text.color = Color.red;
+        }
+        else
+        {
+            text.color = Color.white;
+            // Clamp the number to the maximum
             numberToBeShown = numberRequired;
         }
 

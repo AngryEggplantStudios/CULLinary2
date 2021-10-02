@@ -6,12 +6,14 @@ public class Order
     private Recipe recipe;
     private string description;
     private int submissionStationId;
+    private int deliveryReward;
 
     public Order(Recipe rec, string desc, int submStn)
     {
         recipe = rec;
         description = desc;
         submissionStationId = submStn;
+        deliveryReward = rec.recipeEarnings;
     }
 
     public List<InventoryItem> GetIngredients()
@@ -42,5 +44,17 @@ public class Order
     public Recipe GetRecipe()
     {
         return recipe;
+    }
+
+    // Sets a custom cash amount as the reward for completing this order
+    public void SetDeliveryReward(int newReward)
+    {
+        deliveryReward = newReward;
+    }
+
+    // Gets the reward for completing this order
+    public int GetDeliveryReward()
+    {
+        return deliveryReward;
     }
 }

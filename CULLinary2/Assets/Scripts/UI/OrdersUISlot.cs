@@ -2,21 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class OrdersUISlot : MonoBehaviour
 {
-    public GameObject cookableButton;
-    public GameObject inInventoryIcon;
+    public GameObject cookableIndicator;
+    public GameObject deliverableIndicator;
     public Image productIcon;
-    public GameObject mappedIcon;
     public GameObject ingredientsContainer;
     public GameObject ingredientCounterPrefab;
+    public TextMeshProUGUI rewardsMoneyText;
     
     private Order order;
 
     private bool cookable;
     private bool inInventory;
-    private bool mapped;
 
     // Array of (itemId, amountInInventory, amountNeeded)
     private (int, int, int)[] ingQnties;
@@ -26,44 +26,53 @@ public class OrdersUISlot : MonoBehaviour
         Order newOrder,
         bool isCookable,
         bool isInInventory,
-        bool isMapped,
         (int, int, int)[] ingredientQuantities
     )
     {
+        if (isInInventory)
+        {
+            cookable = false;
+        }
+        else
+        {            
+            cookable = isCookable;
+        }
+
         order = newOrder;
-        cookable = isCookable;
         inInventory = isInInventory;
-        mapped = isMapped;
         ingQnties = ingredientQuantities;
         UpdateUI();
     }
-
-    public void MapOrderOnClick()
-    {
-        // TODO
-        Debug.Log("You clicked on an order!");
-    }
-
     private void UpdateUI()
     {
         productIcon.sprite = order.GetProduct().icon;
-        cookableButton.SetActive(cookable || inInventory);
-        inInventoryIcon.SetActive(inInventory);
-        mappedIcon.SetActive(mapped);
+        cookableIndicator.SetActive(cookable);
+        rewardsMoneyText.text = order.GetDeliveryReward().ToString();
 
-        foreach (Transform child in ingredientsContainer.transform)
+        if (inInventory)
         {
-            Destroy(child.gameObject);
+            deliverableIndicator.SetActive(true);
+            ingredientsContainer.SetActive(false);
         }
-        foreach ((int id, int invQnty, int reqQnty) in ingQnties)
+        else
         {
-            GameObject ingCounter = Instantiate(ingredientCounterPrefab,
-                                                new Vector3(0, 0, 0),
-                                                Quaternion.identity,
-                                                ingredientsContainer.transform) as GameObject;
-            OrdersUIIngredientCounter counter = 
-                ingCounter.GetComponent<OrdersUIIngredientCounter>();
-            counter.SetIngredient(id, invQnty, reqQnty);
+            deliverableIndicator.SetActive(false);
+            ingredientsContainer.SetActive(true);
+
+            foreach (Transform child in ingredientsContainer.transform)
+            {
+                Destroy(child.gameObject);
+            }
+            foreach ((int id, int invQnty, int reqQnty) in ingQnties)
+            {
+                GameObject ingCounter = Instantiate(ingredientCounterPrefab,
+                                                    new Vector3(0, 0, 0),
+                                                    Quaternion.identity,
+                                                    ingredientsContainer.transform) as GameObject;
+                OrdersUIIngredientCounter counter = 
+                    ingCounter.GetComponent<OrdersUIIngredientCounter>();
+                counter.SetIngredient(id, invQnty, reqQnty);
+            }
         }
     }
 }
