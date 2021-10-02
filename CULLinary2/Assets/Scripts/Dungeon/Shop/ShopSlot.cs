@@ -14,42 +14,42 @@ public class ShopSlot : MonoBehaviour
     [SerializeField] private Outline outline;
     public ShopItem shopItem;
     private Button button;
+    private int slotIndex;
 
     private void Awake()
     {
         button = GetComponentInChildren<Button>();
     }
 
-    public void Setup(ShopItem shopItem, int level)
+    public void SetupUI(ShopItem currentShopItem, int index)
     {
-        this.shopItem = shopItem;
+        shopItem = currentShopItem;
+        slotIndex = index;
+        button.onClick.AddListener(() => ShopManager.instance.HandleClick(slotIndex));
+    }
+
+    public void UpdateUI(ShopItem currentShopItem)
+    {
+        int level = PlayerManager.instance.upgradesArray[shopItem.shopItemId];
+        int currentMoney = PlayerManager.instance.currentMoney;
+
         shopItemName.text = shopItem.itemName;
         shopItemIcon.sprite = shopItem.icon;
-        levelText.text = "Current: Level " + level;
-        button.interactable = true;
-    }
-
-    public void DisableSlot()
-    {
-        //Button button = GetComponentInChildren<Button>();
-        outline.enabled = false;
-        button.interactable = false;
-    }
-
-    public void IncrementLevel(ShopItem shopItem, int level)
-    {
         itemDescription.text = shopItem.description[level];
+
+        if (level >= shopItem.maxLevel)
+        {
+            itemPrice.text = "";
+            outline.enabled = false;
+            button.interactable = false;
+            return;
+        }
+        if (currentMoney < shopItem.price[level])
+        {
+            outline.enabled = false;
+            button.interactable = false;
+        }
         itemPrice.text = "$" + shopItem.price[level];
-    }
-
-    public void HandleMaxLevel(ShopItem shopItem, int level)
-    {
-        itemDescription.text = "";
-        itemPrice.text = "Max Level Reached";
-        //Button button = GetComponentInChildren<Button>();
-        outline.enabled = false;
-        button.interactable = false;
-
     }
 
 }
