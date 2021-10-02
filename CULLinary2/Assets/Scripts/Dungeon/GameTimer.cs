@@ -116,6 +116,9 @@ public class GameTimer : SingletonGeneric<GameTimer>
         GameObject player = GameObject.FindWithTag("Player");
         player.GetComponent<PlayerHealth>().RestoreToFull();
         player.GetComponent<PlayerStamina>().RestoreToFull();
+        // no choice find clown by tag because clown might not be around at start of GameTimer.
+        GameObject bossClown = GameObject.FindWithTag("ClownBoss");
+        bossClown.GetComponent<ClownController>().DeSpawnClown();
         player.transform.position = new Vector3(0f, 0f, 0f); // TODO: go back to last saved campfire
 
         // change time to next day
