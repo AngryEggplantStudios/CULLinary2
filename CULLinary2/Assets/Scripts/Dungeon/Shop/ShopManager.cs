@@ -75,8 +75,20 @@ public class ShopManager : SingletonGeneric<ShopManager>
         }
         else if (itemPurchased.GetType() == typeof(ConsumableShopItem))
         {
-            ConsumableShopItem consumableItemPurchased = (ConsumableShopItem)itemPurchased;
             Debug.Log("Bought consumable!");
+            ConsumableShopItem consumableItemPurchased = (ConsumableShopItem)itemPurchased;
+            switch (consumableItemPurchased.shopItemId)
+            {
+                case 7:
+                    PlayerManager.instance.consumables[0]++;
+                    break;
+                case 8:
+                    PlayerManager.instance.consumables[1]++;
+                    break;
+                case 9:
+                    PlayerManager.instance.consumables[2]++;
+                    break;
+            }
         }
 
         // Update all UIs

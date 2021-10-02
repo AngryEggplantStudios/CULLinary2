@@ -12,6 +12,7 @@ public class PlayerData
     public int currentMoney;
     public int criticalChance;
     public int evasionChance;
+    public int[] consumables;
     public bool[] recipesUnlocked;
     public int[] upgradesArray;
 
@@ -26,6 +27,7 @@ public class PlayerData
         currentMoney = 10000;
         criticalChance = 0;
         evasionChance = 0;
+        consumables = new int[3] { 0, 0, 0 }; //7,8,9 indices
         recipesUnlocked = new bool[3] { true, true, true };
         upgradesArray = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     }
