@@ -134,7 +134,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             innerOrdersList.RemoveAt(orderIndex);
 
             // Update money
-            int earnings = orderToComplete.GetRecipe().recipeEarnings;
+            int earnings = orderToComplete.GetDeliveryReward();
             SpawnMoneyNotif(earnings);
             PlayerManager.instance.currentMoney += earnings;
 
@@ -213,7 +213,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
                     idCountPair.Value.Item2
                 ));
             }
-            orderDetails.AssignOrder(o, isCookable, isInInv, false, itemsCounted.ToArray());
+            orderDetails.AssignOrder(o, isCookable, isInInv, itemsCounted.ToArray());
             yield return null;
         }
     }
