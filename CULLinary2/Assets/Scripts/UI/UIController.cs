@@ -21,6 +21,7 @@ public class UIController : SingletonGeneric<UIController>
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject playerDeathMenu;
     [SerializeField] private GameObject endOfDayMenu;
+    [SerializeField] private GameObject winPanel;
 
     private KeyCode ToggleInventoryKeyCode;
     private KeyCode ToggleOrdersKeyCode;
@@ -111,6 +112,20 @@ public class UIController : SingletonGeneric<UIController>
         GameTimer.instance.Run();
     }
 
+    public void ShowWinPanel()
+    {
+        winPanel.SetActive(true);
+        isPaused = true;
+        Time.timeScale = 0;
+    }
+
+    public void CloseWinPanel()
+    {
+        winPanel.SetActive(false);
+        isPaused = false;
+        Time.timeScale = 1;
+    }
+    
     public void ToggleInventory()
     {
         StartCoroutine(InventoryManager.instance.UpdateUI());
