@@ -28,7 +28,8 @@ public class UIController : SingletonGeneric<UIController>
     [SerializeField] private Image healthBar;
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private Image staminaCircleImage;
-
+    [Header("Winning Screen References")]
+    [SerializeField] private AudioSource winningAudio;
     [SerializeField] private GameObject winPanel;
 
 
@@ -123,6 +124,11 @@ public class UIController : SingletonGeneric<UIController>
 
     public void ShowWinPanel()
     {
+        if (winningAudio != null)
+        {
+            winningAudio.Play();
+        }
+
         winPanel.SetActive(true);
         isPaused = true;
         Time.timeScale = 0;

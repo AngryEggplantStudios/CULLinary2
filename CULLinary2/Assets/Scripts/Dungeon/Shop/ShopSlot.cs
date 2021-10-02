@@ -36,17 +36,32 @@ public class ShopSlot : MonoBehaviour
         shopItemName.text = shopItem.itemName;
         shopItemIcon.sprite = shopItem.iconArr[level];
         itemDescription.text = shopItem.description[level];
+        button.interactable = true;
+        outline.enabled = false;
+
+        if (currentShopItem.GetType() == typeof(KeyShopItem) || currentShopItem.GetType() == typeof(UpgradeShopItem))
+        {
+            levelText.text = "Current Level: " + level;
+        }
+        else
+        {
+            levelText.text = "";
+        }
 
         if (level >= shopItem.maxLevel)
         {
             itemPrice.text = "";
-            outline.enabled = false;
             button.interactable = false;
             return;
         }
+
         if (currentMoney < shopItem.price[level])
         {
-            outline.enabled = false;
+            button.interactable = false;
+        }
+
+        if (SpecialEventManager.instance.CheckIfEventIsRunning(shopItem.eventId))
+        {
             button.interactable = false;
         }
         itemPrice.text = "$" + shopItem.price[level];

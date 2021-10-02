@@ -2315,6 +2315,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3580527391989850457, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: winningAudio
+      value: 
+      objectReference: {fileID: 1661034733}
     - target: {fileID: 3601393587791240307, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -6523,33 +6527,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clownSpawner: {fileID: 7830022641545419702, guid: c27c1d9d74da9a64bb1fdc2eac87b294, type: 3}
-  whenClownKilledCallback:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 79696037}
-        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
-        m_MethodName: ShowWinPanel
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1661034733}
-        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+  currentEventsRunning: 
 --- !u!1 &923965342
 GameObject:
   m_ObjectHideFlags: 0
@@ -6736,6 +6714,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6490329551785014111, guid: c27c1d9d74da9a64bb1fdc2eac87b294, type: 3}
+      propertyPath: whenClownKilledCallback.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6490329551785014111, guid: c27c1d9d74da9a64bb1fdc2eac87b294, type: 3}
       propertyPath: whenClownKilledCallback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 79696037}
@@ -6744,11 +6726,19 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1661034733}
     - target: {fileID: 6490329551785014111, guid: c27c1d9d74da9a64bb1fdc2eac87b294, type: 3}
+      propertyPath: whenClownKilledCallback.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 919121683}
+    - target: {fileID: 6490329551785014111, guid: c27c1d9d74da9a64bb1fdc2eac87b294, type: 3}
       propertyPath: whenClownKilledCallback.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6490329551785014111, guid: c27c1d9d74da9a64bb1fdc2eac87b294, type: 3}
       propertyPath: whenClownKilledCallback.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6490329551785014111, guid: c27c1d9d74da9a64bb1fdc2eac87b294, type: 3}
+      propertyPath: whenClownKilledCallback.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6490329551785014111, guid: c27c1d9d74da9a64bb1fdc2eac87b294, type: 3}
@@ -6760,11 +6750,19 @@ PrefabInstance:
       value: Play
       objectReference: {fileID: 0}
     - target: {fileID: 6490329551785014111, guid: c27c1d9d74da9a64bb1fdc2eac87b294, type: 3}
+      propertyPath: whenClownKilledCallback.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6490329551785014111, guid: c27c1d9d74da9a64bb1fdc2eac87b294, type: 3}
       propertyPath: whenClownKilledCallback.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: UIController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6490329551785014111, guid: c27c1d9d74da9a64bb1fdc2eac87b294, type: 3}
       propertyPath: whenClownKilledCallback.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: UnityEngine.AudioSource, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 6490329551785014111, guid: c27c1d9d74da9a64bb1fdc2eac87b294, type: 3}
+      propertyPath: whenClownKilledCallback.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
       value: UnityEngine.AudioSource, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 6490329551785014111, guid: c27c1d9d74da9a64bb1fdc2eac87b294, type: 3}
@@ -6775,9 +6773,13 @@ PrefabInstance:
       propertyPath: whenClownKilledCallback.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 6490329551785014111, guid: c27c1d9d74da9a64bb1fdc2eac87b294, type: 3}
+      propertyPath: whenClownKilledCallback.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7830022641545419702, guid: c27c1d9d74da9a64bb1fdc2eac87b294, type: 3}
       propertyPath: m_Name
-      value: BossWithSpawns (1)
+      value: BossWithSpawns - For testing
       objectReference: {fileID: 0}
     - target: {fileID: 7830022641545419702, guid: c27c1d9d74da9a64bb1fdc2eac87b294, type: 3}
       propertyPath: m_IsActive
@@ -7129,6 +7131,7 @@ MonoBehaviour:
   inventoryItemDatabase: {fileID: 11400000, guid: 7d7b575279fa44fb887308c609debab2, type: 2}
   recipeDatabase: {fileID: 11400000, guid: f89a5f6ee0c2c584488a6e6f29f6a2e4, type: 2}
   shopItemDatabase: {fileID: 11400000, guid: 7cafd9c44e8954e40aabbdf478c2b120, type: 2}
+  eventsDatabase: {fileID: 11400000, guid: 261481b60ea994d0dbe2262859ff6988, type: 2}
 --- !u!4 &1258908276
 Transform:
   m_ObjectHideFlags: 0

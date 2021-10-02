@@ -36,9 +36,6 @@ public class ClownController : MonoBehaviour
     [SerializeField] private AudioClip alertSound;
     [SerializeField] private AudioClip rangedSound;
 
-    // Called when the clown dies
-    [SerializeField] private UnityEvent whenClownKilledCallback;
-
     private GameObject hpBar;
     private Image hpBarFull;
     private float health;
@@ -64,7 +61,7 @@ public class ClownController : MonoBehaviour
     private bool coroutineSpawnRunning = false;
     private bool damageCoroutine = false;
     private string prevFoot = "leftFoot";
- 
+
     public enum State
     {
         Roaming,
@@ -97,10 +94,10 @@ public class ClownController : MonoBehaviour
 
     //SpawnsClown at player position
     public void SpawnClown()
-	{
+    {
         gameObject.transform.parent.gameObject.SetActive(true);
         transform.position = player.position;
-	}
+    }
 
     //Destroys any spawned mosnters when player dies
     public void DeSpawnClown()
@@ -108,11 +105,6 @@ public class ClownController : MonoBehaviour
         gameObject.transform.parent.gameObject.SetActive(false);
         transform.position = player.position;
         spawnAttackScript.destroySpawnPoints();
-    }
-
-    public void AddClownKilledCallback(UnityEvent evnt)
-    {
-        whenClownKilledCallback = evnt;
     }
 
     private void SetupHpBar()
@@ -140,7 +132,7 @@ public class ClownController : MonoBehaviour
     public void HandleHit(float damage)
     {
         if (!damageCoroutine)
-		{
+        {
             damageCoroutine = true;
             StartCoroutine(invincibilityFrame());
             this.health -= damage;
@@ -155,8 +147,9 @@ public class ClownController : MonoBehaviour
                 spawnAttackScript.destroySpawnPoints();
                 //Don't rainburgers yet
                 //endingBurgers.GetComponent<SpawnBurger>().callRainBurger();
-                whenClownKilledCallback.Invoke();
-                StartCoroutine("WaitZeroPointOneSecondBeforeKilling");
+                UIController.instance.ShowWinPanel();
+                //whenClownKilledCallback.Invoke();
+                StartCoroutine(WaitZeroPointOneSecondBeforeKilling());
             }
         }
 
@@ -169,7 +162,7 @@ public class ClownController : MonoBehaviour
     }
 
     private IEnumerator WaitZeroPointOneSecondBeforeKilling()
-	{
+    {
         yield return new WaitForSeconds(0.1f);
         Destroy(hpBar);
         Destroy(gameObject);
@@ -216,7 +209,8 @@ public class ClownController : MonoBehaviour
                 if (!openingMouth)
                 {
                     lowerJaw.localPosition = Vector3.Lerp(localFinalPosition, localPosition, interpolationRatio);
-                } else
+                }
+                else
                 {
                     lowerJaw.localPosition = new Vector3(
                         lowerJaw.localPosition.x,
@@ -244,7 +238,7 @@ public class ClownController : MonoBehaviour
                 if (openingMouth)
                 {
                     lowerJaw.localPosition = Vector3.Lerp(localPosition, localFinalPosition, interpolationRatio);
-                } 
+                }
                 if (!coroutineRangedRunning)
                 {
                     if (health / maxHealth < 0.3f)
@@ -284,7 +278,7 @@ public class ClownController : MonoBehaviour
                 // Bob head and jaw for demostration
                 transform.position = new Vector3(
                         transform.position.x,
-                        originalY + Mathf.Sin(Time.fixedTime * Mathf.PI * 1) * 0.2f ,
+                        originalY + Mathf.Sin(Time.fixedTime * Mathf.PI * 1) * 0.2f,
                         transform.position.z);
                 lowerJaw.localPosition = new Vector3(
                         lowerJaw.localPosition.x,
@@ -330,9 +324,9 @@ public class ClownController : MonoBehaviour
 
     // Returns state for clownController for foot
     public State GetState()
-	{
+    {
         return state;
-	}
+    }
 
     IEnumerator idleCooldownCoroutine()
     {
@@ -349,8 +343,9 @@ public class ClownController : MonoBehaviour
         if (distanceToPlayer >= stoppingDistance)
         {
             state = State.Roaming;
-        } else
-		{
+        }
+        else
+        {
             int chooseAttack = Random.Range(1, 6);
             switch (chooseAttack)
             {
@@ -383,10 +378,11 @@ public class ClownController : MonoBehaviour
         {
             rangedAttackScript.attackPlayerStart();
             if (barrage == 0)
-			{
+            {
                 yield return new WaitForSeconds(1f);
-            } else
-			{
+            }
+            else
+            {
                 yield return new WaitForSeconds(0.5f);
             }
             rangedAttackScript.attackPlayerStartFlashing();
@@ -494,7 +490,7 @@ public class ClownController : MonoBehaviour
             rightFoot.SetTarget(info.point, info.normal);
             prevFoot = "rightFoot";
         }
-	}
+    }
 
 
 }
