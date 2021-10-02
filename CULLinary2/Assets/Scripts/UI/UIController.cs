@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
 
 public class UIController : SingletonGeneric<UIController>
 {
@@ -21,6 +23,10 @@ public class UIController : SingletonGeneric<UIController>
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject playerDeathMenu;
     [SerializeField] private GameObject endOfDayMenu;
+    [Header("Fixed HUD References")]
+    [SerializeField] private Image healthBar;
+    [SerializeField] private TMP_Text healthText;
+    [SerializeField] private Image staminaCircleImage;
 
     private KeyCode ToggleInventoryKeyCode;
     private KeyCode ToggleOrdersKeyCode;
@@ -251,6 +257,13 @@ public class UIController : SingletonGeneric<UIController>
         }
     }
 
+    public void UpdateFixedHUD()
+    {
+        healthBar.fillAmount = PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth;
+        healthText.text = Mathf.CeilToInt(PlayerManager.instance.currentHealth) + "/" + Mathf.CeilToInt(PlayerManager.instance.maxHealth);
+        staminaCircleImage.fillAmount = PlayerManager.instance.currentStamina / PlayerManager.instance.maxStamina;
+    }
+
     // Call this to update all the UI
     // 
     // This should be able to be called multiple times without 
@@ -264,6 +277,7 @@ public class UIController : SingletonGeneric<UIController>
         OrdersManager.instance.StopAllCoroutines();
 
         // Start the coroutines again
+
         InventoryManager.instance.StartCoroutine(InventoryManager.instance.UpdateUI());
         RecipeManager.instance.StartCoroutine(RecipeManager.instance.UpdateUI());
         OrdersManager.instance.StartCoroutine(OrdersManager.instance.UpdateUI());

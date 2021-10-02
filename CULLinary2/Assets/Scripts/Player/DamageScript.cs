@@ -19,8 +19,11 @@ public class DamageScript : MonoBehaviour
 
     private int CalculateDamage()
     {
-        float baseDamage = PlayerManager.instance ? PlayerManager.instance.meleeDamage : 10;
-        float additionalDamage = weaponDamage * Random.Range(0.8f, 1.2f);
-        return Mathf.RoundToInt(baseDamage + additionalDamage);
+        bool isCritical = PlayerManager.instance != null && PlayerManager.instance.criticalChance > 0 ? Random.Range(0, 100) < PlayerManager.instance.criticalChance : false;
+        float baseDamage = PlayerManager.instance != null ? PlayerManager.instance.meleeDamage : 10;
+        float additionalDamage = weaponDamage * Random.Range(0.85f, 1.15f);
+        float finalDamage = baseDamage + additionalDamage;
+        float finalDamageWithCrit = isCritical ? finalDamage * 2 : finalDamage;
+        return Mathf.RoundToInt(finalDamageWithCrit);
     }
 }

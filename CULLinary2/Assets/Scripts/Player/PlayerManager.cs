@@ -8,9 +8,12 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     public float maxHealth = 200f;
     public float currentStamina = 100f;
     public float maxStamina = 100f;
-    public float meleeDamage = 20f;
+    public float meleeDamage = 10f;
+    public int criticalChance = 0;
+    public int evasionChance = 0;
+
     public bool[] recipesUnlocked = new bool[3] { true, true, true }; //use index
-    public int[] upgradesArray = new int[3] { 0, 0, 0 };
+    public int[] upgradesArray = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     public List<InventoryItem> itemList = new List<InventoryItem>();
     public int currentMoney;
 
@@ -33,6 +36,8 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.upgradesArray = upgradesArray;
         playerData.meleeDamage = meleeDamage;
         playerData.currentMoney = currentMoney;
+        playerData.evasionChance = evasionChance;
+        playerData.criticalChance = criticalChance;
         SaveSystem.SaveData(playerData);
     }
 
@@ -60,6 +65,8 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         upgradesArray = playerData.upgradesArray;
         meleeDamage = playerData.meleeDamage;
         currentMoney = playerData.currentMoney;
+        criticalChance = playerData.criticalChance;
+        evasionChance = playerData.evasionChance;
     }
 
     public PlayerData CreateBlankData()
@@ -80,6 +87,8 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         recipesUnlocked = playerData.recipesUnlocked;
         upgradesArray = playerData.upgradesArray;
         currentMoney = playerData.currentMoney;
+        criticalChance = playerData.criticalChance;
+        evasionChance = playerData.evasionChance;
     }
 
     private static string SerializeInventory(List<InventoryItem> itemList)

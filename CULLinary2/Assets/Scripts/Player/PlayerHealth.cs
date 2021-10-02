@@ -125,11 +125,17 @@ public class PlayerHealth : MonoBehaviour
             return false;
         }
 
+        if (PlayerManager.instance.evasionChance > 0 && Random.Range(0, 100) < PlayerManager.instance.evasionChance)
+        {
+            SpawnDamageCounter("MISS");
+            return false;
+        }
+
         PlayerManager.instance.currentHealth = Mathf.Max(0f, PlayerManager.instance.currentHealth - damage);
         float currentHealth = PlayerManager.instance.currentHealth;
         float maxHealth = PlayerManager.instance.maxHealth;
         DisplayOnUI(currentHealth, maxHealth);
-        SpawnDamageCounter(damage);
+        SpawnDamageCounter(damage.ToString());
         if (drowning) { SpawnDrowningAlert(); }
         ScreenFlash.Instance.Flash(0.01f * damage, 0.4f, 0.1f, 0.4f);
         ScreenShake.Instance.Shake(0.01f * damage, 0.4f, 0.1f, 0.4f);
@@ -164,10 +170,10 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    private void SpawnDamageCounter(float damage)
+    private void SpawnDamageCounter(string damageText)
     {
         GameObject damageCounter = Instantiate(damageCounter_prefab);
-        damageCounter.transform.GetComponentInChildren<Text>().text = damage.ToString();
+        damageCounter.transform.GetComponentInChildren<Text>().text = damageText.ToString();
         damageCounter.transform.SetParent(canvasDisplay.transform);
         damageCounter.transform.position = cam.WorldToScreenPoint(transform.position);
     }
