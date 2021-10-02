@@ -10,7 +10,6 @@ public class SpecialEventManager : SingletonGeneric<SpecialEventManager>
     // Called when the clown dies
     [SerializeField] private UnityEvent whenClownKilledCallback;
 
-    
     public void PlayEvent(int eventId)
     {
         if (eventId == 1)
