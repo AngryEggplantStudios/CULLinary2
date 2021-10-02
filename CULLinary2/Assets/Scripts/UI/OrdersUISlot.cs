@@ -7,6 +7,7 @@ using TMPro;
 public class OrdersUISlot : MonoBehaviour
 {
     public GameObject cookableIndicator;
+    public GameObject deliverableButton;
     public GameObject deliverableIndicator;
     public Image productIcon;
     public GameObject ingredientsContainer;
@@ -51,11 +52,13 @@ public class OrdersUISlot : MonoBehaviour
 
         if (inInventory)
         {
+            deliverableButton.SetActive(true);
             deliverableIndicator.SetActive(true);
             ingredientsContainer.SetActive(false);
         }
         else
         {
+            deliverableButton.SetActive(false);
             deliverableIndicator.SetActive(false);
             ingredientsContainer.SetActive(true);
 
