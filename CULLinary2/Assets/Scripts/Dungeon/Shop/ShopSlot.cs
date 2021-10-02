@@ -34,7 +34,7 @@ public class ShopSlot : MonoBehaviour
         int currentMoney = PlayerManager.instance.currentMoney;
 
         shopItemName.text = shopItem.itemName;
-        shopItemIcon.sprite = shopItem.icon;
+        shopItemIcon.sprite = shopItem.iconArr[level];
         itemDescription.text = shopItem.description[level];
 
         if (level >= shopItem.maxLevel)
