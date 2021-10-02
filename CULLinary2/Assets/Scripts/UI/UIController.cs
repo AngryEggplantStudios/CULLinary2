@@ -365,12 +365,12 @@ public class UIController : SingletonGeneric<UIController>
         {
             if (Input.GetKeyDown(rightUiTabKeyCode))
             {
-                currentUiPage = (currentUiPage + 1) % 5;
+                currentUiPage = (currentUiPage + 1) % 4;
                 HandlePageChange();
             }
             else if (Input.GetKeyDown(leftUiTabKeyCode))
             {
-                currentUiPage = (currentUiPage + 4) % 5;
+                currentUiPage = (currentUiPage + 3) % 4;
                 HandlePageChange();
             }
             else if (Input.GetKeyDown(closeUiKeyCode))
@@ -448,6 +448,6 @@ public enum UIPage
     INVENTORY = 0,
     ORDERS = 1,
     RECIPES = 2,
-    CREATURES = 3,
-    MAP = 4
+    CREATURES = 3003,
+    MAP = 3
 }
