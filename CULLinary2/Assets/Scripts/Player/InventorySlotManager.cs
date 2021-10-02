@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class InventorySlotManager : MonoBehaviour
+public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
 {
     [Header("Inventory Menu References")]
     [SerializeField] private Image itemMainIcon;
@@ -12,6 +12,18 @@ public class InventorySlotManager : MonoBehaviour
     [SerializeField] private TMP_Text itemDescription;
     private InventorySlot[] slots;
     private int selectedSlotId;
+
+    public override void Awake()
+    {
+        base.Awake();
+        slots = gameObject.GetComponentsInChildren<InventorySlot>();
+        int i = 0;
+        foreach (InventorySlot slot in slots)
+        {
+            slot.SetupSlot(i);
+            i++;
+        }
+    }
     public void HandleClick(int slotId)
     {
         InventorySlot itemSlot = slots[slotId];
@@ -87,8 +99,5 @@ public class InventorySlotManager : MonoBehaviour
         }
     }
 
-    private void Awake()
-    {
-        slots = gameObject.GetComponentsInChildren<InventorySlot>();
-    }
+
 }

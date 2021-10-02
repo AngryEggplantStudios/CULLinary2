@@ -8,6 +8,14 @@ public class InventorySlot : MonoBehaviour
     [SerializeField] private TMP_Text itemName;
     [SerializeField] private TMP_Text itemDescription;
     public InventoryItem item;
+    public int slotId;
+
+    public void SetupSlot(int index)
+    {
+        slotId = index;
+        Button button = GetComponent<Button>();
+        button.onClick.AddListener(() => InventorySlotManager.instance.HandleClick(slotId));
+    }
 
     public void AddItem(InventoryItem newItem)
     {
