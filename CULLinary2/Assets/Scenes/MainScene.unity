@@ -437,6 +437,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &294325015 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6662030478417323858, guid: 146f72df1638140838a4412319be002a, type: 3}
+  m_PrefabInstance: {fileID: 674865424}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &302544223 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4943754348278179382, guid: 4180c73d6e91a2048826a68a1d901107, type: 3}
@@ -494,13 +505,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cd1314ded2a14fa79c5f504f76054e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 200
+  currentHealth: 100
   maxHealth: 200
   currentStamina: 100
   maxStamina: 100
   meleeDamage: 10
   criticalChance: 0
   evasionChance: 0
+  consumables: 030000000000000000000000
   recipesUnlocked: 010101
   upgradesArray: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
   itemList: []
@@ -554,6 +566,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[2]
       value: 
       objectReference: {fileID: 2100000, guid: f55e4660ab4e51243b70270c852d6990, type: 2}
+    - target: {fileID: 1248320868956174961, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
+      propertyPath: healthPotions
+      value: 
+      objectReference: {fileID: 674865429}
     - target: {fileID: 5094845029112640305, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -4175,6 +4191,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6662030477079287029, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6662030477119560929, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -5255,6 +5275,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6662030478942902980, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6662030478942902983, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -5454,6 +5478,10 @@ PrefabInstance:
     - target: {fileID: 6954286959074105637, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6966430482304226812, guid: 146f72df1638140838a4412319be002a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7035027166446199027, guid: 146f72df1638140838a4412319be002a, type: 3}
       propertyPath: m_AnchorMax.y
@@ -6194,6 +6222,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae0199c415359264b88c9fbdc56d48bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &674865429 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4708944968436144839, guid: 146f72df1638140838a4412319be002a, type: 3}
+  m_PrefabInstance: {fileID: 674865424}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &674865430 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 799308412960787452, guid: 146f72df1638140838a4412319be002a, type: 3}
@@ -6869,6 +6908,7 @@ MonoBehaviour:
   - {fileID: 563418742}
   healthBar: {fileID: 1039293595}
   healthAmount: {fileID: 960776684}
+  healthPotionsInventory: {fileID: 294325015}
 --- !u!4 &1111925686
 Transform:
   m_ObjectHideFlags: 0

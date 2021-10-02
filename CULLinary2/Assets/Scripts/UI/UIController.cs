@@ -28,11 +28,10 @@ public class UIController : SingletonGeneric<UIController>
     [SerializeField] private Image healthBar;
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private Image staminaCircleImage;
+    [SerializeField] private TMP_Text healthPotions;
     [Header("Winning Screen References")]
     [SerializeField] private AudioSource winningAudio;
     [SerializeField] private GameObject winPanel;
-
-
     private KeyCode ToggleInventoryKeyCode;
     private KeyCode ToggleOrdersKeyCode;
     private KeyCode ToggleRecipesKeyCode;
@@ -44,9 +43,9 @@ public class UIController : SingletonGeneric<UIController>
     private KeyCode closeUiKeyCode;
     private int currentUiPage;
     private int currentFireplaceUiPage;
-    private bool isMenuActive = false;
-    private bool isFireplaceActive = false;
-    private bool isPaused = false;
+    public bool isMenuActive = false;
+    public bool isFireplaceActive = false;
+    public bool isPaused = false;
 
     // For interacting with objects
     private PlayerInteractable currentInteractable = null;
@@ -74,6 +73,7 @@ public class UIController : SingletonGeneric<UIController>
 
     public void SaveAndQuit()
     {
+        isPaused = false;
         Time.timeScale = 1;
         PlayerManager.instance.SaveData(InventoryManager.instance.itemListReference);
         SceneManager.LoadScene((int)SceneIndexes.MAIN_MENU);
@@ -83,6 +83,7 @@ public class UIController : SingletonGeneric<UIController>
     {
         if (!playerDeathMenu.activeSelf)
         {
+            isPaused = true;
             Time.timeScale = 0;
             playerDeathMenu.SetActive(true);
         }
@@ -90,6 +91,7 @@ public class UIController : SingletonGeneric<UIController>
 
     public void RespawnPlayer()
     {
+        isPaused = false;
         GameTimer.instance.GoToNextDay();
         playerDeathMenu.SetActive(false);
         Time.timeScale = 1;
@@ -100,6 +102,7 @@ public class UIController : SingletonGeneric<UIController>
     {
         if (endOfDayMenu)
         {
+            isPaused = true;
             endOfDayMenu.SetActive(true);
             EndOfDayPanelStatistics stats = endOfDayMenu.GetComponent<EndOfDayPanelStatistics>();
             stats.UpdateStatistics(GameTimer.GetDayNumber(),
@@ -112,6 +115,7 @@ public class UIController : SingletonGeneric<UIController>
 
     public void ContinueToNextDay()
     {
+        isPaused = false;
         endOfDayMenu.SetActive(false);
         SceneTransitionManager.instance.FadeOutImage();
         Invoke("ResumeGameTimer", 1);
@@ -292,6 +296,7 @@ public class UIController : SingletonGeneric<UIController>
         healthBar.fillAmount = PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth;
         healthText.text = Mathf.CeilToInt(PlayerManager.instance.currentHealth) + "/" + Mathf.CeilToInt(PlayerManager.instance.maxHealth);
         staminaCircleImage.fillAmount = PlayerManager.instance.currentStamina / PlayerManager.instance.maxStamina;
+        healthPotions.text = "x " + PlayerManager.instance.consumables[0];
     }
 
     // Call this to update all the UI

@@ -11,7 +11,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     public float meleeDamage = 10f;
     public int criticalChance = 0;
     public int evasionChance = 0;
-
+    public int[] consumables = new int[3] { 0, 0, 0 };
     public bool[] recipesUnlocked = new bool[3] { true, true, true }; //use index
     public int[] upgradesArray = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     public List<InventoryItem> itemList = new List<InventoryItem>();
@@ -38,6 +38,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.currentMoney = currentMoney;
         playerData.evasionChance = evasionChance;
         playerData.criticalChance = criticalChance;
+        playerData.consumables = consumables;
         SaveSystem.SaveData(playerData);
     }
 
@@ -57,16 +58,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     public void LoadData()
     {
         playerData = SaveSystem.LoadData();
-        currentHealth = playerData.currentHealth;
-        maxHealth = playerData.maxHealth;
-        currentStamina = playerData.currentStamina;
-        maxStamina = playerData.maxStamina;
-        recipesUnlocked = playerData.recipesUnlocked;
-        upgradesArray = playerData.upgradesArray;
-        meleeDamage = playerData.meleeDamage;
-        currentMoney = playerData.currentMoney;
-        criticalChance = playerData.criticalChance;
-        evasionChance = playerData.evasionChance;
+        SetupItems();
     }
 
     public PlayerData CreateBlankData()
@@ -76,9 +68,8 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         return playerData;
     }
 
-    public void SetupManager()
+    public void SetupItems()
     {
-        itemList.Clear();
         currentHealth = playerData.currentHealth;
         maxHealth = playerData.maxHealth;
         currentStamina = playerData.currentStamina;
@@ -89,6 +80,13 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         currentMoney = playerData.currentMoney;
         criticalChance = playerData.criticalChance;
         evasionChance = playerData.evasionChance;
+        consumables = playerData.consumables;
+    }
+
+    public void SetupManager()
+    {
+        itemList.Clear();
+        SetupItems();
     }
 
     private static string SerializeInventory(List<InventoryItem> itemList)
