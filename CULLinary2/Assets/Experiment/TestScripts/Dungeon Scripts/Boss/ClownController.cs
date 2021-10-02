@@ -74,6 +74,7 @@ public class ClownController : MonoBehaviour
     void Start()
     {
         state = State.Idle;
+        gameObject.tag = "ClownBoss";
         player = GameObject.FindGameObjectWithTag("Player").transform;
         playerCamera = player.GetComponentInChildren<Camera>();
         if (GameCanvas.instance != null)
@@ -102,9 +103,9 @@ public class ClownController : MonoBehaviour
     //Destroys any spawned mosnters when player dies
     public void DeSpawnClown()
     {
-        gameObject.transform.parent.gameObject.SetActive(false);
-        transform.position = player.position;
         spawnAttackScript.destroySpawnPoints();
+        Destroy(hpBar);
+        Destroy(gameObject.transform.parent.gameObject);
     }
 
     private void SetupHpBar()
@@ -198,7 +199,7 @@ public class ClownController : MonoBehaviour
                 // Bob head and jaw for demostration
                 transform.position = new Vector3(
                         transform.position.x,
-                        originalY + Mathf.Sin(Time.fixedTime * Mathf.PI * 1) * 0.2f + 15.0f,
+                        originalY + Mathf.Sin(Time.fixedTime * Mathf.PI * 1) * 0.2f,
                         transform.position.z);
                 lowerJaw.localPosition = new Vector3(
                         lowerJaw.localPosition.x,
@@ -352,14 +353,14 @@ public class ClownController : MonoBehaviour
                 default:
                 case 1:
                 case 2:
-                    state = State.MeleeAttack;
+                    state = State.RangedAttack;
                     break;
                 case 3:
-                    state = State.MeleeAttack;
+                    state = State.RangedAttack;
                     break;
                 case 4:
                 case 5:
-                    state = State.MeleeAttack;
+                    state = State.RangedAttack;
                     break;
             }
         }
