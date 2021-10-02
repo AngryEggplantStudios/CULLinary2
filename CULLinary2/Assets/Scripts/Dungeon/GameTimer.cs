@@ -112,6 +112,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
     {
         // happens after end of day screen is shown
         // reset player health and teleport player to origin for now
+        SpecialEventManager.instance.ClearCurrentEvents();
         GameObject player = GameObject.FindWithTag("Player");
         player.GetComponent<PlayerHealth>().RestoreToFull();
         player.GetComponent<PlayerStamina>().RestoreToFull();

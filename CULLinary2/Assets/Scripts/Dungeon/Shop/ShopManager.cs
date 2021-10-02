@@ -128,6 +128,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
 
     public void UpdateShop()
     {
+        selectedSlotId = -1;
         foreach (ShopSlot slot in slots)
         {
             slot.UpdateUI(slot.shopItem);
@@ -135,9 +136,4 @@ public class ShopManager : SingletonGeneric<ShopManager>
         moneyText.text = PlayerManager.instance.currentMoney.ToString();
     }
 
-    public void LoadShop()
-    {
-        selectedSlotId = -1;
-        UpdateShop();
-    }
 }
