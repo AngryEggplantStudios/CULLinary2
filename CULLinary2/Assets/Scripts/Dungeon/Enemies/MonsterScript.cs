@@ -360,4 +360,9 @@ public class MonsterScript : Monster
         monsterHealth = health;
         distanceTriggered = miniBossDistanceTriggered;
     }
+
+    public float getStopChaseDistance()
+	{
+        return this.stopChase;
+	}
 }
