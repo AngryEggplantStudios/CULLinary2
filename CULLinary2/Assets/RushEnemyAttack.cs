@@ -30,8 +30,8 @@ public class RushEnemyAttack : MonsterAttack
     public override void attackPlayerStart()
     {
         attackCollider.enabled = true;
-        canAttack = true;
-    }
+/*        canAttack = true;
+*/    }
 
     public override void attackPlayerDealDamage()
     {
@@ -43,10 +43,10 @@ public class RushEnemyAttack : MonsterAttack
     {
         attackCollider.enabled = false;
         canDealDamage = false;
-        canAttack = false;
-    }
+/*        canAttack = false;
+*/    }
 
-    private void OnTriggerStay(Collider other)
+/*    private void OnTriggerStay(Collider other)
     {
         if (canDealDamage)
         {
@@ -59,7 +59,7 @@ public class RushEnemyAttack : MonsterAttack
                 }
             }
         }
-    }
+    }*/
 
     private void OnTriggerEnter(Collider other)
     {
@@ -67,6 +67,7 @@ public class RushEnemyAttack : MonsterAttack
         if (target != null)
         {
             healthScript = target;
+            bool hitSuccess = healthScript.HandleHit(attackDamage);
         }
     }
 

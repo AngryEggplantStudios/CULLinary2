@@ -14,6 +14,7 @@ public class RushEnemyScript : MonoBehaviour
     [SerializeField] private float wanderTimer;
     [SerializeField] private float minDist;
     [SerializeField] private float distToCharge;
+    [SerializeField] Rigidbody rb;
 
     public LineRenderer debugLine;
     // Variables for goingBackToStart
@@ -41,6 +42,7 @@ public class RushEnemyScript : MonoBehaviour
     [Tooltip("The minimum distance to stop. Has to be equal to Stopping distance. Cannot use stopping distance directly else navmesh agent will keep bumping into player/")]
     private float reachedPositionDistance;
     private float stopChaseDistance = 50f;
+    private Vector3 roamingPosition;
 
     // Start is called before the first frame update
     void Start()
@@ -69,11 +71,13 @@ public class RushEnemyScript : MonoBehaviour
         timer += Time.deltaTime;
         if (timer >= idleTimer)
         {
-            Vector3 newPos = RandomNavSphere(startingPosition, wanderRadius, -1, minDist);
-            agent.SetDestination(newPos);
-            timer = 0;
-            enemyScript.SetStateMachine(MonsterState.Roaming);
+			Vector3 newPos = RandomNavSphere(startingPosition, wanderRadius, -1, minDist);
+			/*            agent.SetDestination(newPos);
+			*/
+			timer = 0;
             roamPosition = newPos;
+            transform.LookAt(roamPosition);
+            enemyScript.SetStateMachine(MonsterState.Roaming);
 
             if (lineTest)
             {
@@ -92,13 +96,34 @@ public class RushEnemyScript : MonoBehaviour
         timer += Time.deltaTime;
         Vector3 distanceToFinalPosition = transform.position - roamPosition;
         //without this the eggplant wandering will be buggy as it may be within the Navmesh Obstacles itself
+        Debug.Log("RoamPosition");
+        Debug.Log(roamPosition);
+        Debug.Log(distanceToFinalPosition);
+        transform.LookAt(roamPosition);
         if (timer >= wanderTimer || distanceToFinalPosition.magnitude < reachedPositionDistance)
         {
             timer = 0;
-            agent.SetDestination(gameObject.transform.position);
-            animator.SetBool("isMoving", false);
+            // stop moving randomly
+            /*            agent.SetDestination(gameObject.transform.position);
+            */
             enemyScript.SetStateMachine(MonsterState.Idle);
+        } else
+		{
+            if (Vector3.Distance(transform.position, distanceToFinalPosition) >= reachedPositionDistance)
+            {
+                movingForward(20.0f);
+            }
+            else
+            {
+                // assume reached alr
+                animator.SetBool("isMoving", false);
+            }
         }
+    }
+
+    private void movingForward(float moveSpeed)
+	{
+        transform.position += transform.forward * moveSpeed * Time.deltaTime;
     }
 
     private void EnemyChase(float stopChaseDistance, Vector3 playerPosition)
@@ -119,8 +144,9 @@ public class RushEnemyScript : MonoBehaviour
         {
             playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
             slowlyRotateToLookAt(playerPositionWithoutYOffset);
-            agent.SetDestination(gameObject.transform.position);
-            // Target within attack range
+            /*            agent.SetDestination(gameObject.transform.position);
+            */            // Target within attack range
+            movingForward(20.0f);
             enemyScript.SetStateMachine(MonsterState.AttackTarget);
             // Add new state to attack player
         }
@@ -138,36 +164,47 @@ public class RushEnemyScript : MonoBehaviour
 
     }
 
+    /**
+    When charging enemy is chasing the player, use Navmesh, when charging the player, use rigidbody to navigate
+    4 states:
+    State 1: Chasing player
+    State 2: Stop + Rev up charge
+    State 3: Charge
+    State 4: End the charge and cool down, while checking if player out of position / range
+    **/
     private void EnemyAttackPlayer(Vector3 playerPosition, bool ableToMove)
     {
         Vector3 playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
         animator.ResetTrigger("attack");
         if (canAttack == true)
         {
-            // Debug.Log("Setting attack trigger");
+            Debug.Log("Setting attack trigger");
             animator.SetTrigger("attack");
             amInAttackState = true;
             canAttack = false;
+            //need attackEnded to tell when it has stopped charging and is cooling down.
             StartCoroutine(DelayFire());
         }
 
-        if (!enemyAttack.attackStarted())
+        if (!amInAttackState)
         {
-            //Debug.Log("Setting charge diirection to null"); 
-            amInAttackState = false;
+            //AttackEnded
+            Debug.Log("Setting charge diirection to null"); 
             chargeDirection = null;
             //agent.speed = presetSpeed;
             //agent.acceleration = presetAccel;
             /*            enemyScript.setStateMachine(State.Idle);*/
         }
         var points = new Vector3[2];
-
-        bool canStartCharging = enemyAttack.getCanDealDamage();
-        if (canStartCharging && !chargeDirection.HasValue)
+        
+        // old function based on animation events; no longer use this anymore reenable when new animation is in
+        //bool canStartCharging = enemyAttack.getCanDealDamage()
+        if (amInAttackState && !chargeDirection.HasValue)
         {
-            Debug.Log("In charging");
-            agent.speed = chargingSpeed;
-            agent.acceleration = chargingAccel;
+            //State 3
+            agent.enabled = false;
+/*            agent.speed = chargingSpeed;
+            agent.acceleration = chargingAccel;*/ // previous navmesh code
             Debug.Log("StartCharging");
             //Initialize Start charging player
             //chargeDirection = playerPositionWithoutYOffset;
@@ -176,30 +213,48 @@ public class RushEnemyScript : MonoBehaviour
 
             chargeDirection = unitVectorForChargePosition * distToCharge;
             chargeDirection = chargeDirection + transform.position;
-
-            //charge towards nearest obstacle if hit
-            bool blocked = NavMesh.Raycast(transform.position, chargeDirection.Value, out navHit, NavMesh.AllAreas);
-            if (blocked)
-            {
-                //charge to the limit of nearest obstacle
-                chargeDirection = new Vector3(navHit.position.x - 0.01f, playerPositionWithoutYOffset.y, navHit.position.z - 0.01f);
-            }
-            points[0] = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            // add additional logic to adjust the position of potato
+			//charge towards nearest obstacle if hit
+/*			bool blocked = NavMesh.Raycast(transform.position, chargeDirection.Value, out navHit, NavMesh.AllAreas);
+			if (blocked)
+			{
+				//charge to the limit of nearest obstacle
+				chargeDirection = new Vector3(navHit.position.x - 1f, playerPositionWithoutYOffset.y, navHit.position.z - 1f);
+			}*/
+			points[0] = new Vector3(transform.position.x, transform.position.y, transform.position.z);
             points[1] = chargeDirection.Value;
             //transform.position = chargeDirection.Value;
-            agent.SetDestination(chargeDirection.Value);
+            transform.LookAt(chargeDirection.Value);
+            movingForward(40.0f);
             debugLine.SetPositions(points);
         }
-        else if (canStartCharging && chargeDirection.HasValue)
+        else if (amInAttackState && chargeDirection.HasValue)
         {
+            agent.enabled = false;
+            Debug.Log("In middle of charging");
             //Destination of charge already set, continue charging
-            agent.SetDestination(chargeDirection.Value);
+            transform.LookAt(chargeDirection.Value);
+            movingForward(40.0f);
+            //agent.SetDestination(chargeDirection.Value);*/
         }
         else
         {
+            agent.enabled = true;
+            agent.SetDestination(playerPositionWithoutYOffset);
+            //enable navmes to follow the player?
+            Debug.Log("DoingNothing");
             // am revving up to charge, do nothing
         }
-        if (!chargeDirection.HasValue)
+        if (chargeDirection.HasValue)
+		{
+            float distanceToFinalChargePosition = Vector3.Distance(transform.position, chargeDirection.Value);
+            if (distanceToFinalChargePosition <= reachedPositionDistance)
+			{
+                // reached the chargePosition
+                amInAttackState = false;
+			}
+        }
+        else
         {
             //means not charging
             transform.LookAt(playerPositionWithoutYOffset);
@@ -207,7 +262,7 @@ public class RushEnemyScript : MonoBehaviour
             //cooling down cant move
             if (directionVector >= stopChaseDistance + 0.1f)
             {
-                // Target within attack range
+                // Target not within attack range go back to start, else if not maintain in attack state
                 Debug.Log("sTOP cHASING Tt");
                 enemyScript.SetStateMachine(MonsterState.GoingBackToStart);
             }
@@ -271,6 +326,6 @@ public class RushEnemyScript : MonoBehaviour
         transform.rotation = Quaternion.Lerp(
             transform.rotation,
             Quaternion.Euler(Quaternion.LookRotation(target - transform.position).eulerAngles),
-            Time.deltaTime * 3.0f);
+            Time.deltaTime * 6.0f);
     }
 }
