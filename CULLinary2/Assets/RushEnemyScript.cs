@@ -236,7 +236,7 @@ public class RushEnemyScript : MonoBehaviour
                 transform.LookAt(playerPositionWithoutYOffset);
                 float directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
                 //cooling down cant move
-                Debug.Log(directionVector);
+                //Debug.Log(directionVector);
                 if (directionVector >= stopChaseDistance)
                 {
                     // Target not within attack range go back to start, else if not maintain in attack state
