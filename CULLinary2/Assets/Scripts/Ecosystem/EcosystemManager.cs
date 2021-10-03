@@ -34,7 +34,8 @@ public class EcosystemManager : MonoBehaviour
             Debug.Log(string.Format("{0} population level: {1} ({2})", pop.GetName(), pop.GetLevel(), pop.GetCurrentNumber()));
         }
         GameTimer.OnStartNewDay += CheckNaturalPopulationIncrease;
-        GameTimer.OnStartNewDay += () => {
+        GameTimer.OnStartNewDay += () =>
+        {
             EcosystemManager.numOfMonstersKilledToday = 0;
         };
     }
@@ -70,10 +71,14 @@ public class EcosystemManager : MonoBehaviour
         }
     }
 
-    public static void ResetPopulationToNormal(MonsterName name)
+    public static void OnMiniBossDeath(MonsterName name)
     {
         Population pop = GetPopulation(name);
-        pop.ResetToNormal();
+        if (pop.IsOverpopulated())
+        {
+            Debug.Log("resetting population to normal for " + name);
+            pop.ResetToNormal();
+        }
     }
 
     public static Population GetPopulation(MonsterName monsterName)
@@ -114,7 +119,7 @@ public class EcosystemManager : MonoBehaviour
         Population pop = GetPopulation(name);
         pop.SetExtinct();
     }
-    
+
     // Gets the amount of monsters killed today so far
     public static int GetNumberOfMonstersKilledToday()
     {

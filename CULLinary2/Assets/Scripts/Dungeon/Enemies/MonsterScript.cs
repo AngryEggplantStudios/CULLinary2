@@ -114,39 +114,39 @@ public class MonsterScript : Monster
     private void Update()
     {
         if (playerTransform == null)
-		{
+        {
             playerTransform = GameObject.FindGameObjectWithTag("Player").transform; //Temp fix
         }
 
         switch (currentState)
         {
             default:
-                case MonsterState.Idle:
-                    checkIfDead();
-                    FindTarget();
-                    onEnemyIdle?.Invoke();
-                    break;
-                case MonsterState.Roaming:
-                    checkIfDead();
-                    FindTarget();
-                    onEnemyRoaming?.Invoke();
-                    break;
-                case MonsterState.ChaseTarget:
-                    checkIfDead();
-                    onEnemyChase?.Invoke(stopChase, playerTransform.position);
-                    break;
-                case MonsterState.AttackTarget:
-                    checkIfDead();
-                    // Hack to ensure attack trigger isn't triggered
-                    if (this.currentHealth > 0)
-                    {
-                        onEnemyAttack?.Invoke(playerTransform.position, canMoveDuringAttack);
-                    }
-                    break;
-                case MonsterState.GoingBackToStart:
-                    checkIfDead();
-                    onEnemyReturn?.Invoke();
-                    break;
+            case MonsterState.Idle:
+                checkIfDead();
+                FindTarget();
+                onEnemyIdle?.Invoke();
+                break;
+            case MonsterState.Roaming:
+                checkIfDead();
+                FindTarget();
+                onEnemyRoaming?.Invoke();
+                break;
+            case MonsterState.ChaseTarget:
+                checkIfDead();
+                onEnemyChase?.Invoke(stopChase, playerTransform.position);
+                break;
+            case MonsterState.AttackTarget:
+                checkIfDead();
+                // Hack to ensure attack trigger isn't triggered
+                if (this.currentHealth > 0)
+                {
+                    onEnemyAttack?.Invoke(playerTransform.position, canMoveDuringAttack);
+                }
+                break;
+            case MonsterState.GoingBackToStart:
+                checkIfDead();
+                onEnemyReturn?.Invoke();
+                break;
         }
 
         //Need to find a better way to update this?
@@ -180,7 +180,7 @@ public class MonsterScript : Monster
     }
 
     private void checkIfDead()
-	{
+    {
         if (this.currentHealth <= 0)
         {
             if (!deathCoroutine)
@@ -241,6 +241,7 @@ public class MonsterScript : Monster
 
     public override void HandleHit(float damage)
     {
+        Debug.Log("got hit");
         if (currentState != MonsterState.AttackTarget)
         {
             Alert();
@@ -265,9 +266,9 @@ public class MonsterScript : Monster
         SetupUI(damageCounter);
         damageUiElements.Add(damageCounter);
     }
-    
+
     private void DieAnimation()
-	{
+    {
         // Reset all triggers first to prevent interference of other animation states before deathj
         animator.ResetTrigger("attack");
         animator.SetBool("isMoving", false);
@@ -355,9 +356,11 @@ public class MonsterScript : Monster
         Destroy(gameObject);
     }
 
-    public void SetMiniBossValues(int health, float miniBossDistanceTriggered)
+    public void SetMiniBossValues(int health, float miniBossDistTriggered, float miniBossStopChase)
     {
+        currentHealth = health;
         monsterHealth = health;
-        distanceTriggered = miniBossDistanceTriggered;
+        distanceTriggered = miniBossDistTriggered;
+        stopChase = miniBossStopChase;
     }
 }

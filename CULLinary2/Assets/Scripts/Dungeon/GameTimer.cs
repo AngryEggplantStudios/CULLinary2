@@ -111,15 +111,20 @@ public class GameTimer : SingletonGeneric<GameTimer>
     public void GoToNextDay()
     {
         // happens after end of day screen is shown
+
         // reset player health and teleport player to origin for now
         SpecialEventManager.instance.ClearCurrentEvents();
         GameObject player = GameObject.FindWithTag("Player");
         player.GetComponent<PlayerHealth>().RestoreToFull();
         player.GetComponent<PlayerStamina>().RestoreToFull();
+        player.transform.position = new Vector3(0f, 0f, 0f); // TODO: go back to last saved campfire
+
         // no choice find clown by tag because clown might not be around at start of GameTimer.
         GameObject bossClown = GameObject.FindWithTag("ClownBoss");
-        bossClown.GetComponent<ClownController>().DeSpawnClown();
-        player.transform.position = new Vector3(0f, 0f, 0f); // TODO: go back to last saved campfire
+        if (bossClown)
+        {
+            bossClown.GetComponent<ClownController>().DeSpawnClown();
+        }
 
         // change time to next day
         gameTime = (float)System.Math.Round(sunrise, 2);
