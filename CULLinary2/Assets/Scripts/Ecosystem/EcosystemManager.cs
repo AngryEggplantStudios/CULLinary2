@@ -9,7 +9,7 @@ public class EcosystemManager : MonoBehaviour
     [SerializeField] private int numDaysToIncreaseFromExtinct = 2; // num days it takes to increase pop level naturally from extinct
 
     private static List<Population> populations = new List<Population> {
-        new Population(MonsterName.Potato, 20, 40, PopulationLevel.Normal),
+        new Population(MonsterName.Potato, 30, 80, PopulationLevel.Normal),
         new Population(MonsterName.Corn, 20, 40, PopulationLevel.Normal),
         new Population(MonsterName.Eggplant, 30, 60, PopulationLevel.Normal)
     };

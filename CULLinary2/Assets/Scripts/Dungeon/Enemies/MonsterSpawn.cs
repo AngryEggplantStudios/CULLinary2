@@ -71,12 +71,18 @@ public class MonsterSpawn : MonoBehaviour
 
     private void SpawnEnemies()
     {
-        int enemyNum = Random.Range(minEnemy, maxEnemy + 1);
-        // Debug.Log("spawning " + enemyNum + " for " + enemyToSpawn.name);
-        for (int i = 0; i < enemyNum; i++)
+        int numberToSpawn = GetNumberToSpawn();
+        for (int i = 0; i < numberToSpawn; i++)
         {
             InstantiateEnemy();
         }
+    }
+
+    private int GetNumberToSpawn()
+    {
+        int baseNum = Random.Range(minEnemy, maxEnemy + 1);
+        int numToSpawn = baseNum + enemyToSpawn.GetComponent<MonsterScript>().GetAdditionalSpawningNumber();
+        return numToSpawn;
     }
 
     private void InstantiateEnemy()

@@ -12,6 +12,7 @@ public class MonsterScript : Monster
     [SerializeField] private float distanceTriggered;
     [SerializeField] private float stopChase;
     [SerializeField] private GameObject lootDropped;
+    [SerializeField] private int additionalSpawningNumbers = 0;
     [HideInInspector] public GameObject spawner;
 
     [Header("UI Prefabs")]
@@ -362,5 +363,10 @@ public class MonsterScript : Monster
         monsterHealth = health;
         distanceTriggered = miniBossDistTriggered;
         stopChase = miniBossStopChase;
+    }
+
+    public int GetAdditionalSpawningNumber()
+    {
+        return additionalSpawningNumbers;
     }
 }
