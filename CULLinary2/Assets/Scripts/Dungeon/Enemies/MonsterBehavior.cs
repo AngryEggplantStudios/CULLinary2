@@ -50,6 +50,7 @@ public class MonsterBehavior : MonoBehaviour
 
     private void EnemyIdle()
     {
+        monsterScript.checkIfDead();
         animator.SetBool("isMoving", false);
         timer += Time.deltaTime;
         if (timer >= idleTimer)
