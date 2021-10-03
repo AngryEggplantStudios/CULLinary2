@@ -242,7 +242,6 @@ public class MonsterScript : Monster
 
     public override void HandleHit(float damage)
     {
-        Debug.Log("got hit");
         if (currentState != MonsterState.AttackTarget)
         {
             Alert();
