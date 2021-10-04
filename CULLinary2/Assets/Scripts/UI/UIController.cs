@@ -337,48 +337,32 @@ public class UIController : SingletonGeneric<UIController>
             return;
         }
 
-        if (Input.GetKeyDown(ToggleInventoryKeyCode))
+        if (!isFireplaceActive)
         {
-            UIController.instance.ToggleInventory();
-        }
-        else if (Input.GetKeyDown(ToggleOrdersKeyCode))
-        {
-            UIController.instance.ToggleOrders();
-        }
-        else if (Input.GetKeyDown(ToggleRecipesKeyCode))
-        {
-            UIController.instance.ToggleRecipes();
-        }
-        else if (Input.GetKeyDown(ToggleCreaturesKeyCode))
-        {
-            UIController.instance.ToggleCreatures();
-        }
-        else if (Input.GetKeyDown(ToggleMapKeyCode))
-        {
-            UIController.instance.ToggleMap();
-        }
-        else if (Input.GetKeyDown(interactKeyCode) && currentInteractable != null)
-        {
-            currentInteractable.OnPlayerInteract();
-        }
-        else if (isMenuActive)
-        {
-            if (Input.GetKeyDown(rightUiTabKeyCode))
+            // Open menu if campfire inactive
+            if (Input.GetKeyDown(ToggleInventoryKeyCode))
             {
-                currentUiPage = (currentUiPage + 1) % 4;
-                HandlePageChange();
+                UIController.instance.ToggleInventory();
             }
-            else if (Input.GetKeyDown(leftUiTabKeyCode))
+            else if (Input.GetKeyDown(ToggleOrdersKeyCode))
             {
-                currentUiPage = (currentUiPage + 3) % 4;
-                HandlePageChange();
+                UIController.instance.ToggleOrders();
             }
-            else if (Input.GetKeyDown(closeUiKeyCode))
+            else if (Input.GetKeyDown(ToggleRecipesKeyCode))
             {
-                CloseMenu();
+                UIController.instance.ToggleRecipes();
+            }
+            else if (Input.GetKeyDown(ToggleCreaturesKeyCode))
+            {
+                UIController.instance.ToggleCreatures();
+            }
+            else if (Input.GetKeyDown(ToggleMapKeyCode))
+            {
+                UIController.instance.ToggleMap();
             }
         }
-        else if (isFireplaceActive)
+        // Campfire interface is active
+        else
         {
             if (Input.GetKeyDown(rightUiTabKeyCode))
             {
@@ -392,8 +376,33 @@ public class UIController : SingletonGeneric<UIController>
             }
             else if (Input.GetKeyDown(closeUiKeyCode))
             {
+                RecipeManager.instance.DeactivateCooking();
                 CloseCampfireInterface();
             }
+        }
+
+        if (!isMenuActive)
+        {
+            // Toggle fireplace if menu is not active
+            if (Input.GetKeyDown(interactKeyCode) && currentInteractable != null)
+            {
+                currentInteractable.OnPlayerInteract();
+            }
+        }
+        // Menu/Tabs interface is active
+        else if (Input.GetKeyDown(rightUiTabKeyCode))
+        {
+            currentUiPage = (currentUiPage + 1) % 4;
+            HandlePageChange();
+        }
+        else if (Input.GetKeyDown(leftUiTabKeyCode))
+        {
+            currentUiPage = (currentUiPage + 3) % 4;
+            HandlePageChange();
+        }
+        else if (Input.GetKeyDown(closeUiKeyCode))
+        {
+            CloseMenu();
         }
     }
 

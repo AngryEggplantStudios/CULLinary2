@@ -25,6 +25,12 @@ public class CookingStation : PlayerInteractable
             RecipeManager.instance.ActivateCooking();
             UIController.instance.OpenCampfireInterface();
         }
+        // Close Cooking Menu
+        else if (UIController.instance.isFireplaceActive)
+        {
+            RecipeManager.instance.DeactivateCooking();
+            UIController.instance.CloseCampfireInterface();
+        }
     }
 
     public override void OnPlayerLeave()
