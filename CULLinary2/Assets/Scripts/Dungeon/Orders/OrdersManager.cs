@@ -17,6 +17,9 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     // Prefab to spawn on successful order
     public GameObject moneyNotif_prefab;
 
+    // Prefab to spawn on failed order
+    public GameObject missingOrderNotif_prefab;
+
     // Order submission sound
     public AudioSource orderSubmissionSound;
 
@@ -154,9 +157,17 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         }
         else
         {
-            Debug.Log("OOPS! You do not have the required " + orderToComplete.GetProduct().name);
+            SpawnMissingOrderNotif(orderToComplete.GetProduct().name);
             return false;
         }
+    }
+
+    private void SpawnMissingOrderNotif(string order)
+    {
+        GameObject missingOrderNotif = Instantiate(missingOrderNotif_prefab);
+        missingOrderNotif.transform.GetComponentInChildren<Text>().text = "You do not have a " + order + "!";
+        missingOrderNotif.transform.SetParent(canvasDisplay.transform);
+        missingOrderNotif.transform.localPosition = Vector3.zero;
     }
 
     private void SpawnMoneyNotif(float money)
