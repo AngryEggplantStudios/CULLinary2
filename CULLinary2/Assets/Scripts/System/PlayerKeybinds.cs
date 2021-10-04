@@ -21,7 +21,8 @@ public enum KeybindAction
     Skill,
     Consumable1,
     Consumable2,
-    Consumable3
+    Consumable3,
+    CampfireAction
 }
 
 /// <summary>
@@ -48,6 +49,7 @@ public class PlayerKeybinds
         { KeybindAction.Consumable1, KeyCode.Alpha1 },
         { KeybindAction.Consumable2, KeyCode.Alpha2 },
         { KeybindAction.Consumable3, KeyCode.Alpha3 },
+        { KeybindAction.CampfireAction, KeyCode.Z }
     };
 
     /// <summary>

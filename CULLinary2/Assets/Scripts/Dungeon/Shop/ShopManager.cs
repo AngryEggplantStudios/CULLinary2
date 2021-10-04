@@ -113,13 +113,14 @@ public class ShopManager : SingletonGeneric<ShopManager>
         selectedSlotId = slotId;
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F) && shopPanel.activeSelf)
-        {
-            HandlePurchase();
-        }
-    }
+    // // Handled in UIController instead
+    // private void Update()
+    // {
+    //     if (Input.GetKeyDown(KeyCode.F) && shopPanel.activeSelf)
+    //     {
+    //         HandlePurchase();
+    //     }
+    // }
 
     public void SetupShop()
     {

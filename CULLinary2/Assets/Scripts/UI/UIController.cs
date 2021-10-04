@@ -41,6 +41,7 @@ public class UIController : SingletonGeneric<UIController>
     private KeyCode rightUiTabKeyCode;
     private KeyCode leftUiTabKeyCode;
     private KeyCode closeUiKeyCode;
+    private KeyCode campfireActionKeyCode;
     private int currentUiPage;
     private int currentFireplaceUiPage;
     public bool isMenuActive = false;
@@ -62,6 +63,7 @@ public class UIController : SingletonGeneric<UIController>
         rightUiTabKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.UiMoveRight);
         leftUiTabKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.UiMoveLeft);
         closeUiKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.CloseMenu);
+        campfireActionKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.CampfireAction);
     }
 
     public void TogglePauseMenu()
@@ -379,6 +381,10 @@ public class UIController : SingletonGeneric<UIController>
                 RecipeManager.instance.DeactivateCooking();
                 CloseCampfireInterface();
             }
+            else if (Input.GetKeyDown(campfireActionKeyCode))
+            {
+                HandleCampfireAction();
+            }
         }
 
         if (!isMenuActive)
@@ -418,6 +424,22 @@ public class UIController : SingletonGeneric<UIController>
                 break;
             case (int)FireplaceUIPage.WEAPONS:
                 OpenWeaponsInterface();
+                break;
+        }
+    }
+
+    private void HandleCampfireAction()
+    {
+        switch (currentFireplaceUiPage)
+        {
+            case (int)FireplaceUIPage.COOKING:
+                RecipeManager.instance.CookCurrentlySelected();
+                break;
+            case (int)FireplaceUIPage.UPGRADES:
+                ShopManager.instance.HandlePurchase();
+                break;
+            case (int)FireplaceUIPage.WEAPONS:
+                // TODO
                 break;
         }
     }
