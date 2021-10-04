@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class OrderSubmissionStation : PlayerInteractable
 {
     public SpherePlayerCollider spCollider;
-    public GameObject floatingItemNotif;
+    public GameObject[] activeIfOrdered;
     public Image floatingItemNotifImage;
     public int uniqueId = -1;
 
@@ -21,7 +21,10 @@ public class OrderSubmissionStation : PlayerInteractable
 
     public void Start()
     {
-        floatingItemNotif.SetActive(false);
+        foreach (GameObject obj in activeIfOrdered)
+        {
+            obj.SetActive(false);
+        }
     }
 
     public void SetId(int id)
@@ -48,14 +51,20 @@ public class OrderSubmissionStation : PlayerInteractable
     public void SetFloatingItemNotif(Sprite itemSprite)
     {
         floatingItemNotifImage.sprite = itemSprite;
-        floatingItemNotif.SetActive(true);
+        foreach (GameObject obj in activeIfOrdered)
+        {
+            obj.SetActive(true);
+        }
     }
 
     // Hides the floating item image above this order submission station
     // even when the player is close to the station
     public void HideFloatingItemNotif()
     {
-        floatingItemNotif.SetActive(false);
+        foreach (GameObject obj in activeIfOrdered)
+        {
+            obj.SetActive(false);
+        }
     }
 
     public override SpherePlayerCollider GetCollider()
