@@ -13,7 +13,6 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     
     // For UI display
     public GameObject canvasDisplay;
-    public Camera cam;
 
     // Prefab to spawn on successful order
     public GameObject moneyNotif_prefab;
@@ -226,6 +225,20 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         orderSubmissionStations.Add(orderIndex, stationTransform);
         numberOfOrderSubStations++;
         return orderIndex;
+    }
+
+    // Gets the order submission station with the ID given
+    // Warning: This method can return null!
+    public Transform GetOrderSubmissionStation(int id)
+    {
+        if (orderSubmissionStations.ContainsKey(id))
+        {
+            return orderSubmissionStations[id];
+        }
+        else
+        {
+            return null;
+        }
     }
 
     // Register a callback to be run when an order is completed
