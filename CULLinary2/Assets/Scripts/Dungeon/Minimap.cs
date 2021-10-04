@@ -93,7 +93,7 @@ public class Minimap : MonoBehaviour
                 orderSubmissionStationLocationsAndIcons.Remove(stationId);
             }
         });
-        OrdersManager.instance.AddOrderGenerationCallback(() => ResetInstantiatedOrderIconsFlag());
+        OrdersManager.instance.AddOrderGenerationCallback(ResetInstantiatedOrderIconsFlag);
         hasInstantiatedIcons = true;
 
         // Force reupdate of the UI
