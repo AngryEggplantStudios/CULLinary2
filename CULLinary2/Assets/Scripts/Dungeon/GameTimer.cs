@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class GameTimer : SingletonGeneric<GameTimer>
@@ -8,9 +9,10 @@ public class GameTimer : SingletonGeneric<GameTimer>
     [SerializeField] private Light DirectionalLight;
     [SerializeField] private LightingPreset Preset;
     [SerializeField] private TextMeshProUGUI DayText;
-    [SerializeField] private GameObject DayIcon;
-    [SerializeField] private GameObject NightIcon;
+    [SerializeField] private GameObject[] DayObjects;
+    [SerializeField] private GameObject[] NightObjects;
     [SerializeField] private TextMeshProUGUI TimeText;
+    [SerializeField] private Slider DayProgress;
 
     // 0.2 of 1 minute = 10 seconds eg
     [SerializeField] private float dayLengthInMinutes;
@@ -44,7 +46,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         timeScale = 24 / (dayLengthInMinutes / 60);
 
         DayText.text = "DAY " + dayNum;
-        UpdateTimerText();
+        UpdateTimedObjects();
     }
 
     private void Update()
@@ -58,7 +60,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
             gameTime = 1f;
         }
 
-        UpdateTimerText();
+        UpdateTimedObjects();
         UpdateLighting(gameTime);
 
         if (gameTime > sunrise && isNewDay)
@@ -75,24 +77,28 @@ public class GameTimer : SingletonGeneric<GameTimer>
         }
     }
 
-    private void UpdateTimerText()
+    private void UpdateTimedObjects()
     {
+        // Text
         float actualTime = gameTime * 24;
         hourNum = Mathf.FloorToInt(actualTime) % 24;
         minuteNum = Mathf.FloorToInt((actualTime - (float)hourNum) * 60) % 60;
         timeAsString = hourNum + ":" + minuteNum.ToString("00");
         TimeText.text = timeAsString;
 
-        if (gameTime < sunrise || gameTime > sunset)
+        // Objects
+        bool isNight = (gameTime < sunrise || gameTime > sunset);
+        foreach (GameObject obj in DayObjects)
         {
-            DayIcon.SetActive(false);
-            NightIcon.SetActive(true);
+            obj.SetActive(!isNight);
         }
-        else
+        foreach (GameObject obj in NightObjects)
         {
-            DayIcon.SetActive(true);
-            NightIcon.SetActive(false);
+            obj.SetActive(isNight);
         }
+
+        // Slider
+        DayProgress.value = (gameTime - sunrise) / (1 - sunrise);
     }
 
     private void StartSceneFadeOut()
@@ -134,7 +140,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         DayText.text = "DAY " + dayNum;
         isNewDay = true;
 
-        UpdateTimerText();
+        UpdateTimedObjects();
         UpdateLighting(gameTime);
     }
 

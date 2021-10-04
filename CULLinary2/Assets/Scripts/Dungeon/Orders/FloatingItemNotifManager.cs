@@ -5,6 +5,8 @@ using UnityEngine;
 public class FloatingItemNotifManager : MonoBehaviour
 {
     private bool hasInstantiated = false;
+    // To make sure that OrderManager callbacks are not set more than once
+    private bool firstInstantiation = true;
     private List<OrderSubmissionStation> currentStations = new List<OrderSubmissionStation>();
 
     // Update is called once per frame
@@ -43,15 +45,19 @@ public class FloatingItemNotifManager : MonoBehaviour
             currentStations.Add(orderStation);
         }
 
-        // Register the callbacks
-        OrdersManager.instance.AddOrderCompletionCallback((stationId, _) =>
-            OrdersManager
-                .instance
-                .GetOrderSubmissionStation(stationId)
-                .GetComponent<OrderSubmissionStation>()
-                .HideFloatingItemNotif()
-        );
-        OrdersManager.instance.AddOrderGenerationCallback(ResetInstantiatedFloatingItemNotifsFlag);
+        // Register the callbacks, only on the first run
+        if (firstInstantiation)
+        {
+            OrdersManager.instance.AddOrderCompletionCallback((stationId, _) =>
+                OrdersManager
+                    .instance
+                    .GetOrderSubmissionStation(stationId)
+                    .GetComponent<OrderSubmissionStation>()
+                    .HideFloatingItemNotif()
+            );
+            OrdersManager.instance.AddOrderGenerationCallback(ResetInstantiatedFloatingItemNotifsFlag);
+            firstInstantiation = false;
+        }
         hasInstantiated = true; 
     }
 }
