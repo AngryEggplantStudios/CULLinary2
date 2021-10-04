@@ -26,6 +26,8 @@ public class Minimap : MonoBehaviour
 
     // Ensures that icons are set when player enters the scene
     private bool forceReupdate = true;
+    // To make sure that OrderManager callbacks are not set more than once
+    private bool firstInstantiation = true;
 
     void Awake()
     {
@@ -84,16 +86,20 @@ public class Minimap : MonoBehaviour
             orderSubmissionStationLocationsAndIcons.Add(stationId, (stationTransform, minimapIcon.transform));
         }
 
-        // Register the callbacks
-        OrdersManager.instance.AddOrderCompletionCallback((stationId, _) =>
+        // Register the callbacks, only on the first run
+        if (firstInstantiation)
         {
-            if (orderSubmissionStationLocationsAndIcons.ContainsKey(stationId))
+            OrdersManager.instance.AddOrderCompletionCallback((stationId, _) =>
             {
-                Destroy(orderSubmissionStationLocationsAndIcons[stationId].Item2.gameObject);
-                orderSubmissionStationLocationsAndIcons.Remove(stationId);
-            }
-        });
-        OrdersManager.instance.AddOrderGenerationCallback(() => ResetInstantiatedOrderIconsFlag());
+                if (orderSubmissionStationLocationsAndIcons.ContainsKey(stationId))
+                {
+                    Destroy(orderSubmissionStationLocationsAndIcons[stationId].Item2.gameObject);
+                    orderSubmissionStationLocationsAndIcons.Remove(stationId);
+                }
+            });
+            OrdersManager.instance.AddOrderGenerationCallback(ResetInstantiatedOrderIconsFlag);
+            firstInstantiation = false;
+        }
         hasInstantiatedIcons = true;
 
         // Force reupdate of the UI
