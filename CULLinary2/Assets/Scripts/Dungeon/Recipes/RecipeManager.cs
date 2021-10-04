@@ -17,6 +17,9 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
     public GameObject cookingRecipesContainer;
     public GameObject cookingUiSlot;
     public RecipeUIInfoDisplay cookingInfoDisplay;
+    [Header("Item Pop-Up")]
+    // For cooking, to play a sound and show a pop-up
+    public PlayerPickup pickup;
 
     private List<Recipe> innerUnlockedRecipesList = new List<Recipe>();
     private List<Recipe> innerLockedRecipesList = new List<Recipe>();
@@ -33,7 +36,14 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
 
     // List of all campfire locations for the minimap
     private List<Transform> campfires = new List<Transform>();
-    
+
+    void Start()
+    {
+        if (pickup == null)
+        {
+            Debug.Log("RecipeManager: Oops! Could not find PlayerPickup");
+        }
+    }
 
     // To be called when save data is loaded
     public void FilterUnlockedRecipes()
@@ -118,8 +128,10 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
 
         if (InventoryManager.instance.RemoveIdsFromInventory(r.GetIngredientIds()))
         {
-            InventoryManager.instance.AddItem(r.cookedDishItem);
             // UI will be updated in AddItem
+            InventoryManager.instance.AddItem(r.cookedDishItem);
+            // Create a pop-up for the player
+            pickup?.PickUp(r.cookedDishItem);
         }
         else
         {
