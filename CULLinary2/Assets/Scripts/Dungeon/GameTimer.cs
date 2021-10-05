@@ -119,6 +119,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
     public void SaveGame()
     {
         PlayerManager.instance.currentDay = dayNum + 1;
+        EcosystemManager.SaveEcosystemPopulation();
         PlayerManager.instance.SaveData(InventoryManager.instance.itemListReference);
     }
 

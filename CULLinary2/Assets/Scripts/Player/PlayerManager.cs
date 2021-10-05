@@ -17,6 +17,11 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     public List<InventoryItem> itemList = new List<InventoryItem>();
     public int currentMoney;
     public int currentDay;
+    public Dictionary<MonsterName, PopulationLevel> monsterDict = new Dictionary<MonsterName, PopulationLevel>{
+        {MonsterName.Corn, PopulationLevel.Normal},
+        {MonsterName.Potato, PopulationLevel.Normal},
+        {MonsterName.Eggplant, PopulationLevel.Normal},
+    };
 
     // Private variables
     private static PlayerData playerData = new PlayerData();
@@ -41,7 +46,39 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.criticalChance = criticalChance;
         playerData.consumables = consumables;
         playerData.currentDay = currentDay;
+        playerData.monsterSavedDatas = SaveMonsters();
         SaveSystem.SaveData(playerData);
+    }
+
+    public void LoadMonsters()
+    {
+        monsterDict = new Dictionary<MonsterName, PopulationLevel>();
+        foreach (MonsterSavedData md in playerData.monsterSavedDatas)
+        {
+            monsterDict.Add(md.monsterName, md.populationLevel);
+        }
+    }
+
+    public void SetPopulationLevelByMonsterName(MonsterName monsterName, PopulationLevel populationLevel)
+    {
+        monsterDict[monsterName] = populationLevel;
+    }
+
+    public PopulationLevel GetPopulationLevelByMonsterName(MonsterName monsterName)
+    {
+        return monsterDict[monsterName];
+    }
+
+    public MonsterSavedData[] SaveMonsters()
+    {
+        MonsterSavedData[] result = new MonsterSavedData[monsterDict.Count];
+        int i = 0;
+        foreach (KeyValuePair<MonsterName, PopulationLevel> entry in monsterDict)
+        {
+            result[i] = new MonsterSavedData(entry.Key, entry.Value);
+            i++;
+        }
+        return result;
     }
 
     public void LoadInventory()
@@ -84,6 +121,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         evasionChance = playerData.evasionChance;
         consumables = playerData.consumables;
         currentDay = playerData.currentDay;
+        LoadMonsters();
     }
 
     public void SetupManager()

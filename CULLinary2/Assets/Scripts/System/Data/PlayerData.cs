@@ -16,6 +16,7 @@ public class PlayerData
     public bool[] recipesUnlocked;
     public int[] upgradesArray;
     public int currentDay;
+    public MonsterSavedData[] monsterSavedDatas;
 
     public PlayerData()
     {
@@ -32,6 +33,11 @@ public class PlayerData
         recipesUnlocked = new bool[3] { true, true, true };
         upgradesArray = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         currentDay = 1;
+        monsterSavedDatas = new MonsterSavedData[3] {
+            new MonsterSavedData(MonsterName.Eggplant, PopulationLevel.Normal),
+            new MonsterSavedData(MonsterName.Corn, PopulationLevel.Normal),
+            new MonsterSavedData(MonsterName.Potato, PopulationLevel.Normal),
+            };
     }
 
     public string ToJson()
