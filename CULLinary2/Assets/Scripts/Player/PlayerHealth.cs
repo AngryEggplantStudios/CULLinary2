@@ -33,12 +33,8 @@ public class PlayerHealth : MonoBehaviour
     private Color onDamageColor = Color.white;
     private float invincibilityDeltaTime = 0.025f;
     private Animator animator;
-
-    private void DisplayOnUI(float currentHealth, float maxHealth)
-    {
-        healthBar.fillAmount = currentHealth / maxHealth;
-        healthText.text = Mathf.CeilToInt(currentHealth) + "/" + Mathf.CeilToInt(maxHealth);
-    }
+    private Color healthBarColor;
+    private Color flashingHealthBarColor;
 
     private void Awake()
     {
@@ -50,54 +46,58 @@ public class PlayerHealth : MonoBehaviour
     {
         float currentHealth = PlayerManager.instance ? PlayerManager.instance.currentHealth : 200f;
         float maxHealth = PlayerManager.instance ? PlayerManager.instance.maxHealth : 200f;
+        healthBarColor = healthBar.color;
+        flashingHealthBarColor = new Color(0, 0, 0, 0);
         DisplayOnUI(currentHealth, maxHealth);
+    }
+
+    private void DisplayOnUI(float currentHealth, float maxHealth)
+    {
+        healthBar.fillAmount = currentHealth / maxHealth;
+        healthText.text = Mathf.CeilToInt(currentHealth) + "/" + Mathf.CeilToInt(maxHealth);
     }
 
     private void Update()
     {
-        // check if height of player here as less references needed than checking height in player locomotion;
+        // Check if height of player here as less references needed than checking height in player locomotion;
         if (transform.position.y < minimumHeightToStartDrowning && !isDrowningActivated)
         {
+            /*
             //Drowning animation
-            /* isDrowningActivated = true;
-            StartCoroutine(StartDrowning()); */
+            isDrowningActivated = true;
+            StartCoroutine(StartDrowning()); 
+            */
             HandleHit(drowningDamage, true);
         }
-        if (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth < thresholdHealth && !flashIsActivated)
+
+        //Flash health bar if below 25%
+        float currentHealthAsPercentage = PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth;
+        if (currentHealthAsPercentage < thresholdHealth && !flashIsActivated)
         {
             flashIsActivated = true;
             StartCoroutine(FlashBar());
         }
-        else if (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth >= thresholdHealth)
+        else if (currentHealthAsPercentage >= thresholdHealth)
         {
             flashIsActivated = false;
+            healthBar.color = healthBarColor;
         }
 
+        //Check if player is dead
         if (PlayerManager.instance.currentHealth <= 0f)
         {
             Die();
         }
     }
 
-    /* private IEnumerator StartDrowning()
-    {
-        Debug.Log("Start drowning");
-        PlayerManager.instance.currentHealth -= drowningDamage;
-        DisplayOnUI(PlayerManager.instance.currentHealth, PlayerManager.instance.maxHealth);
-        SpawnDamageCounter(drowningDamage);
-        audioSource.Play();
-        yield return new WaitForSeconds(0.5f);
-        isDrowningActivated = false;
-    } */
-
     private IEnumerator FlashBar()
     {
         while (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth < thresholdHealth)
         {
-            //outlineFlash.effectColor = originalFlashColor;
-            yield return new WaitForSeconds(0.5f);
-            //outlineFlash.effectColor = deactivatedFlashColor;
-            yield return new WaitForSeconds(0.5f);
+            healthBar.color = healthBarColor;
+            yield return new WaitForSeconds(0.3f);
+            healthBar.color = flashingHealthBarColor;
+            yield return new WaitForSeconds(0.3f);
         }
     }
 
@@ -140,16 +140,20 @@ public class PlayerHealth : MonoBehaviour
         ScreenFlash.Instance.Flash(0.01f * damage, 0.4f, 0.1f, 0.4f);
         ScreenShake.Instance.Shake(0.01f * damage, 0.4f, 0.1f, 0.4f);
         audioSource.Play();
-        animator.SetTrigger("isTakingDamage");
+        //AnimTakeDamage();
 
         if (PlayerManager.instance.currentHealth <= 0f)
         {
-            // Debug.Log("You are dead.");
             return true;
         }
 
         StartCoroutine(BecomeTemporarilyInvincible());
         return true;
+    }
+
+    private void AnimTakeDamage()
+    {
+        animator.SetTrigger("isTakingDamage");
     }
 
     private void Die()
@@ -187,26 +191,6 @@ public class PlayerHealth : MonoBehaviour
         drowningAlert.transform.position = pos;
     }
 
-    public void KnockbackPlayer(Vector3 positionOfEnemy)
-    {
-        //ToImplementKnockback
-        //StartCoroutine(KnockCoroutine(positionOfEnemy));
-        /*Vector3 forceDirection = transform.position - positionOfEnemy;
-        forceDirection.y = 0;
-        Vector3 force = forceDirection.normalized;*/
-        //dpl.KnockBack(force, 50, 3, true);
-    }
-
-    private IEnumerator KnockCoroutine(Vector3 positionOfEnemy)
-    {
-
-        Vector3 forceDirection = transform.position - positionOfEnemy;
-        Vector3 force = forceDirection.normalized;
-        gameObject.GetComponent<Rigidbody>().velocity = force * 4;
-        yield return new WaitForSeconds(0.3f);
-        gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-    }
-
     private IEnumerator BecomeTemporarilyInvincible()
     {
         isInvincible = true;
@@ -235,3 +219,35 @@ public class PlayerHealth : MonoBehaviour
     }
 
 }
+
+/*
+    public void KnockbackPlayer(Vector3 positionOfEnemy)
+    {
+        //ToImplementKnockback
+        //StartCoroutine(KnockCoroutine(positionOfEnemy));
+        Vector3 forceDirection = transform.position - positionOfEnemy;
+        forceDirection.y = 0;
+        Vector3 force = forceDirection.normalized;
+        //dpl.KnockBack(force, 50, 3, true);
+    }
+
+
+    private IEnumerator KnockCoroutine(Vector3 positionOfEnemy)
+    {
+        Vector3 forceDirection = transform.position - positionOfEnemy;
+        Vector3 force = forceDirection.normalized;
+        gameObject.GetComponent<Rigidbody>().velocity = force * 4;
+        yield return new WaitForSeconds(0.3f);
+        gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+    }
+
+        /* private IEnumerator StartDrowning()
+    {
+        Debug.Log("Start drowning");
+        PlayerManager.instance.currentHealth -= drowningDamage;
+        DisplayOnUI(PlayerManager.instance.currentHealth, PlayerManager.instance.maxHealth);
+        SpawnDamageCounter(drowningDamage);
+        audioSource.Play();
+        yield return new WaitForSeconds(0.5f);
+        isDrowningActivated = false;
+    } */

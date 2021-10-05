@@ -54,12 +54,12 @@ public class PlayerStamina : MonoBehaviour
         staminaCircle.SetActive(false); ;
     }
 
-    public bool hasStamina(float staminaCost)
+    public bool HasStamina(float staminaCost)
     {
         return PlayerManager.instance.currentStamina - staminaCost >= 0.0f;
     }
 
-    public void reduceStamina(float staminaCost)
+    public void ReduceStamina(float staminaCost)
     {
         staminaCost = staminaCost < 0 ? 0 : staminaCost;
         PlayerManager.instance.currentStamina = Mathf.Max(0f, PlayerManager.instance.currentStamina - staminaCost);
@@ -67,10 +67,10 @@ public class PlayerStamina : MonoBehaviour
         float maxStamina = PlayerManager.instance.maxStamina;
         DisplayOnUI(currentStamina, maxStamina);
         staminaCircleAnimator.SetBool("flashing", PlayerManager.instance.currentStamina / PlayerManager.instance.maxStamina < thresholdStamina);
-        resetStaminaRegeneration();
+        ResetStaminaRegeneration();
     }
 
-    public void resetStaminaRegeneration()
+    public void ResetStaminaRegeneration()
     {
         if (regenerationCoroutine != null)
         {
