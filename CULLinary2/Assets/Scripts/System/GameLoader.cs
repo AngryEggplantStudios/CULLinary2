@@ -33,7 +33,7 @@ public class GameLoader : SingletonGeneric<GameLoader>
     {
         yield return StartCoroutine(databaseLoader.Populate());
         yield return StartCoroutine(biomeGeneratorManager.LoadBiome());
-        yield return StartCoroutine(dungeonSpawnManager.GetSpawners());
+        //yield return StartCoroutine(dungeonSpawnManager.GetSpawners());
         yield return StartCoroutine(LoadObjects());
     }
 
@@ -47,7 +47,7 @@ public class GameLoader : SingletonGeneric<GameLoader>
         yield return StartCoroutine(biomeGeneratorManager.LoadBiome());
         LoadScene.instance.ChangeLoadingText("Generating monsters...");
         LoadScene.instance.ChangeProgress(0.8f);
-        yield return StartCoroutine(dungeonSpawnManager.GetSpawners());
+        //yield return StartCoroutine(dungeonSpawnManager.GetSpawners());
         LoadScene.instance.ChangeLoadingText("Press Spacebar to start!");
         LoadScene.instance.ChangeProgress(1f);
         LoadScene.instance.isAbleToProceed = true;
@@ -55,6 +55,8 @@ public class GameLoader : SingletonGeneric<GameLoader>
 
     public IEnumerator LoadObjects()
     {
+        EcosystemManager.instance.InstantiateEcosystem();
+        yield return StartCoroutine(dungeonSpawnManager.GetSpawners());
         OrdersManager.instance.FirstGenerationOfOrders();
         yield return null;
         playerCharacter.SetActive(true);
