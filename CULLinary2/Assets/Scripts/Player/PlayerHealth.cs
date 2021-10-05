@@ -23,7 +23,7 @@ public class PlayerHealth : MonoBehaviour
 
     [Header("Drowning Event")]
     [SerializeField] private float minimumHeightToStartDrowning;
-    [SerializeField] private float drowningDamage = 20f;
+    [SerializeField] private float drowningDamage;
     [SerializeField] private GameObject drowningAlert_prefab;
 
     private bool isInvincible = false;
@@ -35,6 +35,7 @@ public class PlayerHealth : MonoBehaviour
     private Animator animator;
     private Color healthBarColor;
     private Color flashingHealthBarColor;
+    private bool deathIsCalled = false;
 
     private void Awake()
     {
@@ -60,7 +61,7 @@ public class PlayerHealth : MonoBehaviour
     private void Update()
     {
         // Check if height of player here as less references needed than checking height in player locomotion;
-        if (transform.position.y < minimumHeightToStartDrowning && !isDrowningActivated)
+        if (transform.position.y < minimumHeightToStartDrowning && !isDrowningActivated && PlayerManager.instance.currentHealth > 0)
         {
             /*
             //Drowning animation
@@ -84,8 +85,9 @@ public class PlayerHealth : MonoBehaviour
         }
 
         //Check if player is dead
-        if (PlayerManager.instance.currentHealth <= 0f)
+        if (PlayerManager.instance.currentHealth <= 0f && !deathIsCalled)
         {
+            deathIsCalled = true;
             Die();
         }
     }
@@ -113,6 +115,7 @@ public class PlayerHealth : MonoBehaviour
 
     public void RestoreToFull()
     {
+        deathIsCalled = false;
         PlayerManager.instance.currentHealth = PlayerManager.instance.maxHealth;
         DisplayOnUI(PlayerManager.instance.currentHealth, PlayerManager.instance.maxHealth);
     }
@@ -159,6 +162,7 @@ public class PlayerHealth : MonoBehaviour
     private void Die()
     {
         animator.SetTrigger("isDead");
+        Debug.Log("Die called");
         UIController.instance.ShowDeathMenu();
     }
 

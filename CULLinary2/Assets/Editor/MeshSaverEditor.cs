@@ -30,9 +30,10 @@ public static class MeshSaverEditor {
 		
 		if (optimizeMesh)
 		     MeshUtility.Optimize(meshToSave);
-        
+		#if UNITY_EDITOR
 		AssetDatabase.CreateAsset(meshToSave, path);
 		AssetDatabase.SaveAssets();
+		#endif
 	}
 	
 }

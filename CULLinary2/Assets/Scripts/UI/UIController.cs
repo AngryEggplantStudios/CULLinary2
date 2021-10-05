@@ -32,6 +32,7 @@ public class UIController : SingletonGeneric<UIController>
     [Header("Winning Screen References")]
     [SerializeField] private AudioSource winningAudio;
     [SerializeField] private GameObject winPanel;
+
     private KeyCode ToggleInventoryKeyCode;
     private KeyCode ToggleOrdersKeyCode;
     private KeyCode ToggleRecipesKeyCode;
@@ -47,7 +48,8 @@ public class UIController : SingletonGeneric<UIController>
     public bool isMenuActive = false;
     public bool isFireplaceActive = false;
     public bool isPaused = false;
-
+    private bool deathMenuActive = false;
+    private GameObject player;
     // For interacting with objects
     private PlayerInteractable currentInteractable = null;
 
@@ -64,6 +66,12 @@ public class UIController : SingletonGeneric<UIController>
         leftUiTabKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.UiMoveLeft);
         closeUiKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.CloseMenu);
         campfireActionKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.CampfireAction);
+    }
+
+    public void Start()
+    {
+        //Use this for now, later when have more scene only adjust accordingly. TODO MC.
+        player = GameObject.FindWithTag("Player");
     }
 
     public void TogglePauseMenu()
@@ -88,25 +96,35 @@ public class UIController : SingletonGeneric<UIController>
         //PlayerManager.instance.SaveData(InventoryManager.instance.itemListReference);
         Application.Quit();
     }
-
     public void ShowDeathMenu()
     {
-        if (!playerDeathMenu.activeSelf)
+        if (!playerDeathMenu.activeSelf && !deathMenuActive)
         {
+            player.GetComponent<CharacterController>().enabled = false;
+            deathMenuActive = true;
             isPaused = true;
-            Time.timeScale = 0;
-            playerDeathMenu.SetActive(true);
+            StartCoroutine(PauseToShowDeathAnimation());
         }
+    }
+
+    private IEnumerator PauseToShowDeathAnimation()
+    {
+        yield return new WaitForSeconds(1.9f);
+        Time.timeScale = 0;
+        player.GetComponent<Animator>().ResetTrigger("isDead");
+        player.GetComponent<Animator>().SetTrigger("revive");
+        playerDeathMenu.SetActive(true);
     }
 
     public void RespawnPlayer()
     {
+        deathMenuActive = false;
         isPaused = false;
+        player.GetComponent<CharacterController>().enabled = true;
         GameTimer.instance.GoToNextDay();
         playerDeathMenu.SetActive(false);
         Time.timeScale = 1;
     }
-
 
     public void ShowEndOfDayMenu()
     {

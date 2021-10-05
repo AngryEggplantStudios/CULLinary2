@@ -73,11 +73,12 @@ public class BiomeGenerator : MonoBehaviour
         createdMesh = null;
         walkableMesh = null;
 
+        #if UNITY_EDITOR
         createdMesh = AssetDatabase.LoadAssetAtPath<Mesh>(createdMeshPath);
         yield return null;
         walkableMesh = AssetDatabase.LoadAssetAtPath<Mesh>(walkableMeshPath);
         yield return null;
-        Debug.Log(createdMeshPath);
+        #endif
 
         if (createdMesh == null || walkableMesh == null)
         {
@@ -109,14 +110,16 @@ public class BiomeGenerator : MonoBehaviour
     {
         noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, seed, noiseScale, octaves, persistence, lacunarity, offset);
 
-        yield return null;
-
+        GenerateFallOffMap();
         Color[] colourMap = new Color[mapWidth * mapHeight];
         for (int y = 0; y < mapHeight; y++)
         {
             for (int x = 0; x < mapWidth; x++)
             {
+                Debug.Log(noiseMap[x, y]);
+                Debug.Log(falloffMap[x, y]);
                 noiseMap[x, y] = Mathf.Clamp01(noiseMap[x, y] - falloffMap[x, y]);
+                Debug.Log("After crash");
                 float currentHeight = noiseMap[x, y];
                 for (int i = 0; i < regions.Length; i++)
                 {
@@ -164,8 +167,9 @@ public class BiomeGenerator : MonoBehaviour
 
         yield return null;
 
-
+        #if UNITY_EDITOR
         SaveMesh(createdMeshPath, createdMesh);
+        #endif
         // Don't save walkable mesh yet as need for player to walk on water and drown
         //SaveMesh(walkableMeshPath, walkableMesh);
     }
@@ -216,10 +220,12 @@ public class BiomeGenerator : MonoBehaviour
 
     private void SaveMesh(string meshName, Mesh meshToSave)
     {
+        #if UNITY_EDITOR
         AssetDatabase.CreateAsset(meshToSave, meshName);
+        #endif
     }
 
-    public void OnValidate()
+    public void GenerateFallOffMap()
     {
         if (mapWidth < 1)
         {
