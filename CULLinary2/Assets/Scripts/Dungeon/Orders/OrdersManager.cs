@@ -10,7 +10,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
 
     // Prefab of an order book entry
     public GameObject orderSlot;
-    
+
     // For UI display
     public GameObject canvasDisplay;
 
@@ -84,15 +84,6 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         }
     }
 
-    void Update()
-    {
-        // Generate orders for the first day in MainScene
-        if (!firstGeneration && BiomeGeneratorManager.IsGenerationComplete())
-        {
-            FirstGenerationOfOrders();
-        }
-    }
-
     public void AddOrder(Order order)
     {
         innerOrdersList.Add(order);
@@ -149,7 +140,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
 
             // Update statistics
             numOfOrdersCompletedToday++;
-            moneyEarnedToday = moneyEarnedToday + earnings; 
+            moneyEarnedToday = moneyEarnedToday + earnings;
 
             // Invalidate the cache of number of orders for each recipe
             isCacheValid = false;

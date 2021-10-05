@@ -9,27 +9,64 @@ public class GameLoader : SingletonGeneric<GameLoader>
     [SerializeField] private DungeonSpawnManager dungeonSpawnManager;
     [SerializeField] private GameObject playerCharacter;
     [SerializeField] private GameObject uiCanvas;
-    // [SerializeField] private GameObject monsters; //Temp, should be replaced by loading spawners instead
-    public float currentProgress;
-
+    [SerializeField] private LoadType loadType;
     private void Start()
     {
         uiCanvas.SetActive(false);
         playerCharacter.SetActive(false);
-        currentProgress = 0f;
-        StartCoroutine(LoadWorld());
+
+        switch ((int)loadType)
+        {
+            case (int)LoadType.PRODUCTION:
+                Debug.Log("Running in PRODUCTION mode");
+                StartCoroutine(LoadWorld());
+                break;
+            case (int)LoadType.TESTING:
+            default:
+                Debug.Log("Running in TESTING mode");
+                StartCoroutine(LoadWorldTesting());
+                break;
+        }
     }
 
-    private IEnumerator LoadWorld()
+    public IEnumerator LoadWorldTesting()
     {
         yield return StartCoroutine(databaseLoader.Populate());
-        currentProgress = 0.2f;
         yield return StartCoroutine(biomeGeneratorManager.LoadBiome());
-        currentProgress = 0.9f;
         yield return StartCoroutine(dungeonSpawnManager.GetSpawners());
+        yield return StartCoroutine(LoadObjects());
+    }
+
+    public IEnumerator LoadWorld()
+    {
+        LoadScene.instance.ChangeLoadingText("Loading database...");
+        LoadScene.instance.ChangeProgress(0.1f);
+        yield return StartCoroutine(databaseLoader.Populate());
+        LoadScene.instance.ChangeLoadingText("Generating biome...");
+        LoadScene.instance.ChangeProgress(0.3f);
+        yield return StartCoroutine(biomeGeneratorManager.LoadBiome());
+        LoadScene.instance.ChangeLoadingText("Generating monsters...");
+        LoadScene.instance.ChangeProgress(0.8f);
+        yield return StartCoroutine(dungeonSpawnManager.GetSpawners());
+        LoadScene.instance.ChangeLoadingText("Press Spacebar to start!");
+        LoadScene.instance.ChangeProgress(1f);
+        LoadScene.instance.isAbleToProceed = true;
+    }
+
+    public IEnumerator LoadObjects()
+    {
+        OrdersManager.instance.FirstGenerationOfOrders();
+        yield return null;
         playerCharacter.SetActive(true);
+        yield return null;
         uiCanvas.SetActive(true);
-        // monsters.SetActive(true);
+        yield return null;
         GameTimer.instance.Run();
     }
+}
+
+public enum LoadType
+{
+    TESTING = 0,
+    PRODUCTION = 1
 }
