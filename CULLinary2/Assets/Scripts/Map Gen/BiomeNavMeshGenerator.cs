@@ -79,8 +79,10 @@ public class BiomeNavMeshGenerator : MonoBehaviour
     {
         savePath = "Assets/Scenes/UtilScenes/Saved_Meshes/" + "NavMesh" + ".asset";
         yield return StartCoroutine(CombineAllMeshes());
+        navMeshData = null;
+#if UNITY_EDITOR
         navMeshData = AssetDatabase.LoadAssetAtPath<NavMeshData>(savePath);
-
+#endif
         if (navMeshData == null)
         {
             //disable sphere collider from order submissions
@@ -90,7 +92,9 @@ public class BiomeNavMeshGenerator : MonoBehaviour
             BiomeDataManager.instance.biomeNavMeshPath = savePath;
             BiomeDataManager.instance.SaveData();
             surfaceForNavMesh.BuildNavMesh();
+            #if UNITY_EDITOR
             AssetDatabase.CreateAsset(surfaceForNavMesh.navMeshData, savePath);
+            #endif
             ActivateBoxCollider(true, orderSubmissionStationParent);
             ActivateSpawnableWithoutCollider(true, parent);
             Debug.Log("Starting Coroiutine");
