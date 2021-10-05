@@ -22,10 +22,12 @@ public class BossMeleeAttack : MonoBehaviour
         if (healthScript != null)
         {
             bool hitSuccess = healthScript.HandleHit(attackDamage);
+            /*
             if (hitSuccess)
             {
                 healthScript.KnockbackPlayer(transform.position);
             }
+            */
         }
 
     }
@@ -37,7 +39,7 @@ public class BossMeleeAttack : MonoBehaviour
         if (!toEnable)
         {
             healthScript = null;
-        } 
+        }
     }
     public void enableSprite(bool toEnable)
     {
