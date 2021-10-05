@@ -61,7 +61,7 @@ public class MenuController : MonoBehaviour
     {
         //TO DO: Place the fade on audio/foreground once the main menu scene is set up properly
         PlayerManager.instance.LoadData();
-        PlayerPrefs.SetInt("nextScene", (int)SceneIndexes.MAIN_MENU);
+        PlayerPrefs.SetInt("nextScene", (int)SceneIndexes.MAIN_SCENE);
         SceneManager.LoadScene((int)SceneIndexes.LOADING_SCENE);
     }
 

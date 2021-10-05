@@ -37,6 +37,8 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     void Start()
     {
+        dayNum = PlayerManager.instance != null ? PlayerManager.instance.currentDay : 1;
+
         if (sunrise > sunset) { Debug.LogError("Sunrise is after Sunset!"); }
 
         // Debug.Log("set timescale to 1");
@@ -71,7 +73,6 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
         if (gameTime >= dayEndTime)
         {
-            // Debug.Log("day ended");
             OnEndOfDay?.Invoke();
             StartSceneFadeOut();
         }
@@ -111,7 +112,14 @@ public class GameTimer : SingletonGeneric<GameTimer>
     private void ShowEndOfDayMenu()
     {
         UIController.instance.ShowEndOfDayMenu();
+        SaveGame();
         GoToNextDay();
+    }
+
+    public void SaveGame()
+    {
+        PlayerManager.instance.currentDay = dayNum + 1;
+        PlayerManager.instance.SaveData(InventoryManager.instance.itemListReference);
     }
 
     public void GoToNextDay()
