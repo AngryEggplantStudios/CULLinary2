@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class PlayerDash : PlayerAction
 {
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
 
     [Header("Variables")]
+    [SerializeField] private float startingSpeed = 10f;
     [SerializeField] private float dashSpeed = 20f;
     [SerializeField] private float dashTime = 0.5f;
     [SerializeField] private float cooldownPause = 1f;
@@ -42,16 +45,20 @@ public class PlayerDash : PlayerAction
         {
             playerStamina.ReduceStamina(staminaCost);
         }
-        StartCoroutine(StartDash(direction));
+        StartCoroutine(StartDashWithLerp(direction.normalized));
     }
 
-    private IEnumerator StartDash(Vector3 direction)
+    private IEnumerator StartDashWithLerp(Vector3 normalizedDirection)
     {
+        audioSource.Play();
         isDashing = true;
         float startTime = Time.time;
+        float currSpeed = startingSpeed;
         while (Time.time < startTime + dashTime)
         {
-            characterController.Move(direction.normalized * dashSpeed * Time.deltaTime);
+            characterController.Move(normalizedDirection * currSpeed * Time.deltaTime);
+            currSpeed = Mathf.Lerp(startingSpeed, dashSpeed, Time.deltaTime);
+
             yield return null;
         }
         yield return new WaitForSeconds(cooldownPause);
