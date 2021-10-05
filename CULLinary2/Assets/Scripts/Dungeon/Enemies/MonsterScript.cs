@@ -31,6 +31,10 @@ public class MonsterScript : Monster
     [Header("Attacks")]
     [SerializeField] private MonsterAttack primaryEnemyAttack;
 
+    [Header("Flash On Damage")]
+    [SerializeField] private Color onDamageColor = Color.white;
+    [SerializeField] private Texture[] texturesForFlash;
+
     // Variables
     private MonsterName monsterName;
     private bool hasAssignedName = false;
@@ -44,7 +48,7 @@ public class MonsterScript : Monster
     private bool canMoveDuringAttack = true;
     private Renderer rend;
     private Color[] originalColors;
-    private Color onDamageColor = Color.white;
+    private Texture[] originalTextures;
     private Animator animator;
     // Store a reference to final damage counter when death
     private GameObject damageCounter;
@@ -208,9 +212,11 @@ public class MonsterScript : Monster
     {
         rend = GetComponentInChildren<SkinnedMeshRenderer>();
         originalColors = new Color[rend.materials.Length];
+        originalTextures = new Texture[rend.materials.Length];
         for (int i = 0; i < rend.materials.Length; i++)
         {
             originalColors[i] = rend.materials[i].color;
+            originalTextures[i] = rend.materials[i].GetTexture("_BaseMap");
         }
     }
 
@@ -298,6 +304,12 @@ public class MonsterScript : Monster
     {
         for (var i = 0; i < rend.materials.Length; i++)
         {
+            Texture flashTex = null;
+            if (texturesForFlash != null && i < texturesForFlash.Length)
+            {
+                flashTex = texturesForFlash[i];
+            }
+            rend.materials[i].SetTexture("_BaseMap", flashTex);
             rend.materials[i].color = onDamageColor;
         }
 
@@ -310,6 +322,7 @@ public class MonsterScript : Monster
 
         for (var i = 0; i < rend.materials.Length; i++)
         {
+            rend.materials[i].SetTexture("_BaseMap", originalTextures[i]);
             rend.materials[i].color = originalColors[i];
         }
     }
