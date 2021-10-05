@@ -77,8 +77,16 @@ public class UIController : SingletonGeneric<UIController>
     {
         isPaused = false;
         Time.timeScale = 1;
-        PlayerManager.instance.SaveData(InventoryManager.instance.itemListReference);
+        //PlayerManager.instance.SaveData(InventoryManager.instance.itemListReference);
         SceneManager.LoadScene((int)SceneIndexes.MAIN_MENU);
+    }
+
+    public void SaveAndExit()
+    {
+        isPaused = false;
+        Time.timeScale = 1;
+        //PlayerManager.instance.SaveData(InventoryManager.instance.itemListReference);
+        Application.Quit();
     }
 
     public void ShowDeathMenu()
@@ -104,6 +112,7 @@ public class UIController : SingletonGeneric<UIController>
     {
         if (endOfDayMenu)
         {
+
             isPaused = true;
             endOfDayMenu.SetActive(true);
             EndOfDayPanelStatistics stats = endOfDayMenu.GetComponent<EndOfDayPanelStatistics>();

@@ -15,6 +15,7 @@ public class PlayerData
     public int[] consumables;
     public bool[] recipesUnlocked;
     public int[] upgradesArray;
+    public int currentDay;
 
     public PlayerData()
     {
@@ -30,6 +31,7 @@ public class PlayerData
         consumables = new int[3] { 0, 0, 0 }; //7,8,9 indices
         recipesUnlocked = new bool[3] { true, true, true };
         upgradesArray = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        currentDay = 1;
     }
 
     public string ToJson()
