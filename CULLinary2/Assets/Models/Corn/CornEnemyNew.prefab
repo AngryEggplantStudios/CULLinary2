@@ -787,6 +787,7 @@ GameObject:
   - component: {fileID: 1859294981879740669}
   - component: {fileID: 1363046032948400377}
   - component: {fileID: 5543433350580354128}
+  - component: {fileID: 1013324229052589080}
   - component: {fileID: 258879138758195646}
   m_Layer: 0
   m_Name: CornEnemyNew
@@ -961,6 +962,7 @@ MonoBehaviour:
   distanceTriggered: 24
   stopChase: 28
   lootDropped: {fileID: 133236693094830621, guid: 812db79b055094f5b9b31cba471340af, type: 3}
+  additionalSpawningNumbers: 0
   spawner: {fileID: 0}
   hpBarPrefab: {fileID: 1085209639500972291, guid: 4614e0511cb49b14ebf0c58217d9d222, type: 3}
   damageCounterPrefab: {fileID: 1085209639500972291, guid: 24f41dda89c7bd648bd2796ac669721e, type: 3}
@@ -977,6 +979,8 @@ MonoBehaviour:
   alertSound: {fileID: 8300000, guid: f887160af86d3844b80236fc380ba79d, type: 3}
   attackSound: {fileID: 8300000, guid: 9bbd01a7a6fe58042810c9a1534d0cc9, type: 3}
   primaryEnemyAttack: {fileID: 3622151391465415662}
+  onDamageColor: {r: 1, g: 1, b: 1, a: 1}
+  texturesForFlash: []
 --- !u!114 &5543433350580354128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -995,6 +999,23 @@ MonoBehaviour:
   minDist: 30
   timeBetweenAttacks: 4
   lineTest: 0
+--- !u!114 &1013324229052589080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5080297952357249674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b40dd2c1d5ce28e4ca0cbfe021def656, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monsterRenderer: {fileID: 864042794020458659}
+  tintColours:
+  - {r: 0.9339623, g: 0.7019402, b: 0.73258454, a: 0}
+  - {r: 0.9084351, g: 0.7232704, b: 1, a: 0}
+  - {r: 0.7421383, g: 0.85767376, b: 1, a: 0}
 --- !u!195 &258879138758195646
 NavMeshAgent:
   m_ObjectHideFlags: 0
