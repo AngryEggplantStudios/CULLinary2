@@ -7,59 +7,62 @@ using UnityEngine.UI;
 /// <summary>
 /// Load scene script
 /// </summary>
-public class LoadScene : MonoBehaviour
+public class LoadScene : SingletonGeneric<LoadScene>
 {
     [SerializeField] private Text loadingText;
-
-    private bool isAbleToProceed = false;
-    private bool isAbleToActivate = false;
+    [SerializeField] private Text percentageText;
+    [SerializeField] private Image loadingBar;
+    public bool isAbleToProceed = false;
     private AsyncOperation operation;
     private Scene scene;
+    private Scene loadingScene;
+    public float currentProgress;
 
     private void Start()
     {
-        StartCoroutine(LoadNextScene());
+        loadingScene = SceneManager.GetSceneByBuildIndex((int)SceneIndexes.LOADING_SCENE);
+        ChangeLoadingText("Loading scene...");
+        ChangeProgress(0f);
+        LoadNextScene();
     }
 
     private void Update()
     {
-        if (isAbleToActivate && Input.GetKeyDown(KeyCode.Space))
-        {
-            isAbleToProceed = true;
-        }
-        if (isAbleToProceed && isAbleToActivate)
-        {
-            this.operation.allowSceneActivation = true;
-            StartCoroutine(ActivateScene());
+        HandleProceed();
+    }
 
+    private void HandleProceed()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && isAbleToProceed)
+        {
+            StartCoroutine(HandleUnloading());
         }
     }
 
-    private IEnumerator ActivateScene()
+    private IEnumerator HandleUnloading()
     {
-        while (!operation.isDone)
-        {
-            yield return null;
-        }
+        yield return StartCoroutine(GameLoader.instance.LoadObjects());
         SceneManager.SetActiveScene(scene);
         SceneManager.UnloadSceneAsync((int)SceneIndexes.LOADING_SCENE);
     }
 
-    private IEnumerator LoadNextScene()
+    private void LoadNextScene()
     {
-        this.operation = SceneManager.LoadSceneAsync(PlayerPrefs.GetInt("nextScene", (int)SceneIndexes.MAIN_MENU));
+        this.operation = SceneManager.LoadSceneAsync(PlayerPrefs.GetInt("nextScene", (int)SceneIndexes.MAIN_MENU), LoadSceneMode.Additive);
         this.scene = SceneManager.GetSceneByBuildIndex(PlayerPrefs.GetInt("nextScene", (int)SceneIndexes.MAIN_MENU));
-        this.operation.allowSceneActivation = false;
-        while (true)
-        {
-            if (operation.progress >= 0.9f)
-            {
-                this.isAbleToActivate = true;
-                loadingText.text = "Press Space to continue.";
-                break;
-            }
-            yield return null;
-        }
     }
+
+    public void ChangeLoadingText(string text)
+    {
+        loadingText.text = text;
+    }
+
+    public void ChangeProgress(float p)
+    {
+        currentProgress = p;
+        loadingBar.fillAmount = p;
+        percentageText.text = Mathf.RoundToInt(p * 100) + "%";
+    }
+
 }
 
