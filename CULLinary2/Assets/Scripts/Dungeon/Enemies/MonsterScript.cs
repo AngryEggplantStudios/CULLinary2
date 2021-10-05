@@ -20,6 +20,9 @@ public class MonsterScript : Monster
     [SerializeField] private GameObject damageCounterPrefab;
     [SerializeField] private GameObject enemyAlertPrefab;
     [SerializeField] private GameObject canvasDisplay;
+    
+    [Header("Particle Prefabs")]
+    [SerializeField] private GameObject onDeathParticles;
 
     [Header("Audio")]
     [SerializeField] private AudioSource audioSourceDamage;
@@ -360,6 +363,7 @@ public class MonsterScript : Monster
 
     public void monsterDeathAnimation()
     {
+        Instantiate(onDeathParticles, transform.position, transform.rotation);    
         DropLoot();
         foreach (GameObject uiElement in uiElements)
         {
