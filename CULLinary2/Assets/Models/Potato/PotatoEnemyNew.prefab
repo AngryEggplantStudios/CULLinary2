@@ -693,6 +693,7 @@ GameObject:
   - component: {fileID: 5806749913654623873}
   - component: {fileID: -2664355154039104880}
   - component: {fileID: 3032895445469368953}
+  - component: {fileID: 5689706197273364680}
   m_Layer: 0
   m_Name: PotatoEnemyNew
   m_TagString: Untagged
@@ -923,3 +924,22 @@ MonoBehaviour:
   alertSound: {fileID: 8300000, guid: f887160af86d3844b80236fc380ba79d, type: 3}
   attackSound: {fileID: 8300000, guid: 3e970a0a6aa62c24fa568ad102d5cd59, type: 3}
   primaryEnemyAttack: {fileID: 4968055034188887457}
+  onDamageColor: {r: 1, g: 1, b: 1, a: 1}
+  texturesForFlash: []
+--- !u!114 &5689706197273364680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9062019569830792200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b40dd2c1d5ce28e4ca0cbfe021def656, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monsterRenderer: {fileID: 7325621177007739663}
+  tintColours:
+  - {r: 1, g: 0.9843137, b: 0.5254902, a: 0}
+  - {r: 1, g: 0.73333335, b: 0.8666667, a: 0}
+  - {r: 0.48235294, g: 0.39215687, b: 0.6039216, a: 0}
