@@ -6,6 +6,8 @@ public class DamageScript : MonoBehaviour
 {
     //Weapon damage
     [SerializeField] private float weaponDamage = 0;
+    
+    [SerializeField] private GameObject onHitParticle;
 
     private void OnTriggerEnter(Collider collider)
     {
@@ -15,6 +17,8 @@ public class DamageScript : MonoBehaviour
             return;
         }
         target.HandleHit(CalculateDamage());
+
+        Instantiate(onHitParticle, transform.position, transform.rotation);
     }
 
     private int CalculateDamage()

@@ -16,6 +16,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     public int[] upgradesArray = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     public List<InventoryItem> itemList = new List<InventoryItem>();
     public int currentMoney;
+    public int currentDay;
 
     // Private variables
     private static PlayerData playerData = new PlayerData();
@@ -39,6 +40,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.evasionChance = evasionChance;
         playerData.criticalChance = criticalChance;
         playerData.consumables = consumables;
+        playerData.currentDay = currentDay;
         SaveSystem.SaveData(playerData);
     }
 
@@ -81,6 +83,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         criticalChance = playerData.criticalChance;
         evasionChance = playerData.evasionChance;
         consumables = playerData.consumables;
+        currentDay = playerData.currentDay;
     }
 
     public void SetupManager()

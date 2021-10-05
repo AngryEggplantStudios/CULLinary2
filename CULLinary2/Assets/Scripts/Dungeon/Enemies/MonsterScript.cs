@@ -20,6 +20,9 @@ public class MonsterScript : Monster
     [SerializeField] private GameObject damageCounterPrefab;
     [SerializeField] private GameObject enemyAlertPrefab;
     [SerializeField] private GameObject canvasDisplay;
+    
+    [Header("Particle Prefabs")]
+    [SerializeField] private GameObject onDeathParticles;
 
     [Header("Audio")]
     [SerializeField] private AudioSource audioSourceDamage;
@@ -30,6 +33,10 @@ public class MonsterScript : Monster
 
     [Header("Attacks")]
     [SerializeField] private MonsterAttack primaryEnemyAttack;
+
+    [Header("Flash On Damage")]
+    [SerializeField] private Color onDamageColor = Color.white;
+    [SerializeField] private Texture[] texturesForFlash;
 
     // Variables
     private MonsterName monsterName;
@@ -44,7 +51,7 @@ public class MonsterScript : Monster
     private bool canMoveDuringAttack = true;
     private Renderer rend;
     private Color[] originalColors;
-    private Color onDamageColor = Color.white;
+    private Texture[] originalTextures;
     private Animator animator;
     // Store a reference to final damage counter when death
     private GameObject damageCounter;
@@ -118,7 +125,6 @@ public class MonsterScript : Monster
         {
             playerTransform = GameObject.FindGameObjectWithTag("Player").transform; //Temp fix
         }
-
         switch (currentState)
         {
             default:
@@ -180,18 +186,18 @@ public class MonsterScript : Monster
         }
     }
 
-    private void checkIfDead()
-    {
+    public void checkIfDead()
+	{
         if (this.currentHealth <= 0)
         {
-            if (!deathCoroutine)
-            {
+			if (!deathCoroutine)
+			{
                 // need this due to buggy triggers for death animation: Attack animation may be triggered immediately after death
                 deathCoroutine = true;
                 DieAnimation();
-            }
-        }
-    }
+			}
+		}
+	}
     public void SetStateMachine(MonsterState newState)
     {
         currentState = newState;
@@ -209,9 +215,11 @@ public class MonsterScript : Monster
     {
         rend = GetComponentInChildren<SkinnedMeshRenderer>();
         originalColors = new Color[rend.materials.Length];
+        originalTextures = new Texture[rend.materials.Length];
         for (int i = 0; i < rend.materials.Length; i++)
         {
             originalColors[i] = rend.materials[i].color;
+            originalTextures[i] = rend.materials[i].GetTexture("_BaseMap");
         }
     }
 
@@ -299,6 +307,12 @@ public class MonsterScript : Monster
     {
         for (var i = 0; i < rend.materials.Length; i++)
         {
+            Texture flashTex = null;
+            if (texturesForFlash != null && i < texturesForFlash.Length)
+            {
+                flashTex = texturesForFlash[i];
+            }
+            rend.materials[i].SetTexture("_BaseMap", flashTex);
             rend.materials[i].color = onDamageColor;
         }
 
@@ -311,6 +325,7 @@ public class MonsterScript : Monster
 
         for (var i = 0; i < rend.materials.Length; i++)
         {
+            rend.materials[i].SetTexture("_BaseMap", originalTextures[i]);
             rend.materials[i].color = originalColors[i];
         }
     }
@@ -348,6 +363,7 @@ public class MonsterScript : Monster
 
     public void monsterDeathAnimation()
     {
+        Instantiate(onDeathParticles, transform.position, transform.rotation);    
         DropLoot();
         foreach (GameObject uiElement in uiElements)
         {

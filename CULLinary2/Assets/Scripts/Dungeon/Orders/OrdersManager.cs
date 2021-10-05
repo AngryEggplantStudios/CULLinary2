@@ -10,13 +10,15 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
 
     // Prefab of an order book entry
     public GameObject orderSlot;
-    
+
     // For UI display
     public GameObject canvasDisplay;
-    public Camera cam;
 
     // Prefab to spawn on successful order
     public GameObject moneyNotif_prefab;
+
+    // Prefab to spawn on failed order
+    public GameObject missingOrderNotif_prefab;
 
     // Order submission sound
     public AudioSource orderSubmissionSound;
@@ -82,15 +84,6 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         }
     }
 
-    void Update()
-    {
-        // Generate orders for the first day in MainScene
-        if (!firstGeneration && BiomeGeneratorManager.IsGenerationComplete())
-        {
-            FirstGenerationOfOrders();
-        }
-    }
-
     public void AddOrder(Order order)
     {
         innerOrdersList.Add(order);
@@ -147,7 +140,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
 
             // Update statistics
             numOfOrdersCompletedToday++;
-            moneyEarnedToday = moneyEarnedToday + earnings; 
+            moneyEarnedToday = moneyEarnedToday + earnings;
 
             // Invalidate the cache of number of orders for each recipe
             isCacheValid = false;
@@ -155,9 +148,17 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         }
         else
         {
-            Debug.Log("OOPS! You do not have the required " + orderToComplete.GetProduct().name);
+            SpawnMissingOrderNotif(orderToComplete.GetProduct().name);
             return false;
         }
+    }
+
+    private void SpawnMissingOrderNotif(string order)
+    {
+        GameObject missingOrderNotif = Instantiate(missingOrderNotif_prefab);
+        missingOrderNotif.transform.GetComponentInChildren<Text>().text = "You do not have a " + order + "!";
+        missingOrderNotif.transform.SetParent(canvasDisplay.transform);
+        missingOrderNotif.transform.localPosition = Vector3.zero;
     }
 
     private void SpawnMoneyNotif(float money)
@@ -226,6 +227,20 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         orderSubmissionStations.Add(orderIndex, stationTransform);
         numberOfOrderSubStations++;
         return orderIndex;
+    }
+
+    // Gets the order submission station with the ID given
+    // Warning: This method can return null!
+    public Transform GetOrderSubmissionStation(int id)
+    {
+        if (orderSubmissionStations.ContainsKey(id))
+        {
+            return orderSubmissionStations[id];
+        }
+        else
+        {
+            return null;
+        }
     }
 
     // Register a callback to be run when an order is completed

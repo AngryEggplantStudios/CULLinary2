@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Defunct
+/// </summary>
 public class PauseMenuController : MonoBehaviour
 {
     [SerializeField] private GameObject pauseMenu;

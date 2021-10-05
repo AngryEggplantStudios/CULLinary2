@@ -7,6 +7,14 @@ public class ItemPickupNotif : MonoBehaviour
     public float destroyTime = 2f;
     void Start()
     {
-        Destroy(gameObject, destroyTime);
+        StartCoroutine(WaitAndDestroy());
+    }
+
+    // Wait 2 real seconds before destroying
+    // Needed to destroy the notification when game is paused
+    private IEnumerator WaitAndDestroy()
+    {
+        yield return new WaitForSecondsRealtime(destroyTime);
+        Destroy(gameObject);
     }
 }

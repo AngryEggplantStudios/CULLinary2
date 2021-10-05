@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class GameTimer : SingletonGeneric<GameTimer>
@@ -8,9 +9,10 @@ public class GameTimer : SingletonGeneric<GameTimer>
     [SerializeField] private Light DirectionalLight;
     [SerializeField] private LightingPreset Preset;
     [SerializeField] private TextMeshProUGUI DayText;
-    [SerializeField] private GameObject DayIcon;
-    [SerializeField] private GameObject NightIcon;
+    [SerializeField] private GameObject[] DayObjects;
+    [SerializeField] private GameObject[] NightObjects;
     [SerializeField] private TextMeshProUGUI TimeText;
+    [SerializeField] private Slider DayProgress;
 
     // 0.2 of 1 minute = 10 seconds eg
     [SerializeField] private float dayLengthInMinutes;
@@ -35,6 +37,8 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     void Start()
     {
+        dayNum = PlayerManager.instance != null ? PlayerManager.instance.currentDay : 1;
+
         if (sunrise > sunset) { Debug.LogError("Sunrise is after Sunset!"); }
 
         // Debug.Log("set timescale to 1");
@@ -44,7 +48,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         timeScale = 24 / (dayLengthInMinutes / 60);
 
         DayText.text = "DAY " + dayNum;
-        UpdateTimerText();
+        UpdateTimedObjects();
     }
 
     private void Update()
@@ -58,7 +62,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
             gameTime = 1f;
         }
 
-        UpdateTimerText();
+        UpdateTimedObjects();
         UpdateLighting(gameTime);
 
         if (gameTime > sunrise && isNewDay)
@@ -69,30 +73,33 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
         if (gameTime >= dayEndTime)
         {
-            // Debug.Log("day ended");
             OnEndOfDay?.Invoke();
             StartSceneFadeOut();
         }
     }
 
-    private void UpdateTimerText()
+    private void UpdateTimedObjects()
     {
+        // Text
         float actualTime = gameTime * 24;
         hourNum = Mathf.FloorToInt(actualTime) % 24;
         minuteNum = Mathf.FloorToInt((actualTime - (float)hourNum) * 60) % 60;
         timeAsString = hourNum + ":" + minuteNum.ToString("00");
         TimeText.text = timeAsString;
 
-        if (gameTime < sunrise || gameTime > sunset)
+        // Objects
+        bool isNight = (gameTime < sunrise || gameTime > sunset);
+        foreach (GameObject obj in DayObjects)
         {
-            DayIcon.SetActive(false);
-            NightIcon.SetActive(true);
+            obj.SetActive(!isNight);
         }
-        else
+        foreach (GameObject obj in NightObjects)
         {
-            DayIcon.SetActive(true);
-            NightIcon.SetActive(false);
+            obj.SetActive(isNight);
         }
+
+        // Slider
+        DayProgress.value = (gameTime - sunrise) / (1 - sunrise);
     }
 
     private void StartSceneFadeOut()
@@ -105,16 +112,22 @@ public class GameTimer : SingletonGeneric<GameTimer>
     private void ShowEndOfDayMenu()
     {
         UIController.instance.ShowEndOfDayMenu();
+        SaveGame();
         GoToNextDay();
+    }
+
+    public void SaveGame()
+    {
+        PlayerManager.instance.currentDay = dayNum + 1;
+        PlayerManager.instance.SaveData(InventoryManager.instance.itemListReference);
     }
 
     public void GoToNextDay()
     {
+        GameObject player = GameObject.FindWithTag("Player");
         // happens after end of day screen is shown
-
         // reset player health and teleport player to origin for now
         SpecialEventManager.instance.ClearCurrentEvents();
-        GameObject player = GameObject.FindWithTag("Player");
         player.GetComponent<PlayerHealth>().RestoreToFull();
         player.GetComponent<PlayerStamina>().RestoreToFull();
         player.GetComponent<CharacterController>().enabled = false;
@@ -125,7 +138,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         GameObject bossClown = GameObject.FindWithTag("ClownBoss");
         if (bossClown)
         {
-            bossClown.GetComponent<ClownController>().DeSpawnClown();
+            bossClown.GetComponentInChildren<ClownController>().DeSpawnClown();
         }
 
         // change time to next day
@@ -134,7 +147,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         DayText.text = "DAY " + dayNum;
         isNewDay = true;
 
-        UpdateTimerText();
+        UpdateTimedObjects();
         UpdateLighting(gameTime);
     }
 

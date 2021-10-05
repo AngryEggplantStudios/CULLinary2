@@ -32,6 +32,7 @@ public class UIController : SingletonGeneric<UIController>
     [Header("Winning Screen References")]
     [SerializeField] private AudioSource winningAudio;
     [SerializeField] private GameObject winPanel;
+
     private KeyCode ToggleInventoryKeyCode;
     private KeyCode ToggleOrdersKeyCode;
     private KeyCode ToggleRecipesKeyCode;
@@ -41,12 +42,14 @@ public class UIController : SingletonGeneric<UIController>
     private KeyCode rightUiTabKeyCode;
     private KeyCode leftUiTabKeyCode;
     private KeyCode closeUiKeyCode;
+    private KeyCode campfireActionKeyCode;
     private int currentUiPage;
     private int currentFireplaceUiPage;
     public bool isMenuActive = false;
     public bool isFireplaceActive = false;
     public bool isPaused = false;
-
+    private bool deathMenuActive = false;
+    private GameObject player;
     // For interacting with objects
     private PlayerInteractable currentInteractable = null;
 
@@ -62,6 +65,13 @@ public class UIController : SingletonGeneric<UIController>
         rightUiTabKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.UiMoveRight);
         leftUiTabKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.UiMoveLeft);
         closeUiKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.CloseMenu);
+        campfireActionKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.CampfireAction);
+    }
+
+    public void Start()
+    {
+        //Use this for now, later when have more scene only adjust accordingly. TODO MC.
+        player = GameObject.FindWithTag("Player");
     }
 
     public void TogglePauseMenu()
@@ -75,33 +85,52 @@ public class UIController : SingletonGeneric<UIController>
     {
         isPaused = false;
         Time.timeScale = 1;
-        PlayerManager.instance.SaveData(InventoryManager.instance.itemListReference);
+        //PlayerManager.instance.SaveData(InventoryManager.instance.itemListReference);
         SceneManager.LoadScene((int)SceneIndexes.MAIN_MENU);
     }
 
+    public void SaveAndExit()
+    {
+        isPaused = false;
+        Time.timeScale = 1;
+        //PlayerManager.instance.SaveData(InventoryManager.instance.itemListReference);
+        Application.Quit();
+    }
     public void ShowDeathMenu()
     {
-        if (!playerDeathMenu.activeSelf)
+        if (!playerDeathMenu.activeSelf && !deathMenuActive)
         {
+            player.GetComponent<CharacterController>().enabled = false;
+            deathMenuActive = true;
             isPaused = true;
-            Time.timeScale = 0;
-            playerDeathMenu.SetActive(true);
+            StartCoroutine(PauseToShowDeathAnimation());
         }
+    }
+
+    private IEnumerator PauseToShowDeathAnimation()
+    {
+        yield return new WaitForSeconds(1.9f);
+        Time.timeScale = 0;
+        player.GetComponent<Animator>().ResetTrigger("isDead");
+        player.GetComponent<Animator>().SetTrigger("revive");
+        playerDeathMenu.SetActive(true);
     }
 
     public void RespawnPlayer()
     {
+        deathMenuActive = false;
         isPaused = false;
+        player.GetComponent<CharacterController>().enabled = true;
         GameTimer.instance.GoToNextDay();
         playerDeathMenu.SetActive(false);
         Time.timeScale = 1;
     }
 
-
     public void ShowEndOfDayMenu()
     {
         if (endOfDayMenu)
         {
+
             isPaused = true;
             endOfDayMenu.SetActive(true);
             EndOfDayPanelStatistics stats = endOfDayMenu.GetComponent<EndOfDayPanelStatistics>();
@@ -307,6 +336,22 @@ public class UIController : SingletonGeneric<UIController>
     public static void UpdateAllUIs()
     {
         // Stop the coroutines that are currently running
+        if (InventoryManager.instance != null)
+        {
+            InventoryManager.instance.StopAllCoroutines();
+            InventoryManager.instance.StartCoroutine(InventoryManager.instance.UpdateUI());
+        }
+        if (RecipeManager.instance != null)
+        {
+            RecipeManager.instance.StopAllCoroutines();
+            RecipeManager.instance.StartCoroutine(RecipeManager.instance.UpdateUI());
+        }
+        if (OrdersManager.instance != null)
+        {
+            OrdersManager.instance.StopAllCoroutines();
+            OrdersManager.instance.StartCoroutine(OrdersManager.instance.UpdateUI());
+        }
+        /*
         InventoryManager.instance.StopAllCoroutines();
         RecipeManager.instance.StopAllCoroutines();
         OrdersManager.instance.StopAllCoroutines();
@@ -316,6 +361,7 @@ public class UIController : SingletonGeneric<UIController>
         InventoryManager.instance.StartCoroutine(InventoryManager.instance.UpdateUI());
         RecipeManager.instance.StartCoroutine(RecipeManager.instance.UpdateUI());
         OrdersManager.instance.StartCoroutine(OrdersManager.instance.UpdateUI());
+        */
     }
 
     private void Update()
@@ -337,48 +383,32 @@ public class UIController : SingletonGeneric<UIController>
             return;
         }
 
-        if (Input.GetKeyDown(ToggleInventoryKeyCode))
+        if (!isFireplaceActive)
         {
-            UIController.instance.ToggleInventory();
-        }
-        else if (Input.GetKeyDown(ToggleOrdersKeyCode))
-        {
-            UIController.instance.ToggleOrders();
-        }
-        else if (Input.GetKeyDown(ToggleRecipesKeyCode))
-        {
-            UIController.instance.ToggleRecipes();
-        }
-        else if (Input.GetKeyDown(ToggleCreaturesKeyCode))
-        {
-            UIController.instance.ToggleCreatures();
-        }
-        else if (Input.GetKeyDown(ToggleMapKeyCode))
-        {
-            UIController.instance.ToggleMap();
-        }
-        else if (Input.GetKeyDown(interactKeyCode) && currentInteractable != null)
-        {
-            currentInteractable.OnPlayerInteract();
-        }
-        else if (isMenuActive)
-        {
-            if (Input.GetKeyDown(rightUiTabKeyCode))
+            // Open menu if campfire inactive
+            if (Input.GetKeyDown(ToggleInventoryKeyCode))
             {
-                currentUiPage = (currentUiPage + 1) % 4;
-                HandlePageChange();
+                UIController.instance.ToggleInventory();
             }
-            else if (Input.GetKeyDown(leftUiTabKeyCode))
+            else if (Input.GetKeyDown(ToggleOrdersKeyCode))
             {
-                currentUiPage = (currentUiPage + 3) % 4;
-                HandlePageChange();
+                UIController.instance.ToggleOrders();
             }
-            else if (Input.GetKeyDown(closeUiKeyCode))
+            else if (Input.GetKeyDown(ToggleRecipesKeyCode))
             {
-                CloseMenu();
+                UIController.instance.ToggleRecipes();
+            }
+            else if (Input.GetKeyDown(ToggleCreaturesKeyCode))
+            {
+                UIController.instance.ToggleCreatures();
+            }
+            else if (Input.GetKeyDown(ToggleMapKeyCode))
+            {
+                UIController.instance.ToggleMap();
             }
         }
-        else if (isFireplaceActive)
+        // Campfire interface is active
+        else
         {
             if (Input.GetKeyDown(rightUiTabKeyCode))
             {
@@ -392,8 +422,37 @@ public class UIController : SingletonGeneric<UIController>
             }
             else if (Input.GetKeyDown(closeUiKeyCode))
             {
+                RecipeManager.instance.DeactivateCooking();
                 CloseCampfireInterface();
             }
+            else if (Input.GetKeyDown(campfireActionKeyCode))
+            {
+                HandleCampfireAction();
+            }
+        }
+
+        if (!isMenuActive)
+        {
+            // Toggle fireplace if menu is not active
+            if (Input.GetKeyDown(interactKeyCode) && currentInteractable != null)
+            {
+                currentInteractable.OnPlayerInteract();
+            }
+        }
+        // Menu/Tabs interface is active
+        else if (Input.GetKeyDown(rightUiTabKeyCode))
+        {
+            currentUiPage = (currentUiPage + 1) % 4;
+            HandlePageChange();
+        }
+        else if (Input.GetKeyDown(leftUiTabKeyCode))
+        {
+            currentUiPage = (currentUiPage + 3) % 4;
+            HandlePageChange();
+        }
+        else if (Input.GetKeyDown(closeUiKeyCode))
+        {
+            CloseMenu();
         }
     }
 
@@ -409,6 +468,22 @@ public class UIController : SingletonGeneric<UIController>
                 break;
             case (int)FireplaceUIPage.WEAPONS:
                 OpenWeaponsInterface();
+                break;
+        }
+    }
+
+    private void HandleCampfireAction()
+    {
+        switch (currentFireplaceUiPage)
+        {
+            case (int)FireplaceUIPage.COOKING:
+                RecipeManager.instance.CookCurrentlySelected();
+                break;
+            case (int)FireplaceUIPage.UPGRADES:
+                ShopManager.instance.HandlePurchase();
+                break;
+            case (int)FireplaceUIPage.WEAPONS:
+                // TODO
                 break;
         }
     }

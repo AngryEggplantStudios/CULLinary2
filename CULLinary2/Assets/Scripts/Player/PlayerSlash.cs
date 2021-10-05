@@ -83,6 +83,7 @@ public class PlayerSlash : PlayerAction
     {
         weaponCollider.enabled = false;
         animator.SetBool("isMelee", false);
+        playerMelee.StopInvoking();
         weaponTrail.emitting = false;
     }
 

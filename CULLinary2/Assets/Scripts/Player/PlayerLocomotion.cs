@@ -43,16 +43,16 @@ public class PlayerLocomotion : PlayerAction
     private void Run(Vector3 direction, bool isGrounded = true)
     {
         playerStamina.SetStaminaCircleActive(true);
-        if (playerStamina && !playerStamina.hasStamina(staminaCost))
+        if (playerStamina && !playerStamina.HasStamina(staminaCost))
         {
             Move(direction, isGrounded);
-            playerStamina.resetStaminaRegeneration();
+            playerStamina.ResetStaminaRegeneration();
             return;
         }
 
         if (playerStamina)
         {
-            playerStamina.reduceStamina(staminaCost);
+            playerStamina.ReduceStamina(staminaCost);
         }
 
         if (isGrounded)
