@@ -3053,6 +3053,7 @@ GameObject:
   - component: {fileID: 5620305572254198151}
   - component: {fileID: 8487914093826810684}
   - component: {fileID: 1248320868956174961}
+  - component: {fileID: 1948873467281180754}
   m_Layer: 7
   m_Name: Chef_New_Playable
   m_TagString: Player
@@ -3418,6 +3419,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthPotions: {fileID: 0}
+--- !u!114 &1948873467281180754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5620305572254198155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ce55e0fc04fd4de7b2989b635a1acb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dashSpeed: 20
+  dashTime: 0.25
+  cooldownPause: 1
+  staminaCost: 20
 --- !u!1 &5740855577425697628
 GameObject:
   m_ObjectHideFlags: 0
