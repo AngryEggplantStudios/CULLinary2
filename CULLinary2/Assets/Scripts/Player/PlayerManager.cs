@@ -17,7 +17,11 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     public List<InventoryItem> itemList = new List<InventoryItem>();
     public int currentMoney;
     public int currentDay;
-    public Dictionary<MonsterName, PopulationLevel> monsterDict;
+    public Dictionary<MonsterName, PopulationLevel> monsterDict = new Dictionary<MonsterName, PopulationLevel>{
+        {MonsterName.Corn, PopulationLevel.Normal},
+        {MonsterName.Potato, PopulationLevel.Normal},
+        {MonsterName.Eggplant, PopulationLevel.Normal},
+    };
 
     // Private variables
     private static PlayerData playerData = new PlayerData();
