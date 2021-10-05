@@ -6,6 +6,10 @@ public class PlayerDash : PlayerAction
 {
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
+    
+    [Header("Visuals")]
+    [SerializeField] private Transform playerbody;
+    [SerializeField] private GameObject dustKickupPrefab;
 
     [Header("Variables")]
     [SerializeField] private float startingSpeed = 10f;
@@ -51,6 +55,7 @@ public class PlayerDash : PlayerAction
     private IEnumerator StartDashWithLerp(Vector3 normalizedDirection)
     {
         audioSource.Play();
+        Instantiate(dustKickupPrefab, playerbody);
         isDashing = true;
         float startTime = Time.time;
         float currSpeed = startingSpeed;
