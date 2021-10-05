@@ -12,6 +12,7 @@ public class DatabaseLoader : MonoBehaviour
     [SerializeField] private RecipeDatabase recipeDatabase;
     [SerializeField] private ShopItemDatabase shopItemDatabase;
     [SerializeField] private EventsDatabase eventsDatabase;
+    [SerializeField] private MonsterDatabase monsterDatabase;
 
     //Inventory Items
     private static Dictionary<int, InventoryItem> inventoryItemDict;
@@ -25,6 +26,9 @@ public class DatabaseLoader : MonoBehaviour
     //Events
     private static Dictionary<int, SpecialEvent> specialEventDict;
     private static List<SpecialEvent> eventList;
+    //Monsters
+    private static Dictionary<MonsterName, MonsterData> monsterDict;
+    private static List<MonsterData> monsterList;
 
     private void Start()
     {
@@ -36,6 +40,8 @@ public class DatabaseLoader : MonoBehaviour
         shopitemList = shopItemDatabase.allItems;
         specialEventDict = new Dictionary<int, SpecialEvent>();
         eventList = eventsDatabase.allEvents;
+        monsterDict = new Dictionary<MonsterName, MonsterData>();
+        monsterList = monsterDatabase.allMonsters;
         if (isAutoload)
         {
             StartCoroutine(Populate());
@@ -225,5 +231,46 @@ public class DatabaseLoader : MonoBehaviour
     public static Dictionary<int, SpecialEvent> GetSpecialEventDict()
     {
         return specialEventDict;
+    }
+
+    private IEnumerator PopulateMonsterDatabase()
+    {
+        foreach (MonsterData i in monsterList)
+        {
+            try
+            {
+                monsterDict.Add(i.monsterName, i);
+            }
+            catch
+            {
+                Debug.Log("Unable to add shop item: " + i.monsterName);
+            }
+            yield return null;
+        }
+        Debug.Log("Shop Event Database populated.");
+    }
+
+    public static MonsterData GetMonsterByMonsterName(MonsterName monsterName)
+    {
+        MonsterData monsterData;
+        try
+        {
+            monsterData = monsterDict[monsterName];
+        }
+        catch
+        {
+            monsterData = new MonsterData();
+        }
+        return monsterData;
+    }
+
+    public static List<MonsterData> GetAllMonsters()
+    {
+        return monsterList;
+    }
+
+    public static Dictionary<MonsterName, MonsterData> GetMonsterDict()
+    {
+        return monsterDict;
     }
 }

@@ -19,6 +19,8 @@ public class DungeonSpawnManager : MonoBehaviour
         yield return null;
 
         // temp
+        //List<MonsterData> monsterDatas = DatabaseLoader.GetAllMonsters();
+        // Need to loop through monsterdatas to get the names
         List<GameObject> cornSpawners = GetSpawners(MonsterName.Corn);
         List<GameObject> potatoSpawners = GetSpawners(MonsterName.Potato);
         List<GameObject> eggplantSpawners = GetSpawners(MonsterName.Eggplant);
@@ -28,7 +30,7 @@ public class DungeonSpawnManager : MonoBehaviour
     public static void CheckIfExtinct(MonsterName name)
     {
         // Updates population level if found to be extinct and population level is not already Extinct
-        
+
         Population pop = EcosystemManager.GetPopulation(name);
         if (pop.GetLevel() == PopulationLevel.Extinct)
         {
@@ -37,7 +39,7 @@ public class DungeonSpawnManager : MonoBehaviour
 
         List<GameObject> spawners = GetSpawners(name);
         bool isExtinct = true;
-        
+
         foreach (GameObject spawner in spawners)
         {
             MonsterSpawn monsterSpawn = spawner.GetComponent<MonsterSpawn>();

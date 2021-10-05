@@ -2,33 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EcosystemManager : MonoBehaviour
+public class EcosystemManager : SingletonGeneric<EcosystemManager>
 {
     // to share among all the populations
     [SerializeField] private int numDaysBetweenLevelIncrease = 1; // num days it takes to increase pop level naturally (for endangered, vulnerable and normal (50% chance))
     [SerializeField] private int numDaysToIncreaseFromExtinct = 2; // num days it takes to increase pop level naturally from extinct
 
-    private static List<Population> populations = new List<Population> {
-        new Population(MonsterName.Potato, 30, 80, PopulationLevel.Normal),
-        new Population(MonsterName.Corn, 20, 40, PopulationLevel.Normal),
-        new Population(MonsterName.Eggplant, 30, 60, PopulationLevel.Normal)
-    };
+    private static List<Population> populations = new List<Population>();
 
     // Statistics for number of monsters killed
     private static int numOfMonstersKilledToday = 0;
 
-    void Awake()
+    public void InstantiateEcosystem()
     {
-        DontDestroyOnLoad(this.gameObject);
+        List<MonsterData> monsterList = DatabaseLoader.GetAllMonsters();
+        foreach (MonsterData monsterData in monsterList)
+        {
+            populations.Add(new Population(monsterData.monsterName, monsterData.lowerBound, monsterData.upperBound, PlayerManager.instance.GetPopulationLevelByMonsterName(monsterData.monsterName)));
+        }
         foreach (Population pop in populations)
         {
             pop.SetNumDaysBetweenLevelIncrease(numDaysBetweenLevelIncrease);
             pop.SetNumDaysToIncreaseFromExtinct(numDaysToIncreaseFromExtinct);
         }
-    }
-
-    void Start()
-    {
         foreach (Population pop in populations)
         {
             Debug.Log(string.Format("{0} population level: {1} ({2})", pop.GetName(), pop.GetLevel(), pop.GetCurrentNumber()));
@@ -38,6 +34,14 @@ public class EcosystemManager : MonoBehaviour
         {
             EcosystemManager.numOfMonstersKilledToday = 0;
         };
+    }
+
+    public static void SaveEcosystemPopulation()
+    {
+        foreach (Population population in populations)
+        {
+            PlayerManager.instance.SetPopulationLevelByMonsterName(population.GetName(), population.GetLevel());
+        }
     }
 
     private void CheckNaturalPopulationIncrease()
