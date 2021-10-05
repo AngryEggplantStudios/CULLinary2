@@ -10,6 +10,8 @@ public class PlayerController : PlayerAction
     public delegate void PlayerRotateDelegate(Vector3 direction, float turnSpeed);
     public delegate void PlayerRotateToLocationDelegate(Vector3 worldPosition, float speed);
     public delegate void PlayerJumpDelegate(Vector3 direction, bool isGrounded);
+    public delegate void PlayerDashDelegate(Vector3 direction);
+    public event PlayerDashDelegate OnPlayerDash;
     public event PlayerMoveDelegate OnPlayerMove;
     public event PlayerRunDelegate OnPlayerRun;
     public event PlayerStopDelegate OnPlayerStop;
@@ -54,9 +56,9 @@ public class PlayerController : PlayerAction
 
         this.SetIsInvoking(true);
 
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && direction != Vector3.zero)
         {
-            OnPlayerJump?.Invoke(moveDirection.normalized, isGrounded);
+            OnPlayerDash?.Invoke(moveDirection.normalized);
         }
 
         if (direction != Vector3.zero)

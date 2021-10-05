@@ -140,7 +140,7 @@ public class Minimap : MonoBehaviour
             }
             foreach ((Transform fire, Transform icon) in campfireIcons)
             {
-                SetIconPos(fire, icon, false);
+                SetIconPos(fire, icon, true);
             }
             // Update player icon
             SetPlayerIconPos();

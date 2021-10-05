@@ -65,7 +65,7 @@ public class MainMenu : MonoBehaviour
         PlaySelectAction();
         FadeToBlack(() =>
         {
-            PlayerPrefs.SetInt("nextScene", (int)SceneIndexes.DUNGEON);
+            PlayerPrefs.SetInt("nextScene", (int)SceneIndexes.MAIN_SCENE);
             SceneManager.LoadScene((int)SceneIndexes.LOADING_SCENE);
         });
 
