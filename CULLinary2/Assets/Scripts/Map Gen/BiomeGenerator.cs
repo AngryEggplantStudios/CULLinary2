@@ -73,12 +73,12 @@ public class BiomeGenerator : MonoBehaviour
         createdMesh = null;
         walkableMesh = null;
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         createdMesh = AssetDatabase.LoadAssetAtPath<Mesh>(createdMeshPath);
         yield return null;
         walkableMesh = AssetDatabase.LoadAssetAtPath<Mesh>(walkableMeshPath);
         yield return null;
-        #endif
+#endif
 
         if (createdMesh == null || walkableMesh == null)
         {
@@ -116,10 +116,10 @@ public class BiomeGenerator : MonoBehaviour
         {
             for (int x = 0; x < mapWidth; x++)
             {
-                Debug.Log(noiseMap[x, y]);
-                Debug.Log(falloffMap[x, y]);
+                //Debug.Log(noiseMap[x, y]);
+                //Debug.Log(falloffMap[x, y]);
                 noiseMap[x, y] = Mathf.Clamp01(noiseMap[x, y] - falloffMap[x, y]);
-                Debug.Log("After crash");
+                //Debug.Log("After crash");
                 float currentHeight = noiseMap[x, y];
                 for (int i = 0; i < regions.Length; i++)
                 {
@@ -167,9 +167,9 @@ public class BiomeGenerator : MonoBehaviour
 
         yield return null;
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         SaveMesh(createdMeshPath, createdMesh);
-        #endif
+#endif
         // Don't save walkable mesh yet as need for player to walk on water and drown
         //SaveMesh(walkableMeshPath, walkableMesh);
     }
@@ -220,9 +220,9 @@ public class BiomeGenerator : MonoBehaviour
 
     private void SaveMesh(string meshName, Mesh meshToSave)
     {
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         AssetDatabase.CreateAsset(meshToSave, meshName);
-        #endif
+#endif
     }
 
     public void GenerateFallOffMap()
