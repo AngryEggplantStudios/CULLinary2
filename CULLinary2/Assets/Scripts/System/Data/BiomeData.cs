@@ -13,7 +13,8 @@ public class BiomeData
 
     public BiomeData()
     {
-        seed = Random.Range(int.MinValue, int.MaxValue);
+        //seed = Random.Range(int.MinValue, int.MaxValue);
+        seed = 0;
     }
 
     public string ToJson()

@@ -10,6 +10,7 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
     [SerializeField] private Image itemMainIcon;
     [SerializeField] private TMP_Text itemName;
     [SerializeField] private TMP_Text itemDescription;
+    [SerializeField] private VerticalLayoutGroup descriptionLayoutGroup;
     private InventorySlot[] slots;
     private int selectedSlotId;
 
@@ -24,6 +25,7 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
             i++;
         }
     }
+
     public void HandleClick(int slotId)
     {
         InventorySlot itemSlot = slots[slotId];
@@ -38,6 +40,7 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
         itemMainIcon.sprite = item.icon;
         itemName.text = item.itemName;
         itemDescription.text = item.description;
+        //StartCoroutine(UpdateLayoutGroup());
         itemSlot.gameObject.GetComponent<Outline>().enabled = true;
 
         if (selectedSlotId != -1)
@@ -47,6 +50,13 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
 
         selectedSlotId = slotId;
     }
+
+    /* IEnumerator UpdateLayoutGroup()
+    {
+        descriptionLayoutGroup.enabled = false;
+        yield return new WaitForEndOfFrame();
+        descriptionLayoutGroup.enabled = true;
+    } */
 
     private void OnEnable()
     {
@@ -73,10 +83,10 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
             {
                 HandleDiscard();
             }
-            else if (Input.GetKeyDown(KeyCode.Z))
+            /* else if (Input.GetKeyDown(KeyCode.Z))
             {
                 HandleConsume();
-            }
+            } */
         }
     }
 
