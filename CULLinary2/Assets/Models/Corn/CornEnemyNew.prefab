@@ -982,6 +982,8 @@ MonoBehaviour:
   primaryEnemyAttack: {fileID: 3622151391465415662}
   onDamageColor: {r: 1, g: 1, b: 1, a: 1}
   texturesForFlash: []
+  transparentMaterials:
+  - {fileID: 2100000, guid: 8dbd19aaf0e3cfb488589daef57f3707, type: 2}
 --- !u!114 &5543433350580354128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1014,9 +1016,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monsterRenderer: {fileID: 864042794020458659}
   tintColours:
-  - {r: 0.9339623, g: 0.7019402, b: 0.73258454, a: 0}
-  - {r: 0.9084351, g: 0.7232704, b: 1, a: 0}
-  - {r: 0.7421383, g: 0.85767376, b: 1, a: 0}
+  - {r: 0.9339623, g: 0.7019402, b: 0.73258454, a: 1}
+  - {r: 0.9084351, g: 0.7232704, b: 1, a: 1}
+  - {r: 0.7421383, g: 0.85767376, b: 1, a: 1}
 --- !u!195 &258879138758195646
 NavMeshAgent:
   m_ObjectHideFlags: 0
