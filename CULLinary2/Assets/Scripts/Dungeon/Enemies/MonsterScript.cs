@@ -289,6 +289,8 @@ public class MonsterScript : Monster
         monsterCollider.enabled = false;
 
         audioSourceAttack.clip = deathSound;
+        audioSourceAttack.volume = 0.7f;
+        audioSourceAttack.pitch = Random.Range(1f, 2f);
         audioSourceAttack.Play();
     }
 
