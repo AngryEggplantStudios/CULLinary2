@@ -42,7 +42,7 @@ public class LoadScene : SingletonGeneric<LoadScene>
 
     private IEnumerator HandleUnloading()
     {
-        BGM.Instance.SetVolume(0.5f);
+        BGM.Instance.SetVolume(0.3f);
         yield return StartCoroutine(GameLoader.instance.LoadObjects());
         SceneManager.SetActiveScene(scene);
         SceneManager.UnloadSceneAsync((int)SceneIndexes.LOADING_SCENE);

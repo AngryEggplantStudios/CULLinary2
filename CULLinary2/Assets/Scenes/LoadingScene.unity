@@ -817,7 +817,9 @@ MonoBehaviour:
     is scary.
 
     All this info will be made into a nice tutorial in the final game
-    ;)'
+    ;)
+
+    Don''t worry if this takes a minute to load your com isn''t that shitty'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a1bc1abf93d37c348ab5a4e3cdfdd48c, type: 2}
   m_sharedMaterial: {fileID: 5819034279512177362, guid: a1bc1abf93d37c348ab5a4e3cdfdd48c, type: 2}
@@ -1104,6 +1106,7 @@ GameObject:
   - component: {fileID: 1551434975}
   - component: {fileID: 1551434977}
   - component: {fileID: 1551434976}
+  - component: {fileID: 1551434978}
   m_Layer: 0
   m_Name: Text (TMP) - Loading
   m_TagString: Untagged
@@ -1159,7 +1162,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
+    rgba: 4244635648
   m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -1227,6 +1230,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1551434974}
   m_CullTransparentMesh: 1
+--- !u!95 &1551434978
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1551434974}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 556aaa9e324eb0948b51864cceaf3956, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1798089526
 GameObject:
   m_ObjectHideFlags: 0
