@@ -11,14 +11,14 @@ public class ProcGenerateNavMesh : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {   
+    {
         Vector3 originalScale = parent.transform.localScale;
         parent.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
         // get all child gameObjects to create Mesh
         foreach (Transform child in parent.transform)
-		{
+        {
             if (child.gameObject != this.gameObject)
-			{                
+            {
                 CombineMeshes(child.gameObject);
             }
         }
@@ -26,18 +26,18 @@ public class ProcGenerateNavMesh : MonoBehaviour
         parent.transform.localScale = originalScale;
         NavMeshSurface surfaceForNavMesh = parent.gameObject.GetComponent<NavMeshSurface>();
         NavMeshData loadFromSaved = null;
-        #if UNITY_EDITOR
-        loadFromSaved = (NavMeshData) AssetDatabase.LoadAssetAtPath(savePath, typeof(NavMeshData));
-        #endif
+#if UNITY_EDITOR
+        loadFromSaved = (NavMeshData)AssetDatabase.LoadAssetAtPath(savePath, typeof(NavMeshData));
+#endif
         if (loadFromSaved == null)
-		{
+        {
             surfaceForNavMesh.BuildNavMesh();
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             AssetDatabase.CreateAsset(surfaceForNavMesh.navMeshData, savePath);
-            #endif
+#endif
         }
         else
-		{
+        {
             surfaceForNavMesh.navMeshData = loadFromSaved;
             surfaceForNavMesh.AddData();
         }
@@ -162,42 +162,42 @@ public class ProcGenerateNavMesh : MonoBehaviour
     }
 
     // called by startcoroutine whenever you want to build the navmesh
-/*    IEnumerator BuildNavmesh(NavMeshSurface surface)
-    {
-        // get the data for the surface
-        var emptySources = new List<NavMeshBuildSource>();
-        var emptyBounds = new Bounds();
+    /*    IEnumerator BuildNavmesh(NavMeshSurface surface)
+        {
+            // get the data for the surface
+            var emptySources = new List<NavMeshBuildSource>();
+            var emptyBounds = new Bounds();
 
-        var data = NavMeshBuilder.BuildNavMeshData(surface.GetBuildSettings(), emptySources, emptyBounds, surface.transform.position, surface.transform.rotation);
-        Debug.Log(data);
-        var operation = NavMeshBuilder.UpdateNavMeshDataAsync(
-            data,
-            surface.GetBuildSettings(),
-            emptySources,
-            new Bounds(Vector3.zero, new Vector3(1000, 1000, 1000)) // set these accordingly
-        );
-        Debug.Log(operation.isDone);
-        do { yield return null; } while (!operation.isDone);
+            var data = NavMeshBuilder.BuildNavMeshData(surface.GetBuildSettings(), emptySources, emptyBounds, surface.transform.position, surface.transform.rotation);
+            Debug.Log(data);
+            var operation = NavMeshBuilder.UpdateNavMeshDataAsync(
+                data,
+                surface.GetBuildSettings(),
+                emptySources,
+                new Bounds(Vector3.zero, new Vector3(1000, 1000, 1000)) // set these accordingly
+            );
+            Debug.Log(operation.isDone);
+            do { yield return null; } while (!operation.isDone);
 
 
-        // wait until the navmesh has finished baking
-        yield return async;
+            // wait until the navmesh has finished baking
+            yield return async;
 
-        Debug.Log("finished");
+            Debug.Log("finished");
 
-        // you need to save the baked data back into the surface
-        surface.navMeshData = data;
+            // you need to save the baked data back into the surface
+            surface.navMeshData = data;
 
-        // call AddData() to finalize it
-        surface.AddData();
-    }
+            // call AddData() to finalize it
+            surface.AddData();
+        }
 
-    // creates the navmesh data
-    static NavMeshData InitializeBakeData(NavMeshSurface surface)
-    {
-        var emptySources = new List<NavMeshBuildSource>();
-        var emptyBounds = new Bounds();
+        // creates the navmesh data
+        static NavMeshData InitializeBakeData(NavMeshSurface surface)
+        {
+            var emptySources = new List<NavMeshBuildSource>();
+            var emptyBounds = new Bounds();
 
-        return NavMeshBuilder.BuildNavMeshData(surface.GetBuildSettings(), emptySources, emptyBounds, surface.transform.position, surface.transform.rotation);
-    }*/
+            return NavMeshBuilder.BuildNavMeshData(surface.GetBuildSettings(), emptySources, emptyBounds, surface.transform.position, surface.transform.rotation);
+        }*/
 }

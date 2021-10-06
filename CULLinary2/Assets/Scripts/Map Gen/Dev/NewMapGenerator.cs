@@ -98,9 +98,9 @@ public class NewMapGenerator : MonoBehaviour
 
         //TO-DO: Test where to save the thing
         string meshName = "Assets/Scenes/UtilScenes/Saved_Meshes/" + "Mesh" + System.DateTime.Now.TimeOfDay.TotalSeconds + ".asset";
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         AssetDatabase.CreateAsset(createdMesh, meshName);
-        #endif
+#endif
     }
 
     void OnValidate()

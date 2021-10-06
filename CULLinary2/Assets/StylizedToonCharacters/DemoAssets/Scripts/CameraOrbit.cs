@@ -4,8 +4,8 @@ using UnityEngine.EventSystems;
 namespace Nicoplv.Characters.Demo
 {
     [ExecuteInEditMode]
-	public class CameraOrbit : MonoBehaviour
-	{
+    public class CameraOrbit : MonoBehaviour
+    {
         #region Variables
 
         [SerializeField]
@@ -55,6 +55,6 @@ namespace Nicoplv.Characters.Demo
         }
 #endif
 
-#endregion
+        #endregion
     }
 }
