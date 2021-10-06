@@ -10,6 +10,8 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
     [SerializeField] private Image itemMainIcon;
     [SerializeField] private TMP_Text itemName;
     [SerializeField] private TMP_Text itemDescription;
+    [SerializeField] private GameObject consumableButtonObject;
+    [SerializeField] private GameObject discardButtonObject;
     private InventorySlot[] slots;
     private int selectedSlotId;
 
@@ -34,6 +36,10 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
             return;
         }
 
+        //consumableButtonObject.SetActive(item.isConsumable);
+        consumableButtonObject.SetActive(false);
+        discardButtonObject.SetActive(true);
+
         itemMainIcon.enabled = true;
         itemMainIcon.sprite = item.icon;
         itemName.text = item.itemName;
@@ -50,17 +56,13 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
 
     private void OnEnable()
     {
-        selectedSlotId = -1;
-        itemName.text = "";
-        itemDescription.text = "";
+        ResetSlot();
     }
 
     private void OnDisable()
     {
         if (selectedSlotId != -1)
         {
-            itemMainIcon.enabled = false;
-            itemMainIcon.sprite = null;
             slots[selectedSlotId].gameObject.GetComponent<Outline>().enabled = false;
         }
     }
@@ -85,6 +87,8 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
         InventoryItem item = slots[selectedSlotId].item;
         if (InventoryManager.instance != null && item != null)
         {
+            slots[selectedSlotId].gameObject.GetComponent<Outline>().enabled = false;
+            ResetSlot();
             InventoryManager.instance.RemoveItem(item);
         }
     }
@@ -92,11 +96,24 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
     public void HandleConsume()
     {
         InventoryItem item = slots[selectedSlotId].item;
-        if (InventoryManager.instance != null && item != null && item.isConsumable)
+        if (InventoryManager.instance != null && item != null && item.isConsumable && false) //Cannot consume for now
         {
+            slots[selectedSlotId].gameObject.GetComponent<Outline>().enabled = false;
+            ResetSlot();
             InventoryManager.instance.RemoveItem(item);
             Debug.Log("Consumed!");
         }
+    }
+
+    private void ResetSlot()
+    {
+        selectedSlotId = -1;
+        itemName.text = "";
+        itemDescription.text = "";
+        itemMainIcon.enabled = false;
+        itemMainIcon.sprite = null;
+        discardButtonObject.SetActive(false);
+        consumableButtonObject.SetActive(false);
     }
 
 
