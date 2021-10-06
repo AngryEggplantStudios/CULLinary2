@@ -9,8 +9,7 @@ public class ShopSlot : MonoBehaviour
     [SerializeField] private TMP_Text shopItemName;
     [SerializeField] private Image shopItemIcon;
     [SerializeField] private TMP_Text levelText;
-    [SerializeField] private TMP_Text itemDescription;
-    [SerializeField] private TMP_Text itemPrice;
+    [SerializeField] private GameObject upgradeIcon;
     [SerializeField] private Outline outline;
     public ShopItem shopItem;
     private Button button;
@@ -35,13 +34,12 @@ public class ShopSlot : MonoBehaviour
 
         shopItemName.text = shopItem.itemName;
         shopItemIcon.sprite = shopItem.iconArr[level];
-        itemDescription.text = shopItem.description[level];
         button.interactable = true;
         outline.enabled = false;
 
         if (currentShopItem.GetType() == typeof(KeyShopItem) || currentShopItem.GetType() == typeof(UpgradeShopItem))
         {
-            levelText.text = "Current Level: " + level;
+            levelText.text = "Lvl " + level;
         }
         else
         {
@@ -50,21 +48,26 @@ public class ShopSlot : MonoBehaviour
 
         if (level >= shopItem.maxLevel)
         {
-            itemPrice.text = "";
+            upgradeIcon.SetActive(false);
             button.interactable = false;
             return;
         }
 
         if (currentMoney < shopItem.price[level])
         {
+            upgradeIcon.SetActive(false);
             button.interactable = false;
+        }
+        else
+        {
+            upgradeIcon.SetActive(true);
         }
 
         if (SpecialEventManager.instance.CheckIfEventIsRunning(shopItem.eventId))
         {
+            upgradeIcon.SetActive(false);
             button.interactable = false;
         }
-        itemPrice.text = "$" + shopItem.price[level];
     }
 
 }

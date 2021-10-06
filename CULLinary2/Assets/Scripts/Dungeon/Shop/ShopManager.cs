@@ -9,8 +9,16 @@ public class ShopManager : SingletonGeneric<ShopManager>
     [Header("Prefabs & References")]
     [SerializeField] private GameObject slotsParentObject;
     [SerializeField] private GameObject slotPrefab;
-    [SerializeField] private TMP_Text moneyText;
-    [SerializeField] private GameObject shopPanel;
+    [SerializeField] private Image itemIcon;
+    [SerializeField] private TMP_Text itemPrice;
+    [SerializeField] private TMP_Text itemName;
+    [SerializeField] private TMP_Text itemDescription;
+    [SerializeField] private TMP_Text currentLevelText;
+    [SerializeField] private TMP_Text nextLevelText;
+    [SerializeField] private TMP_Text currentLevelEffectText;
+    [SerializeField] private TMP_Text nextLevelEffectText;
+    [SerializeField] private GameObject upgradeButton;
+    [SerializeField] private GameObject itemPanel;
     private int selectedSlotId = -1;
     private List<ShopSlot> slots;
 
@@ -97,6 +105,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
         InventoryManager.instance.StartCoroutine(InventoryManager.instance.UpdateUI());
         UpdateShop();
         UIController.instance.UpdateFixedHUD();
+        itemPanel.SetActive(false);
     }
 
     public void HandleClick(int slotId)
@@ -105,22 +114,15 @@ public class ShopManager : SingletonGeneric<ShopManager>
         {
             return;
         }
+
         slots[slotId].gameObject.GetComponent<Outline>().enabled = true;
         if (selectedSlotId != -1)
         {
             slots[selectedSlotId].gameObject.GetComponent<Outline>().enabled = false;
         }
         selectedSlotId = slotId;
+        UpdateShopDescription();
     }
-
-    // // Handled in UIController instead
-    // private void Update()
-    // {
-    //     if (Input.GetKeyDown(KeyCode.F) && shopPanel.activeSelf)
-    //     {
-    //         HandlePurchase();
-    //     }
-    // }
 
     public void SetupShop()
     {
@@ -137,6 +139,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
             slotObject.transform.SetParent(slotsParentObject.transform);
         }
         UpdateShop();
+        itemPanel.SetActive(false);
     }
 
     public void UpdateShop()
@@ -146,7 +149,31 @@ public class ShopManager : SingletonGeneric<ShopManager>
         {
             slot.UpdateUI(slot.shopItem);
         }
-        moneyText.text = PlayerManager.instance.currentMoney.ToString();
+    }
+
+    public void UpdateShopDescription()
+    {
+        if (selectedSlotId == -1)
+        {
+            //blank out
+            return;
+        }
+        itemPanel.SetActive(true);
+        ShopItem itemSelected = slots[selectedSlotId].shopItem;
+        int currentLevel = PlayerManager.instance.upgradesArray[itemSelected.shopItemId];
+        itemDescription.text = itemSelected.description[currentLevel];
+        itemName.text = itemSelected.itemName;
+        itemIcon.sprite = itemSelected.iconArr[currentLevel];
+        itemPrice.text = "$" + itemSelected.price[currentLevel];
+        currentLevelText.text = currentLevel.ToString();
+        if (currentLevel + 1 > itemSelected.maxLevel)
+        {
+            nextLevelText.text = "Max Level";
+        }
+        else
+        {
+            nextLevelText.text = (currentLevel + 1).ToString();
+        }
     }
 
 }
