@@ -14,6 +14,7 @@ public class PlayerHealth : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private GameObject damageCounter_prefab;
     [SerializeField] private Image healthBar;
+    [SerializeField] private Animator healthBarAnimator;
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private Renderer rend;
 
@@ -27,14 +28,11 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private GameObject drowningAlert_prefab;
 
     private bool isInvincible = false;
-    private bool flashIsActivated = false;
     private bool isDrowningActivated = false;
     private Color[] originalColors;
     private Color onDamageColor = Color.white;
     private float invincibilityDeltaTime = 0.025f;
     private Animator animator;
-    private Color healthBarColor;
-    private Color flashingHealthBarColor;
 
     private void Awake()
     {
@@ -46,8 +44,6 @@ public class PlayerHealth : MonoBehaviour
     {
         float currentHealth = PlayerManager.instance ? PlayerManager.instance.currentHealth : 200f;
         float maxHealth = PlayerManager.instance ? PlayerManager.instance.maxHealth : 200f;
-        healthBarColor = healthBar.color;
-        flashingHealthBarColor = new Color(0, 0, 0, 0);
         DisplayOnUI(currentHealth, maxHealth);
     }
 
@@ -72,32 +68,12 @@ public class PlayerHealth : MonoBehaviour
 
         //Flash health bar if below 25%
         float currentHealthAsPercentage = PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth;
-        if (currentHealthAsPercentage < thresholdHealth && !flashIsActivated)
-        {
-            flashIsActivated = true;
-            StartCoroutine(FlashBar());
-        }
-        else if (currentHealthAsPercentage >= thresholdHealth)
-        {
-            flashIsActivated = false;
-            healthBar.color = healthBarColor;
-        }
+        healthBarAnimator.SetBool("flashing", currentHealthAsPercentage < thresholdHealth);
 
         //Check if player is dead
         if (PlayerManager.instance.currentHealth <= 0f)
         {
             Die();
-        }
-    }
-
-    private IEnumerator FlashBar()
-    {
-        while (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth < thresholdHealth)
-        {
-            healthBar.color = healthBarColor;
-            yield return new WaitForSeconds(0.3f);
-            healthBar.color = flashingHealthBarColor;
-            yield return new WaitForSeconds(0.3f);
         }
     }
 
