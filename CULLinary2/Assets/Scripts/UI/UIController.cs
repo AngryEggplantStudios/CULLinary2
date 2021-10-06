@@ -472,7 +472,7 @@ public class UIController : SingletonGeneric<UIController>
 
     private void HandleUIActiveChange(bool active)
     {
-        BGM.Instance.SetVolume(active ? 0.3f : 0.5f);
+        BGM.Instance.SetVolume(active ? 0.15f : 0.3f);
     }
 
     private void HandleFireplacePageChange()
