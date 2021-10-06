@@ -30,6 +30,7 @@ public class MonsterScript : Monster
     [SerializeField] private AudioSource audioSourceAttack;
     [SerializeField] private AudioClip alertSound;
     [SerializeField] private AudioClip attackSound;
+    [SerializeField] private AudioClip deathSound;
 
     [Header("Attacks")]
     [SerializeField] private MonsterAttack primaryEnemyAttack;
@@ -286,6 +287,9 @@ public class MonsterScript : Monster
         animator.SetTrigger("death");
         // Disable collider to prevent spam hitting damage
         monsterCollider.enabled = false;
+
+        audioSourceAttack.clip = deathSound;
+        audioSourceAttack.Play();
     }
 
     public void Die()
