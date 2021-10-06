@@ -49,14 +49,12 @@ public class ShopSlot : MonoBehaviour
         if (level >= shopItem.maxLevel)
         {
             upgradeIcon.SetActive(false);
-            button.interactable = false;
             return;
         }
 
         if (currentMoney < shopItem.price[level])
         {
             upgradeIcon.SetActive(false);
-            button.interactable = false;
         }
         else
         {
@@ -66,8 +64,9 @@ public class ShopSlot : MonoBehaviour
         if (SpecialEventManager.instance.CheckIfEventIsRunning(shopItem.eventId))
         {
             upgradeIcon.SetActive(false);
-            button.interactable = false;
         }
+
+
     }
 
 }
