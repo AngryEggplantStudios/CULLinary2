@@ -385,9 +385,12 @@ MonoBehaviour:
   audioSourceAttack: {fileID: 1802070692951954483}
   alertSound: {fileID: 8300000, guid: f887160af86d3844b80236fc380ba79d, type: 3}
   attackSound: {fileID: 8300000, guid: b27e425790eebc643bf37744875e751c, type: 3}
+  deathSound: {fileID: 8300000, guid: 8d4bdca3adbb5ae45983ccf192a3b9ad, type: 3}
   primaryEnemyAttack: {fileID: 3026806480666303626}
   onDamageColor: {r: 1, g: 1, b: 1, a: 1}
   texturesForFlash: []
+  transparentMaterials:
+  - {fileID: 2100000, guid: 3fdb8f5ce4608104fb04a39514808f91, type: 2}
 --- !u!114 &7510566642343784119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -402,9 +405,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monsterRenderer: {fileID: 7488626821991979531}
   tintColours:
-  - {r: 0.79607844, g: 0.5019608, b: 0.54901963, a: 0}
-  - {r: 0.4745098, g: 1, b: 0.38431373, a: 0}
-  - {r: 1, g: 0.8, b: 0.5372549, a: 0}
+  - {r: 0.79607844, g: 0.5019608, b: 0.54901963, a: 1}
+  - {r: 0.4745098, g: 1, b: 0.38431373, a: 1}
+  - {r: 1, g: 0.8, b: 0.5372549, a: 1}
 --- !u!1 &1300043781058513626
 GameObject:
   m_ObjectHideFlags: 0

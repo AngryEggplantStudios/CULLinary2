@@ -49,6 +49,8 @@ public class UIController : SingletonGeneric<UIController>
     public bool isFireplaceActive = false;
     public bool isPaused = false;
     private bool deathMenuActive = false;
+    private bool anyUIActive = false;
+    private bool anyUIWasActive = false;
     private GameObject player;
     // For interacting with objects
     private PlayerInteractable currentInteractable = null;
@@ -366,6 +368,17 @@ public class UIController : SingletonGeneric<UIController>
 
     private void Update()
     {
+        anyUIActive = playerDeathMenu.activeSelf
+                || isFireplaceActive
+                || isMenuActive
+                || isPaused;
+
+        if (anyUIActive != anyUIWasActive)
+        {
+            anyUIWasActive = anyUIActive;
+            HandleUIActiveChange(anyUIActive);
+        }
+
         if (playerDeathMenu.activeSelf)
         {
             return;
@@ -378,6 +391,7 @@ public class UIController : SingletonGeneric<UIController>
                 TogglePauseMenu();
             }
         }
+
         if (isPaused)
         {
             return;
@@ -454,6 +468,11 @@ public class UIController : SingletonGeneric<UIController>
         {
             CloseMenu();
         }
+    }
+
+    private void HandleUIActiveChange(bool active)
+    {
+        BGM.Instance.SetVolume(active ? 0.3f : 0.5f);
     }
 
     private void HandleFireplacePageChange()

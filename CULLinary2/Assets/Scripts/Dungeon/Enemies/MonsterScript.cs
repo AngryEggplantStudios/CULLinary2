@@ -20,7 +20,7 @@ public class MonsterScript : Monster
     [SerializeField] private GameObject damageCounterPrefab;
     [SerializeField] private GameObject enemyAlertPrefab;
     [SerializeField] private GameObject canvasDisplay;
-    
+
     [Header("Particle Prefabs")]
     [SerializeField] private GameObject onDeathParticles;
 
@@ -30,6 +30,7 @@ public class MonsterScript : Monster
     [SerializeField] private AudioSource audioSourceAttack;
     [SerializeField] private AudioClip alertSound;
     [SerializeField] private AudioClip attackSound;
+    [SerializeField] private AudioClip deathSound;
 
     [Header("Attacks")]
     [SerializeField] private MonsterAttack primaryEnemyAttack;
@@ -37,6 +38,9 @@ public class MonsterScript : Monster
     [Header("Flash On Damage")]
     [SerializeField] private Color onDamageColor = Color.white;
     [SerializeField] private Texture[] texturesForFlash;
+
+    [Header("Fade out on Death")]
+    [SerializeField] private Material[] transparentMaterials;
 
     // Variables
     private MonsterName monsterName;
@@ -187,17 +191,17 @@ public class MonsterScript : Monster
     }
 
     public void checkIfDead()
-	{
+    {
         if (this.currentHealth <= 0)
         {
-			if (!deathCoroutine)
-			{
+            if (!deathCoroutine)
+            {
                 // need this due to buggy triggers for death animation: Attack animation may be triggered immediately after death
                 deathCoroutine = true;
                 DieAnimation();
-			}
-		}
-	}
+            }
+        }
+    }
     public void SetStateMachine(MonsterState newState)
     {
         currentState = newState;
@@ -283,6 +287,9 @@ public class MonsterScript : Monster
         animator.SetTrigger("death");
         // Disable collider to prevent spam hitting damage
         monsterCollider.enabled = false;
+
+        audioSourceAttack.clip = deathSound;
+        audioSourceAttack.Play();
     }
 
     public void Die()
@@ -330,6 +337,37 @@ public class MonsterScript : Monster
         }
     }
 
+    private IEnumerator FadeOut(float duration)
+    {
+        float elapsed = 0;
+        Color clearWhite = new Color(1, 1, 1, 0);
+
+        if (rend.materials.Length == transparentMaterials.Length)
+        {
+            rend.materials = transparentMaterials;
+        }
+        else
+        {
+            Debug.LogWarning("Death fade out has the wrong number of transparent materials assigned");
+        }
+
+        while (elapsed < duration)
+        {
+            for (var i = 0; i < rend.materials.Length; i++)
+            {
+                rend.materials[i].color = Color.Lerp(originalColors[i], clearWhite, elapsed / duration);
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        for (var i = 0; i < rend.materials.Length; i++)
+        {
+            rend.materials[i].color = Color.clear;
+        }
+    }
+
     private void DropLoot()
     {
         Vector3 tempVectors = new Vector3(transform.position.x, transform.position.y, transform.position.z);
@@ -363,7 +401,7 @@ public class MonsterScript : Monster
 
     public void monsterDeathAnimation()
     {
-        Instantiate(onDeathParticles, transform.position, transform.rotation);    
+        Instantiate(onDeathParticles, transform.position, transform.rotation);
         DropLoot();
         foreach (GameObject uiElement in uiElements)
         {
