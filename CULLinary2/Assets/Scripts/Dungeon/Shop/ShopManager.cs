@@ -17,6 +17,8 @@ public class ShopManager : SingletonGeneric<ShopManager>
     [SerializeField] private TMP_Text nextLevelText;
     [SerializeField] private TMP_Text currentLevelEffectText;
     [SerializeField] private TMP_Text nextLevelEffectText;
+    [SerializeField] private TMP_Text nextLevelIncrementText;
+    [SerializeField] private GameObject levelDetails;
     [SerializeField] private GameObject upgradeButton;
     [SerializeField] private GameObject itemPanel;
     private int selectedSlotId = -1;
@@ -155,25 +157,112 @@ public class ShopManager : SingletonGeneric<ShopManager>
     {
         if (selectedSlotId == -1)
         {
-            //blank out
             return;
         }
         itemPanel.SetActive(true);
+
         ShopItem itemSelected = slots[selectedSlotId].shopItem;
         int currentLevel = PlayerManager.instance.upgradesArray[itemSelected.shopItemId];
+
         itemDescription.text = itemSelected.description[currentLevel];
-        itemName.text = itemSelected.itemName;
         itemIcon.sprite = itemSelected.iconArr[currentLevel];
         itemPrice.text = "$" + itemSelected.price[currentLevel];
-        currentLevelText.text = currentLevel.ToString();
-        if (currentLevel + 1 > itemSelected.maxLevel)
-        {
-            nextLevelText.text = "Max Level";
-        }
-        else
-        {
-            nextLevelText.text = (currentLevel + 1).ToString();
-        }
-    }
 
+        if (itemSelected.GetType() == typeof(UpgradeShopItem))
+        {
+            levelDetails.SetActive(true);
+            UpgradeShopItem upgradeItemSelected = (UpgradeShopItem)itemSelected;
+            itemName.text = itemSelected.itemName + " (Lvl " + currentLevel + ")";
+            currentLevelText.text = "Current: Lvl " + currentLevel;
+
+            //Check if max level
+            bool isMaxLevel = false;
+            if (currentLevel + 1 > itemSelected.maxLevel)
+            {
+                nextLevelText.text = "Max Level";
+                nextLevelEffectText.text = "";
+                nextLevelIncrementText.text = "";
+                isMaxLevel = true;
+            }
+            else
+            {
+                nextLevelText.text = "Current: Lvl " + (currentLevel + 1);
+            }
+            switch ((int)upgradeItemSelected.upgradeType)
+            {
+                case (int)UpgradeType.ATTACK_INCREMENT:
+                    currentLevelEffectText.text = "Melee: " + PlayerManager.instance.meleeDamage + " DMG";
+                    if (!isMaxLevel)
+                    {
+                        nextLevelEffectText.text = "Melee: " + (upgradeItemSelected.attackIncrement[currentLevel] + PlayerManager.instance.meleeDamage) + " DMG";
+                        nextLevelIncrementText.text = "(" + upgradeItemSelected.attackIncrement[currentLevel] + ")";
+                    }
+                    break;
+                case (int)UpgradeType.CRIT_CHANCE_INCREMENT:
+                    currentLevelEffectText.text = "Crit: " + PlayerManager.instance.meleeDamage + " %";
+                    if (!isMaxLevel)
+                    {
+                        nextLevelEffectText.text = "Crit: " + (upgradeItemSelected.criticalChance[currentLevel] + PlayerManager.instance.criticalChance) + " %";
+                        nextLevelIncrementText.text = "(" + upgradeItemSelected.criticalChance[currentLevel] + ")";
+                    }
+                    break;
+                case (int)UpgradeType.MAX_STAMINA_INCREMENT:
+                    currentLevelEffectText.text = "Stamina: " + PlayerManager.instance.meleeDamage + " MP";
+                    if (!isMaxLevel)
+                    {
+                        nextLevelEffectText.text = "Stamina: " + (upgradeItemSelected.maximumStaminaIncrement[currentLevel] + PlayerManager.instance.maxStamina) + " MP";
+                        nextLevelIncrementText.text = "(" + upgradeItemSelected.maximumStaminaIncrement[currentLevel] + ")";
+                    }
+                    break;
+                case (int)UpgradeType.EVASION_CHANCE_INCREMENT:
+                    currentLevelEffectText.text = "Evasion Chance: " + PlayerManager.instance.meleeDamage + " %";
+                    if (!isMaxLevel)
+                    {
+                        nextLevelEffectText.text = "Evasion Chance: " + (upgradeItemSelected.evasionChance[currentLevel] + PlayerManager.instance.evasionChance) + " %";
+                        nextLevelIncrementText.text = "(" + upgradeItemSelected.evasionChance[currentLevel] + ")";
+                    }
+                    break;
+                case (int)UpgradeType.MAX_HEALTH_INCREMENT:
+                    currentLevelEffectText.text = "Max Health: " + PlayerManager.instance.meleeDamage + " HP";
+                    if (!isMaxLevel)
+                    {
+                        nextLevelEffectText.text = "Max Health: " + (upgradeItemSelected.maximumHealthIncrement[currentLevel] + PlayerManager.instance.maxHealth) + " HP";
+                        nextLevelIncrementText.text = "(" + upgradeItemSelected.maximumHealthIncrement[currentLevel] + ")";
+                    }
+                    break;
+                case (int)UpgradeType.NO_EFFECT:
+                default:
+                    break;
+            }
+        }
+
+        else if (itemSelected.GetType() == typeof(KeyShopItem))
+        {
+            levelDetails.SetActive(true);
+            KeyShopItem keyItemSelected = (KeyShopItem)itemSelected;
+            itemName.text = itemSelected.itemName + " (Lvl " + currentLevel + ")";
+            currentLevelText.text = currentLevel.ToString();
+            if (currentLevel + 1 > itemSelected.maxLevel)
+            {
+                nextLevelText.text = "Max Level";
+                return;
+            }
+            else
+            {
+                nextLevelText.text = (currentLevel + 1).ToString();
+            }
+        }
+
+        else if (itemSelected.GetType() == typeof(EventShopItem))
+        {
+            levelDetails.SetActive(false);
+            EventShopItem eventItemSelected = (EventShopItem)itemSelected;
+        }
+        else if (itemSelected.GetType() == typeof(ConsumableShopItem))
+        {
+            levelDetails.SetActive(false);
+            ConsumableShopItem consumableItemSelected = (ConsumableShopItem)itemSelected;
+        }
+
+    }
 }
