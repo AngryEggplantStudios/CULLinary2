@@ -52,6 +52,8 @@ public class MenuController : MonoBehaviour
     {
         //TO DO: Place the fade on audio/foreground once the main menu scene is set up properly
         PlayerData playerData = PlayerManager.instance.CreateBlankData();
+        BiomeData biomeData = new BiomeData();
+        SaveSystem.SaveData(biomeData);
         SaveSystem.SaveData(playerData);
         PlayerPrefs.SetInt("nextScene", (int)SceneIndexes.MAIN_SCENE);
         SceneManager.LoadScene((int)SceneIndexes.LOADING_SCENE);
