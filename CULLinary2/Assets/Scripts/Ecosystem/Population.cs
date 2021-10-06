@@ -84,6 +84,7 @@ public class Population
     public void IncreaseBy(int value)
     {
         this.currentNumber += value;
+        SetLevelBasedOnCurrentNumber();
     }
 
     public void DecreaseBy(int value)

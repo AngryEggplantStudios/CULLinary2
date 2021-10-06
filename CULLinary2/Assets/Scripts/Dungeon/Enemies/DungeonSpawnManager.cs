@@ -4,23 +4,15 @@ using UnityEngine;
 
 public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
 {
-    private static List<GameObject> monsterSpawns;
+    private static List<GameObject> monsterSpawners;
 
     public IEnumerator GetSpawners()
     {
         // Get spawners and update spawning caps and spawning numbers
         GameObject[] spawnObjectsArray = GameObject.FindGameObjectsWithTag("MonsterSpawn");
-        monsterSpawns = new List<GameObject>(spawnObjectsArray);
+        monsterSpawners = new List<GameObject>(spawnObjectsArray);
         UpdateSpawners();
         yield return null;
-
-        // temp
-        //List<MonsterData> monsterDatas = DatabaseLoader.GetAllMonsters();
-        // Need to loop through monsterdatas to get the names
-        List<GameObject> cornSpawners = GetSpawnersByName(MonsterName.Corn);
-        List<GameObject> potatoSpawners = GetSpawnersByName(MonsterName.Potato);
-        List<GameObject> eggplantSpawners = GetSpawnersByName(MonsterName.Eggplant);
-        Debug.Log(string.Format("at loading: {0} corn spawners, {1} potato spawners, {2} eggplant spawners", cornSpawners.Count, potatoSpawners.Count, eggplantSpawners.Count));
     }
 
     public static void CheckIfExtinct(MonsterName name)
@@ -178,9 +170,9 @@ public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
     public static List<GameObject> GetSpawnersByName(MonsterName name)
     {
         List<GameObject> spawners = new List<GameObject>();
-        if (monsterSpawns != null)
+        if (monsterSpawners != null)
         {
-            foreach (GameObject monsterSpawn in monsterSpawns)
+            foreach (GameObject monsterSpawn in monsterSpawners)
             {
                 if (GetMonsterName(monsterSpawn) == name)
                 {
