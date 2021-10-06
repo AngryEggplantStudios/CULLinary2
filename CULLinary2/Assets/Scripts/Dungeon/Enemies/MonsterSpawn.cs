@@ -16,38 +16,38 @@ public class MonsterSpawn : MonoBehaviour
     [Tooltip("Random displacement of enemy spawn in X/Z axes")]
     [SerializeField] private float spawningRadius;
     [Tooltip("Is spawner able to be retriggered?")]
-    [SerializeField] private bool toLoop;
-    [Tooltip("Delay after triggering if toLoop is checked")]
-    [SerializeField] private float delayLoopTime;
-    [Tooltip("Initial Delay")]
-    [SerializeField] private int initialDelay = 10;
+    // [SerializeField] private bool toLoop;
+    // [Tooltip("Delay after triggering if toLoop is checked")]
+    // [SerializeField] private float delayLoopTime;
+    // [Tooltip("Initial Delay")]
+    // [SerializeField] private int initialDelay = 10;
 
     private GameObject monstersParent;
     private int minEnemy;
     private int maxEnemy;
     private int localSpawnCap; //It will not spawn more than this amount in total
-    private bool delayFlag = false;
-    private SpawnState state;
-    private bool canSpawn = true;
+    // private bool delayFlag = false;
+    // private SpawnState state;
+    // private bool canSpawn = true;
     private int spawnAmount = 0;
 
     private void Start()
     {
         GameTimer.OnStartNewDay += SpawnEnemies;
 
-        this.state = SpawnState.Inactive;
-        if (toLoop)
-        {
-            this.state = SpawnState.Loop;
-        }
-        if (initialDelay == 0)
-        {
-            delayFlag = true;
-        }
-        else
-        {
-            StartCoroutine(DelayTimer(initialDelay));
-        }
+        // this.state = SpawnState.Inactive;
+        // if (toLoop)
+        // {
+        //     this.state = SpawnState.Loop;
+        // }
+        // if (initialDelay == 0)
+        // {
+        //     delayFlag = true;
+        // }
+        // else
+        // {
+        //     StartCoroutine(DelayTimer(initialDelay));
+        // }
     }
 
     //private void OnTriggerEnter(Collider collider)
@@ -106,17 +106,17 @@ public class MonsterSpawn : MonoBehaviour
         }
     }
 
-    private IEnumerator DelayTimer(int delayTime)
-    {
-        yield return new WaitForSeconds(delayTime);
-        delayFlag = true;
-    }
+    // private IEnumerator DelayTimer(int delayTime)
+    // {
+    //     yield return new WaitForSeconds(delayTime);
+    //     delayFlag = true;
+    // }
 
-    private IEnumerator SpawnTimer(float delayLoopTime)
-    {
-        yield return new WaitForSeconds(delayLoopTime);
-        canSpawn = true;
-    }
+    // private IEnumerator SpawnTimer(float delayLoopTime)
+    // {
+    //     yield return new WaitForSeconds(delayLoopTime);
+    //     canSpawn = true;
+    // }
 
     public MonsterName GetMonsterName()
     {
