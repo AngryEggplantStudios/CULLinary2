@@ -2,29 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DungeonSpawnManager : MonoBehaviour
+public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
 {
-    private static List<GameObject> monsterSpawns;
-
-    void Update()
-    {
-    }
+    private static List<GameObject> monsterSpawners;
 
     public IEnumerator GetSpawners()
     {
         // Get spawners and update spawning caps and spawning numbers
         GameObject[] spawnObjectsArray = GameObject.FindGameObjectsWithTag("MonsterSpawn");
-        monsterSpawns = new List<GameObject>(spawnObjectsArray);
+        monsterSpawners = new List<GameObject>(spawnObjectsArray);
         UpdateSpawners();
         yield return null;
-
-        // temp
-        //List<MonsterData> monsterDatas = DatabaseLoader.GetAllMonsters();
-        // Need to loop through monsterdatas to get the names
-        List<GameObject> cornSpawners = GetSpawners(MonsterName.Corn);
-        List<GameObject> potatoSpawners = GetSpawners(MonsterName.Potato);
-        List<GameObject> eggplantSpawners = GetSpawners(MonsterName.Eggplant);
-        Debug.Log(string.Format("at loading: {0} corn spawners, {1} potato spawners, {2} eggplant spawners", cornSpawners.Count, potatoSpawners.Count, eggplantSpawners.Count));
     }
 
     public static void CheckIfExtinct(MonsterName name)
@@ -37,7 +25,7 @@ public class DungeonSpawnManager : MonoBehaviour
             return;
         }
 
-        List<GameObject> spawners = GetSpawners(name);
+        List<GameObject> spawners = GetSpawnersByName(name);
         bool isExtinct = true;
 
         foreach (GameObject spawner in spawners)
@@ -75,7 +63,7 @@ public class DungeonSpawnManager : MonoBehaviour
         foreach (MonsterName name in MonsterName.GetValues(typeof(MonsterName)))
         {
             Population pop = EcosystemManager.GetPopulation(name);
-            List<GameObject> spawners = GetSpawners(name);
+            List<GameObject> spawners = GetSpawnersByName(name);
             if (spawners.Count == 0)
             {
                 continue;
@@ -110,7 +98,7 @@ public class DungeonSpawnManager : MonoBehaviour
         foreach (MonsterName name in MonsterName.GetValues(typeof(MonsterName)))
         {
             Population pop = EcosystemManager.GetPopulation(name);
-            List<GameObject> spawners = GetSpawners(name);
+            List<GameObject> spawners = GetSpawnersByName(name);
             foreach (GameObject spawner in spawners)
             {
                 // set spawning numbers range
@@ -122,6 +110,27 @@ public class DungeonSpawnManager : MonoBehaviour
                 monsterSpawn.SetMaxSpawn(maxEnemies);
             }
         }
+    }
+
+    public GameObject GetSpawnerNearestTo(Vector3 givenPosition, MonsterName name)
+    {
+        // get spawner for a type of monster that is nearest to givenPosition, using squared distance
+        GameObject nearestSpawner = null;
+        float nearestDistSqr = Mathf.Infinity;
+        List<GameObject> spawners = GetSpawnersByName(name);
+
+        foreach (GameObject spawner in spawners)
+        {
+            Vector3 directionToSpawner = spawner.transform.position - givenPosition;
+            float sqrDist = directionToSpawner.sqrMagnitude;
+            if (sqrDist < nearestDistSqr)
+            {
+                nearestDistSqr = sqrDist;
+                nearestSpawner = spawner;
+            }
+        }
+
+        return nearestSpawner;
     }
 
     private static int[] GetSpawnAmountRange(MonsterName name)
@@ -158,12 +167,12 @@ public class DungeonSpawnManager : MonoBehaviour
         return new int[] { minSpawnAmount, maxSpawnAmount };
     }
 
-    public static List<GameObject> GetSpawners(MonsterName name)
+    public static List<GameObject> GetSpawnersByName(MonsterName name)
     {
         List<GameObject> spawners = new List<GameObject>();
-        if (monsterSpawns != null)
+        if (monsterSpawners != null)
         {
-            foreach (GameObject monsterSpawn in monsterSpawns)
+            foreach (GameObject monsterSpawn in monsterSpawners)
             {
                 if (GetMonsterName(monsterSpawn) == name)
                 {
@@ -176,7 +185,7 @@ public class DungeonSpawnManager : MonoBehaviour
 
     public static int GetNumSpawners(MonsterName name)
     {
-        return GetSpawners(name).Count;
+        return GetSpawnersByName(name).Count;
     }
 
     private static MonsterName GetMonsterName(GameObject monsterSpawnGO)

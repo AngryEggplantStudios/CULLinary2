@@ -20,15 +20,14 @@ public class EcosystemManager : SingletonGeneric<EcosystemManager>
         {
             populations.Add(new Population(monsterData.monsterName, monsterData.lowerBound, monsterData.upperBound, PlayerManager.instance.GetPopulationLevelByMonsterName(monsterData.monsterName)));
         }
+
         foreach (Population pop in populations)
         {
             pop.SetNumDaysBetweenLevelIncrease(numDaysBetweenLevelIncrease);
             pop.SetNumDaysToIncreaseFromExtinct(numDaysToIncreaseFromExtinct);
-        }
-        foreach (Population pop in populations)
-        {
             Debug.Log(string.Format("{0} population level: {1} ({2})", pop.GetName(), pop.GetLevel(), pop.GetCurrentNumber()));
         }
+
         GameTimer.OnStartNewDay += CheckNaturalPopulationIncrease;
         GameTimer.OnStartNewDay += () =>
         {
@@ -65,14 +64,19 @@ public class EcosystemManager : SingletonGeneric<EcosystemManager>
 
     private void SpawnMiniBoss(Population pop)
     {
-        List<GameObject> spawners = DungeonSpawnManager.GetSpawners(pop.GetName());
-        if (spawners.Count > 0)
-        {
-            GameObject randomSpawner = spawners[Random.Range(0, spawners.Count)];
-            randomSpawner.GetComponent<MonsterSpawn>().SpawnMiniBoss();
-            // Debug.Log("spawning miniboss for " + pop.GetName() + " at " + randomSpawner.transform.position);
-            pop.SetHasSpawnedMiniboss(true);
-        }
+        // List<GameObject> spawners = DungeonSpawnManager.GetSpawners(pop.GetName());
+        // if (spawners.Count > 0)
+        // {
+        //     GameObject randomSpawner = spawners[Random.Range(0, spawners.Count)];
+        //     randomSpawner.GetComponent<MonsterSpawn>().SpawnMiniBoss();
+        //     // Debug.Log("spawning miniboss for " + pop.GetName() + " at " + randomSpawner.transform.position);
+        //     pop.SetHasSpawnedMiniboss(true);
+        // }
+        Transform player = GameObject.FindGameObjectWithTag("Player").transform;
+        GameObject nearestSpawner = DungeonSpawnManager.instance.GetSpawnerNearestTo(player.position, pop.GetName());
+        nearestSpawner.GetComponent<MonsterSpawn>().SpawnMiniBoss();
+        pop.SetHasSpawnedMiniboss(true);
+        Debug.Log("spawning miniboss for " + pop.GetName() + " at " + nearestSpawner.transform.position);
     }
 
     public static void OnMiniBossDeath(MonsterName name)
