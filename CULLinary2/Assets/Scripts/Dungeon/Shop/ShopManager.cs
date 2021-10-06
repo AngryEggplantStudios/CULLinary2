@@ -302,13 +302,13 @@ public class ShopManager : SingletonGeneric<ShopManager>
             switch (consumableItemSelected.shopItemId)
             {
                 case 7:
-                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.consumables[0] + " " + itemSelected.itemName;
+                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.consumables[0] + " " + itemSelected.itemName + ".";
                     break;
                 case 8:
-                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.consumables[1] + " " + itemSelected.itemName;
+                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.consumables[1] + " " + itemSelected.itemName + ".";
                     break;
                 case 9:
-                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.consumables[2] + " " + itemSelected.itemName;
+                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.consumables[2] + " " + itemSelected.itemName + ".";
                     break;
             }
 
