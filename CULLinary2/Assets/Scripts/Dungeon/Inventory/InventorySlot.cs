@@ -24,6 +24,7 @@ public class InventorySlot : MonoBehaviour
         icon.sprite = item.icon;
         icon.enabled = true;
     }
+    
     public void ClearSlot()
     {
         item = null;
