@@ -26,7 +26,7 @@ public class PlayerData
         maxStamina = 100f;
         currentStamina = 100f;
         meleeDamage = 10f;
-        currentMoney = 10000;
+        currentMoney = 0;
         criticalChance = 0;
         evasionChance = 0;
         consumables = new int[3] { 0, 0, 0 }; //7,8,9 indices
