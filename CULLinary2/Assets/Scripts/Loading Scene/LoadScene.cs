@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 /// <summary>
 /// Load scene script
 /// </summary>
 public class LoadScene : SingletonGeneric<LoadScene>
 {
-    [SerializeField] private Text loadingText;
-    [SerializeField] private Text percentageText;
+    [SerializeField] private TextMeshProUGUI loadingText;
+    [SerializeField] private TextMeshProUGUI percentageText;
     [SerializeField] private Image loadingBar;
     public bool isAbleToProceed = false;
     private AsyncOperation operation;
@@ -66,4 +67,3 @@ public class LoadScene : SingletonGeneric<LoadScene>
     }
 
 }
-
