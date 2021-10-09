@@ -27,6 +27,9 @@ public class PlayerSlash : PlayerAction
     private GameObject instantiatedWeapon;
     private TrailRenderer weaponTrail;
 
+    //For testing
+    private int currentWeaponSelected = 0;
+
     private void Awake()
     {
         playerMelee = GetComponent<PlayerMelee>();
@@ -49,7 +52,6 @@ public class PlayerSlash : PlayerAction
 
     public void ChangeWeapon(int id)
     {
-
         if (instantiatedWeapon != null)
         {
             Destroy(instantiatedWeapon);
@@ -75,10 +77,16 @@ public class PlayerSlash : PlayerAction
             instantiatedWeapon = Instantiate(defaultWeapon);
             animator.SetFloat("attackSpeedMultiplier", 1f);
         }
+
+        //Set position
+        Vector3 savedPosition = instantiatedWeapon.transform.localPosition;
+        Quaternion savedRotation = instantiatedWeapon.transform.localRotation;
+        Vector3 savedScale = instantiatedWeapon.transform.localScale;
         instantiatedWeapon.transform.SetParent(weaponHolderReference.transform);
-        instantiatedWeapon.transform.localPosition = new Vector3(0, 0, 0);
-        instantiatedWeapon.transform.localRotation = new Quaternion(0, 0, 0, 0);
-        instantiatedWeapon.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
+        instantiatedWeapon.transform.localPosition = savedPosition;
+        instantiatedWeapon.transform.localRotation = savedRotation;
+        instantiatedWeapon.transform.localScale = savedScale;
+
         weaponCollider = instantiatedWeapon.GetComponent<Collider>();
         weaponCollider.enabled = false;
         weaponTrail = instantiatedWeapon.GetComponentInChildren<TrailRenderer>();
@@ -86,15 +94,14 @@ public class PlayerSlash : PlayerAction
         Debug.Log("Current weapon held id is: " + PlayerManager.instance.currentWeaponHeld);
     }
 
+    //For testing
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
-            ChangeWeapon(0);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha9))
-        {
-            ChangeWeapon(1);
+            currentWeaponSelected++;
+            currentWeaponSelected = currentWeaponSelected % 3;
+            ChangeWeapon(currentWeaponSelected);
         }
     }
 
