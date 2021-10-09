@@ -37,7 +37,14 @@ public class PlayerSlash : PlayerAction
 
     private void OnEnable()
     {
-        ChangeWeapon(0);
+        if (PlayerManager.instance != null)
+        {
+            ChangeWeapon(PlayerManager.instance.currentWeaponHeld);
+        }
+        else
+        {
+            ChangeWeapon(0);
+        }
     }
 
     public void ChangeWeapon(int id)
@@ -52,18 +59,21 @@ public class PlayerSlash : PlayerAction
             WeaponSkillItem weaponSkillItem = DatabaseLoader.GetWeaponSkillById(id);
             if (weaponSkillItem.GetType() == typeof(WeaponItem))
             {
-                instantiatedWeapon = Instantiate(((WeaponItem)weaponSkillItem).weaponPrefab);
+                WeaponItem weaponItem = (WeaponItem)weaponSkillItem;
+                instantiatedWeapon = Instantiate(weaponItem.weaponPrefab);
                 PlayerManager.instance.currentWeaponHeld = id;
-
+                animator.SetFloat("attackSpeedMultiplier", weaponItem.attackSpeed[PlayerManager.instance.weaponSkillArray[id]]);
             }
             else
             {
                 instantiatedWeapon = Instantiate(defaultWeapon);
+                animator.SetFloat("attackSpeedMultiplier", 1f);
             }
         }
         else
         {
             instantiatedWeapon = Instantiate(defaultWeapon);
+            animator.SetFloat("attackSpeedMultiplier", 1f);
         }
         instantiatedWeapon.transform.SetParent(weaponHolderReference.transform);
         instantiatedWeapon.transform.localPosition = new Vector3(0, 0, 0);

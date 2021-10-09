@@ -4,6 +4,6 @@ using UnityEngine;
 public class WeaponItem : WeaponSkillItem
 {
     public int[] baseDamage;
-    public int attackSpeed;
+    public float[] attackSpeed;
     public GameObject weaponPrefab;
 }
