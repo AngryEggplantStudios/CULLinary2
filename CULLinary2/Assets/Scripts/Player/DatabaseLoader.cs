@@ -13,6 +13,7 @@ public class DatabaseLoader : MonoBehaviour
     [SerializeField] private ShopItemDatabase shopItemDatabase;
     [SerializeField] private EventsDatabase eventsDatabase;
     [SerializeField] private MonsterDatabase monsterDatabase;
+    [SerializeField] private WeaponSkillDatabase weaponSkillDatabase;
 
     //Inventory Items
     private static Dictionary<int, InventoryItem> inventoryItemDict;
@@ -29,8 +30,11 @@ public class DatabaseLoader : MonoBehaviour
     //Monsters
     private static Dictionary<MonsterName, MonsterData> monsterDict;
     private static List<MonsterData> monsterList;
+    //Weapon Skill Items
+    private static Dictionary<int, WeaponSkillItem> weaponSkillDict;
+    private static List<WeaponSkillItem> weaponSkillList;
 
-    private void Start()
+    private void Awake()
     {
         inventoryItemDict = new Dictionary<int, InventoryItem>();
         inventoryItemList = inventoryItemDatabase.allItems;
@@ -42,6 +46,8 @@ public class DatabaseLoader : MonoBehaviour
         eventList = eventsDatabase.allEvents;
         monsterDict = new Dictionary<MonsterName, MonsterData>();
         monsterList = monsterDatabase.allMonsters;
+        weaponSkillDict = new Dictionary<int, WeaponSkillItem>();
+        weaponSkillList = new List<WeaponSkillItem>();
         if (isAutoload)
         {
             StartCoroutine(Populate());
@@ -54,6 +60,7 @@ public class DatabaseLoader : MonoBehaviour
         yield return StartCoroutine(PopulateRecipeDatabase());
         yield return StartCoroutine(PopulateShopItemDatabase());
         yield return StartCoroutine(PopulateEventDatabase());
+        yield return StartCoroutine(PopulateWeaponSkillItemDatabase());
     }
 
     private IEnumerator PopulateInventoryItemDatabase()
@@ -64,8 +71,9 @@ public class DatabaseLoader : MonoBehaviour
             {
                 inventoryItemDict.Add(i.inventoryItemId, i);
             }
-            catch
+            catch (Exception e)
             {
+                Debug.Log("Error: " + e);
                 Debug.Log("Unable to add item: " + i.itemName);
             }
             yield return null;
@@ -85,8 +93,9 @@ public class DatabaseLoader : MonoBehaviour
         {
             item = inventoryItemDict[id];
         }
-        catch
+        catch (Exception e)
         {
+            Debug.Log("Error: " + e);
             item = new InventoryItem();
         }
         return item;
@@ -108,8 +117,9 @@ public class DatabaseLoader : MonoBehaviour
             {
                 recipeDict.Add(r.recipeId, r);
             }
-            catch
+            catch (Exception e)
             {
+                Debug.Log("Error: " + e);
                 Debug.Log("Unable to add recipe: " + r.cookedDishItem.itemName + "| id: " + r.recipeId);
             }
             yield return null;
@@ -130,8 +140,9 @@ public class DatabaseLoader : MonoBehaviour
         {
             recipe = recipeDict[id];
         }
-        catch
+        catch (Exception e)
         {
+            Debug.Log("Error: " + e);
             recipe = new Recipe();
         }
         return recipeDict[id];
@@ -155,8 +166,9 @@ public class DatabaseLoader : MonoBehaviour
             {
                 shopItemDict.Add(i.shopItemId, i);
             }
-            catch
+            catch (Exception e)
             {
+                Debug.Log("Error: " + e);
                 Debug.Log("Unable to add shop item: " + i.itemName);
             }
             yield return null;
@@ -175,8 +187,9 @@ public class DatabaseLoader : MonoBehaviour
         {
             shopItem = shopItemDict[id];
         }
-        catch
+        catch (Exception e)
         {
+            Debug.Log("Error: " + e);
             shopItem = new ShopItem();
         }
         return shopItem;
@@ -200,8 +213,9 @@ public class DatabaseLoader : MonoBehaviour
             {
                 specialEventDict.Add(i.eventId, i);
             }
-            catch
+            catch (Exception e)
             {
+                Debug.Log("Error: " + e);
                 Debug.Log("Unable to add shop item: " + i.eventName);
             }
             yield return null;
@@ -216,8 +230,9 @@ public class DatabaseLoader : MonoBehaviour
         {
             specialEvent = specialEventDict[id];
         }
-        catch
+        catch (Exception e)
         {
+            Debug.Log("Error: " + e);
             specialEvent = new SpecialEvent();
         }
         return specialEvent;
@@ -241,8 +256,9 @@ public class DatabaseLoader : MonoBehaviour
             {
                 monsterDict.Add(i.monsterName, i);
             }
-            catch
+            catch (Exception e)
             {
+                Debug.Log("Error: " + e);
                 Debug.Log("Unable to add shop item: " + i.monsterName);
             }
             yield return null;
@@ -257,8 +273,9 @@ public class DatabaseLoader : MonoBehaviour
         {
             monsterData = monsterDict[monsterName];
         }
-        catch
+        catch (Exception e)
         {
+            Debug.Log("Error: " + e);
             monsterData = new MonsterData();
         }
         return monsterData;
@@ -272,5 +289,47 @@ public class DatabaseLoader : MonoBehaviour
     public static Dictionary<MonsterName, MonsterData> GetMonsterDict()
     {
         return monsterDict;
+    }
+
+    private IEnumerator PopulateWeaponSkillItemDatabase()
+    {
+        foreach (WeaponSkillItem i in weaponSkillDatabase.allItems)
+        {
+            try
+            {
+                weaponSkillDict.Add(i.weaponSkillId, i);
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Error: " + e);
+                Debug.Log("Unable to add item: " + i.itemName);
+            }
+            yield return null;
+        }
+
+        Debug.Log("Weapon Skill Item Database populated.");
+    }
+
+    public static WeaponSkillItem GetWeaponSkillById(int id)
+    {
+        WeaponSkillItem item;
+        try
+        {
+            item = weaponSkillDict[id];
+        }
+        catch (Exception e)
+        {
+            Debug.Log("Error: " + e);
+            item = new WeaponSkillItem();
+        }
+        return item;
+    }
+    public static List<WeaponSkillItem> GetWeaponSkillList()
+    {
+        return weaponSkillList;
+    }
+    public static Dictionary<int, WeaponSkillItem> GetWeaponSkillDict()
+    {
+        return weaponSkillDict;
     }
 }
