@@ -13,6 +13,7 @@ public class DatabaseLoader : MonoBehaviour
     [SerializeField] private ShopItemDatabase shopItemDatabase;
     [SerializeField] private EventsDatabase eventsDatabase;
     [SerializeField] private MonsterDatabase monsterDatabase;
+    [SerializeField] private WeaponSkillDatabase weaponSkillDatabase;
 
     //Inventory Items
     private static Dictionary<int, InventoryItem> inventoryItemDict;
@@ -29,6 +30,9 @@ public class DatabaseLoader : MonoBehaviour
     //Monsters
     private static Dictionary<MonsterName, MonsterData> monsterDict;
     private static List<MonsterData> monsterList;
+    //Weapon Skill Items
+    private static Dictionary<int, WeaponSkillItem> weaponSkillDict;
+    private static List<WeaponSkillItem> weaponSkillList;
 
     private void Start()
     {
@@ -54,6 +58,7 @@ public class DatabaseLoader : MonoBehaviour
         yield return StartCoroutine(PopulateRecipeDatabase());
         yield return StartCoroutine(PopulateShopItemDatabase());
         yield return StartCoroutine(PopulateEventDatabase());
+        yield return StartCoroutine(PopulateWeaponSkillItemDatabase());
     }
 
     private IEnumerator PopulateInventoryItemDatabase()
@@ -272,5 +277,45 @@ public class DatabaseLoader : MonoBehaviour
     public static Dictionary<MonsterName, MonsterData> GetMonsterDict()
     {
         return monsterDict;
+    }
+
+    private IEnumerator PopulateWeaponSkillItemDatabase()
+    {
+        foreach (WeaponSkillItem i in weaponSkillDatabase.allItems)
+        {
+            try
+            {
+                weaponSkillDict.Add(i.weaponSkillId, i);
+            }
+            catch
+            {
+                Debug.Log("Unable to add item: " + i.itemName);
+            }
+            yield return null;
+        }
+
+        Debug.Log("Weapon Skill Item Database populated.");
+    }
+
+    public static WeaponSkillItem GetWeaponSkillById(int id)
+    {
+        WeaponSkillItem item;
+        try
+        {
+            item = weaponSkillDict[id];
+        }
+        catch
+        {
+            item = new WeaponSkillItem();
+        }
+        return item;
+    }
+    public static List<WeaponSkillItem> GetWeaponSkillList()
+    {
+        return weaponSkillList;
+    }
+    public static Dictionary<int, WeaponSkillItem> GetWeaponSkillDict()
+    {
+        return weaponSkillDict;
     }
 }

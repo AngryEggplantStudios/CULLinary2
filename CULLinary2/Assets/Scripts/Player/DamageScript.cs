@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// For primary attack weapons
 public class DamageScript : MonoBehaviour
 {
     //Weapon damage
