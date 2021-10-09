@@ -6,9 +6,31 @@ using UnityEngine;
 public class DamageScript : MonoBehaviour
 {
     //Weapon damage
-    [SerializeField] private float weaponDamage = 0;
-    
     [SerializeField] private GameObject onHitParticle;
+
+    [SerializeField] private float weaponDamage;
+
+    private void Start()
+    {
+        if (PlayerManager.instance != null)
+        {
+            int currentWeaponHeld = PlayerManager.instance.currentWeaponHeld;
+            int level = PlayerManager.instance.weaponSkillArray[currentWeaponHeld];
+            WeaponSkillItem weaponSkillItem = DatabaseLoader.GetWeaponSkillById(currentWeaponHeld);
+            if (weaponSkillItem.GetType() == typeof(WeaponItem))
+            {
+                weaponDamage = ((WeaponItem)weaponSkillItem).baseDamage[level];
+            }
+            else
+            {
+                weaponDamage = 0;
+            }
+        }
+        else
+        {
+            weaponDamage = 0;
+        }
+    }
 
     private void OnTriggerEnter(Collider collider)
     {
