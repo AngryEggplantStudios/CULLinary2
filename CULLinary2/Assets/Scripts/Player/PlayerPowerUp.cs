@@ -6,6 +6,9 @@ public class PlayerPowerUp : PlayerAction
 {
     private PlayerSkill playerSkill;
     private Animator animator;
+    [SerializeField] private GameObject holderObjectReference;
+    [SerializeField] private GameObject skillPrefab;
+    [SerializeField] private GameObject skillObject;
     private void Awake()
     {
         playerSkill = GetComponent<PlayerSkill>();
@@ -16,6 +19,9 @@ public class PlayerPowerUp : PlayerAction
     private void PowerUp()
     {
         animator.SetBool("isPowerUp", true);
+        skillObject = Instantiate(skillPrefab, holderObjectReference.transform);
+        skillObject.transform.localPosition = new Vector3(0, 0, 0);
+        Destroy(skillObject, 1.5f);
     }
 
     private void OnDestroy()
@@ -31,10 +37,12 @@ public class PlayerPowerUp : PlayerAction
     public void SkillEnd()
     {
         playerSkill.StopInvoking();
+        Destroy(skillObject);
     }
 
     public void SkillCleanUp()
     {
+        Destroy(skillObject);
         playerSkill.StopInvoking();
         animator.SetBool("isPowerUp", false);
     }

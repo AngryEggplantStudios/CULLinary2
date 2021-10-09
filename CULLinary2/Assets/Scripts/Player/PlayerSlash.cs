@@ -150,6 +150,7 @@ public class PlayerSlash : PlayerAction
     public void AttackFinish()
     {
         weaponCollider.enabled = false;
+        animator.SetBool("isPowerUp", false);
         animator.SetBool("isMelee", false);
         playerMelee.StopInvoking();
         weaponTrail.emitting = false;
@@ -162,6 +163,7 @@ public class PlayerSlash : PlayerAction
 
     public void AttackCleanUp()
     {
+        animator.SetBool("isPowerUp", false);
         animator.SetBool("isMelee", false);
         playerMelee.StopInvoking();
         weaponCollider.enabled = false;
