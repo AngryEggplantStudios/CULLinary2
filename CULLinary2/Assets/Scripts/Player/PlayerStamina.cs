@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerStamina : MonoBehaviour
+public class PlayerStamina : SingletonGeneric<PlayerStamina>
 {
     [Header("References")]
     [SerializeField] private Image staminaCircleImage;
@@ -16,8 +16,10 @@ public class PlayerStamina : MonoBehaviour
     [SerializeField] private float thresholdStamina = 0.25f;
     private Coroutine regenerationCoroutine;
     private WaitForSeconds timeTakenRegen = new WaitForSeconds(0.05f);
-    private void Start()
+
+    public override void Awake()
     {
+        base.Awake();
         float currentStamina = PlayerManager.instance ? PlayerManager.instance.currentStamina : 100f;
         float maxStamina = PlayerManager.instance ? PlayerManager.instance.maxStamina : 100f;
         DisplayOnUI(currentStamina, maxStamina);

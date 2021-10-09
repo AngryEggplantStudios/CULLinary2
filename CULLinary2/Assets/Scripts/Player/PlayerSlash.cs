@@ -38,18 +38,6 @@ public class PlayerSlash : PlayerAction
         animator = GetComponent<Animator>();
     }
 
-    private void OnEnable()
-    {
-        if (PlayerManager.instance != null)
-        {
-            ChangeWeapon(PlayerManager.instance.currentWeaponHeld);
-        }
-        else
-        {
-            ChangeWeapon(0);
-        }
-    }
-
     public void ChangeWeapon(int id)
     {
         if (instantiatedWeapon != null)
@@ -150,6 +138,7 @@ public class PlayerSlash : PlayerAction
     public void AttackFinish()
     {
         weaponCollider.enabled = false;
+        animator.SetBool("isPowerUp", false);
         animator.SetBool("isMelee", false);
         playerMelee.StopInvoking();
         weaponTrail.emitting = false;
@@ -162,6 +151,7 @@ public class PlayerSlash : PlayerAction
 
     public void AttackCleanUp()
     {
+        animator.SetBool("isPowerUp", false);
         animator.SetBool("isMelee", false);
         playerMelee.StopInvoking();
         weaponCollider.enabled = false;

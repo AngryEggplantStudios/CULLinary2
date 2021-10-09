@@ -9,4 +9,6 @@ public class SkillItem : WeaponSkillItem
     public int[] healAmount;
     public int[] skillDuration;
     public int[] attackDamage;
+    public GameObject skillPrefab;
+
 }

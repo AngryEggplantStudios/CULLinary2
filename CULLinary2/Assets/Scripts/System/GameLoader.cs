@@ -58,6 +58,7 @@ public class GameLoader : SingletonGeneric<GameLoader>
         EcosystemManager.instance.InstantiateEcosystem();
         yield return StartCoroutine(dungeonSpawnManager.GetSpawners());
         OrdersManager.instance.FirstGenerationOfOrders();
+        WeaponSkillManager.instance.InstantiateWeaponSkill();
         yield return null;
         playerCharacter.SetActive(true);
         yield return null;
