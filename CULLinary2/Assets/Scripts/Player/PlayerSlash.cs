@@ -35,24 +35,6 @@ public class PlayerSlash : PlayerAction
         animator = GetComponent<Animator>();
     }
 
-    private void Start()
-    {
-        /*
-        Debug.Log("WTF" + (WeaponItem)(DatabaseLoader.GetWeaponSkillById(PlayerManager.instance.currentWeaponHeld)));
-        instantiatedWeapon = PlayerManager.instance != null
-            ?
-            Instantiate(((WeaponItem)(DatabaseLoader.GetWeaponSkillById(PlayerManager.instance.currentWeaponHeld))).weaponPrefab)
-            :
-            Instantiate(defaultWeapon);
-        //instantiatedWeapon = Instantiate(weaponObject);
-        instantiatedWeapon.transform.SetParent(weaponHolderReference.transform);
-        weaponCollider = instantiatedWeapon.GetComponent<Collider>();
-        weaponCollider.enabled = false;
-        weaponTrail = instantiatedWeapon.GetComponent<TrailRenderer>();
-        weaponTrail.emitting = false;
-        */
-    }
-
     private void OnEnable()
     {
         ChangeWeapon(0);
@@ -60,6 +42,7 @@ public class PlayerSlash : PlayerAction
 
     public void ChangeWeapon(int id)
     {
+
         if (instantiatedWeapon != null)
         {
             Destroy(instantiatedWeapon);
@@ -71,6 +54,7 @@ public class PlayerSlash : PlayerAction
             {
                 instantiatedWeapon = Instantiate(((WeaponItem)weaponSkillItem).weaponPrefab);
                 PlayerManager.instance.currentWeaponHeld = id;
+
             }
             else
             {
@@ -89,7 +73,7 @@ public class PlayerSlash : PlayerAction
         weaponCollider.enabled = false;
         weaponTrail = instantiatedWeapon.GetComponentInChildren<TrailRenderer>();
         weaponTrail.emitting = false;
-
+        Debug.Log("Current weapon held id is: " + PlayerManager.instance.currentWeaponHeld);
     }
 
     private void Update()

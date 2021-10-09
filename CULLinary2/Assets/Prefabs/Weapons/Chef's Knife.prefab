@@ -11,13 +11,15 @@ GameObject:
   - component: {fileID: 3028853247420711425}
   - component: {fileID: 2136815560854588836}
   - component: {fileID: 4198350080607205742}
+  - component: {fileID: 7915651404788492761}
+  - component: {fileID: 906596024171754421}
   m_Layer: 0
   m_Name: Chef's Knife
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &3028853247420711425
 Transform:
   m_ObjectHideFlags: 0
@@ -25,8 +27,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2396888446367733947}
-  m_LocalRotation: {x: -0.16637574, y: -0.13719124, z: 0.9262443, w: 0.30914256}
-  m_LocalPosition: {x: -0.006019992, y: 0.00402, z: 0.000039994953}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.019999998, y: 0.019999996, z: 0.019999998}
   m_Children:
   - {fileID: 3279214840723455345}
@@ -84,6 +86,33 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7915651404788492761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2396888446367733947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91fa12a6a473b4f22a0a874a851c85db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onHitParticle: {fileID: 3279214840723455358}
+  weaponDamage: 0
+--- !u!65 &906596024171754421
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2396888446367733947}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.68167835, y: 0.02000011, z: 0.20000003}
+  m_Center: {x: 0.28426084, y: 0.010000686, z: 0.0000003983562}
 --- !u!1 &3279214840723455358
 GameObject:
   m_ObjectHideFlags: 0

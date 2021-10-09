@@ -12,6 +12,11 @@ public class DamageScript : MonoBehaviour
 
     private void Start()
     {
+        InstantiateDamageScript();
+    }
+
+    public void InstantiateDamageScript()
+    {
         if (PlayerManager.instance != null)
         {
             int currentWeaponHeld = PlayerManager.instance.currentWeaponHeld;
