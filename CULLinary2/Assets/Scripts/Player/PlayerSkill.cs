@@ -9,6 +9,7 @@ public class PlayerSkill : PlayerAction
     public event PlayerSkillDelegate OnPlayerSkill;
     private KeyCode skillKeyCode;
     private PlayerMelee playerMelee;
+    [SerializeField] private GameObject holderObjectReference;
     private void Awake()
     {
         playerMelee = GetComponent<PlayerMelee>();
@@ -28,6 +29,7 @@ public class PlayerSkill : PlayerAction
             OnPlayerSkill?.Invoke();
         }
     }
+
     public void StopInvoking()
     {
         this.SetIsInvoking(false);

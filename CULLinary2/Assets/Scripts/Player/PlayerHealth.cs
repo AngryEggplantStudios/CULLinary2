@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class PlayerHealth : MonoBehaviour
+public class PlayerHealth : SingletonGeneric<PlayerHealth>
 {
     [Header("References")]
     [SerializeField] private Camera cam;
@@ -35,8 +35,9 @@ public class PlayerHealth : MonoBehaviour
     private Animator animator;
     private bool deathIsCalled = false;
 
-    private void Awake()
+    public override void Awake()
     {
+        base.Awake();
         animator = GetComponent<Animator>();
         SetupIFrame();
     }
