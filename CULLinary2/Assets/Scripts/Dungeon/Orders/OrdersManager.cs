@@ -185,36 +185,12 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
 
             OrdersUISlot orderDetails = orderLog.GetComponent<OrdersUISlot>();
             InventoryManager inv = InventoryManager.instance;
-            int[] ingsArr = o.GetIngredientIds();
-            (int, bool)[] missingItems = new (int, bool)[0];
-            bool isCookable = inv.CheckIfItemsExist(ingsArr, out _, out missingItems);
+            List<(int, int)> ingsList = o.GetIngredientIds();
+            List<(int, int, int)> invReqCounter = new List<(int, int, int)>();
+
+            bool isCookable = inv.CheckIfItemsExist(ingsList, out invReqCounter);
             bool isInInv = inv.CheckIfExists(o.GetProduct().inventoryItemId);
-
-            Dictionary<int, (int, int)> itemQuantities = new Dictionary<int, (int, int)>();
-            foreach ((int itemId, bool isPresent) in missingItems)
-            {
-                if (!itemQuantities.ContainsKey(itemId))
-                {
-                    itemQuantities.Add(itemId, (0, 0));
-                }
-                int newInvItemAmount = itemQuantities[itemId].Item1;
-                if (isPresent)
-                {
-                    newInvItemAmount++;
-                }
-                itemQuantities[itemId] = (newInvItemAmount, itemQuantities[itemId].Item2 + 1);
-            }
-
-            List<(int, int, int)> itemsCounted = new List<(int, int, int)>();
-            foreach (KeyValuePair<int, (int, int)> idCountPair in itemQuantities)
-            {
-                itemsCounted.Add((
-                    idCountPair.Key,
-                    idCountPair.Value.Item1,
-                    idCountPair.Value.Item2
-                ));
-            }
-            orderDetails.AssignOrder(o, isCookable, isInInv, itemsCounted.ToArray());
+            orderDetails.AssignOrder(o, isCookable, isInInv, invReqCounter);
             yield return null;
         }
     }

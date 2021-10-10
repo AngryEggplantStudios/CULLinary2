@@ -20,14 +20,14 @@ public class OrdersUISlot : MonoBehaviour
     private bool inInventory;
 
     // Array of (itemId, amountInInventory, amountNeeded)
-    private (int, int, int)[] ingQnties;
+    private List<(int, int, int)> ingQnties;
     private int numOfOrders;
 
     public void AssignOrder(
         Order newOrder,
         bool isCookable,
         bool isInInventory,
-        (int, int, int)[] ingredientQuantities
+        List<(int, int, int)> ingredientQuantities
     )
     {
         if (isInInventory)
