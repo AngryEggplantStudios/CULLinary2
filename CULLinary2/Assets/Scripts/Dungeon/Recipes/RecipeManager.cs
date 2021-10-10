@@ -33,9 +33,15 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
 
     // Only populate the unlocked recipes list once
     private bool hasPopulatedUnlockedRecipes = false;
+    // Keep track of changes in the recipe list for the UI
+    private bool recipesChanged = false;
+    // Save the currently selected index of recipes in the UIs
+    private int currentlySelectedRecipeIndex = 0;
+    private int currentlySelectedCookingIndex = 0;
 
     // List of all campfire locations for the minimap
     private List<Transform> campfires = new List<Transform>();
+    
 
     void Start()
     {
@@ -73,6 +79,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             }
         }
         hasPopulatedUnlockedRecipes = true;
+        recipesChanged = true;
         StopCoroutine(UpdateUI());
         StartCoroutine(UpdateUI());
     }
@@ -150,6 +157,16 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         return campfires;
     }
 
+    public void SetCurrentlySelectedRecipeInMenuUi(int index)
+    {
+        currentlySelectedRecipeIndex = index;
+    }
+
+    public void SetCurrentlySelectedRecipeInCookingUi(int index)
+    {
+        currentlySelectedCookingIndex = index;
+    }
+
     public IEnumerator UpdateUI()
     {
         // Wait until all orders have generated
@@ -181,8 +198,9 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             }
         }
 
-        foreach (Recipe r in innerUnlockedRecipesList)
+        for (int i = 0; i < innerUnlockedRecipesList.Count; i++)
         {   
+            Recipe r = innerUnlockedRecipesList[i];
             List<(int, int)> ingIds = r.GetIngredientIds();
             List<(int, int, int)> invReqCount = new List<(int, int, int)>();
             bool areItemsInInventory =
@@ -196,7 +214,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
                                                  Quaternion.identity,
                                                  recipesContainer.transform) as GameObject;
             RecipeUISlot recipeDetails = recipeEntry.GetComponent<RecipeUISlot>();
-            recipeDetails.AddRecipe(r, areItemsInInventory, invReqCount, numberOfOrders, numberInInventory);
+            recipeDetails.AddRecipe(r, areItemsInInventory, invReqCount, numberOfOrders, numberInInventory, i);
             recipeDetails.SetInfoDisplay(infoDisplay);
 
             // Add to Cooking UI as well
@@ -205,7 +223,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
                                                     Quaternion.identity,
                                                     cookingRecipesContainer.transform) as GameObject;
             CookingUISlot cookingRecipeDetails = cookingUiEntry.GetComponent<CookingUISlot>();
-            cookingRecipeDetails.AddRecipe(r, areItemsInInventory, invReqCount, numberOfOrders, numberInInventory);
+            cookingRecipeDetails.AddRecipe(r, areItemsInInventory, invReqCount, numberOfOrders, numberInInventory, i);
             cookingRecipeDetails.SetInfoDisplay(cookingInfoDisplay);
             yield return null;
         }
@@ -221,5 +239,23 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             recipeDetails.SetInfoDisplay(infoDisplay);
             yield return null;
         }
+
+        // Retain the same index for the display after updating, unless recipes list changed
+        if (recipesChanged)
+        {
+            currentlySelectedRecipeIndex = 0;
+            currentlySelectedCookingIndex = 0;
+            recipesChanged = false;
+        }
+        recipesContainer
+            .transform
+            .GetChild(currentlySelectedRecipeIndex)
+            .GetComponent<RecipeUISlot>()
+            .DisplayRecipe();     
+        cookingRecipesContainer
+            .transform
+            .GetChild(currentlySelectedCookingIndex)
+            .GetComponent<CookingUISlot>()
+            .SelectRecipeForCooking();
     }
 }

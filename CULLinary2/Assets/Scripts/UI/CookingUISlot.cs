@@ -21,13 +21,16 @@ public class CookingUISlot : MonoBehaviour
     private List<(int, int, int)> invReqCount;
     private int numOfOrders;
     private int numInInv;
+    // Index of this slot in the Cooking UI
+    private int indexInMenu;
 
     public void AddRecipe(
         Recipe newRecipe,
         bool isCookable,
         List<(int, int, int)> ingredientQuantities,
         int numberOfOrders,
-        int numberInInventory
+        int numberInInventory,
+        int indexInCookingMenu
     )
     {
         recipe = newRecipe;
@@ -36,6 +39,7 @@ public class CookingUISlot : MonoBehaviour
         invReqCount = ingredientQuantities;
         numOfOrders = numberOfOrders;
         numInInv = numberInInventory;
+        indexInMenu = indexInCookingMenu;
         UpdateUI();
     }
 
@@ -44,9 +48,14 @@ public class CookingUISlot : MonoBehaviour
         infoDisplay = display;
     }
 
+    public void SelectRecipeForCookingOnClick()
+    {
+        RecipeManager.instance.SetCurrentlySelectedRecipeInCookingUi(indexInMenu);
+        SelectRecipeForCooking();
+    }
+
     public void SelectRecipeForCooking()
     {
-        // TODO: Select recipe and cook it
         if (infoDisplay == null)
         {
             Debug.Log("CookingUISlot: Missing information display!");
