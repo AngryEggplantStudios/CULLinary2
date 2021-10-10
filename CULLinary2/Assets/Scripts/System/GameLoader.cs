@@ -62,6 +62,7 @@ public class GameLoader : SingletonGeneric<GameLoader>
         yield return null;
         playerCharacter.SetActive(true);
         yield return null;
+        UIController.UpdateAllUIs();
         uiCanvas.SetActive(true);
         yield return null;
         GameTimer.instance.Run();

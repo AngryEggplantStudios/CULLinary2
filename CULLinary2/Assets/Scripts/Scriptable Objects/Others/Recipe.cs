@@ -6,17 +6,42 @@ using UnityEngine;
 public class Recipe : ScriptableObject
 {
     public int recipeId;
-    public InventoryItem[] ingredientList;
     public InventoryItem cookedDishItem;
     public int recipeEarnings;
+    // Important: Each inventory item should be unique!
+    // Also, both arrays should be the same length.
+    [SerializeField] private InventoryItem[] ingredientsList;
+    [SerializeField] private int[] ingredientsCount;
 
-    public int[] GetIngredientIds()
+    // Cache for lists
+    private List<(InventoryItem, int)> ingredientListCache = null;
+    private List<(int, int)> ingredientIdsCache = null;
+
+    public List<(InventoryItem, int)> GetIngredientList()
     {
-        int[] idArray = new int[ingredientList.Length];
-        for (int i = 0; i < ingredientList.Length; i++)
+        if (ingredientListCache == null)
         {
-            idArray[i] = ingredientList[i].inventoryItemId;
+            ingredientListCache = new List<(InventoryItem, int)>();
+            for (int i = 0; i < ingredientsList.Length; i++)
+            {
+                ingredientListCache.Add((ingredientsList[i], ingredientsCount[i]));
+            }
         }
-        return idArray;
+        return ingredientListCache;
+    }
+
+    // Gets a list of pairs of ingredient ids to the
+    // amount required by this recipe for cooking
+    public List<(int, int)> GetIngredientIds()
+    {
+        if (ingredientIdsCache == null)
+        {
+            ingredientIdsCache = new List<(int, int)>();
+            for (int i = 0; i < ingredientsList.Length; i++)
+            {
+                ingredientIdsCache.Add((ingredientsList[i].inventoryItemId, ingredientsCount[i]));
+            }
+        }
+        return ingredientIdsCache;
     }
 }

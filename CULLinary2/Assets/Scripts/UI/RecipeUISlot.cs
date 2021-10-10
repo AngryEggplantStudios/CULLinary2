@@ -6,14 +6,13 @@ using TMPro;
 
 public class RecipeUISlot : MonoBehaviour
 {
-    public GameObject cookableButton;
+    public GameObject selectedButton;
     public Image recipeIcon;
     public TextMeshProUGUI recipeDescription;
-    public GameObject orderedIcon;
 
     [Header("For Unknown Recipes")]
     public Color colourForUnknownRecipe = Color.black;
-    public string textForUnknownRecipe = "???";
+    public string textForUnknownRecipe = "Locked Recipe";
 
 
     private RecipeUIInfoDisplay infoDisplay = null;
@@ -24,22 +23,29 @@ public class RecipeUISlot : MonoBehaviour
     private bool ordered;
 
     
-    private (int, bool)[] checkedIngs;
+    private List<(int, int, int)> invReqCount;
     private int numOfOrders;
+    private int numInInv;
+    // Index of this slot in the Recipes UI
+    private int indexInMenu;
 
     public void AddRecipe(
         Recipe newRecipe,
         bool isCookable,
-        (int, bool)[] checkedIngredients,
-        int numberOfOrders
+        List<(int, int, int)> ingredientQuantities,
+        int numberOfOrders,
+        int numberInInventory,
+        int indexInRecipesMenu
     )
     {
         recipe = newRecipe;
         known = true;
         cookable = isCookable;
         ordered = numberOfOrders > 0;
-        checkedIngs = checkedIngredients;
+        invReqCount = ingredientQuantities;
         numOfOrders = numberOfOrders;
+        numInInv = numberInInventory;
+        indexInMenu = indexInRecipesMenu;
         UpdateUI();
     }
 
@@ -59,11 +65,20 @@ public class RecipeUISlot : MonoBehaviour
 
     public void DisplayRecipeOnClick()
     {
-        if (known && infoDisplay != null)
+        if (known)
         {
-            infoDisplay.ShowRecipe(recipe, checkedIngs, numOfOrders, cookable);
+            RecipeManager.instance.SetCurrentlySelectedRecipeInMenuUi(indexInMenu);
+            DisplayRecipe();
         }
-        if (infoDisplay == null)
+    }
+
+    public void DisplayRecipe()
+    {
+        if (infoDisplay != null)
+        {
+            infoDisplay.ShowRecipe(selectedButton, recipe, invReqCount, numOfOrders, numInInv);
+        }
+        else
         {
             Debug.Log("RecipeUISlot: Missing information display!");
         }
@@ -81,7 +96,15 @@ public class RecipeUISlot : MonoBehaviour
             recipeDescription.text = textForUnknownRecipe;
             recipeIcon.color = colourForUnknownRecipe;
         }
-        cookableButton.SetActive(cookable);
-        orderedIcon.SetActive(ordered);
+    }
+
+    public void ActivateSelectedButton()
+    {
+        selectedButton.SetActive(true);
+    }
+
+    public void DeactivateSelectedButton()
+    {
+        selectedButton.SetActive(false);
     }
 }
