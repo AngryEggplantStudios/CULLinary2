@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class MonsterBehavior : MonoBehaviour
+
+public class ExplodingMonsterBehaviour : MonoBehaviour
 {
     [Header("Monster Behavior Variables")]
     [SerializeField] private float idleTimer;
@@ -16,13 +17,22 @@ public class MonsterBehavior : MonoBehaviour
 
     [Header("Test")]
     [SerializeField] public bool lineTest = false;
-    // Variables
 
+    [Tooltip("The speed to chase the player.")]
+    [SerializeField] private float chasingSpeed;
+    [SerializeField] private float chasingAccel;
+    private bool chasingCouroutineStarted = false;
+    private bool canStartExploding = false;
     private float goingBackToStartTimer;
     private Vector3 roamPosition;
     public bool canAttack = true;
     public Animator animator;
     public NavMeshAgent navMeshAgent;
+    private Renderer rend;
+    private Color[] originalColors;
+    private Texture[] originalTextures;
+    private Color onDamageColor = Color.white;
+    private Texture[] texturesForFlash;
 
     private float timer;
     private Vector3 startingPosition;
@@ -30,9 +40,11 @@ public class MonsterBehavior : MonoBehaviour
     public float reachedPositionDistance;
     public MonsterScript monsterScript;
     public LineRenderer lineRenderer;
+    private bool mustStartExploding = false;
 
     private void Start()
-    {
+	{
+        chasingCouroutineStarted = false;
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         monsterScript = GetComponent<MonsterScript>();
@@ -46,6 +58,23 @@ public class MonsterBehavior : MonoBehaviour
         startingPosition = transform.position;
         timer = wanderTimer;
         goingBackToStartTimer = 0;
+        rend = GetComponentInChildren<SkinnedMeshRenderer>();
+
+    }
+
+    public virtual void EnemyRoaming()
+    {
+        animator.SetBool("isMoving", true);
+        timer += Time.deltaTime;
+        Vector3 distanceToFinalPosition = transform.position - roamPosition;
+        //without this the eggplant wandering will be buggy as it may be within the Navmesh Obstacles itself
+        if (timer >= wanderTimer || distanceToFinalPosition.magnitude < reachedPositionDistance)
+        {
+            timer = 0;
+            navMeshAgent.SetDestination(gameObject.transform.position);
+            animator.SetBool("isMoving", false);
+            monsterScript.SetStateMachine(MonsterState.Idle);
+        }
     }
 
     public virtual void EnemyIdle()
@@ -72,23 +101,18 @@ public class MonsterBehavior : MonoBehaviour
         }
     }
 
-    public virtual void EnemyRoaming()
+    public void EnemyChase(float stopChaseDistance, Vector3 playerPosition)
     {
-        animator.SetBool("isMoving", true);
-        timer += Time.deltaTime;
-        Vector3 distanceToFinalPosition = transform.position - roamPosition;
-        //without this the eggplant wandering will be buggy as it may be within the Navmesh Obstacles itself
-        if (timer >= wanderTimer || distanceToFinalPosition.magnitude < reachedPositionDistance)
-        {
-            timer = 0;
-            navMeshAgent.SetDestination(gameObject.transform.position);
-            animator.SetBool("isMoving", false);
-            monsterScript.SetStateMachine(MonsterState.Idle);
-        }
-    }
-
-    public virtual void EnemyChase(float stopChaseDistance, Vector3 playerPosition)
-    {
+        Debug.Log("In Enemy CHase");
+        // Set speed here to be fast boi
+        navMeshAgent.speed = chasingSpeed;
+        navMeshAgent.acceleration = chasingAccel;
+        // if timer coroutine not started yet start here
+        if (chasingCouroutineStarted != true)
+		{
+            chasingCouroutineStarted = true;
+            StartCoroutine(ChasingTimerBeforeStartExploding());
+		}
         Vector3 playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
         animator.SetBool("isMoving", true);
         float directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
@@ -101,8 +125,11 @@ public class MonsterBehavior : MonoBehaviour
             lineRenderer.SetPositions(points);
         }
 
-        if (directionVector <= reachedPositionDistance)
+
+        // reachedPositionDistance or timercoroutine has completed. Make sure stopping distance is close enuf and stop chasing, stay in place and start exploding
+        if (directionVector <= reachedPositionDistance && canStartExploding || mustStartExploding)
         {
+            Debug.Log(canStartExploding);
             playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
             slowlyRotateToLookAt(playerPositionWithoutYOffset);
             navMeshAgent.SetDestination(gameObject.transform.position);
@@ -114,15 +141,19 @@ public class MonsterBehavior : MonoBehaviour
         {
             navMeshAgent.SetDestination(playerPositionWithoutYOffset);
         }
-
-        if (Vector3.Distance(transform.position, playerPosition) > stopChaseDistance + 0.1f)
-        {
-            // Too far, stop chasing
-            monsterScript.SetStateMachine(MonsterState.GoingBackToStart);
-        }
     }
 
-    public virtual void EnemyAttackPlayer(Vector3 playerPosition, bool ableToMove)
+    // Chases for n seconds before start exploding attack
+    private IEnumerator ChasingTimerBeforeStartExploding()
+	{
+        yield return new WaitForSeconds(3.0f);
+        canStartExploding = true;
+        yield return new WaitForSeconds(2.0f);
+        mustStartExploding = true;
+    }
+
+    //explode here
+    public void EnemyAttackPlayer(Vector3 playerPosition, bool ableToMove)
     {
         Vector3 playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
         slowlyRotateToLookAt(playerPositionWithoutYOffset);
@@ -130,24 +161,25 @@ public class MonsterBehavior : MonoBehaviour
         if (canAttack == true)
         {
             canAttack = false;
+            // start exploding delay of 1.5 s
             StartCoroutine(DelayAttack(playerPositionWithoutYOffset));
-        }
-        float directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
-        if (directionVector > navMeshAgent.stoppingDistance && ableToMove)
-        {
-            // Target within attack range
-            monsterScript.SetStateMachine(MonsterState.ChaseTarget);
         }
     }
 
-    public virtual IEnumerator DelayAttack(Vector3 playerPositionWithoutYOffset)
-	{
-        yield return new WaitForSeconds(1);
-        slowlyRotateToLookAt(playerPositionWithoutYOffset);
+    public IEnumerator DelayAttack(Vector3 playerPositionWithoutYOffset)
+    {
+        originalColors = monsterScript.GetOriginalColors();
+        originalTextures = monsterScript.GetOriginalTextures();
+        texturesForFlash = monsterScript.GetTexturesForFlash();
+        Debug.Log("delaying attack");
+        StartCoroutine(FlashOnExplosion());
         animator.SetBool("isMoving", false);
+        // Start Coroutine to flash indicating explosions
+        yield return new WaitForSeconds(0.3f);
+        StopCoroutine(FlashOnExplosion());
+        slowlyRotateToLookAt(playerPositionWithoutYOffset);
         animator.ResetTrigger("attack");
         animator.SetTrigger("attack");
-        StartCoroutine(DelayFire());
     }
 
     public virtual void EnemyReturn()
@@ -212,12 +244,50 @@ public class MonsterBehavior : MonoBehaviour
     }
 
     public void slowlyRotateToLookAt(Vector3 target)
-	{
+    {
         transform.rotation = Quaternion.Lerp(
             transform.rotation,
             Quaternion.Euler(Quaternion.LookRotation(target - transform.position).eulerAngles),
             Time.deltaTime * 3.0f);
     }
 
+    private IEnumerator FlashOnExplosion()
+    {
+        while (true)
+		{
+            for (var i = 0; i < rend.materials.Length; i++)
+            {
+                Texture flashTex = null;
+                if (texturesForFlash != null && i < texturesForFlash.Length)
+                {
+                    flashTex = texturesForFlash[i];
+                }
+                rend.materials[i].SetTexture("_BaseMap", flashTex);
+                rend.materials[i].color = onDamageColor;
+            }
+
+            float duration = 0.1f;
+            while (duration > 0)
+            {
+                duration -= Time.deltaTime;
+                yield return null;
+            }
+
+            for (var i = 0; i < rend.materials.Length; i++)
+            {
+                rend.materials[i].SetTexture("_BaseMap", originalTextures[i]);
+                rend.materials[i].color = originalColors[i];
+            }
+
+            duration = 0.1f;
+            while (duration > 0)
+            {
+                duration -= Time.deltaTime;
+                yield return null;
+            }
+        }
+
+   
+    }
 
 }

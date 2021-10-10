@@ -279,7 +279,7 @@ public class MonsterScript : Monster
         damageUiElements.Add(damageCounter);
     }
 
-    private void DieAnimation()
+    public void DieAnimation()
     {
         // Reset all triggers first to prevent interference of other animation states before deathj
         animator.ResetTrigger("attack");
@@ -423,5 +423,20 @@ public class MonsterScript : Monster
     public int GetAdditionalSpawningNumber()
     {
         return additionalSpawningNumbers;
+    }
+
+    public Color[] GetOriginalColors()
+	{
+        return originalColors;
+	}
+
+    public Texture[] GetOriginalTextures()
+	{
+        return originalTextures;
+	}
+
+    public Texture[] GetTexturesForFlash()
+    {
+        return texturesForFlash;
     }
 }
