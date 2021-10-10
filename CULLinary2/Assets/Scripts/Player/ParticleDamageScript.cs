@@ -9,9 +9,11 @@ public class ParticleDamageScript : MonoBehaviour
 
     private void OnParticleCollision(GameObject other)
     {
+        Debug.Log(other.name);
         Monster target = other.GetComponent<Monster>();
         if (target == null)
         {
+            Debug.Log("WHAT");
             return;
         }
         target.HandleHit(CalculateDamage());
