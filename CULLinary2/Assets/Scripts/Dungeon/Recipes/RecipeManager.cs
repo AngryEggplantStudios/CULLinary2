@@ -129,6 +129,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         if (InventoryManager.instance.RemoveIdsFromInventory(r.GetIngredientIds()))
         {
             // UI will be updated in AddItem
+            cookingInfoDisplay.IncreaseInventoryCountAndSetIngredients();
             InventoryManager.instance.AddItem(r.cookedDishItem);
             // Create a pop-up for the player
             pickup?.PickUp(r.cookedDishItem);
@@ -151,6 +152,12 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
 
     public IEnumerator UpdateUI()
     {
+        // Wait until all orders have generated
+        if (!OrdersManager.instance.IsOrderGenerationComplete())
+        {
+            yield break;
+        }
+
         foreach (Transform child in recipesContainer.transform)
         {
             Destroy(child.gameObject);
@@ -175,20 +182,21 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         }
 
         foreach (Recipe r in innerUnlockedRecipesList)
-        {
+        {   
+            List<(int, int)> ingIds = r.GetIngredientIds();
+            List<(int, int, int)> invReqCount = new List<(int, int, int)>();
+            bool areItemsInInventory =
+                InventoryManager.instance.CheckIfItemsExist(ingIds, out invReqCount);
+            int numberOfOrders = GetNumberOfOrders(r.recipeId);
+            int numberInInventory = InventoryManager.instance.GetAmountOfItem(r.cookedDishItem.inventoryItemId);
+
             // Add to Recipes UI
             GameObject recipeEntry = Instantiate(recipeSlot,
                                                  new Vector3(0, 0, 0),
                                                  Quaternion.identity,
                                                  recipesContainer.transform) as GameObject;
-
             RecipeUISlot recipeDetails = recipeEntry.GetComponent<RecipeUISlot>();
-            int[] ingIds = r.GetIngredientIds();
-            (int, bool)[] checkedIngs = new (int, bool)[] { };
-            bool areItemsInInventory =
-                InventoryManager.instance.CheckIfItemsExist(ingIds, out _, out checkedIngs);
-
-            recipeDetails.AddRecipe(r, areItemsInInventory, checkedIngs, GetNumberOfOrders(r.recipeId));
+            recipeDetails.AddRecipe(r, areItemsInInventory, invReqCount, numberOfOrders, numberInInventory);
             recipeDetails.SetInfoDisplay(infoDisplay);
 
             // Add to Cooking UI as well
@@ -197,7 +205,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
                                                     Quaternion.identity,
                                                     cookingRecipesContainer.transform) as GameObject;
             CookingUISlot cookingRecipeDetails = cookingUiEntry.GetComponent<CookingUISlot>();
-            cookingRecipeDetails.AddRecipe(r, areItemsInInventory, checkedIngs, GetNumberOfOrders(r.recipeId));
+            cookingRecipeDetails.AddRecipe(r, areItemsInInventory, invReqCount, numberOfOrders, numberInInventory);
             cookingRecipeDetails.SetInfoDisplay(cookingInfoDisplay);
             yield return null;
         }
@@ -208,7 +216,6 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
                                                  new Vector3(0, 0, 0),
                                                  Quaternion.identity,
                                                  recipesContainer.transform) as GameObject;
-
             RecipeUISlot recipeDetails = recipeEntry.GetComponent<RecipeUISlot>();
             recipeDetails.AddUnknownRecipe(r);
             recipeDetails.SetInfoDisplay(infoDisplay);

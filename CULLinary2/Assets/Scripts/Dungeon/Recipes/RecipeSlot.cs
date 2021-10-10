@@ -39,25 +39,25 @@ public class RecipeSlot : MonoBehaviour, IPointerEnterHandler,
 
     public void OnPointerClick(PointerEventData pointerEventData)
     {
-        int[] ingredientsRequired = recipe.GetIngredientIds();
-        if (!recipeManager.IsCookingActivated())
-        {
-            // Player is not at cooking station
-            Debug.Log("OOPS! Not at campfire!");
-            return;
-        }
+        // int[] ingredientsRequired = recipe.GetIngredientIds();
+        // if (!recipeManager.IsCookingActivated())
+        // {
+        //     // Player is not at cooking station
+        //     Debug.Log("OOPS! Not at campfire!");
+        //     return;
+        // }
 
-        InventoryManager inventory = InventoryManager.instance;
-        bool didCookingSucceed = inventory.RemoveIdsFromInventory(ingredientsRequired);
-        if (!didCookingSucceed)
-        {
-            // Player does not have ingredients
-            Debug.Log("OOPS! You don't have the ingredients!");
-            return;
-        }
+        // InventoryManager inventory = InventoryManager.instance;
+        // bool didCookingSucceed = inventory.RemoveIdsFromInventory(ingredientsRequired);
+        // if (!didCookingSucceed)
+        // {
+        //     // Player does not have ingredients
+        //     Debug.Log("OOPS! You don't have the ingredients!");
+        //     return;
+        // }
 
-        // Cooking succeeded, give the player the food
-        inventory.AddItem(recipe.cookedDishItem);
+        // // Cooking succeeded, give the player the food
+        // inventory.AddItem(recipe.cookedDishItem);
     }
 
     public void AddRecipe(Recipe newRecipe)
@@ -87,19 +87,19 @@ public class RecipeSlot : MonoBehaviour, IPointerEnterHandler,
 
     private void UpdateIngredientsUI()
     {
-        foreach (Transform child in ingredientsContainer.transform)
-        {
-            Destroy(child.gameObject);
-        }
+        // foreach (Transform child in ingredientsContainer.transform)
+        // {
+        //     Destroy(child.gameObject);
+        // }
 
-        foreach (int ingredientId in recipe.GetIngredientIds())
-        {
-            GameObject ingredientEntry = Instantiate(recipeIngredientSlot,
-                                                     new Vector3(0, 0, 0),
-                                                     Quaternion.identity,
-                                                     ingredientsContainer.transform) as GameObject;
-            Image ingredientIcon = ingredientEntry.GetComponent<Image>();
-            ingredientIcon.sprite = DatabaseLoader.GetItemById(ingredientId).icon;
-        }
+        // foreach (int ingredientId in recipe.GetIngredientIds())
+        // {
+        //     GameObject ingredientEntry = Instantiate(recipeIngredientSlot,
+        //                                              new Vector3(0, 0, 0),
+        //                                              Quaternion.identity,
+        //                                              ingredientsContainer.transform) as GameObject;
+        //     Image ingredientIcon = ingredientEntry.GetComponent<Image>();
+        //     ingredientIcon.sprite = DatabaseLoader.GetItemById(ingredientId).icon;
+        // }
     }
 }

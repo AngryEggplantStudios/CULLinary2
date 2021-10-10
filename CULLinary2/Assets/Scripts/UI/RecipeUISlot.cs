@@ -6,14 +6,13 @@ using TMPro;
 
 public class RecipeUISlot : MonoBehaviour
 {
-    public GameObject cookableButton;
+    public GameObject selectedButton;
     public Image recipeIcon;
     public TextMeshProUGUI recipeDescription;
-    public GameObject orderedIcon;
 
     [Header("For Unknown Recipes")]
     public Color colourForUnknownRecipe = Color.black;
-    public string textForUnknownRecipe = "???";
+    public string textForUnknownRecipe = "Locked Recipe";
 
 
     private RecipeUIInfoDisplay infoDisplay = null;
@@ -24,22 +23,25 @@ public class RecipeUISlot : MonoBehaviour
     private bool ordered;
 
     
-    private (int, bool)[] checkedIngs;
+    private List<(int, int, int)> invReqCount;
     private int numOfOrders;
+    private int numInInv;
 
     public void AddRecipe(
         Recipe newRecipe,
         bool isCookable,
-        (int, bool)[] checkedIngredients,
-        int numberOfOrders
+        List<(int, int, int)> ingredientQuantities,
+        int numberOfOrders,
+        int numberInInventory
     )
     {
         recipe = newRecipe;
         known = true;
         cookable = isCookable;
         ordered = numberOfOrders > 0;
-        checkedIngs = checkedIngredients;
+        invReqCount = ingredientQuantities;
         numOfOrders = numberOfOrders;
+        numInInv = numberInInventory;
         UpdateUI();
     }
 
@@ -61,7 +63,7 @@ public class RecipeUISlot : MonoBehaviour
     {
         if (known && infoDisplay != null)
         {
-            infoDisplay.ShowRecipe(recipe, checkedIngs, numOfOrders, cookable);
+            infoDisplay.ShowRecipe(selectedButton, recipe, invReqCount, numOfOrders, numInInv);
         }
         if (infoDisplay == null)
         {
@@ -81,7 +83,15 @@ public class RecipeUISlot : MonoBehaviour
             recipeDescription.text = textForUnknownRecipe;
             recipeIcon.color = colourForUnknownRecipe;
         }
-        cookableButton.SetActive(cookable);
-        orderedIcon.SetActive(ordered);
+    }
+
+    public void ActivateSelectedButton()
+    {
+        selectedButton.SetActive(true);
+    }
+
+    public void DeactivateSelectedButton()
+    {
+        selectedButton.SetActive(false);
     }
 }
