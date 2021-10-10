@@ -81,6 +81,7 @@ public class PlayerSecondaryAttack : PlayerAction
 
     public void SkillFinish()
     {
+        playerSkill.StopInvoking();
         animator.SetBool("isPowerUp", false);
     }
 

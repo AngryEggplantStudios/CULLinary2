@@ -26,6 +26,7 @@ public class PlayerSlash : PlayerAction
     private Vector3 rotateToFaceDirection;
     private GameObject instantiatedWeapon;
     private TrailRenderer weaponTrail;
+    private PlayerSkill playerSkill;
 
     //For testing
     private int currentWeaponSelected = 0;
@@ -33,6 +34,7 @@ public class PlayerSlash : PlayerAction
     private void Awake()
     {
         playerMelee = GetComponent<PlayerMelee>();
+        playerSkill = GetComponent<PlayerSkill>();
         playerMelee.OnPlayerMelee += Slash;
         playerLocomotion = GetComponent<PlayerLocomotion>();
         animator = GetComponent<Animator>();
@@ -142,11 +144,15 @@ public class PlayerSlash : PlayerAction
         animator.SetBool("isMelee", false);
         playerMelee.StopInvoking();
         weaponTrail.emitting = false;
+
+
+        playerSkill.StopInvoking(); //???
     }
 
     public void AttackEnd()
     {
         playerMelee.StopInvoking();
+        playerSkill.StopInvoking(); //???
     }
 
     public void AttackCleanUp()
@@ -156,6 +162,9 @@ public class PlayerSlash : PlayerAction
         playerMelee.StopInvoking();
         weaponCollider.enabled = false;
         weaponTrail.emitting = false;
+
+
+        playerSkill.StopInvoking(); //???
     }
 
 }
