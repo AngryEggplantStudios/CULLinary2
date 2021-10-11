@@ -101,6 +101,7 @@ public class MonsterBehavior : MonoBehaviour
             lineRenderer.SetPositions(points);
         }
 
+
         if (directionVector <= reachedPositionDistance)
         {
             playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);

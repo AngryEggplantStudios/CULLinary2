@@ -41,6 +41,7 @@ public class ExplodingMonsterBehaviour : MonoBehaviour
     public MonsterScript monsterScript;
     public LineRenderer lineRenderer;
     private bool mustStartExploding = false;
+    private bool canSetDestination = true;
 
     private void Start()
 	{
@@ -103,7 +104,6 @@ public class ExplodingMonsterBehaviour : MonoBehaviour
 
     public void EnemyChase(float stopChaseDistance, Vector3 playerPosition)
     {
-        Debug.Log("In Enemy CHase");
         // Set speed here to be fast boi
         navMeshAgent.speed = chasingSpeed;
         navMeshAgent.acceleration = chasingAccel;
@@ -124,13 +124,12 @@ public class ExplodingMonsterBehaviour : MonoBehaviour
             points[1] = playerPositionWithoutYOffset;
             lineRenderer.SetPositions(points);
         }
-
+        playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
 
         // reachedPositionDistance or timercoroutine has completed. Make sure stopping distance is close enuf and stop chasing, stay in place and start exploding
         if (directionVector <= reachedPositionDistance && canStartExploding || mustStartExploding)
         {
-            Debug.Log(canStartExploding);
-            playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
+            Debug.Log("can startexplode");
             slowlyRotateToLookAt(playerPositionWithoutYOffset);
             navMeshAgent.SetDestination(gameObject.transform.position);
             // Target within attack range
@@ -139,14 +138,27 @@ public class ExplodingMonsterBehaviour : MonoBehaviour
         }
         else
         {
-            navMeshAgent.SetDestination(playerPositionWithoutYOffset);
+            if (canSetDestination)
+			{
+                Debug.Log("ChasingPlayer");
+                canSetDestination = false;
+                StartCoroutine(DelayFindingPlayer());
+                navMeshAgent.SetDestination(playerPositionWithoutYOffset);
+
+            }
         }
     }
+
+    private IEnumerator DelayFindingPlayer()
+	{
+        yield return new WaitForSeconds(0.5f);
+        canSetDestination = true;
+	}
 
     // Chases for n seconds before start exploding attack
     private IEnumerator ChasingTimerBeforeStartExploding()
 	{
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(35.0f);//remember  3
         canStartExploding = true;
         yield return new WaitForSeconds(2.0f);
         mustStartExploding = true;
@@ -171,12 +183,10 @@ public class ExplodingMonsterBehaviour : MonoBehaviour
         originalColors = monsterScript.GetOriginalColors();
         originalTextures = monsterScript.GetOriginalTextures();
         texturesForFlash = monsterScript.GetTexturesForFlash();
-        Debug.Log("delaying attack");
         StartCoroutine(FlashOnExplosion());
         animator.SetBool("isMoving", false);
         // Start Coroutine to flash indicating explosions
-        yield return new WaitForSeconds(0.3f);
-        StopCoroutine(FlashOnExplosion());
+        yield return new WaitForSeconds(0.001f);
         slowlyRotateToLookAt(playerPositionWithoutYOffset);
         animator.ResetTrigger("attack");
         animator.SetTrigger("attack");
