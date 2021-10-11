@@ -1,12 +1,14 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 public class CookingUISlot : MonoBehaviour
 {
+    public GameObject selectedButton;
     public GameObject cookableButton;
     public Image recipeIcon;
-    public TextMeshProUGUI recipeDescription;
+    public TextMeshProUGUI recipeName;
     public GameObject orderedIcon;
 
     private RecipeUIInfoDisplay infoDisplay = null;
@@ -16,21 +18,28 @@ public class CookingUISlot : MonoBehaviour
     private bool ordered;
 
     
-    private (int, bool)[] checkedIngs;
+    private List<(int, int, int)> invReqCount;
     private int numOfOrders;
+    private int numInInv;
+    // Index of this slot in the Cooking UI
+    private int indexInMenu;
 
     public void AddRecipe(
         Recipe newRecipe,
         bool isCookable,
-        (int, bool)[] checkedIngredients,
-        int numberOfOrders
+        List<(int, int, int)> ingredientQuantities,
+        int numberOfOrders,
+        int numberInInventory,
+        int indexInCookingMenu
     )
     {
         recipe = newRecipe;
         cookable = isCookable;
         ordered = numberOfOrders > 0;
-        checkedIngs = checkedIngredients;
+        invReqCount = ingredientQuantities;
         numOfOrders = numberOfOrders;
+        numInInv = numberInInventory;
+        indexInMenu = indexInCookingMenu;
         UpdateUI();
     }
 
@@ -39,16 +48,22 @@ public class CookingUISlot : MonoBehaviour
         infoDisplay = display;
     }
 
+    public void SelectRecipeForCookingOnClick()
+    {
+        RecipeManager.instance.SetCurrentlySelectedRecipeInCookingUi(indexInMenu);
+        SelectRecipeForCooking();
+    }
+
     public void SelectRecipeForCooking()
     {
-        // TODO: Select recipe and cook it
         if (infoDisplay == null)
         {
             Debug.Log("CookingUISlot: Missing information display!");
         }
         else
         {
-            infoDisplay.ShowRecipe(recipe, checkedIngs, numOfOrders, cookable);
+            InventoryManager inv = InventoryManager.instance;
+            infoDisplay.ShowRecipe(selectedButton, recipe, invReqCount, numOfOrders, numInInv);
             RecipeManager.instance.SetCurrentlyCookingRecipe(recipe);
         }
     }
@@ -56,7 +71,7 @@ public class CookingUISlot : MonoBehaviour
     private void UpdateUI()
     {
         recipeIcon.sprite = recipe.cookedDishItem.icon;
-        recipeDescription.text = recipe.cookedDishItem.itemName;
+        recipeName.text = recipe.cookedDishItem.itemName;
         cookableButton.SetActive(cookable);
         orderedIcon.SetActive(ordered);
     }

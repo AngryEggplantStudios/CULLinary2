@@ -6,7 +6,7 @@ public class PlayerAction : MonoBehaviour
 {
     private bool isInvoking = false;
 
-    protected void SetIsInvoking(bool b)
+    public void SetIsInvoking(bool b)
     {
         this.isInvoking = b;
     }

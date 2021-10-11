@@ -16,12 +16,12 @@ public class Order
         deliveryReward = rec.recipeEarnings;
     }
 
-    public List<InventoryItem> GetIngredients()
+    public List<(InventoryItem, int)> GetIngredients()
     {
-        return new List<InventoryItem>(recipe.ingredientList);
+        return recipe.GetIngredientList();
     }
 
-    public int[] GetIngredientIds()
+    public List<(int, int)> GetIngredientIds()
     {
         return recipe.GetIngredientIds();
     }

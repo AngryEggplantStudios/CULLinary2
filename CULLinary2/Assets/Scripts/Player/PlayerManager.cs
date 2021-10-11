@@ -17,6 +17,9 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     public List<InventoryItem> itemList = new List<InventoryItem>();
     public int currentMoney;
     public int currentDay;
+    public int[] weaponSkillArray = new int[11] { 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 };
+    public int currentWeaponHeld = 0;
+    public int currentSecondaryHeld = 3;
     public Dictionary<MonsterName, PopulationLevel> monsterDict = new Dictionary<MonsterName, PopulationLevel>{
         {MonsterName.Corn, PopulationLevel.Normal},
         {MonsterName.Potato, PopulationLevel.Normal},
@@ -47,6 +50,9 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.consumables = consumables;
         playerData.currentDay = currentDay;
         playerData.monsterSavedDatas = SaveMonsters();
+        playerData.weaponSkillArray = weaponSkillArray;
+        playerData.currentWeaponHeld = currentWeaponHeld;
+        playerData.currentSecondaryHeld = currentSecondaryHeld;
         SaveSystem.SaveData(playerData);
     }
 
@@ -121,6 +127,9 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         evasionChance = playerData.evasionChance;
         consumables = playerData.consumables;
         currentDay = playerData.currentDay;
+        weaponSkillArray = playerData.weaponSkillArray;
+        currentWeaponHeld = playerData.currentWeaponHeld;
+        currentSecondaryHeld = playerData.currentSecondaryHeld;
         LoadMonsters();
     }
 

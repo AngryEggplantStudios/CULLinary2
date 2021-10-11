@@ -18,6 +18,10 @@ public class PlayerData
     public int currentDay;
     public MonsterSavedData[] monsterSavedDatas;
 
+    public int[] weaponSkillArray;
+    public int currentWeaponHeld = 0;
+    public int currentSecondaryHeld = 3;
+
     public PlayerData()
     {
         inventory = "";
@@ -33,6 +37,9 @@ public class PlayerData
         recipesUnlocked = new bool[3] { true, true, true };
         upgradesArray = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         currentDay = 1;
+        weaponSkillArray = new int[11] { 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 };
+        currentWeaponHeld = 0;
+        currentSecondaryHeld = 3;
         monsterSavedDatas = new MonsterSavedData[3] {
             new MonsterSavedData(MonsterName.Eggplant, PopulationLevel.Normal),
             new MonsterSavedData(MonsterName.Corn, PopulationLevel.Normal),
