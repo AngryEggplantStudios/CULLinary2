@@ -31,6 +31,7 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
         else
         {
             yield return StartCoroutine(StartGeneration());
+            yield return StartCoroutine(LoadExistingBiome());
         }
     }
 
