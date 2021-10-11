@@ -6,15 +6,32 @@ using TMPro;
 
 public class ShopManager : SingletonGeneric<ShopManager>
 {
+    [Header("Prefabs & References")]
     [SerializeField] private GameObject slotsParentObject;
     [SerializeField] private GameObject slotPrefab;
-    [SerializeField] private TMP_Text moneyText;
-    [SerializeField] private GameObject shopPanel;
+    [SerializeField] private Image itemIcon;
+    [SerializeField] private TMP_Text itemPrice;
+    [SerializeField] private TMP_Text itemName;
+    [SerializeField] private TMP_Text itemDescription;
+    [SerializeField] private TMP_Text currentLevelText;
+    [SerializeField] private TMP_Text nextLevelText;
+    [SerializeField] private TMP_Text currentLevelEffectText;
+    [SerializeField] private TMP_Text nextLevelEffectText;
+    [SerializeField] private TMP_Text nextLevelIncrementText;
+    [SerializeField] private TMP_Text purchaseWarning;
+    [SerializeField] private GameObject levelDetails;
+    [SerializeField] private Color ableToBePurchasedColor;
+    [SerializeField] private Color unableToBePurchasedColor;
+    [SerializeField] private Button upgradeButton;
+    [SerializeField] private TMP_Text consumableCounterText;
+    [SerializeField] private GameObject itemPanel;
+
     private int selectedSlotId = -1;
     private List<ShopSlot> slots;
 
     public void HandlePurchase()
     {
+        //Guard clause to check if there's a valid slot selected
         if (selectedSlotId == -1)
         {
             return;
@@ -23,27 +40,84 @@ public class ShopManager : SingletonGeneric<ShopManager>
         ShopItem itemPurchased = slots[selectedSlotId].shopItem;
         int currentLevel = PlayerManager.instance.upgradesArray[itemPurchased.shopItemId];
         int itemPrice = itemPurchased.price[currentLevel];
+
+        //Guard clause to check if player has enough money
         if (itemPrice > PlayerManager.instance.currentMoney)
         {
             return;
         }
-        //Effects
-        PlayerManager.instance.meleeDamage += itemPurchased.attackIncrement[currentLevel];
 
-        //Handle Special Events
-        if (itemPurchased.events[currentLevel] != 0 && SpecialEventManager.instance != null)
+        //Handle different items
+        if (itemPurchased.GetType() == typeof(UpgradeShopItem))
         {
-            SpecialEventManager.instance.PlayEvent(itemPurchased.events[currentLevel]);
+            Debug.Log("Bought upgrade!");
+            UpgradeShopItem upgradeItemPurchased = (UpgradeShopItem)itemPurchased;
+            switch ((int)upgradeItemPurchased.upgradeType)
+            {
+                case (int)UpgradeType.ATTACK_INCREMENT:
+                    PlayerManager.instance.meleeDamage += upgradeItemPurchased.attackIncrement[currentLevel];
+                    break;
+                case (int)UpgradeType.CRIT_CHANCE_INCREMENT:
+                    PlayerManager.instance.criticalChance += upgradeItemPurchased.criticalChance[currentLevel];
+                    break;
+                case (int)UpgradeType.MAX_STAMINA_INCREMENT:
+                    PlayerManager.instance.maxStamina += upgradeItemPurchased.maximumStaminaIncrement[currentLevel];
+                    break;
+                case (int)UpgradeType.EVASION_CHANCE_INCREMENT:
+                    PlayerManager.instance.evasionChance += upgradeItemPurchased.evasionChance[currentLevel];
+                    break;
+                case (int)UpgradeType.MAX_HEALTH_INCREMENT:
+                    PlayerManager.instance.maxHealth += upgradeItemPurchased.maximumHealthIncrement[currentLevel];
+                    break;
+                case (int)UpgradeType.NO_EFFECT:
+                default:
+                    Debug.Log("Upgrade has no effect");
+                    break;
+            }
+            PlayerManager.instance.upgradesArray[upgradeItemPurchased.shopItemId]++;
+        }
+        else if (itemPurchased.GetType() == typeof(EventShopItem))
+        {
+
+            EventShopItem eventItemPurchased = (EventShopItem)itemPurchased;
+            if (SpecialEventManager.instance.CheckIfEventIsRunning(eventItemPurchased.eventId))
+            {
+                return;
+            }
+            Debug.Log("Bought event item!");
+            SpecialEventManager.instance.PlayEvent(eventItemPurchased.eventId);
+        }
+        else if (itemPurchased.GetType() == typeof(KeyShopItem))
+        {
+            Debug.Log("Bought key item!");
+            KeyShopItem keyItemPurchased = (KeyShopItem)itemPurchased;
+            PlayerManager.instance.upgradesArray[keyItemPurchased.shopItemId]++;
+        }
+        else if (itemPurchased.GetType() == typeof(ConsumableShopItem))
+        {
+            Debug.Log("Bought consumable!");
+            ConsumableShopItem consumableItemPurchased = (ConsumableShopItem)itemPurchased;
+            switch (consumableItemPurchased.shopItemId)
+            {
+                case 7:
+                    PlayerManager.instance.consumables[0]++;
+                    break;
+                case 8:
+                    PlayerManager.instance.consumables[1]++;
+                    break;
+                case 9:
+                    PlayerManager.instance.consumables[2]++;
+                    break;
+            }
         }
 
-        // Update all money UIs
-        PlayerManager.instance.upgradesArray[itemPurchased.shopItemId]++;
+        // Update all UIs
         PlayerManager.instance.currentMoney -= itemPrice;
-
         InventoryManager.instance.StopAllCoroutines();
         InventoryManager.instance.StartCoroutine(InventoryManager.instance.UpdateUI());
-
         UpdateShop();
+        UIController.instance.UpdateFixedHUD();
+        itemPanel.SetActive(false);
     }
 
     public void HandleClick(int slotId)
@@ -52,67 +126,193 @@ public class ShopManager : SingletonGeneric<ShopManager>
         {
             return;
         }
+
         slots[slotId].gameObject.GetComponent<Outline>().enabled = true;
         if (selectedSlotId != -1)
         {
             slots[selectedSlotId].gameObject.GetComponent<Outline>().enabled = false;
         }
         selectedSlotId = slotId;
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F) && shopPanel.activeSelf)
-        {
-            HandlePurchase();
-        }
+        UpdateShopDescription();
     }
 
     public void SetupShop()
     {
         List<ShopItem> shopItemList = DatabaseLoader.GetAllShopItems();
         slots = new List<ShopSlot>();
+        int currentSlotId = 0;
         foreach (ShopItem item in shopItemList)
         {
             GameObject slotObject = Instantiate(slotPrefab);
             ShopSlot slot = slotObject.GetComponent<ShopSlot>();
-            Button button = slotObject.GetComponentInChildren<Button>();
-            button.onClick.AddListener(() => HandleClick(item.shopItemId));
-            slot.Setup(item, PlayerManager.instance.upgradesArray[item.shopItemId]);
+            slot.SetupUI(item, currentSlotId);
+            currentSlotId++;
             slots.Add(slot);
             slotObject.transform.SetParent(slotsParentObject.transform);
         }
-        moneyText.text = PlayerManager.instance.currentMoney.ToString();
+        UpdateShop();
+        itemPanel.SetActive(false);
     }
 
     public void UpdateShop()
     {
+        selectedSlotId = -1;
         foreach (ShopSlot slot in slots)
         {
-            int level = PlayerManager.instance.upgradesArray[slot.shopItem.shopItemId];
-            slot.Setup(slot.shopItem, level);
+            slot.UpdateUI(slot.shopItem);
+        }
+        consumableCounterText.gameObject.SetActive(false);
+    }
 
-            if (level >= slot.shopItem.maxLevel)
+    public void UpdateShopDescription()
+    {
+        if (selectedSlotId == -1)
+        {
+            return;
+        }
+        itemPanel.SetActive(true);
+
+        ShopItem itemSelected = slots[selectedSlotId].shopItem;
+        int currentLevel = PlayerManager.instance.upgradesArray[itemSelected.shopItemId];
+
+        itemDescription.text = itemSelected.description[currentLevel];
+        itemIcon.sprite = itemSelected.iconArr[currentLevel];
+        itemPrice.text = "$" + itemSelected.price[currentLevel];
+        consumableCounterText.gameObject.SetActive(false);
+
+        if (PlayerManager.instance.currentMoney < itemSelected.price[currentLevel])
+        {
+            purchaseWarning.text = "You do not have enough money!";
+            upgradeButton.interactable = false;
+            itemPrice.color = unableToBePurchasedColor;
+        }
+        else
+        {
+            purchaseWarning.text = "";
+            upgradeButton.interactable = true;
+            itemPrice.color = ableToBePurchasedColor;
+        }
+
+        if (itemSelected.GetType() == typeof(UpgradeShopItem))
+        {
+            levelDetails.SetActive(true);
+            UpgradeShopItem upgradeItemSelected = (UpgradeShopItem)itemSelected;
+            itemName.text = itemSelected.itemName + " (Lvl " + currentLevel + ")";
+            currentLevelText.text = "Current: Lvl " + currentLevel;
+
+            //Check if max level
+            bool isMaxLevel = false;
+            if (currentLevel + 1 > itemSelected.maxLevel)
             {
-                slot.DisableSlot();
-                slot.HandleMaxLevel(slot.shopItem, level);
-                return;
+                itemPrice.text = "$ N/A";
+                nextLevelText.text = "Max level reached";
+                nextLevelEffectText.text = "";
+                nextLevelIncrementText.text = "";
+                isMaxLevel = true;
+                purchaseWarning.text = "Max level reached!";
+            }
+            else
+            {
+                nextLevelText.text = "Current: Lvl " + (currentLevel + 1);
             }
 
-            slot.IncrementLevel(slot.shopItem, level);
-
-            if (PlayerManager.instance.currentMoney < slot.shopItem.price[level])
+            switch ((int)upgradeItemSelected.upgradeType)
             {
-                slot.DisableSlot();
+                case (int)UpgradeType.ATTACK_INCREMENT:
+                    currentLevelEffectText.text = "Melee: " + PlayerManager.instance.meleeDamage + " DMG";
+                    if (!isMaxLevel)
+                    {
+                        nextLevelEffectText.text = "Melee: " + (upgradeItemSelected.attackIncrement[currentLevel] + PlayerManager.instance.meleeDamage) + " DMG";
+                        nextLevelIncrementText.text = "(+" + upgradeItemSelected.attackIncrement[currentLevel] + ")";
+                    }
+                    break;
+                case (int)UpgradeType.CRIT_CHANCE_INCREMENT:
+                    currentLevelEffectText.text = "Crit: " + PlayerManager.instance.criticalChance + " %";
+                    if (!isMaxLevel)
+                    {
+                        nextLevelEffectText.text = "Crit: " + (upgradeItemSelected.criticalChance[currentLevel] + PlayerManager.instance.criticalChance) + " %";
+                        nextLevelIncrementText.text = "(+" + upgradeItemSelected.criticalChance[currentLevel] + ")";
+                    }
+                    break;
+                case (int)UpgradeType.MAX_STAMINA_INCREMENT:
+                    currentLevelEffectText.text = "Stamina: " + PlayerManager.instance.maxStamina + " MP";
+                    if (!isMaxLevel)
+                    {
+                        nextLevelEffectText.text = "Stamina: " + (upgradeItemSelected.maximumStaminaIncrement[currentLevel] + PlayerManager.instance.maxStamina) + " MP";
+                        nextLevelIncrementText.text = "(+" + upgradeItemSelected.maximumStaminaIncrement[currentLevel] + ")";
+                    }
+                    break;
+                case (int)UpgradeType.EVASION_CHANCE_INCREMENT:
+                    currentLevelEffectText.text = "Evasion Chance: " + PlayerManager.instance.evasionChance + " %";
+                    if (!isMaxLevel)
+                    {
+                        nextLevelEffectText.text = "Evasion Chance: " + (upgradeItemSelected.evasionChance[currentLevel] + PlayerManager.instance.evasionChance) + " %";
+                        nextLevelIncrementText.text = "(+" + upgradeItemSelected.evasionChance[currentLevel] + ")";
+                    }
+                    break;
+                case (int)UpgradeType.MAX_HEALTH_INCREMENT:
+                    currentLevelEffectText.text = "Max Health: " + PlayerManager.instance.maxHealth + " HP";
+                    if (!isMaxLevel)
+                    {
+                        nextLevelEffectText.text = "Max Health: " + (upgradeItemSelected.maximumHealthIncrement[currentLevel] + PlayerManager.instance.maxHealth) + " HP";
+                        nextLevelIncrementText.text = "(+" + upgradeItemSelected.maximumHealthIncrement[currentLevel] + ")";
+                    }
+                    break;
+                case (int)UpgradeType.NO_EFFECT:
+                default:
+                    break;
+            }
+        }
+
+        else if (itemSelected.GetType() == typeof(KeyShopItem))
+        {
+            levelDetails.SetActive(true);
+            KeyShopItem keyItemSelected = (KeyShopItem)itemSelected;
+            itemName.text = itemSelected.itemName + " (Lvl " + currentLevel + ")";
+            currentLevelText.text = currentLevel.ToString();
+            if (currentLevel + 1 > itemSelected.maxLevel)
+            {
+                nextLevelText.text = "Max Level";
+                purchaseWarning.text = "Max level reached!";
+                return;
+            }
+            else
+            {
+                nextLevelText.text = (currentLevel + 1).ToString();
+            }
+        }
+
+        else if (itemSelected.GetType() == typeof(EventShopItem))
+        {
+            itemName.text = itemSelected.itemName;
+            levelDetails.SetActive(false);
+            EventShopItem eventItemSelected = (EventShopItem)itemSelected;
+            if (SpecialEventManager.instance.CheckIfEventIsRunning(eventItemSelected.eventId))
+            {
+                upgradeButton.interactable = false;
+                purchaseWarning.text = "You can't purchase this item today anymore."; //Temp fix
+            }
+        }
+        else if (itemSelected.GetType() == typeof(ConsumableShopItem))
+        {
+            itemName.text = itemSelected.itemName;
+            levelDetails.SetActive(false);
+            ConsumableShopItem consumableItemSelected = (ConsumableShopItem)itemSelected;
+            consumableCounterText.gameObject.SetActive(true);
+            switch (consumableItemSelected.shopItemId)
+            {
+                case 7:
+                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.consumables[0] + " " + itemSelected.itemName + ".";
+                    break;
+                case 8:
+                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.consumables[1] + " " + itemSelected.itemName + ".";
+                    break;
+                case 9:
+                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.consumables[2] + " " + itemSelected.itemName + ".";
+                    break;
             }
 
         }
-        moneyText.text = PlayerManager.instance.currentMoney.ToString();
-    }
 
-    public void LoadShop()
-    {
-        selectedSlotId = -1;
-        UpdateShop();
     }
 }

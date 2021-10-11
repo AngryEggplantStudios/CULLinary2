@@ -693,6 +693,7 @@ GameObject:
   - component: {fileID: 5806749913654623873}
   - component: {fileID: -2664355154039104880}
   - component: {fileID: 3032895445469368953}
+  - component: {fileID: 5689706197273364680}
   m_Layer: 0
   m_Name: PotatoEnemyNew
   m_TagString: Untagged
@@ -905,12 +906,14 @@ MonoBehaviour:
   monsterHealth: 50
   distanceTriggered: 10
   stopChase: 14
-  lootDropped: {fileID: 1630496479247518767, guid: bb4dce76efdb34ce682008e7fbc6f1fe, type: 3}
+  lootDropped: {fileID: 8706522679418664788, guid: bb4dce76efdb34ce682008e7fbc6f1fe, type: 3}
+  additionalSpawningNumbers: 2
   spawner: {fileID: 0}
   hpBarPrefab: {fileID: 1085209639500972291, guid: 4614e0511cb49b14ebf0c58217d9d222, type: 3}
   damageCounterPrefab: {fileID: 1085209639500972291, guid: 24f41dda89c7bd648bd2796ac669721e, type: 3}
   enemyAlertPrefab: {fileID: 1085209639500972291, guid: 186234b88676f4b4f872f98d3ab0973c, type: 3}
   canvasDisplay: {fileID: 0}
+  onDeathParticles: {fileID: 3295506491500423538, guid: 6deda6ce43a969542925308d101ff721, type: 3}
   audioSourceDamage: {fileID: 2286949385255362869}
   stabSounds:
   - {fileID: 8300000, guid: 20a1cfd81c3ef4b4288a2197d358d1a6, type: 3}
@@ -921,4 +924,26 @@ MonoBehaviour:
   audioSourceAttack: {fileID: 4295557560100944049}
   alertSound: {fileID: 8300000, guid: f887160af86d3844b80236fc380ba79d, type: 3}
   attackSound: {fileID: 8300000, guid: 3e970a0a6aa62c24fa568ad102d5cd59, type: 3}
+  deathSound: {fileID: 8300000, guid: 9270765c7e69c68409898d68ee0124bc, type: 3}
   primaryEnemyAttack: {fileID: 4968055034188887457}
+  onDamageColor: {r: 1, g: 1, b: 1, a: 1}
+  texturesForFlash: []
+  transparentMaterials:
+  - {fileID: 2100000, guid: 0b6d6b52dd1c4a34ebcc0cf26b462846, type: 2}
+--- !u!114 &5689706197273364680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9062019569830792200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b40dd2c1d5ce28e4ca0cbfe021def656, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monsterRenderer: {fileID: 7325621177007739663}
+  tintColours:
+  - {r: 1, g: 0.9843137, b: 0.5254902, a: 1}
+  - {r: 1, g: 0.73333335, b: 0.8666667, a: 1}
+  - {r: 0.48235294, g: 0.39215687, b: 0.6039216, a: 1}

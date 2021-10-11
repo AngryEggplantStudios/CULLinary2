@@ -12,6 +12,7 @@ public class MonsterScript : Monster
     [SerializeField] private float distanceTriggered;
     [SerializeField] private float stopChase;
     [SerializeField] private GameObject lootDropped;
+    [SerializeField] private int additionalSpawningNumbers = 0;
     [HideInInspector] public GameObject spawner;
 
     [Header("UI Prefabs")]
@@ -20,15 +21,26 @@ public class MonsterScript : Monster
     [SerializeField] private GameObject enemyAlertPrefab;
     [SerializeField] private GameObject canvasDisplay;
 
+    [Header("Particle Prefabs")]
+    [SerializeField] private GameObject onDeathParticles;
+
     [Header("Audio")]
     [SerializeField] private AudioSource audioSourceDamage;
     [SerializeField] private AudioClip[] stabSounds;
     [SerializeField] private AudioSource audioSourceAttack;
     [SerializeField] private AudioClip alertSound;
     [SerializeField] private AudioClip attackSound;
+    [SerializeField] private AudioClip deathSound;
 
     [Header("Attacks")]
     [SerializeField] private MonsterAttack primaryEnemyAttack;
+
+    [Header("Flash On Damage")]
+    [SerializeField] private Color onDamageColor = Color.white;
+    [SerializeField] private Texture[] texturesForFlash;
+
+    [Header("Fade out on Death")]
+    [SerializeField] private Material[] transparentMaterials;
 
     // Variables
     private MonsterName monsterName;
@@ -43,7 +55,7 @@ public class MonsterScript : Monster
     private bool canMoveDuringAttack = true;
     private Renderer rend;
     private Color[] originalColors;
-    private Color onDamageColor = Color.white;
+    private Texture[] originalTextures;
     private Animator animator;
     // Store a reference to final damage counter when death
     private GameObject damageCounter;
@@ -114,39 +126,38 @@ public class MonsterScript : Monster
     private void Update()
     {
         if (playerTransform == null)
-		{
+        {
             playerTransform = GameObject.FindGameObjectWithTag("Player").transform; //Temp fix
         }
-
         switch (currentState)
         {
             default:
-                case MonsterState.Idle:
-                    checkIfDead();
-                    FindTarget();
-                    onEnemyIdle?.Invoke();
-                    break;
-                case MonsterState.Roaming:
-                    checkIfDead();
-                    FindTarget();
-                    onEnemyRoaming?.Invoke();
-                    break;
-                case MonsterState.ChaseTarget:
-                    checkIfDead();
-                    onEnemyChase?.Invoke(stopChase, playerTransform.position);
-                    break;
-                case MonsterState.AttackTarget:
-                    checkIfDead();
-                    // Hack to ensure attack trigger isn't triggered
-                    if (this.currentHealth > 0)
-                    {
-                        onEnemyAttack?.Invoke(playerTransform.position, canMoveDuringAttack);
-                    }
-                    break;
-                case MonsterState.GoingBackToStart:
-                    checkIfDead();
-                    onEnemyReturn?.Invoke();
-                    break;
+            case MonsterState.Idle:
+                checkIfDead();
+                FindTarget();
+                onEnemyIdle?.Invoke();
+                break;
+            case MonsterState.Roaming:
+                checkIfDead();
+                FindTarget();
+                onEnemyRoaming?.Invoke();
+                break;
+            case MonsterState.ChaseTarget:
+                checkIfDead();
+                onEnemyChase?.Invoke(stopChase, playerTransform.position);
+                break;
+            case MonsterState.AttackTarget:
+                checkIfDead();
+                // Hack to ensure attack trigger isn't triggered
+                if (this.currentHealth > 0)
+                {
+                    onEnemyAttack?.Invoke(playerTransform.position, canMoveDuringAttack);
+                }
+                break;
+            case MonsterState.GoingBackToStart:
+                checkIfDead();
+                onEnemyReturn?.Invoke();
+                break;
         }
 
         //Need to find a better way to update this?
@@ -179,8 +190,8 @@ public class MonsterScript : Monster
         }
     }
 
-    private void checkIfDead()
-	{
+    public void checkIfDead()
+    {
         if (this.currentHealth <= 0)
         {
             if (!deathCoroutine)
@@ -208,9 +219,11 @@ public class MonsterScript : Monster
     {
         rend = GetComponentInChildren<SkinnedMeshRenderer>();
         originalColors = new Color[rend.materials.Length];
+        originalTextures = new Texture[rend.materials.Length];
         for (int i = 0; i < rend.materials.Length; i++)
         {
             originalColors[i] = rend.materials[i].color;
+            originalTextures[i] = rend.materials[i].GetTexture("_BaseMap");
         }
     }
 
@@ -265,15 +278,20 @@ public class MonsterScript : Monster
         SetupUI(damageCounter);
         damageUiElements.Add(damageCounter);
     }
-    
+
     private void DieAnimation()
-	{
+    {
         // Reset all triggers first to prevent interference of other animation states before deathj
         animator.ResetTrigger("attack");
         animator.SetBool("isMoving", false);
         animator.SetTrigger("death");
         // Disable collider to prevent spam hitting damage
         monsterCollider.enabled = false;
+
+        audioSourceAttack.clip = deathSound;
+        audioSourceAttack.volume = 0.7f;
+        audioSourceAttack.pitch = Random.Range(1f, 2f);
+        audioSourceAttack.Play();
     }
 
     public void Die()
@@ -298,6 +316,12 @@ public class MonsterScript : Monster
     {
         for (var i = 0; i < rend.materials.Length; i++)
         {
+            Texture flashTex = null;
+            if (texturesForFlash != null && i < texturesForFlash.Length)
+            {
+                flashTex = texturesForFlash[i];
+            }
+            rend.materials[i].SetTexture("_BaseMap", flashTex);
             rend.materials[i].color = onDamageColor;
         }
 
@@ -310,7 +334,39 @@ public class MonsterScript : Monster
 
         for (var i = 0; i < rend.materials.Length; i++)
         {
+            rend.materials[i].SetTexture("_BaseMap", originalTextures[i]);
             rend.materials[i].color = originalColors[i];
+        }
+    }
+
+    private IEnumerator FadeOut(float duration)
+    {
+        float elapsed = 0;
+        Color clearWhite = new Color(1, 1, 1, 0);
+
+        if (rend.materials.Length == transparentMaterials.Length)
+        {
+            rend.materials = transparentMaterials;
+        }
+        else
+        {
+            Debug.LogWarning("Death fade out has the wrong number of transparent materials assigned");
+        }
+
+        while (elapsed < duration)
+        {
+            for (var i = 0; i < rend.materials.Length; i++)
+            {
+                rend.materials[i].color = Color.Lerp(originalColors[i], clearWhite, elapsed / duration);
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        for (var i = 0; i < rend.materials.Length; i++)
+        {
+            rend.materials[i].color = Color.clear;
         }
     }
 
@@ -347,6 +403,7 @@ public class MonsterScript : Monster
 
     public void monsterDeathAnimation()
     {
+        Instantiate(onDeathParticles, transform.position, transform.rotation);
         DropLoot();
         foreach (GameObject uiElement in uiElements)
         {
@@ -355,10 +412,17 @@ public class MonsterScript : Monster
         Destroy(gameObject);
     }
 
-    public void SetMiniBossValues(int health, float miniBossDistanceTriggered)
+    public void SetMiniBossValues(int health, float miniBossDistTriggered, float miniBossStopChase)
     {
+        currentHealth = health;
         monsterHealth = health;
-        distanceTriggered = miniBossDistanceTriggered;
+        distanceTriggered = miniBossDistTriggered;
+        stopChase = miniBossStopChase;
+    }
+
+    public int GetAdditionalSpawningNumber()
+    {
+        return additionalSpawningNumbers;
     }
 
     public float getStopChaseDistance()

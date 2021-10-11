@@ -4,14 +4,29 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class InventorySlotManager : MonoBehaviour
+public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
 {
     [Header("Inventory Menu References")]
     [SerializeField] private Image itemMainIcon;
     [SerializeField] private TMP_Text itemName;
     [SerializeField] private TMP_Text itemDescription;
+    [SerializeField] private GameObject consumableButtonObject;
+    [SerializeField] private GameObject discardButtonObject;
     private InventorySlot[] slots;
     private int selectedSlotId;
+
+    public override void Awake()
+    {
+        base.Awake();
+        slots = gameObject.GetComponentsInChildren<InventorySlot>();
+        int i = 0;
+        foreach (InventorySlot slot in slots)
+        {
+            slot.SetupSlot(i);
+            i++;
+        }
+    }
+
     public void HandleClick(int slotId)
     {
         InventorySlot itemSlot = slots[slotId];
@@ -22,10 +37,15 @@ public class InventorySlotManager : MonoBehaviour
             return;
         }
 
+        //consumableButtonObject.SetActive(item.isConsumable);
+        consumableButtonObject.SetActive(false);
+        discardButtonObject.SetActive(true);
+
         itemMainIcon.enabled = true;
         itemMainIcon.sprite = item.icon;
         itemName.text = item.itemName;
         itemDescription.text = item.description;
+        //StartCoroutine(UpdateLayoutGroup());
         itemSlot.gameObject.GetComponent<Outline>().enabled = true;
 
         if (selectedSlotId != -1)
@@ -36,19 +56,22 @@ public class InventorySlotManager : MonoBehaviour
         selectedSlotId = slotId;
     }
 
+    /* IEnumerator UpdateLayoutGroup()
+    {
+        descriptionLayoutGroup.enabled = false;
+        yield return new WaitForEndOfFrame();
+        descriptionLayoutGroup.enabled = true;
+    } */
+
     private void OnEnable()
     {
-        selectedSlotId = -1;
-        itemName.text = "";
-        itemDescription.text = "";
+        ResetSlot();
     }
 
     private void OnDisable()
     {
         if (selectedSlotId != -1)
         {
-            itemMainIcon.enabled = false;
-            itemMainIcon.sprite = null;
             slots[selectedSlotId].gameObject.GetComponent<Outline>().enabled = false;
         }
     }
@@ -61,10 +84,10 @@ public class InventorySlotManager : MonoBehaviour
             {
                 HandleDiscard();
             }
-            else if (Input.GetKeyDown(KeyCode.Z))
+            /* else if (Input.GetKeyDown(KeyCode.Z))
             {
                 HandleConsume();
-            }
+            } */
         }
     }
 
@@ -73,6 +96,8 @@ public class InventorySlotManager : MonoBehaviour
         InventoryItem item = slots[selectedSlotId].item;
         if (InventoryManager.instance != null && item != null)
         {
+            slots[selectedSlotId].gameObject.GetComponent<Outline>().enabled = false;
+            ResetSlot();
             InventoryManager.instance.RemoveItem(item);
         }
     }
@@ -80,15 +105,25 @@ public class InventorySlotManager : MonoBehaviour
     public void HandleConsume()
     {
         InventoryItem item = slots[selectedSlotId].item;
-        if (InventoryManager.instance != null && item != null && item.isConsumable)
+        if (InventoryManager.instance != null && item != null && item.isConsumable && false) //Cannot consume for now
         {
+            slots[selectedSlotId].gameObject.GetComponent<Outline>().enabled = false;
+            ResetSlot();
             InventoryManager.instance.RemoveItem(item);
             Debug.Log("Consumed!");
         }
     }
 
-    private void Awake()
+    private void ResetSlot()
     {
-        slots = gameObject.GetComponentsInChildren<InventorySlot>();
+        selectedSlotId = -1;
+        itemName.text = "";
+        itemDescription.text = "";
+        itemMainIcon.enabled = false;
+        itemMainIcon.sprite = null;
+        discardButtonObject.SetActive(false);
+        consumableButtonObject.SetActive(false);
     }
+
+
 }

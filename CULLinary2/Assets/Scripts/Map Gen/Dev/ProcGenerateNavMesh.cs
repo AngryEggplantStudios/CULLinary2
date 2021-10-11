@@ -25,11 +25,16 @@ public class ProcGenerateNavMesh : MonoBehaviour
         //depending on later setup we might not need getcomponent here
         parent.transform.localScale = originalScale;
         NavMeshSurface surfaceForNavMesh = parent.gameObject.GetComponent<NavMeshSurface>();
-        NavMeshData loadFromSaved = (NavMeshData) AssetDatabase.LoadAssetAtPath(savePath, typeof(NavMeshData));
+        NavMeshData loadFromSaved = null;
+        #if UNITY_EDITOR
+        loadFromSaved = (NavMeshData) AssetDatabase.LoadAssetAtPath(savePath, typeof(NavMeshData));
+        #endif
         if (loadFromSaved == null)
 		{
             surfaceForNavMesh.BuildNavMesh();
+            #if UNITY_EDITOR
             AssetDatabase.CreateAsset(surfaceForNavMesh.navMeshData, savePath);
+            #endif
         }
         else
 		{

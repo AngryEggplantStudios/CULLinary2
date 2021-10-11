@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerStamina : MonoBehaviour
+public class PlayerStamina : SingletonGeneric<PlayerStamina>
 {
     [Header("References")]
     [SerializeField] private Image staminaCircleImage;
@@ -16,8 +16,10 @@ public class PlayerStamina : MonoBehaviour
     [SerializeField] private float thresholdStamina = 0.25f;
     private Coroutine regenerationCoroutine;
     private WaitForSeconds timeTakenRegen = new WaitForSeconds(0.05f);
-    private void Start()
+
+    public override void Awake()
     {
+        base.Awake();
         float currentStamina = PlayerManager.instance ? PlayerManager.instance.currentStamina : 100f;
         float maxStamina = PlayerManager.instance ? PlayerManager.instance.maxStamina : 100f;
         DisplayOnUI(currentStamina, maxStamina);
@@ -54,12 +56,12 @@ public class PlayerStamina : MonoBehaviour
         staminaCircle.SetActive(false); ;
     }
 
-    public bool hasStamina(float staminaCost)
+    public bool HasStamina(float staminaCost)
     {
         return PlayerManager.instance.currentStamina - staminaCost >= 0.0f;
     }
 
-    public void reduceStamina(float staminaCost)
+    public void ReduceStamina(float staminaCost)
     {
         staminaCost = staminaCost < 0 ? 0 : staminaCost;
         PlayerManager.instance.currentStamina = Mathf.Max(0f, PlayerManager.instance.currentStamina - staminaCost);
@@ -67,10 +69,10 @@ public class PlayerStamina : MonoBehaviour
         float maxStamina = PlayerManager.instance.maxStamina;
         DisplayOnUI(currentStamina, maxStamina);
         staminaCircleAnimator.SetBool("flashing", PlayerManager.instance.currentStamina / PlayerManager.instance.maxStamina < thresholdStamina);
-        resetStaminaRegeneration();
+        ResetStaminaRegeneration();
     }
 
-    public void resetStaminaRegeneration()
+    public void ResetStaminaRegeneration()
     {
         if (regenerationCoroutine != null)
         {

@@ -10,7 +10,7 @@ public class Population
     private int optimalNumber;
     private int currentNumber;
     private PopulationLevel level;
-    private const float chanceOfOverpopulation = 0.5f;
+    private const float chanceOfOverpopulation = 0.75f;
     private const float overpopulationMultiplier = 1.5f;
     private int numDaysBetweenLevelIncrease = 1; // num days it takes to increase pop level naturally (for endangered, vulnerable and normal (50% chance))
     private int numDaysLeftToIncreaseLevel; // counter to checking next increase in level
@@ -26,7 +26,7 @@ public class Population
         this.optimalNumber = Mathf.RoundToInt(Mathf.Lerp(lowerBound, upperBound, 0.5f));
         this.numDaysLeftToIncreaseLevel = numDaysBetweenLevelIncrease;
         this.numDaysToIncreaseFromExtinct = numDaysBetweenLevelIncrease + 1;
-        SetLevelBasedOnNumbers();
+        SetLevelBasedOnCurrentNumber();
     }
 
     public Population(MonsterName name, int lowerBound, int upperBound, PopulationLevel level)
@@ -84,6 +84,7 @@ public class Population
     public void IncreaseBy(int value)
     {
         this.currentNumber += value;
+        SetLevelBasedOnCurrentNumber();
     }
 
     public void DecreaseBy(int value)
@@ -91,8 +92,8 @@ public class Population
         if (currentNumber > 0)
         {
             currentNumber -= value;
+            SetLevelBasedOnCurrentNumber();
         }
-        Debug.Log(string.Format("population for {0} dropped to {1}", name, currentNumber));
     }
 
     public void IncreaseLevel()
@@ -130,10 +131,10 @@ public class Population
     private bool WillBecomeOverpopulated()
     {
         float randomValue = Random.value;
-        return randomValue >= chanceOfOverpopulation;
+        return randomValue <= chanceOfOverpopulation;
     }
 
-    public void SetLevelBasedOnNumbers()
+    public void SetLevelBasedOnCurrentNumber()
     {
         if (this.currentNumber > this.upperBound)
         {

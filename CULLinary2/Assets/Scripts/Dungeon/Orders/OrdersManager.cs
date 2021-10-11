@@ -10,13 +10,15 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
 
     // Prefab of an order book entry
     public GameObject orderSlot;
-    
+
     // For UI display
     public GameObject canvasDisplay;
-    public Camera cam;
 
     // Prefab to spawn on successful order
     public GameObject moneyNotif_prefab;
+
+    // Prefab to spawn on failed order
+    public GameObject missingOrderNotif_prefab;
 
     // Order submission sound
     public AudioSource orderSubmissionSound;
@@ -38,7 +40,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     private List<Order> innerOrdersList;
     // Hash table that maps the ID of the order submission station to their transforms
     private Dictionary<int, Transform> orderSubmissionStations = new Dictionary<int, Transform>();
-    private int numberOfOrders = 0;
+    private int numberOfOrderSubStations = 0;
     private event OrderCompletionDelegate onOrderCompleteCallback;
     private event OrderGenerationDelegate onOrderGenerationCallback;
     // Random number generator for new orders
@@ -52,37 +54,33 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     private Dictionary<int, int> numberOfOrdersByRecipeCache;
     private bool isCacheValid = false;
 
+    // Track number of orders completed in a day for statistics
+    private int numOfOrdersCompletedToday = 0;
+
+    // Track amount of money earned today
+    private int moneyEarnedToday = 0;
+
     void Start()
     {
         innerOrdersList = new List<Order>();
         rand = new System.Random();
 
         // Generate random orders daily
-        GameTimer.OnStartNewDay += CheckFirstDay;
+        GameTimer.OnStartNewDay += OnNewDay;
     }
 
-    private void CheckFirstDay()
+    // A function to be run every new day 
+    private void OnNewDay()
     {
-        if (firstDay)
+        if (!firstDay)
         {
-            if (firstDay)
-            {
-                // Debug.Log("First day");
-                firstDay = false;
-            }
-            else
-            {
-                // Debug.Log("No es first day");
-                GenerateRandomOrders();
-            }
-        };
-    }
-
-    void Update()
-    {
-        if (!firstGeneration && BiomeGeneratorManager.IsGenerationComplete())
+            GenerateRandomOrders();
+            numOfOrdersCompletedToday = 0;
+            moneyEarnedToday = 0;
+        }
+        else
         {
-            FirstGenerationOfOrders();
+            firstDay = false;
         }
     }
 
@@ -129,21 +127,38 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             innerOrdersList.RemoveAt(orderIndex);
 
             // Update money
-            int earnings = orderToComplete.GetRecipe().recipeEarnings;
+            int earnings = orderToComplete.GetDeliveryReward();
             SpawnMoneyNotif(earnings);
             PlayerManager.instance.currentMoney += earnings;
-            orderSubmissionSound.Play();
+
+            // Update UI and play sounds
             UIController.UpdateAllUIs();
+            orderSubmissionSound.Play();
+
+            // Invoke additional callbacks given to OrdersManager
             onOrderCompleteCallback.Invoke(stationId, orderToComplete.GetRecipe().recipeId);
 
+            // Update statistics
+            numOfOrdersCompletedToday++;
+            moneyEarnedToday = moneyEarnedToday + earnings;
+
+            // Invalidate the cache of number of orders for each recipe
             isCacheValid = false;
             return true;
         }
         else
         {
-            Debug.Log("OOPS! You do not have the required " + orderToComplete.GetProduct().name);
+            SpawnMissingOrderNotif(orderToComplete.GetProduct().name);
             return false;
         }
+    }
+
+    private void SpawnMissingOrderNotif(string order)
+    {
+        GameObject missingOrderNotif = Instantiate(missingOrderNotif_prefab);
+        missingOrderNotif.transform.GetComponentInChildren<Text>().text = "You do not have a " + order + "!";
+        missingOrderNotif.transform.SetParent(canvasDisplay.transform);
+        missingOrderNotif.transform.localPosition = Vector3.zero;
     }
 
     private void SpawnMoneyNotif(float money)
@@ -170,36 +185,12 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
 
             OrdersUISlot orderDetails = orderLog.GetComponent<OrdersUISlot>();
             InventoryManager inv = InventoryManager.instance;
-            int[] ingsArr = o.GetIngredientIds();
-            (int, bool)[] missingItems = new (int, bool)[0];
-            bool isCookable = inv.CheckIfItemsExist(ingsArr, out _, out missingItems);
+            List<(int, int)> ingsList = o.GetIngredientIds();
+            List<(int, int, int)> invReqCounter = new List<(int, int, int)>();
+
+            bool isCookable = inv.CheckIfItemsExist(ingsList, out invReqCounter);
             bool isInInv = inv.CheckIfExists(o.GetProduct().inventoryItemId);
-
-            Dictionary<int, (int, int)> itemQuantities = new Dictionary<int, (int, int)>();
-            foreach ((int itemId, bool isPresent) in missingItems)
-            {
-                if (!itemQuantities.ContainsKey(itemId))
-                {
-                    itemQuantities.Add(itemId, (0, 0));
-                }
-                int newInvItemAmount = itemQuantities[itemId].Item1;
-                if (isPresent)
-                {
-                    newInvItemAmount++;
-                }
-                itemQuantities[itemId] = (newInvItemAmount, itemQuantities[itemId].Item2 + 1);
-            }
-
-            List<(int, int, int)> itemsCounted = new List<(int, int, int)>();
-            foreach (KeyValuePair<int, (int, int)> idCountPair in itemQuantities)
-            {
-                itemsCounted.Add((
-                    idCountPair.Key,
-                    idCountPair.Value.Item1,
-                    idCountPair.Value.Item2
-                ));
-            }
-            orderDetails.AssignOrder(o, isCookable, isInInv, false, itemsCounted.ToArray());
+            orderDetails.AssignOrder(o, isCookable, isInInv, invReqCounter);
             yield return null;
         }
     }
@@ -208,10 +199,24 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     // returns an unique ID (also the key of the station in the hash table)
     public int AddOrderSubmissionStation(Transform stationTransform)
     {
-        int orderIndex = numberOfOrders;
+        int orderIndex = numberOfOrderSubStations;
         orderSubmissionStations.Add(orderIndex, stationTransform);
-        numberOfOrders++;
+        numberOfOrderSubStations++;
         return orderIndex;
+    }
+
+    // Gets the order submission station with the ID given
+    // Warning: This method can return null!
+    public Transform GetOrderSubmissionStation(int id)
+    {
+        if (orderSubmissionStations.ContainsKey(id))
+        {
+            return orderSubmissionStations[id];
+        }
+        else
+        {
+            return null;
+        }
     }
 
     // Register a callback to be run when an order is completed
@@ -238,13 +243,14 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         return relevantStations;
     }
 
-    // Opening the orders menu for the first time will generate the orders
+    // Generate the orders for the first time in MainScene
     // TODO: Load from save game/player data instead
     public void FirstGenerationOfOrders()
     {
         if (!firstGeneration)
         {
             GenerateRandomOrders();
+            firstGeneration = true;
         }
     }
 
@@ -277,6 +283,24 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         return numberOfOrdersByRecipeCache;
     }
 
+    // Gets the number of orders that are generated automatically every day
+    public static int GetNumberOfOrdersGeneratedDaily()
+    {
+        return OrdersManager.instance.numberOfDailyOrders;
+    }
+
+    // Gets the number of orders that were completed today so far
+    public static int GetNumberOfOrdersCompletedToday()
+    {
+        return OrdersManager.instance.numOfOrdersCompletedToday;
+    }
+
+    // Gets the amount of money earned from completing orders today so far
+    public static int GetMoneyEarnedToday()
+    {
+        return OrdersManager.instance.moneyEarnedToday;
+    }
+
     // To be called when a new day begins
     // Generates random orders and populates the order list
     private void GenerateRandomOrders()
@@ -296,7 +320,6 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             innerOrdersList.Add(newOrder);
         }
 
-        firstGeneration = true;
         isCacheValid = false;
         StopCoroutine(UpdateUI());
         StartCoroutine(UpdateUI());
@@ -308,6 +331,6 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
 
     public void OnDestroy()
     {
-        GameTimer.OnStartNewDay -= CheckFirstDay;
+        GameTimer.OnStartNewDay -= OnNewDay;
     }
 }

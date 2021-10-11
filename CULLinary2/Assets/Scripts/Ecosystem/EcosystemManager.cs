@@ -2,35 +2,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EcosystemManager : MonoBehaviour
+public class EcosystemManager : SingletonGeneric<EcosystemManager>
 {
     // to share among all the populations
     [SerializeField] private int numDaysBetweenLevelIncrease = 1; // num days it takes to increase pop level naturally (for endangered, vulnerable and normal (50% chance))
     [SerializeField] private int numDaysToIncreaseFromExtinct = 2; // num days it takes to increase pop level naturally from extinct
 
-    private static List<Population> populations = new List<Population> {
-        new Population(MonsterName.Potato, 20, 40, PopulationLevel.Normal),
-        new Population(MonsterName.Corn, 20, 40, PopulationLevel.Normal),
-        new Population(MonsterName.Eggplant, 30, 60, PopulationLevel.Normal)
-    };
+    private static List<Population> populations = new List<Population>();
 
-    void Awake()
+    // Statistics for number of monsters killed
+    private static int numOfMonstersKilledToday = 0;
+
+    public void InstantiateEcosystem()
     {
-        DontDestroyOnLoad(this.gameObject);
+        List<MonsterData> monsterList = DatabaseLoader.GetAllMonsters();
+        foreach (MonsterData monsterData in monsterList)
+        {
+            populations.Add(new Population(monsterData.monsterName, monsterData.lowerBound, monsterData.upperBound, PlayerManager.instance.GetPopulationLevelByMonsterName(monsterData.monsterName)));
+        }
+
         foreach (Population pop in populations)
         {
             pop.SetNumDaysBetweenLevelIncrease(numDaysBetweenLevelIncrease);
             pop.SetNumDaysToIncreaseFromExtinct(numDaysToIncreaseFromExtinct);
-        }
-    }
-
-    void Start()
-    {
-        foreach (Population pop in populations)
-        {
             Debug.Log(string.Format("{0} population level: {1} ({2})", pop.GetName(), pop.GetLevel(), pop.GetCurrentNumber()));
         }
+
         GameTimer.OnStartNewDay += CheckNaturalPopulationIncrease;
+        GameTimer.OnStartNewDay += () =>
+        {
+            EcosystemManager.numOfMonstersKilledToday = 0;
+        };
+    }
+
+    public static void SaveEcosystemPopulation()
+    {
+        foreach (Population population in populations)
+        {
+            PlayerManager.instance.SetPopulationLevelByMonsterName(population.GetName(), population.GetLevel());
+        }
     }
 
     private void CheckNaturalPopulationIncrease()
@@ -54,20 +64,29 @@ public class EcosystemManager : MonoBehaviour
 
     private void SpawnMiniBoss(Population pop)
     {
-        List<GameObject> spawners = DungeonSpawnManager.GetSpawners(pop.GetName());
-        if (spawners.Count > 0)
-        {
-            GameObject randomSpawner = spawners[Random.Range(0, spawners.Count)];
-            randomSpawner.GetComponent<MonsterSpawn>().SpawnMiniBoss();
-            // Debug.Log("spawning miniboss for " + pop.GetName() + " at " + randomSpawner.transform.position);
-            pop.SetHasSpawnedMiniboss(true);
-        }
+        // List<GameObject> spawners = DungeonSpawnManager.GetSpawners(pop.GetName());
+        // if (spawners.Count > 0)
+        // {
+        //     GameObject randomSpawner = spawners[Random.Range(0, spawners.Count)];
+        //     randomSpawner.GetComponent<MonsterSpawn>().SpawnMiniBoss();
+        //     // Debug.Log("spawning miniboss for " + pop.GetName() + " at " + randomSpawner.transform.position);
+        //     pop.SetHasSpawnedMiniboss(true);
+        // }
+        Transform player = GameObject.FindGameObjectWithTag("Player").transform;
+        GameObject nearestSpawner = DungeonSpawnManager.instance.GetSpawnerNearestTo(player.position, pop.GetName());
+        nearestSpawner.GetComponent<MonsterSpawn>().SpawnMiniBoss();
+        pop.SetHasSpawnedMiniboss(true);
+        Debug.Log("spawning miniboss for " + pop.GetName() + " at " + nearestSpawner.transform.position);
     }
 
-    public static void ResetPopulationToNormal(MonsterName name)
+    public static void OnMiniBossDeath(MonsterName name)
     {
         Population pop = GetPopulation(name);
-        pop.ResetToNormal();
+        if (pop.IsOverpopulated())
+        {
+            Debug.Log("resetting population to normal for " + name);
+            pop.ResetToNormal();
+        }
     }
 
     public static Population GetPopulation(MonsterName monsterName)
@@ -95,6 +114,7 @@ public class EcosystemManager : MonoBehaviour
 
     public static void DecreasePopulation(MonsterName name, int value)
     {
+        EcosystemManager.numOfMonstersKilledToday += value;
         Population pop = GetPopulation(name);
         if (pop != null)
         {
@@ -106,6 +126,12 @@ public class EcosystemManager : MonoBehaviour
     {
         Population pop = GetPopulation(name);
         pop.SetExtinct();
+    }
+
+    // Gets the amount of monsters killed today so far
+    public static int GetNumberOfMonstersKilledToday()
+    {
+        return EcosystemManager.numOfMonstersKilledToday;
     }
 
     public void OnDestroy()

@@ -9,46 +9,63 @@ public class ShopSlot : MonoBehaviour
     [SerializeField] private TMP_Text shopItemName;
     [SerializeField] private Image shopItemIcon;
     [SerializeField] private TMP_Text levelText;
-    [SerializeField] private TMP_Text itemDescription;
-    [SerializeField] private TMP_Text itemPrice;
+    [SerializeField] private GameObject upgradeIcon;
     [SerializeField] private Outline outline;
     public ShopItem shopItem;
     private Button button;
+    private int slotIndex;
 
     private void Awake()
     {
         button = GetComponentInChildren<Button>();
     }
 
-    public void Setup(ShopItem shopItem, int level)
+    public void SetupUI(ShopItem currentShopItem, int index)
     {
-        this.shopItem = shopItem;
+        shopItem = currentShopItem;
+        slotIndex = index;
+        button.onClick.AddListener(() => ShopManager.instance.HandleClick(slotIndex));
+    }
+
+    public void UpdateUI(ShopItem currentShopItem)
+    {
+        int level = PlayerManager.instance.upgradesArray[shopItem.shopItemId];
+        int currentMoney = PlayerManager.instance.currentMoney;
+
         shopItemName.text = shopItem.itemName;
-        shopItemIcon.sprite = shopItem.icon;
-        levelText.text = "Current: Level " + level;
+        shopItemIcon.sprite = shopItem.iconArr[level];
         button.interactable = true;
-    }
-
-    public void DisableSlot()
-    {
-        //Button button = GetComponentInChildren<Button>();
         outline.enabled = false;
-        button.interactable = false;
-    }
 
-    public void IncrementLevel(ShopItem shopItem, int level)
-    {
-        itemDescription.text = shopItem.description[level];
-        itemPrice.text = "$" + shopItem.price[level];
-    }
+        if (currentShopItem.GetType() == typeof(KeyShopItem) || currentShopItem.GetType() == typeof(UpgradeShopItem))
+        {
+            levelText.text = "Lvl " + level;
+        }
+        else
+        {
+            levelText.text = "";
+        }
 
-    public void HandleMaxLevel(ShopItem shopItem, int level)
-    {
-        itemDescription.text = "";
-        itemPrice.text = "Max Level Reached";
-        //Button button = GetComponentInChildren<Button>();
-        outline.enabled = false;
-        button.interactable = false;
+        if (level >= shopItem.maxLevel)
+        {
+            upgradeIcon.SetActive(false);
+            return;
+        }
+
+        if (currentMoney < shopItem.price[level])
+        {
+            upgradeIcon.SetActive(false);
+        }
+        else
+        {
+            upgradeIcon.SetActive(true);
+        }
+
+        if (SpecialEventManager.instance.CheckIfEventIsRunning(shopItem.eventId))
+        {
+            upgradeIcon.SetActive(false);
+        }
+
 
     }
 

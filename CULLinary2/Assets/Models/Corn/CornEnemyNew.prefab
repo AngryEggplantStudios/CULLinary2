@@ -787,6 +787,7 @@ GameObject:
   - component: {fileID: 1859294981879740669}
   - component: {fileID: 1363046032948400377}
   - component: {fileID: 5543433350580354128}
+  - component: {fileID: 1013324229052589080}
   - component: {fileID: 258879138758195646}
   m_Layer: 0
   m_Name: CornEnemyNew
@@ -835,7 +836,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5080297952357249674}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -960,12 +961,14 @@ MonoBehaviour:
   monsterHealth: 100
   distanceTriggered: 24
   stopChase: 28
-  lootDropped: {fileID: 133236693094830621, guid: 812db79b055094f5b9b31cba471340af, type: 3}
+  lootDropped: {fileID: 326235487477366690, guid: 812db79b055094f5b9b31cba471340af, type: 3}
+  additionalSpawningNumbers: 0
   spawner: {fileID: 0}
   hpBarPrefab: {fileID: 1085209639500972291, guid: 4614e0511cb49b14ebf0c58217d9d222, type: 3}
   damageCounterPrefab: {fileID: 1085209639500972291, guid: 24f41dda89c7bd648bd2796ac669721e, type: 3}
   enemyAlertPrefab: {fileID: 1085209639500972291, guid: 186234b88676f4b4f872f98d3ab0973c, type: 3}
   canvasDisplay: {fileID: 0}
+  onDeathParticles: {fileID: 3295506491500423538, guid: 6deda6ce43a969542925308d101ff721, type: 3}
   audioSourceDamage: {fileID: 6100148599601738616}
   stabSounds:
   - {fileID: 8300000, guid: 20a1cfd81c3ef4b4288a2197d358d1a6, type: 3}
@@ -976,7 +979,12 @@ MonoBehaviour:
   audioSourceAttack: {fileID: 4321517313942543410}
   alertSound: {fileID: 8300000, guid: f887160af86d3844b80236fc380ba79d, type: 3}
   attackSound: {fileID: 8300000, guid: 9bbd01a7a6fe58042810c9a1534d0cc9, type: 3}
+  deathSound: {fileID: 8300000, guid: 9270765c7e69c68409898d68ee0124bc, type: 3}
   primaryEnemyAttack: {fileID: 3622151391465415662}
+  onDamageColor: {r: 1, g: 1, b: 1, a: 1}
+  texturesForFlash: []
+  transparentMaterials:
+  - {fileID: 2100000, guid: 8dbd19aaf0e3cfb488589daef57f3707, type: 2}
 --- !u!114 &5543433350580354128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -995,6 +1003,23 @@ MonoBehaviour:
   minDist: 30
   timeBetweenAttacks: 4
   lineTest: 0
+--- !u!114 &1013324229052589080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5080297952357249674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b40dd2c1d5ce28e4ca0cbfe021def656, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monsterRenderer: {fileID: 864042794020458659}
+  tintColours:
+  - {r: 0.9339623, g: 0.7019402, b: 0.73258454, a: 1}
+  - {r: 0.9084351, g: 0.7232704, b: 1, a: 1}
+  - {r: 0.7421383, g: 0.85767376, b: 1, a: 1}
 --- !u!195 &258879138758195646
 NavMeshAgent:
   m_ObjectHideFlags: 0

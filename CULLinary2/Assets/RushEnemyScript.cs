@@ -48,6 +48,7 @@ public class RushEnemyScript : MonoBehaviour
     private float reachedPositionDistance;
     private float stopChaseDistance;
     private Vector3 roamingPosition;
+    private bool attackCollided = false;
 
     // Start is called before the first frame update
     void Start()
@@ -163,24 +164,26 @@ public class RushEnemyScript : MonoBehaviour
 	{
         var points = new Vector3[2];
         Vector3 playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
-        animator.ResetTrigger("attack");
+        //animator.ResetTrigger("attack");
         switch (currentState)
         {
             default:
             case RushEnemyState.AttackStarting:
                 agent.enabled = true;
-                animator.SetBool("isMoving", true);
+                slowlyRotateToLookAt(playerPositionWithoutYOffset);
                 if (canAttack == true)
                 {
                     //State 1
-                    animator.SetTrigger("attack");
+                    //animator.SetTrigger("attack");
                     canAttack = false;
                     //need attackEnded to tell when it has stopped charging and is cooling down.
                     StartCoroutine(DelayFire());
+                    animator.SetBool("collide", false);
                     currentState = RushEnemyState.AttackChasing;
                 }
                 break;
             case RushEnemyState.AttackChasing: //2 s
+                animator.SetBool("isMoving", true);
                 agent.enabled = true;
                 agent.SetDestination(playerPositionWithoutYOffset);
                 //enable navmes to follow the player
@@ -198,9 +201,12 @@ public class RushEnemyScript : MonoBehaviour
                     chargeDirection = chargeDirection + transform.position;
                     //charge towards nearest obstacle if hit
                     bool blocked = NavMesh.Raycast(transform.position, chargeDirection.Value, out navHit, NavMesh.AllAreas);
+                    Debug.Log(blocked);
+                    debugLine.enabled = true;
                     if (blocked)
                     {
                         //charge to the limit of nearest obstacle
+                        attackCollided = true;
                         chargeDirection = new Vector3(navHit.position.x - 1f, playerPositionWithoutYOffset.y, navHit.position.z - 1f);
                     }
                     points[0] = new Vector3(transform.position.x, transform.position.y, transform.position.z);
@@ -214,6 +220,8 @@ public class RushEnemyScript : MonoBehaviour
             case RushEnemyState.AttackCharging:
                 if (chargeDirection.HasValue)
                 {
+                    animator.ResetTrigger("attack");
+                    animator.SetTrigger("attack");
                     agent.enabled = false;
                     //Destination of charge already set, continue charging
                     transform.LookAt(chargeDirection.Value);
@@ -222,6 +230,15 @@ public class RushEnemyScript : MonoBehaviour
                     float distanceToFinalChargePosition = Vector3.Distance(transform.position, chargeDirection.Value);
                     if (distanceToFinalChargePosition <= reachedPositionDistance)
                     {
+                        animator.ResetTrigger("attack");
+                        if (attackCollided)
+						{
+                            attackCollided = false;
+                            animator.SetBool("collide", true);
+						} else 
+                        {
+                            animator.SetBool("isMoving", false);
+                        }
                         // reached the chargePosition
                         enemyScript.attackPlayerEnd();
                         currentState = RushEnemyState.AttackCoolingDown;
@@ -230,11 +247,12 @@ public class RushEnemyScript : MonoBehaviour
                 break;
             case RushEnemyState.AttackCoolingDown:
                 chargeDirection = null;
+                debugLine.enabled = false;
                 animator.SetBool("isMoving", false);
-                // State 4
-                //means not charging
-                transform.LookAt(playerPositionWithoutYOffset);
-                float directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
+				// State 4
+				//means not charging
+				//transform.LookAt(playerPositionWithoutYOffset);
+				float directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
                 //cooling down cant move
                 //Debug.Log(directionVector);
                 if (directionVector >= stopChaseDistance)

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class PlayerHealth : MonoBehaviour
+public class PlayerHealth : SingletonGeneric<PlayerHealth>
 {
     [Header("References")]
     [SerializeField] private Camera cam;
@@ -14,6 +14,7 @@ public class PlayerHealth : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private GameObject damageCounter_prefab;
     [SerializeField] private Image healthBar;
+    [SerializeField] private Animator healthBarAnimator;
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private Renderer rend;
 
@@ -23,25 +24,20 @@ public class PlayerHealth : MonoBehaviour
 
     [Header("Drowning Event")]
     [SerializeField] private float minimumHeightToStartDrowning;
-    [SerializeField] private float drowningDamage = 20f;
+    [SerializeField] private float drowningDamage;
     [SerializeField] private GameObject drowningAlert_prefab;
 
     private bool isInvincible = false;
-    private bool flashIsActivated = false;
     private bool isDrowningActivated = false;
     private Color[] originalColors;
     private Color onDamageColor = Color.white;
     private float invincibilityDeltaTime = 0.025f;
     private Animator animator;
+    private bool deathIsCalled = false;
 
-    private void DisplayOnUI(float currentHealth, float maxHealth)
+    public override void Awake()
     {
-        healthBar.fillAmount = currentHealth / maxHealth;
-        healthText.text = Mathf.CeilToInt(currentHealth) + "/" + Mathf.CeilToInt(maxHealth);
-    }
-
-    private void Awake()
-    {
+        base.Awake();
         animator = GetComponent<Animator>();
         SetupIFrame();
     }
@@ -53,51 +49,34 @@ public class PlayerHealth : MonoBehaviour
         DisplayOnUI(currentHealth, maxHealth);
     }
 
-    private void Update()
+    private void DisplayOnUI(float currentHealth, float maxHealth)
     {
-        // check if height of player here as less references needed than checking height in player locomotion;
-        if (transform.position.y < minimumHeightToStartDrowning && !isDrowningActivated)
-        {
-            //Drowning animation
-            /* isDrowningActivated = true;
-            StartCoroutine(StartDrowning()); */
-            HandleHit(drowningDamage, true);
-        }
-        if (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth < thresholdHealth && !flashIsActivated)
-        {
-            flashIsActivated = true;
-            StartCoroutine(FlashBar());
-        }
-        else if (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth >= thresholdHealth)
-        {
-            flashIsActivated = false;
-        }
-
-        if (PlayerManager.instance.currentHealth <= 0f)
-        {
-            Die();
-        }
+        healthBar.fillAmount = currentHealth / maxHealth;
+        healthText.text = Mathf.CeilToInt(currentHealth) + "/" + Mathf.CeilToInt(maxHealth);
     }
 
-    /* private IEnumerator StartDrowning()
+    private void Update()
     {
-        Debug.Log("Start drowning");
-        PlayerManager.instance.currentHealth -= drowningDamage;
-        DisplayOnUI(PlayerManager.instance.currentHealth, PlayerManager.instance.maxHealth);
-        SpawnDamageCounter(drowningDamage);
-        audioSource.Play();
-        yield return new WaitForSeconds(0.5f);
-        isDrowningActivated = false;
-    } */
-
-    private IEnumerator FlashBar()
-    {
-        while (PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth < thresholdHealth)
+        // Check if height of player here as less references needed than checking height in player locomotion;
+        if (transform.position.y < minimumHeightToStartDrowning && !isDrowningActivated && PlayerManager.instance.currentHealth > 0)
         {
-            //outlineFlash.effectColor = originalFlashColor;
-            yield return new WaitForSeconds(0.5f);
-            //outlineFlash.effectColor = deactivatedFlashColor;
-            yield return new WaitForSeconds(0.5f);
+            /*
+            //Drowning animation
+            isDrowningActivated = true;
+            StartCoroutine(StartDrowning()); 
+            */
+            HandleHit(drowningDamage, true);
+        }
+
+        //Flash health bar if below 25%
+        float currentHealthAsPercentage = PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth;
+        healthBarAnimator.SetBool("flashing", currentHealthAsPercentage < thresholdHealth);
+
+        //Check if player is dead
+        if (PlayerManager.instance.currentHealth <= 0f && !deathIsCalled)
+        {
+            deathIsCalled = true;
+            Die();
         }
     }
 
@@ -113,6 +92,7 @@ public class PlayerHealth : MonoBehaviour
 
     public void RestoreToFull()
     {
+        deathIsCalled = false;
         PlayerManager.instance.currentHealth = PlayerManager.instance.maxHealth;
         DisplayOnUI(PlayerManager.instance.currentHealth, PlayerManager.instance.maxHealth);
     }
@@ -125,20 +105,25 @@ public class PlayerHealth : MonoBehaviour
             return false;
         }
 
+        if (PlayerManager.instance.evasionChance > 0 && Random.Range(0, 100) < PlayerManager.instance.evasionChance)
+        {
+            SpawnDamageCounter("MISS");
+            return false;
+        }
+
         PlayerManager.instance.currentHealth = Mathf.Max(0f, PlayerManager.instance.currentHealth - damage);
         float currentHealth = PlayerManager.instance.currentHealth;
         float maxHealth = PlayerManager.instance.maxHealth;
         DisplayOnUI(currentHealth, maxHealth);
-        SpawnDamageCounter(damage);
+        SpawnDamageCounter(damage.ToString());
         if (drowning) { SpawnDrowningAlert(); }
         ScreenFlash.Instance.Flash(0.01f * damage, 0.4f, 0.1f, 0.4f);
         ScreenShake.Instance.Shake(0.01f * damage, 0.4f, 0.1f, 0.4f);
         audioSource.Play();
-        animator.SetTrigger("isTakingDamage");
+        //AnimTakeDamage();
 
         if (PlayerManager.instance.currentHealth <= 0f)
         {
-            // Debug.Log("You are dead.");
             return true;
         }
 
@@ -146,9 +131,15 @@ public class PlayerHealth : MonoBehaviour
         return true;
     }
 
+    private void AnimTakeDamage()
+    {
+        animator.SetTrigger("isTakingDamage");
+    }
+
     private void Die()
     {
         animator.SetTrigger("isDead");
+        Debug.Log("Die called");
         UIController.instance.ShowDeathMenu();
     }
 
@@ -164,10 +155,10 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    private void SpawnDamageCounter(float damage)
+    private void SpawnDamageCounter(string damageText)
     {
         GameObject damageCounter = Instantiate(damageCounter_prefab);
-        damageCounter.transform.GetComponentInChildren<Text>().text = damage.ToString();
+        damageCounter.transform.GetComponentInChildren<Text>().text = damageText.ToString();
         damageCounter.transform.SetParent(canvasDisplay.transform);
         damageCounter.transform.position = cam.WorldToScreenPoint(transform.position);
     }
@@ -179,26 +170,6 @@ public class PlayerHealth : MonoBehaviour
         Vector3 pos = cam.WorldToScreenPoint(transform.position);
         pos.y += 50;
         drowningAlert.transform.position = pos;
-    }
-
-    public void KnockbackPlayer(Vector3 positionOfEnemy)
-    {
-        //ToImplementKnockback
-        //StartCoroutine(KnockCoroutine(positionOfEnemy));
-        /*Vector3 forceDirection = transform.position - positionOfEnemy;
-        forceDirection.y = 0;
-        Vector3 force = forceDirection.normalized;*/
-        //dpl.KnockBack(force, 50, 3, true);
-    }
-
-    private IEnumerator KnockCoroutine(Vector3 positionOfEnemy)
-    {
-
-        Vector3 forceDirection = transform.position - positionOfEnemy;
-        Vector3 force = forceDirection.normalized;
-        gameObject.GetComponent<Rigidbody>().velocity = force * 4;
-        yield return new WaitForSeconds(0.3f);
-        gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
     }
 
     private IEnumerator BecomeTemporarilyInvincible()
@@ -229,3 +200,35 @@ public class PlayerHealth : MonoBehaviour
     }
 
 }
+
+/*
+    public void KnockbackPlayer(Vector3 positionOfEnemy)
+    {
+        //ToImplementKnockback
+        //StartCoroutine(KnockCoroutine(positionOfEnemy));
+        Vector3 forceDirection = transform.position - positionOfEnemy;
+        forceDirection.y = 0;
+        Vector3 force = forceDirection.normalized;
+        //dpl.KnockBack(force, 50, 3, true);
+    }
+
+
+    private IEnumerator KnockCoroutine(Vector3 positionOfEnemy)
+    {
+        Vector3 forceDirection = transform.position - positionOfEnemy;
+        Vector3 force = forceDirection.normalized;
+        gameObject.GetComponent<Rigidbody>().velocity = force * 4;
+        yield return new WaitForSeconds(0.3f);
+        gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+    }
+
+        /* private IEnumerator StartDrowning()
+    {
+        Debug.Log("Start drowning");
+        PlayerManager.instance.currentHealth -= drowningDamage;
+        DisplayOnUI(PlayerManager.instance.currentHealth, PlayerManager.instance.maxHealth);
+        SpawnDamageCounter(drowningDamage);
+        audioSource.Play();
+        yield return new WaitForSeconds(0.5f);
+        isDrowningActivated = false;
+    } */

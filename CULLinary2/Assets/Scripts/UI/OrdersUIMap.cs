@@ -5,7 +5,7 @@ using UnityEngine;
 public class OrdersUIMap : Minimap
 {
     public RectTransform mapRectangle;
-    
+
     public override void Update()
     { }
 
@@ -15,7 +15,7 @@ public class OrdersUIMap : Minimap
         {
             InstantiateMinimapIcons();
         }
-        CheckIfPlayerHasMoved();
+        UpdateUI();
     }
 
     protected override float GetMapWidth()
@@ -26,5 +26,15 @@ public class OrdersUIMap : Minimap
     protected override float GetMapHeight()
     {
         return mapRectangle.rect.height;
+    }
+
+    protected override void SetPlayerIconPos()
+    {
+        SetIconPos(playerBody, navArrow, false);
+    }
+
+    protected override Vector3 GetCentrePointOfMap()
+    {
+        return new Vector3(width / 2, height / 2, 0);
     }
 }

@@ -8,11 +8,23 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     public float maxHealth = 200f;
     public float currentStamina = 100f;
     public float maxStamina = 100f;
-    public float meleeDamage = 20f;
+    public float meleeDamage = 10f;
+    public int criticalChance = 0;
+    public int evasionChance = 0;
+    public int[] consumables = new int[3] { 0, 0, 0 };
     public bool[] recipesUnlocked = new bool[3] { true, true, true }; //use index
-    public int[] upgradesArray = new int[3] { 0, 0, 0 };
+    public int[] upgradesArray = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     public List<InventoryItem> itemList = new List<InventoryItem>();
     public int currentMoney;
+    public int currentDay;
+    public int[] weaponSkillArray = new int[11] { 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 };
+    public int currentWeaponHeld = 0;
+    public int currentSecondaryHeld = 3;
+    public Dictionary<MonsterName, PopulationLevel> monsterDict = new Dictionary<MonsterName, PopulationLevel>{
+        {MonsterName.Corn, PopulationLevel.Normal},
+        {MonsterName.Potato, PopulationLevel.Normal},
+        {MonsterName.Eggplant, PopulationLevel.Normal},
+    };
 
     // Private variables
     private static PlayerData playerData = new PlayerData();
@@ -33,7 +45,46 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.upgradesArray = upgradesArray;
         playerData.meleeDamage = meleeDamage;
         playerData.currentMoney = currentMoney;
+        playerData.evasionChance = evasionChance;
+        playerData.criticalChance = criticalChance;
+        playerData.consumables = consumables;
+        playerData.currentDay = currentDay;
+        playerData.monsterSavedDatas = SaveMonsters();
+        playerData.weaponSkillArray = weaponSkillArray;
+        playerData.currentWeaponHeld = currentWeaponHeld;
+        playerData.currentSecondaryHeld = currentSecondaryHeld;
         SaveSystem.SaveData(playerData);
+    }
+
+    public void LoadMonsters()
+    {
+        monsterDict = new Dictionary<MonsterName, PopulationLevel>();
+        foreach (MonsterSavedData md in playerData.monsterSavedDatas)
+        {
+            monsterDict.Add(md.monsterName, md.populationLevel);
+        }
+    }
+
+    public void SetPopulationLevelByMonsterName(MonsterName monsterName, PopulationLevel populationLevel)
+    {
+        monsterDict[monsterName] = populationLevel;
+    }
+
+    public PopulationLevel GetPopulationLevelByMonsterName(MonsterName monsterName)
+    {
+        return monsterDict[monsterName];
+    }
+
+    public MonsterSavedData[] SaveMonsters()
+    {
+        MonsterSavedData[] result = new MonsterSavedData[monsterDict.Count];
+        int i = 0;
+        foreach (KeyValuePair<MonsterName, PopulationLevel> entry in monsterDict)
+        {
+            result[i] = new MonsterSavedData(entry.Key, entry.Value);
+            i++;
+        }
+        return result;
     }
 
     public void LoadInventory()
@@ -52,14 +103,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     public void LoadData()
     {
         playerData = SaveSystem.LoadData();
-        currentHealth = playerData.currentHealth;
-        maxHealth = playerData.maxHealth;
-        currentStamina = playerData.currentStamina;
-        maxStamina = playerData.maxStamina;
-        recipesUnlocked = playerData.recipesUnlocked;
-        upgradesArray = playerData.upgradesArray;
-        meleeDamage = playerData.meleeDamage;
-        currentMoney = playerData.currentMoney;
+        SetupItems();
     }
 
     public PlayerData CreateBlankData()
@@ -69,9 +113,8 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         return playerData;
     }
 
-    public void SetupManager()
+    public void SetupItems()
     {
-        itemList.Clear();
         currentHealth = playerData.currentHealth;
         maxHealth = playerData.maxHealth;
         currentStamina = playerData.currentStamina;
@@ -80,6 +123,20 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         recipesUnlocked = playerData.recipesUnlocked;
         upgradesArray = playerData.upgradesArray;
         currentMoney = playerData.currentMoney;
+        criticalChance = playerData.criticalChance;
+        evasionChance = playerData.evasionChance;
+        consumables = playerData.consumables;
+        currentDay = playerData.currentDay;
+        weaponSkillArray = playerData.weaponSkillArray;
+        currentWeaponHeld = playerData.currentWeaponHeld;
+        currentSecondaryHeld = playerData.currentSecondaryHeld;
+        LoadMonsters();
+    }
+
+    public void SetupManager()
+    {
+        itemList.Clear();
+        SetupItems();
     }
 
     private static string SerializeInventory(List<InventoryItem> itemList)

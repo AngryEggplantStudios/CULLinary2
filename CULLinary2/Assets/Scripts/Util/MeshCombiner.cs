@@ -128,7 +128,9 @@ public class MeshCombiner : MonoBehaviour
             string parentIndex = parentName[parentName.Length - 1].ToString();
             string savePath = "Assets/Misc/Generated/" + parentIndex + "_" + gameObject.name + ".asset";
             Debug.Log("Saved Mesh to:" + savePath);
+            #if UNITY_EDITOR
             AssetDatabase.CreateAsset(mf.mesh, savePath);
+            #endif
         }
     }
 

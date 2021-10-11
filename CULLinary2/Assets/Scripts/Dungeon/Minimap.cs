@@ -10,19 +10,24 @@ public class Minimap : MonoBehaviour
     [SerializeField] public GameObject iconPrefab;
     [SerializeField] public Transform iconsParent;
     [SerializeField] public Sprite campfireSprite;
+    // Set the icons not to go all the way to the edge
+    [SerializeField] public float borderPadding = 11.0f;
 
     protected bool hasInstantiatedIcons = false;
-    private Transform playerBody;
+    protected float width;
+    protected float height;
+    protected Transform playerBody;
+    
     // List of pairs of the actual station and the icon of that station
     private Dictionary<int, (Transform, Transform)> orderSubmissionStationLocationsAndIcons;
     // List of campfire icons
     private List<(Transform, Transform)> campfireIcons = new List<(Transform, Transform)>();
-    protected float width;
-    protected float height;
     private Vector3 playerOldPosition;
 
     // Ensures that icons are set when player enters the scene
-    private bool firstSettingOfIconPositions = false;
+    private bool forceReupdate = true;
+    // To make sure that OrderManager callbacks are not set more than once
+    private bool firstInstantiation = true;
 
     void Awake()
     {
@@ -57,8 +62,8 @@ public class Minimap : MonoBehaviour
             Destroy(child.gameObject);
         }
         
-        width = GetMapHeight();
-        height = GetMapWidth();
+        width = GetMapWidth();
+        height = GetMapHeight();
         
         // Add campfires
         InstantiateCampfireIcons();
@@ -81,17 +86,24 @@ public class Minimap : MonoBehaviour
             orderSubmissionStationLocationsAndIcons.Add(stationId, (stationTransform, minimapIcon.transform));
         }
 
-        // Register the callbacks
-        OrdersManager.instance.AddOrderCompletionCallback((stationId, _) =>
+        // Register the callbacks, only on the first run
+        if (firstInstantiation)
         {
-            if (orderSubmissionStationLocationsAndIcons.ContainsKey(stationId))
+            OrdersManager.instance.AddOrderCompletionCallback((stationId, _) =>
             {
-                Destroy(orderSubmissionStationLocationsAndIcons[stationId].Item2.gameObject);
-                orderSubmissionStationLocationsAndIcons.Remove(stationId);
-            }
-        });
-        OrdersManager.instance.AddOrderGenerationCallback(() => ResetInstantiatedOrderIconsFlag());
+                if (orderSubmissionStationLocationsAndIcons.ContainsKey(stationId))
+                {
+                    Destroy(orderSubmissionStationLocationsAndIcons[stationId].Item2.gameObject);
+                    orderSubmissionStationLocationsAndIcons.Remove(stationId);
+                }
+            });
+            OrdersManager.instance.AddOrderGenerationCallback(ResetInstantiatedOrderIconsFlag);
+            firstInstantiation = false;
+        }
         hasInstantiatedIcons = true;
+
+        // Force reupdate of the UI
+        forceReupdate = true;
     }
 
     // Calling this will trigger the minimap to redraw the icons
@@ -111,13 +123,14 @@ public class Minimap : MonoBehaviour
         {
             return;
         }
-        CheckIfPlayerHasMoved();   
+        UpdateUI();   
     }
 
     // Check if player has moved and perform the relevant updates
-    protected void CheckIfPlayerHasMoved()
+    // Or, update the UI if it is forced to
+    protected void UpdateUI()
     {
-        if (playerOldPosition != playerBody.position || !firstSettingOfIconPositions)
+        if (playerOldPosition != playerBody.position || forceReupdate)
         {
             playerOldPosition = playerBody.position;
             // Update positions of old icons
@@ -129,8 +142,10 @@ public class Minimap : MonoBehaviour
             {
                 SetIconPos(fire, icon, true);
             }
+            // Update player icon
+            SetPlayerIconPos();
             navArrow.eulerAngles = new Vector3(0, 0, -playerBody.eulerAngles.y);
-            firstSettingOfIconPositions = true;
+            forceReupdate = false;
         }
     }
 
@@ -148,7 +163,17 @@ public class Minimap : MonoBehaviour
         return rt.sizeDelta.y;
     }
 
-    private void SetIconPos(Transform target, Transform icon, bool hideIfFarAway)
+    // Do nothing, player is always in the centre of the minimap
+    protected virtual void SetPlayerIconPos()
+    { }
+
+    // The centre point of the minimap
+    protected virtual Vector3 GetCentrePointOfMap()
+    {
+        return minimapCamera.WorldToScreenPoint(playerOldPosition);
+    }
+
+    protected void SetIconPos(Transform target, Transform icon, bool hideIfFarAway)
     {
         if (target == null)
         {
@@ -158,19 +183,29 @@ public class Minimap : MonoBehaviour
 
         icon.gameObject.SetActive(true);
         Vector3 screenPos = minimapCamera.WorldToScreenPoint(target.position) -
-                            minimapCamera.WorldToScreenPoint(playerOldPosition);
+                            GetCentrePointOfMap();
         Vector3 localPos = new Vector3(screenPos.x,
                                        screenPos.y,
                                        0);
 
-        if (localPos.magnitude > width / 2)
+        float halfWidth = width / 2 - borderPadding;
+        float halfHeight = height / 2 - borderPadding;
+        bool exceedX = Mathf.Abs(localPos.x) > halfWidth;
+        bool exceedY = Mathf.Abs(localPos.y) > halfHeight;
+
+        if ((exceedX || exceedY) && hideIfFarAway)
         {
-            if (hideIfFarAway)
-            {
-                icon.gameObject.SetActive(false);
-                return;
-            }
-            localPos = localPos.normalized * width / 2;
+            icon.gameObject.SetActive(false);
+            return;
+        }
+
+        if (exceedX)
+        {
+            localPos.x = Mathf.Sign(localPos.x) * halfWidth;
+        }
+        if (exceedY)
+        {
+            localPos.y = Mathf.Sign(localPos.y) * halfHeight;
         }
 
         icon.GetComponent<RectTransform>().anchoredPosition = localPos;
