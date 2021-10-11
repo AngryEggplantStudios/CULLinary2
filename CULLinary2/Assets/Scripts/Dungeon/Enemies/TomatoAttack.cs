@@ -39,14 +39,13 @@ public class TomatoAttack : MonsterAttack
         tomato.monsterDeathAnimation();
     }
 
-    private Vector3 findPositionInRadiusAround(float startDegree, float endDegree)
+	private Vector3 findPositionInRadiusAround(float startDegree, float endDegree)
 	{
         float randomAngle = Random.Range(startDegree, endDegree);
         float xPos = transform.position.x + radiusAroundOrigin * Mathf.Cos(randomAngle * Mathf.PI * 2 / 360);
         float zPos = transform.position.z + radiusAroundOrigin * Mathf.Sin(randomAngle * Mathf.PI * 2 / 360);
 
         return new Vector3(xPos, transform.position.y, zPos);
-
 	}
 
     private void OnTriggerStay(Collider other)

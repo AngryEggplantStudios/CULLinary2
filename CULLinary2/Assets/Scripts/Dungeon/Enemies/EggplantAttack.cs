@@ -11,7 +11,6 @@ public class EggplantAttack : MonsterAttack
 
     private void Awake()
     {
-
         attackSprite = gameObject.GetComponent<SpriteRenderer>();
         attackCollider = gameObject.GetComponent<SphereCollider>();
         canDealDamage = false;

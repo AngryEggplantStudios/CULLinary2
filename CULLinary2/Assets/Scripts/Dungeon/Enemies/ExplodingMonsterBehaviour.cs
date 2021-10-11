@@ -42,11 +42,13 @@ public class ExplodingMonsterBehaviour : MonoBehaviour
     public LineRenderer lineRenderer;
     private bool mustStartExploding = false;
     private bool canSetDestination = true;
+    private NavMeshPath path;
 
     private void Start()
 	{
         chasingCouroutineStarted = false;
         navMeshAgent = GetComponent<NavMeshAgent>();
+        path = new NavMeshPath();
         animator = GetComponent<Animator>();
         monsterScript = GetComponent<MonsterScript>();
         lineRenderer = GetComponent<LineRenderer>();
@@ -129,7 +131,6 @@ public class ExplodingMonsterBehaviour : MonoBehaviour
         // reachedPositionDistance or timercoroutine has completed. Make sure stopping distance is close enuf and stop chasing, stay in place and start exploding
         if (directionVector <= reachedPositionDistance && canStartExploding || mustStartExploding)
         {
-            Debug.Log("can startexplode");
             slowlyRotateToLookAt(playerPositionWithoutYOffset);
             navMeshAgent.SetDestination(gameObject.transform.position);
             // Target within attack range
@@ -140,25 +141,24 @@ public class ExplodingMonsterBehaviour : MonoBehaviour
         {
             if (canSetDestination)
 			{
-                Debug.Log("ChasingPlayer");
+                NavMesh.CalculatePath(transform.position, playerPositionWithoutYOffset, NavMesh.AllAreas, path);
                 canSetDestination = false;
                 StartCoroutine(DelayFindingPlayer());
-                navMeshAgent.SetDestination(playerPositionWithoutYOffset);
-
+                navMeshAgent.SetPath(path);
             }
         }
     }
 
     private IEnumerator DelayFindingPlayer()
 	{
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.25f);
         canSetDestination = true;
 	}
 
     // Chases for n seconds before start exploding attack
     private IEnumerator ChasingTimerBeforeStartExploding()
 	{
-        yield return new WaitForSeconds(35.0f);//remember  3
+        yield return new WaitForSeconds(3.0f);
         canStartExploding = true;
         yield return new WaitForSeconds(2.0f);
         mustStartExploding = true;
