@@ -848,7 +848,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: c9fef15b59604a04c8deddb68979eb26, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1003,6 +1003,12 @@ MonoBehaviour:
   minDist: 30
   timeBetweenAttacks: 4
   lineTest: 0
+  canAttack: 1
+  animator: {fileID: 0}
+  navMeshAgent: {fileID: 0}
+  reachedPositionDistance: 0
+  monsterScript: {fileID: 0}
+  lineRenderer: {fileID: 0}
 --- !u!114 &1013324229052589080
 MonoBehaviour:
   m_ObjectHideFlags: 0
