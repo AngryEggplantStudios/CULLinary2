@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class MonsterBehavior : MonoBehaviour
+
+public class ExplodingMonsterBehaviour : MonoBehaviour
 {
     [Header("Monster Behavior Variables")]
     [SerializeField] private float idleTimer;
     [SerializeField] private float wanderRadius;
-    [SerializeField] public float wanderTimer;
+    [SerializeField] private float wanderTimer;
 
     [Tooltip("The minimum distance to wander about. Needed because of the stopping distance being large makes the enemy only wander a bit before stopping.")]
     [SerializeField] private float minDist;
@@ -16,24 +17,38 @@ public class MonsterBehavior : MonoBehaviour
 
     [Header("Test")]
     [SerializeField] public bool lineTest = false;
-    // Variables
 
-    public float goingBackToStartTimer;
+    [Tooltip("The speed to chase the player.")]
+    [SerializeField] private float chasingSpeed;
+    [SerializeField] private float chasingAccel;
+    private bool chasingCouroutineStarted = false;
+    private bool canStartExploding = false;
+    private float goingBackToStartTimer;
     private Vector3 roamPosition;
     public bool canAttack = true;
     public Animator animator;
     public NavMeshAgent navMeshAgent;
+    private Renderer rend;
+    private Color[] originalColors;
+    private Texture[] originalTextures;
+    private Color onDamageColor = Color.white;
+    private Texture[] texturesForFlash;
 
-    public float timer;
-    public Vector3 startingPosition;
+    private float timer;
+    private Vector3 startingPosition;
     //The minimum distance to stop in front of the player. Has to be equal to Stopping distance. Cannot use stopping distance directly else navmesh agent will keep bumping into player/
     public float reachedPositionDistance;
     public MonsterScript monsterScript;
     public LineRenderer lineRenderer;
+    private bool mustStartExploding = false;
+    private bool canSetDestination = true;
+    private NavMeshPath path;
 
     private void Start()
-    {
+	{
+        chasingCouroutineStarted = false;
         navMeshAgent = GetComponent<NavMeshAgent>();
+        path = new NavMeshPath();
         animator = GetComponent<Animator>();
         monsterScript = GetComponent<MonsterScript>();
         lineRenderer = GetComponent<LineRenderer>();
@@ -46,6 +61,23 @@ public class MonsterBehavior : MonoBehaviour
         startingPosition = transform.position;
         timer = wanderTimer;
         goingBackToStartTimer = 0;
+        rend = GetComponentInChildren<SkinnedMeshRenderer>();
+
+    }
+
+    public virtual void EnemyRoaming()
+    {
+        animator.SetBool("isMoving", true);
+        timer += Time.deltaTime;
+        Vector3 distanceToFinalPosition = transform.position - roamPosition;
+        //without this the eggplant wandering will be buggy as it may be within the Navmesh Obstacles itself
+        if (timer >= wanderTimer || distanceToFinalPosition.magnitude < reachedPositionDistance)
+        {
+            timer = 0;
+            navMeshAgent.SetDestination(gameObject.transform.position);
+            animator.SetBool("isMoving", false);
+            monsterScript.SetStateMachine(MonsterState.Idle);
+        }
     }
 
     public virtual void EnemyIdle()
@@ -72,23 +104,17 @@ public class MonsterBehavior : MonoBehaviour
         }
     }
 
-    public virtual void EnemyRoaming()
+    public void EnemyChase(float stopChaseDistance, Vector3 playerPosition)
     {
-        animator.SetBool("isMoving", true);
-        timer += Time.deltaTime;
-        Vector3 distanceToFinalPosition = transform.position - roamPosition;
-        //without this the eggplant wandering will be buggy as it may be within the Navmesh Obstacles itself
-        if (timer >= wanderTimer || distanceToFinalPosition.magnitude < reachedPositionDistance)
-        {
-            timer = 0;
-            navMeshAgent.SetDestination(gameObject.transform.position);
-            animator.SetBool("isMoving", false);
-            monsterScript.SetStateMachine(MonsterState.Idle);
-        }
-    }
-
-    public virtual void EnemyChase(float stopChaseDistance, Vector3 playerPosition)
-    {
+        // Set speed here to be fast boi
+        navMeshAgent.speed = chasingSpeed;
+        navMeshAgent.acceleration = chasingAccel;
+        // if timer coroutine not started yet start here
+        if (chasingCouroutineStarted != true)
+		{
+            chasingCouroutineStarted = true;
+            StartCoroutine(ChasingTimerBeforeStartExploding());
+		}
         Vector3 playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
         animator.SetBool("isMoving", true);
         float directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
@@ -100,11 +126,11 @@ public class MonsterBehavior : MonoBehaviour
             points[1] = playerPositionWithoutYOffset;
             lineRenderer.SetPositions(points);
         }
+        playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
 
-
-        if (directionVector <= reachedPositionDistance)
+        // reachedPositionDistance or timercoroutine has completed. Make sure stopping distance is close enuf and stop chasing, stay in place and start exploding
+        if (directionVector <= reachedPositionDistance && canStartExploding || mustStartExploding)
         {
-            playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
             slowlyRotateToLookAt(playerPositionWithoutYOffset);
             navMeshAgent.SetDestination(gameObject.transform.position);
             // Target within attack range
@@ -113,17 +139,33 @@ public class MonsterBehavior : MonoBehaviour
         }
         else
         {
-            navMeshAgent.SetDestination(playerPositionWithoutYOffset);
-        }
-
-        if (Vector3.Distance(transform.position, playerPosition) > stopChaseDistance + 0.1f)
-        {
-            // Too far, stop chasing
-            monsterScript.SetStateMachine(MonsterState.GoingBackToStart);
+            if (canSetDestination)
+			{
+                NavMesh.CalculatePath(transform.position, playerPositionWithoutYOffset, NavMesh.AllAreas, path);
+                canSetDestination = false;
+                StartCoroutine(DelayFindingPlayer());
+                navMeshAgent.SetPath(path);
+            }
         }
     }
 
-    public virtual void EnemyAttackPlayer(Vector3 playerPosition, bool ableToMove)
+    private IEnumerator DelayFindingPlayer()
+	{
+        yield return new WaitForSeconds(0.25f);
+        canSetDestination = true;
+	}
+
+    // Chases for n seconds before start exploding attack
+    private IEnumerator ChasingTimerBeforeStartExploding()
+	{
+        yield return new WaitForSeconds(3.0f);
+        canStartExploding = true;
+        yield return new WaitForSeconds(2.0f);
+        mustStartExploding = true;
+    }
+
+    //explode here
+    public void EnemyAttackPlayer(Vector3 playerPosition, bool ableToMove)
     {
         Vector3 playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
         slowlyRotateToLookAt(playerPositionWithoutYOffset);
@@ -131,24 +173,23 @@ public class MonsterBehavior : MonoBehaviour
         if (canAttack == true)
         {
             canAttack = false;
+            // start exploding delay of 1.5 s
             StartCoroutine(DelayAttack(playerPositionWithoutYOffset));
-        }
-        float directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
-        if (directionVector > navMeshAgent.stoppingDistance && ableToMove)
-        {
-            // Target within attack range
-            monsterScript.SetStateMachine(MonsterState.ChaseTarget);
         }
     }
 
-    public virtual IEnumerator DelayAttack(Vector3 playerPositionWithoutYOffset)
-	{
-        yield return new WaitForSeconds(1);
-        slowlyRotateToLookAt(playerPositionWithoutYOffset);
+    public IEnumerator DelayAttack(Vector3 playerPositionWithoutYOffset)
+    {
+        originalColors = monsterScript.GetOriginalColors();
+        originalTextures = monsterScript.GetOriginalTextures();
+        texturesForFlash = monsterScript.GetTexturesForFlash();
+        StartCoroutine(FlashOnExplosion());
         animator.SetBool("isMoving", false);
+        // Start Coroutine to flash indicating explosions
+        yield return new WaitForSeconds(0.001f);
+        slowlyRotateToLookAt(playerPositionWithoutYOffset);
         animator.ResetTrigger("attack");
         animator.SetTrigger("attack");
-        StartCoroutine(DelayFire());
     }
 
     public virtual void EnemyReturn()
@@ -213,12 +254,50 @@ public class MonsterBehavior : MonoBehaviour
     }
 
     public void slowlyRotateToLookAt(Vector3 target)
-	{
+    {
         transform.rotation = Quaternion.Lerp(
             transform.rotation,
             Quaternion.Euler(Quaternion.LookRotation(target - transform.position).eulerAngles),
             Time.deltaTime * 3.0f);
     }
 
+    private IEnumerator FlashOnExplosion()
+    {
+        while (true)
+		{
+            for (var i = 0; i < rend.materials.Length; i++)
+            {
+                Texture flashTex = null;
+                if (texturesForFlash != null && i < texturesForFlash.Length)
+                {
+                    flashTex = texturesForFlash[i];
+                }
+                rend.materials[i].SetTexture("_BaseMap", flashTex);
+                rend.materials[i].color = onDamageColor;
+            }
+
+            float duration = 0.1f;
+            while (duration > 0)
+            {
+                duration -= Time.deltaTime;
+                yield return null;
+            }
+
+            for (var i = 0; i < rend.materials.Length; i++)
+            {
+                rend.materials[i].SetTexture("_BaseMap", originalTextures[i]);
+                rend.materials[i].color = originalColors[i];
+            }
+
+            duration = 0.1f;
+            while (duration > 0)
+            {
+                duration -= Time.deltaTime;
+                yield return null;
+            }
+        }
+
+   
+    }
 
 }

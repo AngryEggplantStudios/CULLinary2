@@ -16,9 +16,9 @@ public class MonsterScript : Monster
     [HideInInspector] public GameObject spawner;
 
     [Header("UI Prefabs")]
-    [SerializeField] private GameObject hpBarPrefab;
+    [SerializeField] public GameObject hpBarPrefab;
     [SerializeField] private GameObject damageCounterPrefab;
-    [SerializeField] private GameObject enemyAlertPrefab;
+    [SerializeField] protected GameObject enemyAlertPrefab;
     [SerializeField] private GameObject canvasDisplay;
 
     [Header("Particle Prefabs")]
@@ -27,8 +27,8 @@ public class MonsterScript : Monster
     [Header("Audio")]
     [SerializeField] private AudioSource audioSourceDamage;
     [SerializeField] private AudioClip[] stabSounds;
-    [SerializeField] private AudioSource audioSourceAttack;
-    [SerializeField] private AudioClip alertSound;
+    [SerializeField] protected AudioSource audioSourceAttack;
+    [SerializeField] protected AudioClip alertSound;
     [SerializeField] private AudioClip attackSound;
     [SerializeField] private AudioClip deathSound;
 
@@ -45,12 +45,12 @@ public class MonsterScript : Monster
     // Variables
     private MonsterName monsterName;
     private bool hasAssignedName = false;
-    private MonsterState currentState;
+    public MonsterState currentState;
     private float currentHealth;
-    private Transform playerTransform;
+    public Transform playerTransform;
     private Camera playerCamera;
     private Image hpBarFull;
-    private List<GameObject> uiElements = new List<GameObject>();
+    protected List<GameObject> uiElements = new List<GameObject>();
     private List<GameObject> damageUiElements = new List<GameObject>();
     private bool canMoveDuringAttack = true;
     private Renderer rend;
@@ -135,19 +135,23 @@ public class MonsterScript : Monster
             case MonsterState.Idle:
                 checkIfDead();
                 FindTarget();
+                Debug.Log(currentState);
                 onEnemyIdle?.Invoke();
                 break;
             case MonsterState.Roaming:
                 checkIfDead();
                 FindTarget();
+                Debug.Log(currentState);
                 onEnemyRoaming?.Invoke();
                 break;
             case MonsterState.ChaseTarget:
                 checkIfDead();
+                Debug.Log(currentState);
                 onEnemyChase?.Invoke(stopChase, playerTransform.position);
                 break;
             case MonsterState.AttackTarget:
                 checkIfDead();
+                Debug.Log(currentState);
                 // Hack to ensure attack trigger isn't triggered
                 if (this.currentHealth > 0)
                 {
@@ -156,6 +160,7 @@ public class MonsterScript : Monster
                 break;
             case MonsterState.GoingBackToStart:
                 checkIfDead();
+                Debug.Log(currentState);
                 onEnemyReturn?.Invoke();
                 break;
         }
@@ -227,7 +232,7 @@ public class MonsterScript : Monster
         }
     }
 
-    private void SetupUI(GameObject ui)
+    protected void SetupUI(GameObject ui)
     {
         ui.transform.SetParent(canvasDisplay.transform);
         ui.transform.position = playerCamera.WorldToScreenPoint(transform.position);
@@ -242,7 +247,7 @@ public class MonsterScript : Monster
         }
     }
 
-    public void Alert()
+    public virtual void Alert()
     {
         currentState = MonsterState.ChaseTarget;
         GameObject enemyAlertObject = Instantiate(enemyAlertPrefab);
@@ -279,7 +284,7 @@ public class MonsterScript : Monster
         damageUiElements.Add(damageCounter);
     }
 
-    private void DieAnimation()
+    public void DieAnimation()
     {
         // Reset all triggers first to prevent interference of other animation states before deathj
         animator.ResetTrigger("attack");
@@ -423,5 +428,25 @@ public class MonsterScript : Monster
     public int GetAdditionalSpawningNumber()
     {
         return additionalSpawningNumbers;
+    }
+
+    public Color[] GetOriginalColors()
+	{
+        return originalColors;
+	}
+
+    public Texture[] GetOriginalTextures()
+	{
+        return originalTextures;
+	}
+
+    public Texture[] GetTexturesForFlash()
+    {
+        return texturesForFlash;
+    }
+
+    public float getStopChase()
+    {
+        return this.stopChase;
     }
 }

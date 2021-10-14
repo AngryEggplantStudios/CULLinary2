@@ -40,6 +40,7 @@ public class MonsterProjectile : MonoBehaviour
     private void Update()
     {
         transform.position += projDir * moveSpeed * Time.deltaTime;
+        transform.position = new Vector3(transform.position.x, heightFromGround, transform.position.z); 
         transform.Rotate(0, spinSpeed * Time.deltaTime, 0);
     }
 
