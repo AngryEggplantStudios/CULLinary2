@@ -8,7 +8,7 @@ public class MonsterBehavior : MonoBehaviour
     [Header("Monster Behavior Variables")]
     [SerializeField] private float idleTimer;
     [SerializeField] private float wanderRadius;
-    [SerializeField] private float wanderTimer;
+    [SerializeField] public float wanderTimer;
 
     [Tooltip("The minimum distance to wander about. Needed because of the stopping distance being large makes the enemy only wander a bit before stopping.")]
     [SerializeField] private float minDist;
@@ -18,14 +18,14 @@ public class MonsterBehavior : MonoBehaviour
     [SerializeField] public bool lineTest = false;
     // Variables
 
-    private float goingBackToStartTimer;
+    public float goingBackToStartTimer;
     private Vector3 roamPosition;
     public bool canAttack = true;
     public Animator animator;
     public NavMeshAgent navMeshAgent;
 
-    private float timer;
-    private Vector3 startingPosition;
+    public float timer;
+    public Vector3 startingPosition;
     //The minimum distance to stop in front of the player. Has to be equal to Stopping distance. Cannot use stopping distance directly else navmesh agent will keep bumping into player/
     public float reachedPositionDistance;
     public MonsterScript monsterScript;
