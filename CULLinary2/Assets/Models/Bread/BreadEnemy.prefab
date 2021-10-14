@@ -919,11 +919,11 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 8
-  m_Acceleration: 24
+  m_Speed: 2
+  m_Acceleration: 6
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 3.5
+  m_StoppingDistance: 2.5
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 0
   m_AutoRepath: 1
@@ -1042,9 +1042,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   idleTimer: 6
-  wanderRadius: 20
+  wanderRadius: 30
   wanderTimer: 5
-  minDist: 10
+  minDist: 15
   timeBetweenAttacks: 4
   lineTest: 1
   goingBackToStartTimer: 0
@@ -1069,8 +1069,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   monsterHealth: 50
-  distanceTriggered: 4
-  stopChase: 6
+  distanceTriggered: 5
+  stopChase: 8
   lootDropped: {fileID: 8706522679418664788, guid: bb4dce76efdb34ce682008e7fbc6f1fe, type: 3}
   additionalSpawningNumbers: 2
   spawner: {fileID: 0}
