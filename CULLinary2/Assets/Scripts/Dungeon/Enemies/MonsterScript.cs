@@ -135,23 +135,19 @@ public class MonsterScript : Monster
             case MonsterState.Idle:
                 checkIfDead();
                 FindTarget();
-                Debug.Log(currentState);
                 onEnemyIdle?.Invoke();
                 break;
             case MonsterState.Roaming:
                 checkIfDead();
                 FindTarget();
-                Debug.Log(currentState);
                 onEnemyRoaming?.Invoke();
                 break;
             case MonsterState.ChaseTarget:
                 checkIfDead();
-                Debug.Log(currentState);
                 onEnemyChase?.Invoke(stopChase, playerTransform.position);
                 break;
             case MonsterState.AttackTarget:
                 checkIfDead();
-                Debug.Log(currentState);
                 // Hack to ensure attack trigger isn't triggered
                 if (this.currentHealth > 0)
                 {
@@ -160,7 +156,6 @@ public class MonsterScript : Monster
                 break;
             case MonsterState.GoingBackToStart:
                 checkIfDead();
-                Debug.Log(currentState);
                 onEnemyReturn?.Invoke();
                 break;
         }
