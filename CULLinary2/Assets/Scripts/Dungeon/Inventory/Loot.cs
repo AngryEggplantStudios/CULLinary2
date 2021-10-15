@@ -16,7 +16,7 @@ public class Loot : MonoBehaviour
             if (InventoryManager.instance.AddItem(itemLoot))
             {
                 playerPickup.PickUp(itemLoot);
-                Destroy(gameObject);
+                Destroy(gameObject.transform.parent.gameObject);
             }
         }
     }
