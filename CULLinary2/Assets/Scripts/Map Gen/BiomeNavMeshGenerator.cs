@@ -34,6 +34,10 @@ public class BiomeNavMeshGenerator : MonoBehaviour
                     orderSubmissionStationParent = child.gameObject;
                     continue;
                 }
+                if (child.gameObject.name == "Landmarks")
+                {
+                    continue;
+                }
                 yield return StartCoroutine(CombineMeshes(child.gameObject));
             }
         }
@@ -48,13 +52,14 @@ public class BiomeNavMeshGenerator : MonoBehaviour
         {
             //Deactivate the two boxcolliders on ordersubmissionstations
             foreach (Transform grandchild in child.transform)
-			{
+            {
                 if (grandchild.name == "Interactive Collider" || grandchild.name == "Camera Obstacle")
                 {
                     BoxCollider sphere = grandchild.GetComponentInChildren<BoxCollider>();
                     sphere.enabled = activate;
-                } else
-				{
+                }
+                else
+                {
                     grandchild.gameObject.tag = "Environment";
                     grandchild.gameObject.layer = 6;
                 }
@@ -92,9 +97,9 @@ public class BiomeNavMeshGenerator : MonoBehaviour
             BiomeDataManager.instance.biomeNavMeshPath = savePath;
             BiomeDataManager.instance.SaveData();
             surfaceForNavMesh.BuildNavMesh();
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             AssetDatabase.CreateAsset(surfaceForNavMesh.navMeshData, savePath);
-            #endif
+#endif
             ActivateBoxCollider(true, orderSubmissionStationParent);
             ActivateSpawnableWithoutCollider(true, parent);
             Debug.Log("Starting Coroiutine");
@@ -169,7 +174,7 @@ public class BiomeNavMeshGenerator : MonoBehaviour
         {
             CombineInstance[] combineInstanceArray = (combineInstanceArrays[m] as ArrayList).ToArray(typeof(CombineInstance)) as CombineInstance[];
             meshes[m] = new Mesh();
-            meshes[m].indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;                
+            meshes[m].indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             meshes[m].CombineMeshes(combineInstanceArray, true, true);
 
             combineInstances[m] = new CombineInstance();
