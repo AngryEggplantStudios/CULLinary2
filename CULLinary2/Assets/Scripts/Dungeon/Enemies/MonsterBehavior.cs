@@ -12,7 +12,7 @@ public class MonsterBehavior : MonoBehaviour
 
     [Tooltip("The minimum distance to wander about. Needed because of the stopping distance being large makes the enemy only wander a bit before stopping.")]
     [SerializeField] private float minDist;
-    [SerializeField] private float timeBetweenAttacks;
+    [SerializeField] protected float timeBetweenAttacks;
 
     [Header("Test")]
     [SerializeField] public bool lineTest = false;
@@ -46,7 +46,13 @@ public class MonsterBehavior : MonoBehaviour
         startingPosition = transform.position;
         timer = wanderTimer;
         goingBackToStartTimer = 0;
+        childClassPreStartFunctions();
     }
+
+    protected virtual void childClassPreStartFunctions()
+	{
+        //default do nothing, for children class to override;
+	}
 
     public virtual void EnemyIdle()
     {
@@ -157,7 +163,6 @@ public class MonsterBehavior : MonoBehaviour
         slowlyRotateToLookAt(startingPosition);
         animator.SetBool("isMoving", true);
         navMeshAgent.SetDestination(startingPosition);
-
         if (lineTest)
         {
             Vector3[] points = new Vector3[2];
@@ -179,7 +184,7 @@ public class MonsterBehavior : MonoBehaviour
     }
 
 
-    private IEnumerator DelayFire()
+    protected virtual IEnumerator DelayFire()
     {
         yield return new WaitForSeconds(timeBetweenAttacks);
         canAttack = true;
