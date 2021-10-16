@@ -25,7 +25,7 @@ public class TomatoSplash : MonoBehaviour
     private IEnumerator DelayBeforeDisappearing()
     {
         yield return new WaitForSeconds(15.0f);
-        Destroy(gameObject);
+        Destroy(transform.parent.gameObject);
     }
 
     private void OnTriggerStay(Collider other)
