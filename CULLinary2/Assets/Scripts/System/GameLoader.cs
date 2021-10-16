@@ -27,6 +27,7 @@ public class GameLoader : SingletonGeneric<GameLoader>
                 StartCoroutine(LoadWorldTesting());
                 break;
         }
+
     }
 
     public IEnumerator LoadWorldTesting()
@@ -66,6 +67,7 @@ public class GameLoader : SingletonGeneric<GameLoader>
         uiCanvas.SetActive(true);
         yield return null;
         GameTimer.instance.Run();
+        PlayerSpawnManager.instance.SpawnPlayer();
     }
 }
 

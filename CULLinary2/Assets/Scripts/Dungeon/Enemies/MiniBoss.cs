@@ -7,6 +7,7 @@ public class MiniBoss : MonoBehaviour
     [SerializeField] private int health;
     [SerializeField] private float distanceTriggered;
     [SerializeField] private float stopChase;
+    [SerializeField] private float damageMultiplier = 1.5f;
     private MonsterName monsterName;
 
     void Start()
@@ -15,7 +16,7 @@ public class MiniBoss : MonoBehaviour
         if (monsterScript)
         {
             monsterName = monsterScript.GetMonsterName();
-            monsterScript.SetMiniBossValues(health, distanceTriggered, stopChase);
+            monsterScript.SetMiniBossValues(health, distanceTriggered, stopChase, damageMultiplier);
         }
     }
 

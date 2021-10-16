@@ -132,7 +132,6 @@ public class UIController : SingletonGeneric<UIController>
     {
         if (endOfDayMenu)
         {
-
             isPaused = true;
             endOfDayMenu.SetActive(true);
             EndOfDayPanelStatistics stats = endOfDayMenu.GetComponent<EndOfDayPanelStatistics>();

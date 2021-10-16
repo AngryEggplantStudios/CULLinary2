@@ -128,7 +128,7 @@ public class MonsterBehavior : MonoBehaviour
         Vector3 playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
         slowlyRotateToLookAt(playerPositionWithoutYOffset);
 
-        if (canAttack == true)
+        if (canAttack)
         {
             canAttack = false;
             StartCoroutine(DelayAttack(playerPositionWithoutYOffset));
@@ -142,7 +142,7 @@ public class MonsterBehavior : MonoBehaviour
     }
 
     public virtual IEnumerator DelayAttack(Vector3 playerPositionWithoutYOffset)
-	{
+    {
         yield return new WaitForSeconds(1);
         slowlyRotateToLookAt(playerPositionWithoutYOffset);
         animator.SetBool("isMoving", false);
@@ -213,7 +213,7 @@ public class MonsterBehavior : MonoBehaviour
     }
 
     public void slowlyRotateToLookAt(Vector3 target)
-	{
+    {
         transform.rotation = Quaternion.Lerp(
             transform.rotation,
             Quaternion.Euler(Quaternion.LookRotation(target - transform.position).eulerAngles),
