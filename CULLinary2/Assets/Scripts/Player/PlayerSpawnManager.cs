@@ -24,19 +24,16 @@ public class PlayerSpawnManager : SingletonGeneric<PlayerSpawnManager>
             hasFoundCampfires = true;
         }
 
-        Vector3 campfirePosition;
-        if (!lastVisitedCampfirePosition.Equals(Vector3.zero))
-        {
-            campfirePosition = lastVisitedCampfirePosition;
-        }
-        else
+        if (lastVisitedCampfirePosition.Equals(Vector3.zero))
         {
             // Get nearest campfire to origin
-            campfirePosition = GetCampfireNearestTo(Vector3.zero).position;
+            lastVisitedCampfirePosition = GetCampfireNearestTo(Vector3.zero).position;
         }
 
-        gameObject.GetComponent<CharacterController>().enabled = false;
+        Vector3 campfirePosition = lastVisitedCampfirePosition;
         Vector3 playerSpawn = campfirePosition + spawnOffset;
+
+        gameObject.GetComponent<CharacterController>().enabled = false;
         transform.position = playerSpawn;
         gameObject.GetComponent<CharacterController>().enabled = true;
     }
