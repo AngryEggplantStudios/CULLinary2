@@ -109,6 +109,7 @@ public class CornAttack : MonsterAttack
         canDealDamage = true;
         for (int i = 0; i < firePositions.Count; i++)
         {
+            Debug.Log("throw corn");
             ThrowCorn(transform.position, firePositions[i]);
         }
         StopCoroutine("PrepareToFire");
