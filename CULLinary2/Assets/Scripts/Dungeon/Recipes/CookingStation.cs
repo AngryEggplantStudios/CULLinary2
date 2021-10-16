@@ -24,6 +24,7 @@ public class CookingStation : PlayerInteractable
             ShopManager.instance.UpdateShop();
             RecipeManager.instance.ActivateCooking();
             UIController.instance.OpenCampfireInterface();
+            PlayerSpawnManager.instance.SetLastVisitedCampfire(transform);
         }
         // Close Cooking Menu
         else if (UIController.instance.isFireplaceActive)
