@@ -126,14 +126,12 @@ public class UIController : SingletonGeneric<UIController>
         GameTimer.instance.GoToNextDay();
         playerDeathMenu.SetActive(false);
         Time.timeScale = 1;
-        PlayerSpawnManager.instance.SpawnPlayer();
     }
 
     public void ShowEndOfDayMenu()
     {
         if (endOfDayMenu)
         {
-
             isPaused = true;
             endOfDayMenu.SetActive(true);
             EndOfDayPanelStatistics stats = endOfDayMenu.GetComponent<EndOfDayPanelStatistics>();
