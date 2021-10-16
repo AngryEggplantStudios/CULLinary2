@@ -33,7 +33,7 @@ public class BiomeObjectSpawner : MonoBehaviour
             for (int i = 0; i < 100; i++) // 100 tries
             {
                 // Assign random location and rotation
-                float radius = size / 2f - landmark.size * 1.5f;
+                float radius = size / 2f - landmark.size;
                 Vector3 pos = new Vector3(Random.Range(-radius, radius), 100, Random.Range(-radius, radius));
                 pos += origin.transform.position;
                 Vector3 center = pos;
