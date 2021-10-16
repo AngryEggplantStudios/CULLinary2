@@ -4,44 +4,47 @@ using UnityEngine;
 
 public class HamAttack  : MonsterAttack
 {
-    private SpriteRenderer attackSprite;
     private SphereCollider attackCollider;
     private PlayerHealth healthScript;
     private bool canDealDamage;
-    private bool playerWithinAttackCone;
-    [SerializeField] private LineRenderer LR1;
-    [SerializeField] private GameObject parentGameObjectHam;
+    [SerializeField] private GameObject parentGO;
+    [SerializeField] private float angleFromForwardVectorToHit;
+    [SerializeField] private GameObject canvasObject;
+    private Transform playerTransform;
+    private Vector3 playerPosition;
+    private bool canMove;
 
     private void Awake()
     {
-        attackSprite = gameObject.GetComponent<SpriteRenderer>();
         attackCollider = gameObject.GetComponent<SphereCollider>();
         canDealDamage = false;
-        playerWithinAttackCone = false;
+        canMove = true;
+        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
-	private void Update()
+    private void Update()
 	{
-        SetLineRendererForDebug();
+        //SetLineRendererForDebug();
     }
 
-    private void SetLineRendererForDebug()
+    public bool getCanDealDamage()
 	{
-        //Debug.Log("Update is being called");
-        Vector3 forwardDirection = transform.forward;
-        Vector3 LeftHalfVector = Quaternion.AngleAxis(60, Vector3.up) * forwardDirection;
-        Vector3 RightHalfVector = Quaternion.AngleAxis(-60, Vector3.up) * forwardDirection;
-        Vector3[] points = new Vector3[2];
-        points[0] = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-        points[1] = forwardDirection;
-        LR1.SetPositions(points);
+        return canMove;
+	}
 
+    private bool checkIsPlayerWIthinCone()
+	{
+        playerPosition = new Vector3(playerTransform.position.x, transform.position.y, playerTransform.position.z) - transform.position;
+        Vector3 forwardDirection = parentGO.transform.forward;
+        float angleBetweenTwoVectors = Vector3.Angle(playerPosition, forwardDirection);
+        return angleBetweenTwoVectors <= angleFromForwardVectorToHit;
     }
 
     public override void attackPlayerStart()
     {
-        attackSprite.enabled = true;
         attackCollider.enabled = true;
+        canMove = false;
+        canvasObject.SetActive(true);
     }
 
     public override void attackPlayerDealDamage()
@@ -52,10 +55,11 @@ public class HamAttack  : MonsterAttack
 
     public override void attackPlayerEnd()
     {
-        attackSprite.enabled = false;
         //Destroy(selectionCircleActual.gameObject);
         attackCollider.enabled = false;
         canDealDamage = false;
+        canMove = true;
+        canvasObject.SetActive(false);
     }
 
     private void OnTriggerStay(Collider other)
@@ -63,9 +67,8 @@ public class HamAttack  : MonsterAttack
         PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
         if (canDealDamage && playerHealth != null)
         {
-            if (playerWithinAttackCone)
+            if (checkIsPlayerWIthinCone())
             {
-                playerWithinAttackCone = false;
                 playerHealth.HandleHit(attackDamage);
             }
         }
