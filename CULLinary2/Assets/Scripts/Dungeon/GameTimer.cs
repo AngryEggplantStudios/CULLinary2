@@ -18,6 +18,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
     [SerializeField] private float dayLengthInMinutes;
     [SerializeField, Range(0, 1), Tooltip("e.g. 0.25 for 6am")] private float sunrise;
     [SerializeField, Range(0, 1), Tooltip("e.g. 0.75 for 6pm")] private float sunset;
+    [SerializeField, Range(0, 1), Tooltip("e.g. 0.33 for 8am")] private float startOfDay;
     private static float gameTime;
     private static float timeScale;
     private static int dayNum = 1; // TODO: to get from saved data
@@ -44,7 +45,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         // Debug.Log("set timescale to 1");
         Time.timeScale = 1;
 
-        gameTime = (float)System.Math.Round(sunrise, 2);
+        gameTime = (float)System.Math.Round(startOfDay, 2);
         timeScale = 24 / (dayLengthInMinutes / 60);
 
         DayText.text = "DAY " + dayNum;
@@ -65,7 +66,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         UpdateTimedObjects();
         UpdateLighting(gameTime);
 
-        if (gameTime > sunrise && isNewDay)
+        if (gameTime > startOfDay && isNewDay)
         {
             isNewDay = false;
             OnStartNewDay?.Invoke();
@@ -99,7 +100,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         }
 
         // Slider
-        DayProgress.value = (gameTime - sunrise) / (1 - sunrise);
+        DayProgress.value = (gameTime - startOfDay) / (1 - startOfDay);
     }
 
     private void StartSceneFadeOut()
@@ -141,7 +142,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         }
 
         // change time to next day
-        gameTime = (float)System.Math.Round(sunrise, 2);
+        gameTime = (float)System.Math.Round(startOfDay, 2);
         dayNum++;
         DayText.text = "DAY " + dayNum;
         isNewDay = true;
