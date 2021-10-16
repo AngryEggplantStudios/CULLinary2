@@ -412,12 +412,13 @@ public class MonsterScript : Monster
         Destroy(gameObject);
     }
 
-    public void SetMiniBossValues(int health, float miniBossDistTriggered, float miniBossStopChase)
+    public void SetMiniBossValues(int health, float miniBossDistTriggered, float miniBossStopChase, float damageMultiplier)
     {
         currentHealth = health;
         monsterHealth = health;
         distanceTriggered = miniBossDistTriggered;
         stopChase = miniBossStopChase;
+        primaryEnemyAttack.attackDamage = Mathf.RoundToInt(primaryEnemyAttack.attackDamage * damageMultiplier);
     }
 
     public int GetAdditionalSpawningNumber()
@@ -426,14 +427,14 @@ public class MonsterScript : Monster
     }
 
     public Color[] GetOriginalColors()
-	{
+    {
         return originalColors;
-	}
+    }
 
     public Texture[] GetOriginalTextures()
-	{
+    {
         return originalTextures;
-	}
+    }
 
     public Texture[] GetTexturesForFlash()
     {
