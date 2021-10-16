@@ -73,6 +73,7 @@ public class CornAttack : MonsterAttack
             firePositions.Add(targetPosition);
         }
     }
+
     private IEnumerator PrepareToFire()
     {
         while (true)
@@ -96,7 +97,6 @@ public class CornAttack : MonsterAttack
         StartCoroutine("PrepareToFire");
     }
 
-
     private void ThrowCorn(Vector3 sourcePosition, Vector3 targetPosition)
     {
         Transform cornTransform = Instantiate(throwObject, sourcePosition, Quaternion.identity);
@@ -109,7 +109,6 @@ public class CornAttack : MonsterAttack
         canDealDamage = true;
         for (int i = 0; i < firePositions.Count; i++)
         {
-            Debug.Log("throw corn");
             ThrowCorn(transform.position, firePositions[i]);
         }
         StopCoroutine("PrepareToFire");
