@@ -41,7 +41,7 @@ public class PlayerDash : PlayerAction
 
     private void Dash(Vector3 direction)
     {
-        if (isDashing)
+        if (isDashing || Time.timeScale == 0f)
         {
             return;
         }

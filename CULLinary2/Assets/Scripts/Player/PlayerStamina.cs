@@ -31,9 +31,9 @@ public class PlayerStamina : SingletonGeneric<PlayerStamina>
         staminaCircleImage.fillAmount = currentStamina / maxStamina;
     }
 
-    public void SetStaminaCircleActive(bool setActive)
+    public void SetStaminaCircleActive(bool b)
     {
-        staminaCircle.SetActive(true);
+        staminaCircle.SetActive(b);
     }
 
     public void RestoreToFull()
