@@ -8,6 +8,7 @@ public class PlayerPickup : MonoBehaviour
     [Header("References")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private GameObject itemPickupNotificationPrefab;
+    [SerializeField] private GameObject moneyNotif_prefab;
     [SerializeField] private GameObject canvasDisplay;
 
     public void PickUp(InventoryItem itemLoot)
@@ -16,5 +17,21 @@ public class PlayerPickup : MonoBehaviour
         GameObject itemPickupNotificationObject = Instantiate(itemPickupNotificationPrefab);
         itemPickupNotificationObject.transform.SetParent(canvasDisplay.transform);
         itemPickupNotificationObject.transform.GetComponentInChildren<Image>().sprite = itemLoot.icon;
+    }
+
+    public void PickUpMoney(int amount)
+    {
+        audioSource.Play();
+        GameObject moneyNotif = Instantiate(moneyNotif_prefab);
+        moneyNotif.transform.GetComponentInChildren<Text>().text = "+$" + amount.ToString();
+        moneyNotif.transform.SetParent(canvasDisplay.transform);
+        moneyNotif.transform.localPosition = Vector3.zero;
+
+        // Update money UI
+        if (InventoryManager.instance != null)
+        {
+            InventoryManager.instance.StopAllCoroutines();
+            InventoryManager.instance.StartCoroutine(InventoryManager.instance.UpdateUI());
+        }
     }
 }
