@@ -20,6 +20,9 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     public int[] weaponSkillArray = new int[11] { 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 };
     public int currentWeaponHeld = 0;
     public int currentSecondaryHeld = 3;
+    [Header("Health Regenerated per Game Minute at Campfire")]
+    public float campfireRegenerationRate = 0.5f;
+
     public Dictionary<MonsterName, PopulationLevel> monsterDict = new Dictionary<MonsterName, PopulationLevel>{
         {MonsterName.Corn, PopulationLevel.Normal},
         {MonsterName.Potato, PopulationLevel.Normal},
@@ -53,6 +56,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.weaponSkillArray = weaponSkillArray;
         playerData.currentWeaponHeld = currentWeaponHeld;
         playerData.currentSecondaryHeld = currentSecondaryHeld;
+        playerData.campfireRegenerationRate =  campfireRegenerationRate;
         SaveSystem.SaveData(playerData);
     }
 
@@ -130,6 +134,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         weaponSkillArray = playerData.weaponSkillArray;
         currentWeaponHeld = playerData.currentWeaponHeld;
         currentSecondaryHeld = playerData.currentSecondaryHeld;
+        campfireRegenerationRate = playerData.campfireRegenerationRate;
         LoadMonsters();
     }
 
