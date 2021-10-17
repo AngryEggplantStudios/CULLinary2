@@ -8,6 +8,14 @@ public class Loot : MonoBehaviour
     [SerializeField] private InventoryItem itemLoot;
     [SerializeField] private GameObject itemPickupNotif_prefab;
 
+    private Rigidbody rb;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        rb.AddForce(Vector3.up * 20, ForceMode.Impulse);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         PlayerPickup playerPickup = other.GetComponent<PlayerPickup>();

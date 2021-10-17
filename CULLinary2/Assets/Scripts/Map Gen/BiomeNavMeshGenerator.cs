@@ -34,7 +34,7 @@ public class BiomeNavMeshGenerator : MonoBehaviour
                     orderSubmissionStationParent = child.gameObject;
                     continue;
                 }
-                if (child.gameObject.name == "Landmarks")
+                if (child.gameObject.name == "Landmarks" || child.gameObject.name == "Chests" || child.gameObject.name == "Grass")
                 {
                     continue;
                 }
