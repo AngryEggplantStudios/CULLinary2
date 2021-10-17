@@ -11,6 +11,9 @@ public class PlayerPickup : MonoBehaviour
     [SerializeField] private GameObject moneyNotif_prefab;
     [SerializeField] private GameObject canvasDisplay;
 
+    [Header("Icon for Potion Loot")]
+    [SerializeField] private Sprite potionIcon;
+
     public void PickUp(InventoryItem itemLoot)
     {
         audioSource.Play();
@@ -33,5 +36,15 @@ public class PlayerPickup : MonoBehaviour
             InventoryManager.instance.StopAllCoroutines();
             InventoryManager.instance.StartCoroutine(InventoryManager.instance.UpdateUI());
         }
+    }
+
+    public void PickUpPotion(int consumableIndex)
+    {
+        audioSource.Play();
+        GameObject itemPickupNotificationObject = Instantiate(itemPickupNotificationPrefab);
+        itemPickupNotificationObject.transform.SetParent(canvasDisplay.transform);
+        itemPickupNotificationObject.transform.GetComponentInChildren<Image>().sprite = potionIcon;
+        // Update potions UI
+        UIController.instance.UpdateFixedHUD();
     }
 }
