@@ -20,6 +20,7 @@ public class PlayerDash : PlayerAction
     private Animator animator;
     private PlayerController playerController;
     private PlayerStamina playerStamina;
+    private PlayerHealth playerHealth;
     private CharacterController characterController;
     private bool isDashing;
     private PlayerMelee playerMelee;
@@ -31,6 +32,7 @@ public class PlayerDash : PlayerAction
         playerSkill = GetComponent<PlayerSkill>();
         playerController = GetComponent<PlayerController>();
         playerStamina = GetComponent<PlayerStamina>();
+        playerHealth = GetComponent<PlayerHealth>();
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
         playerController.OnPlayerDash += Dash;
@@ -68,6 +70,7 @@ public class PlayerDash : PlayerAction
         isDashing = true;
         float startTime = Time.time;
         float currSpeed = startingSpeed;
+        StartCoroutine(playerHealth.BecomeTemporarilyInvincible(dashTime));
         while (Time.time < startTime + dashTime)
         {
             characterController.Move(normalizedDirection * currSpeed * Time.deltaTime);

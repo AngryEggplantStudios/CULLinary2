@@ -61,12 +61,7 @@ public class PlayerController : PlayerAction
         }
 
         this.SetIsInvoking(true);
-        /*
-                if (Input.GetKeyDown(KeyCode.Space) && direction != Vector3.zero)
-                {
-                    OnPlayerDash?.Invoke(moveDirection.normalized);
-                }
-        */
+
         if (direction != Vector3.zero && !Input.GetKeyDown(KeyCode.Space))
         {
             OnPlayerRotate?.Invoke(direction.normalized, turnSpeed);
