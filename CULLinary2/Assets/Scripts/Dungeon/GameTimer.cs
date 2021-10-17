@@ -74,12 +74,12 @@ public class GameTimer : SingletonGeneric<GameTimer>
     // 
     // Action toRunWhenSkipping will be executed when the 
     // screen fades in, and before the screen fades out
-    public void SkipTime(int minutes, Action toRunWhenSkipping) 
+    public void SkipTime(int minutes, Action toRunWhenSkipping)
     {
         if (gameTime < 1.0f)
         {
             SceneTransitionManager.instance.FadeInAndFadeOut(() =>
-            {            
+            {
                 AddMinutes(minutes);
                 toRunWhenSkipping();
             });
@@ -94,7 +94,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
     }
 
     private void ClampTimeAndUpdateObjects()
-    {   
+    {
         if (gameTime > 1f)
         {
             gameTime = 1f;
@@ -150,13 +150,14 @@ public class GameTimer : SingletonGeneric<GameTimer>
     private void ShowEndOfDayMenu()
     {
         UIController.instance.ShowEndOfDayMenu();
-        SaveGame();
+        //Restore health here
         GoToNextDay();
+        SaveGame();
     }
 
     public void SaveGame()
     {
-        PlayerManager.instance.currentDay = dayNum + 1;
+        PlayerManager.instance.currentDay = dayNum;
         EcosystemManager.SaveEcosystemPopulation();
         PlayerManager.instance.SaveData(InventoryManager.instance.itemListReference);
     }
