@@ -104,7 +104,7 @@ public class UIController : SingletonGeneric<UIController>
         {
             player.GetComponent<CharacterController>().enabled = false;
             deathMenuActive = true;
-            isPaused = true;
+            //isPaused = true;
             StartCoroutine(PauseToShowDeathAnimation());
         }
     }
@@ -121,7 +121,7 @@ public class UIController : SingletonGeneric<UIController>
     public void RespawnPlayer()
     {
         deathMenuActive = false;
-        isPaused = false;
+        //isPaused = false;
         player.GetComponent<CharacterController>().enabled = true;
         GameTimer.instance.GoToNextDay();
         playerDeathMenu.SetActive(false);
@@ -132,7 +132,7 @@ public class UIController : SingletonGeneric<UIController>
     {
         if (endOfDayMenu)
         {
-            isPaused = true;
+            //isPaused = true;
             endOfDayMenu.SetActive(true);
             EndOfDayPanelStatistics stats = endOfDayMenu.GetComponent<EndOfDayPanelStatistics>();
             stats.UpdateStatistics(GameTimer.GetDayNumber(),
@@ -145,7 +145,7 @@ public class UIController : SingletonGeneric<UIController>
 
     public void ContinueToNextDay()
     {
-        isPaused = false;
+        //isPaused = false;
         endOfDayMenu.SetActive(false);
         SceneTransitionManager.instance.FadeOutImage();
         Invoke("ResumeGameTimer", 1);
@@ -164,14 +164,14 @@ public class UIController : SingletonGeneric<UIController>
         }
 
         winPanel.SetActive(true);
-        isPaused = true;
+        //isPaused = true;
         Time.timeScale = 0;
     }
 
     public void CloseWinPanel()
     {
         winPanel.SetActive(false);
-        isPaused = false;
+        //isPaused = false;
         Time.timeScale = 1;
     }
 
@@ -359,7 +359,9 @@ public class UIController : SingletonGeneric<UIController>
         anyUIActive = playerDeathMenu.activeSelf
                 || isFireplaceActive
                 || isMenuActive
-                || isPaused;
+                || isPaused
+                || endOfDayMenu.activeSelf
+                || winPanel.activeSelf;
 
         if (anyUIActive != anyUIWasActive)
         {
