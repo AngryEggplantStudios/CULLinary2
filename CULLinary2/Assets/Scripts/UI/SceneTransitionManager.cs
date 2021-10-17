@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,10 @@ public class SceneTransitionManager : SingletonGeneric<SceneTransitionManager>
     private GameObject fadeInChild;
     private FadeInFadeOut fadeOutScript;
     private GameObject fadeOutChild;
+    private FadeInFadeOut fadeInAndOutScript;
+    private GameObject fadeInAndOutChild;
+
+    private bool isFadingInAndOut = false;
 
     void Start()
     {
@@ -15,8 +20,18 @@ public class SceneTransitionManager : SingletonGeneric<SceneTransitionManager>
         fadeInScript = fadeInChild.GetComponent<FadeInFadeOut>();
         fadeOutChild = transform.GetChild(1).gameObject;
         fadeOutScript = fadeOutChild.GetComponent<FadeInFadeOut>();
+        fadeInAndOutChild = transform.GetChild(2).gameObject;
+        fadeInAndOutScript = fadeInAndOutChild.GetComponent<FadeInFadeOut>();
         fadeInScript.OnFinished += HideFade;
         fadeOutScript.OnFinished += HideFade;
+        fadeInAndOutScript.OnFinished += HideFade;
+        fadeInAndOutScript.OnFinished += _ =>
+        {
+            // Reset the Action for fading in and fading out
+            fadeInAndOutScript.OnPauseBetweenFadeInAndFadeOut = () => {};
+            // Allow it to run again
+            isFadingInAndOut = false;
+        };
     }
 
     public void FadeInImage()
@@ -33,6 +48,7 @@ public class SceneTransitionManager : SingletonGeneric<SceneTransitionManager>
     {
         fadeInScript.OnFinished -= HideFade;
         fadeOutScript.OnFinished -= HideFade;
+        fadeInAndOutScript.OnFinished -= HideFade;
     }
 
     private void HideFade(FadeAction type)
@@ -45,6 +61,23 @@ public class SceneTransitionManager : SingletonGeneric<SceneTransitionManager>
         if (type == FadeAction.FadeOut)
         {
             fadeOutChild.SetActive(false);
+        }
+
+        if (type == FadeAction.FadeInAndOut)
+        {
+            fadeInAndOutChild.SetActive(false);
+        }
+    }
+
+    // Action will be called in between the fade in and fade out
+    public void FadeInAndFadeOut(Action action)
+    {
+        // This check prevents spamming the fading in and out
+        if (!isFadingInAndOut)
+        {
+            fadeInAndOutScript.OnPauseBetweenFadeInAndFadeOut += action;
+            isFadingInAndOut = true;
+            fadeInAndOutChild.SetActive(true);
         }
     }
 }

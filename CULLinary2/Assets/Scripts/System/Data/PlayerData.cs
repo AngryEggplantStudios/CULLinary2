@@ -21,6 +21,8 @@ public class PlayerData
     public int[] weaponSkillArray;
     public int currentWeaponHeld = 0;
     public int currentSecondaryHeld = 3;
+    public float campfireRegenerationRate;
+
 
     public PlayerData()
     {
@@ -40,6 +42,7 @@ public class PlayerData
         weaponSkillArray = new int[11] { 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 };
         currentWeaponHeld = 0;
         currentSecondaryHeld = 3;
+        campfireRegenerationRate = 0.5f;
         monsterSavedDatas = new MonsterSavedData[3] {
             new MonsterSavedData(MonsterName.Eggplant, PopulationLevel.Normal),
             new MonsterSavedData(MonsterName.Corn, PopulationLevel.Normal),
