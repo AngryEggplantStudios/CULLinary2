@@ -23,6 +23,8 @@ public class UIController : SingletonGeneric<UIController>
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject playerDeathMenu;
     [SerializeField] private GameObject endOfDayMenu;
+    [SerializeField] private GameObject confirmationToMainMenu;
+    [SerializeField] private GameObject confirmationToDesktop;
 
     [Header("Fixed HUD References")]
     [SerializeField] private Image healthBar;
@@ -32,6 +34,7 @@ public class UIController : SingletonGeneric<UIController>
     [Header("Winning Screen References")]
     [SerializeField] private AudioSource winningAudio;
     [SerializeField] private GameObject winPanel;
+
 
     private KeyCode ToggleInventoryKeyCode;
     private KeyCode ToggleOrdersKeyCode;
@@ -78,6 +81,12 @@ public class UIController : SingletonGeneric<UIController>
 
     public void TogglePauseMenu()
     {
+        if (confirmationToMainMenu.activeSelf || confirmationToDesktop.activeSelf)
+        {
+            confirmationToDesktop.SetActive(false);
+            confirmationToMainMenu.SetActive(false);
+            return;
+        }
         pauseMenu.SetActive(!pauseMenu.activeSelf);
         isPaused = !isPaused;
         Time.timeScale = isPaused ? 0 : 1;
