@@ -6,7 +6,7 @@ public class PlayerDash : PlayerAction
 {
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
-    
+
     [Header("Visuals")]
     [SerializeField] private Transform playerbody;
     [SerializeField] private GameObject dustKickupPrefab;
@@ -20,13 +20,19 @@ public class PlayerDash : PlayerAction
     private Animator animator;
     private PlayerController playerController;
     private PlayerStamina playerStamina;
+    private PlayerHealth playerHealth;
     private CharacterController characterController;
     private bool isDashing;
+    private PlayerMelee playerMelee;
+    private PlayerSkill playerSkill;
 
     private void Awake()
     {
+        playerMelee = GetComponent<PlayerMelee>();
+        playerSkill = GetComponent<PlayerSkill>();
         playerController = GetComponent<PlayerController>();
         playerStamina = GetComponent<PlayerStamina>();
+        playerHealth = GetComponent<PlayerHealth>();
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
         playerController.OnPlayerDash += Dash;
@@ -35,7 +41,7 @@ public class PlayerDash : PlayerAction
 
     private void Dash(Vector3 direction)
     {
-        if (isDashing)
+        if (isDashing || Time.timeScale == 0f)
         {
             return;
         }
@@ -54,11 +60,17 @@ public class PlayerDash : PlayerAction
 
     private IEnumerator StartDashWithLerp(Vector3 normalizedDirection)
     {
+        animator.SetBool("isPowerUp", false);
+        animator.SetBool("isMelee", false);
+        playerMelee.StopInvoking();
+        playerSkill.StopInvoking();
+        animator.SetTrigger("isDashing");
         audioSource.Play();
         Instantiate(dustKickupPrefab, playerbody);
         isDashing = true;
         float startTime = Time.time;
         float currSpeed = startingSpeed;
+        StartCoroutine(playerHealth.BecomeTemporarilyInvincible(dashTime));
         while (Time.time < startTime + dashTime)
         {
             characterController.Move(normalizedDirection * currSpeed * Time.deltaTime);

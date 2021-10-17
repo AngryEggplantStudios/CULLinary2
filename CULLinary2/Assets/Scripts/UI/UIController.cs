@@ -23,6 +23,8 @@ public class UIController : SingletonGeneric<UIController>
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject playerDeathMenu;
     [SerializeField] private GameObject endOfDayMenu;
+    [SerializeField] private GameObject confirmationToMainMenu;
+    [SerializeField] private GameObject confirmationToDesktop;
 
     [Header("Fixed HUD References")]
     [SerializeField] private Image healthBar;
@@ -32,6 +34,7 @@ public class UIController : SingletonGeneric<UIController>
     [Header("Winning Screen References")]
     [SerializeField] private AudioSource winningAudio;
     [SerializeField] private GameObject winPanel;
+
 
     private KeyCode ToggleInventoryKeyCode;
     private KeyCode ToggleOrdersKeyCode;
@@ -78,6 +81,12 @@ public class UIController : SingletonGeneric<UIController>
 
     public void TogglePauseMenu()
     {
+        if (confirmationToMainMenu.activeSelf || confirmationToDesktop.activeSelf)
+        {
+            confirmationToDesktop.SetActive(false);
+            confirmationToMainMenu.SetActive(false);
+            return;
+        }
         pauseMenu.SetActive(!pauseMenu.activeSelf);
         isPaused = !isPaused;
         Time.timeScale = isPaused ? 0 : 1;
@@ -104,7 +113,7 @@ public class UIController : SingletonGeneric<UIController>
         {
             player.GetComponent<CharacterController>().enabled = false;
             deathMenuActive = true;
-            isPaused = true;
+            //isPaused = true;
             StartCoroutine(PauseToShowDeathAnimation());
         }
     }
@@ -121,7 +130,7 @@ public class UIController : SingletonGeneric<UIController>
     public void RespawnPlayer()
     {
         deathMenuActive = false;
-        isPaused = false;
+        //isPaused = false;
         player.GetComponent<CharacterController>().enabled = true;
         GameTimer.instance.GoToNextDay();
         playerDeathMenu.SetActive(false);
@@ -132,7 +141,7 @@ public class UIController : SingletonGeneric<UIController>
     {
         if (endOfDayMenu)
         {
-            isPaused = true;
+            //isPaused = true;
             endOfDayMenu.SetActive(true);
             EndOfDayPanelStatistics stats = endOfDayMenu.GetComponent<EndOfDayPanelStatistics>();
             stats.UpdateStatistics(GameTimer.GetDayNumber(),
@@ -145,7 +154,7 @@ public class UIController : SingletonGeneric<UIController>
 
     public void ContinueToNextDay()
     {
-        isPaused = false;
+        //isPaused = false;
         endOfDayMenu.SetActive(false);
         SceneTransitionManager.instance.FadeOutImage();
         Invoke("ResumeGameTimer", 1);
@@ -164,14 +173,14 @@ public class UIController : SingletonGeneric<UIController>
         }
 
         winPanel.SetActive(true);
-        isPaused = true;
+        //isPaused = true;
         Time.timeScale = 0;
     }
 
     public void CloseWinPanel()
     {
         winPanel.SetActive(false);
-        isPaused = false;
+        //isPaused = false;
         Time.timeScale = 1;
     }
 
@@ -359,7 +368,9 @@ public class UIController : SingletonGeneric<UIController>
         anyUIActive = playerDeathMenu.activeSelf
                 || isFireplaceActive
                 || isMenuActive
-                || isPaused;
+                || isPaused
+                || endOfDayMenu.activeSelf
+                || winPanel.activeSelf;
 
         if (anyUIActive != anyUIWasActive)
         {

@@ -23,6 +23,10 @@ public class PlayerSecondaryAttack : PlayerAction
 
     private void PowerUp()
     {
+        if (Time.timeScale == 0f)
+        {
+            return;
+        }
         playerStamina.SetStaminaCircleActive(true);
         if (playerStamina != null && !playerStamina.HasStamina(staminaCost))
         {

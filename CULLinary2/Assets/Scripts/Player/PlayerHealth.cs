@@ -138,7 +138,7 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
             return true;
         }
 
-        StartCoroutine(BecomeTemporarilyInvincible());
+        StartCoroutine(BecomeTemporarilyInvincibleWithFlash(invincibilityDurationSeconds));
         return true;
     }
 
@@ -216,7 +216,14 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         drowningAlert.transform.position = pos;
     }
 
-    private IEnumerator BecomeTemporarilyInvincible()
+    public IEnumerator BecomeTemporarilyInvincible(float invincibilityDurationSeconds)
+    {
+        isInvincible = true;
+        yield return new WaitForSeconds(invincibilityDurationSeconds);
+        isInvincible = false;
+    }
+
+    public IEnumerator BecomeTemporarilyInvincibleWithFlash(float invincibilityDurationSeconds)
     {
         isInvincible = true;
         bool isFlashing = false;
