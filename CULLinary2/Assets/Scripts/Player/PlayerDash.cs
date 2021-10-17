@@ -6,7 +6,7 @@ public class PlayerDash : PlayerAction
 {
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
-    
+
     [Header("Visuals")]
     [SerializeField] private Transform playerbody;
     [SerializeField] private GameObject dustKickupPrefab;
@@ -22,9 +22,13 @@ public class PlayerDash : PlayerAction
     private PlayerStamina playerStamina;
     private CharacterController characterController;
     private bool isDashing;
+    private PlayerMelee playerMelee;
+    private PlayerSkill playerSkill;
 
     private void Awake()
     {
+        playerMelee = GetComponent<PlayerMelee>();
+        playerSkill = GetComponent<PlayerSkill>();
         playerController = GetComponent<PlayerController>();
         playerStamina = GetComponent<PlayerStamina>();
         animator = GetComponent<Animator>();
@@ -54,6 +58,11 @@ public class PlayerDash : PlayerAction
 
     private IEnumerator StartDashWithLerp(Vector3 normalizedDirection)
     {
+        animator.SetBool("isPowerUp", false);
+        animator.SetBool("isMelee", false);
+        playerMelee.StopInvoking();
+        playerSkill.StopInvoking();
+        animator.SetTrigger("isDashing");
         audioSource.Play();
         Instantiate(dustKickupPrefab, playerbody);
         isDashing = true;
