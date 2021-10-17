@@ -23,13 +23,11 @@ public class PlayerDash : PlayerAction
     private PlayerHealth playerHealth;
     private CharacterController characterController;
     private bool isDashing;
-    private PlayerMelee playerMelee;
-    private PlayerSkill playerSkill;
+    private PlayerSlash playerSlash;
 
     private void Awake()
     {
-        playerMelee = GetComponent<PlayerMelee>();
-        playerSkill = GetComponent<PlayerSkill>();
+        playerSlash = GetComponent<PlayerSlash>();
         playerController = GetComponent<PlayerController>();
         playerStamina = GetComponent<PlayerStamina>();
         playerHealth = GetComponent<PlayerHealth>();
@@ -60,10 +58,7 @@ public class PlayerDash : PlayerAction
 
     private IEnumerator StartDashWithLerp(Vector3 normalizedDirection)
     {
-        animator.SetBool("isPowerUp", false);
-        animator.SetBool("isMelee", false);
-        playerMelee.StopInvoking();
-        playerSkill.StopInvoking();
+        playerSlash.AttackCleanUp();
         animator.SetTrigger("isDashing");
         audioSource.Play();
         Instantiate(dustKickupPrefab, playerbody);
