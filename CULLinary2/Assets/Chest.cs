@@ -23,6 +23,10 @@ public class Chest : PlayerInteractable
         return spCollider;
     }
 
+    public override void OnPlayerEnter()
+    {
+    }
+
     public override void OnPlayerInteract()
     {
         StartCoroutine(OpenChest());

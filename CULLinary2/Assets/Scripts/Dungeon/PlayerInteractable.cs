@@ -23,6 +23,9 @@ public abstract class PlayerInteractable : MonoBehaviour
     // Gets the sphere player collider of the object
     public abstract SpherePlayerCollider GetCollider();
 
+    // Called when player is in range
+    public abstract void OnPlayerEnter();
+
     // Called when player is in range and interacts with this object
     public abstract void OnPlayerInteract();
 
