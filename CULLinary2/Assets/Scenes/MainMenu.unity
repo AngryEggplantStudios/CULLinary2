@@ -1371,7 +1371,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &576919968
 GameObject:
@@ -3498,6 +3498,10 @@ MonoBehaviour:
   itemList: []
   currentMoney: 0
   currentDay: 0
+  weaponSkillArray: 0100000000000000000000000100000000000000000000000000000000000000000000000000000000000000
+  currentWeaponHeld: 0
+  currentSecondaryHeld: 3
+  campfireRegenerationRate: 0.5
 --- !u!114 &1686257648
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4872,6 +4876,50 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1705436944}
     m_Modifications:
+    - target: {fileID: 3566769613076774035, guid: 2310ccaf4286240609f23712a7f84fda, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.00402
+      objectReference: {fileID: 0}
+    - target: {fileID: 3566769613076774035, guid: 2310ccaf4286240609f23712a7f84fda, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.00262
+      objectReference: {fileID: 0}
+    - target: {fileID: 3566769613076774035, guid: 2310ccaf4286240609f23712a7f84fda, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.00053
+      objectReference: {fileID: 0}
+    - target: {fileID: 3566769613076774035, guid: 2310ccaf4286240609f23712a7f84fda, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.3620798
+      objectReference: {fileID: 0}
+    - target: {fileID: 3566769613076774035, guid: 2310ccaf4286240609f23712a7f84fda, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.45850337
+      objectReference: {fileID: 0}
+    - target: {fileID: 3566769613076774035, guid: 2310ccaf4286240609f23712a7f84fda, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.071277894
+      objectReference: {fileID: 0}
+    - target: {fileID: 3566769613076774035, guid: 2310ccaf4286240609f23712a7f84fda, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.8084506
+      objectReference: {fileID: 0}
+    - target: {fileID: 3566769613076774035, guid: 2310ccaf4286240609f23712a7f84fda, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -12.52
+      objectReference: {fileID: 0}
+    - target: {fileID: 3566769613076774035, guid: 2310ccaf4286240609f23712a7f84fda, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -54.32
+      objectReference: {fileID: 0}
+    - target: {fileID: 3566769613076774035, guid: 2310ccaf4286240609f23712a7f84fda, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -221.81
+      objectReference: {fileID: 0}
+    - target: {fileID: 8338351975371658935, guid: 2310ccaf4286240609f23712a7f84fda, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8525293344907539768, guid: 2310ccaf4286240609f23712a7f84fda, type: 3}
       propertyPath: m_Name
       value: Chef_Menu
