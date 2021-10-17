@@ -12,7 +12,7 @@ public class MonsterScript : Monster
     [SerializeField] private float distanceTriggered;
     [SerializeField] private float stopChase;
     [SerializeField] private GameObject lootDropped;
-    [SerializeField] private int additionalSpawningNumbers = 0;
+    [SerializeField] private int additionalSpawning = 0;
     [HideInInspector] public GameObject spawner;
 
     [Header("UI Prefabs")]
@@ -421,9 +421,9 @@ public class MonsterScript : Monster
         primaryEnemyAttack.attackDamage = Mathf.RoundToInt(primaryEnemyAttack.attackDamage * damageMultiplier);
     }
 
-    public int GetAdditionalSpawningNumber()
+    public int GetAdditionalSpawning()
     {
-        return additionalSpawningNumbers;
+        return additionalSpawning;
     }
 
     public Color[] GetOriginalColors()

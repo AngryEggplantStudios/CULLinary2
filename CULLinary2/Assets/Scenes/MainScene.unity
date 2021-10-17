@@ -2473,8 +2473,8 @@ Transform:
   - {fileID: 1571022147}
   - {fileID: 1442335789}
   - {fileID: 1942866519}
-  - {fileID: 1622226609}
   - {fileID: 1956925979}
+  - {fileID: 1622226609}
   m_Father: {fileID: 0}
   m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2741,6 +2741,54 @@ Transform:
   m_Father: {fileID: 1437382023}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &886070947
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 886070948}
+  - component: {fileID: 886070949}
+  m_Layer: 0
+  m_Name: BaseSpawningManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &886070948
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 886070947}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1171.0958, y: -307.51907, z: -1689.1525}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1627989594}
+  m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &886070949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 886070947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a93323ccd8976ef4180eabe0766a7e22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  biomeObjectSpawner: {fileID: 6060218616651526438}
+  monstersToSpawn:
+  - {fileID: 5080297952357249674, guid: bc99c291013953d409b6dba34aac83fd, type: 3}
+  - {fileID: 807139516458123811, guid: 4180c73d6e91a2048826a68a1d901107, type: 3}
+  - {fileID: 9062019569830792200, guid: c6842ea22088da542ac77fec21ab95b5, type: 3}
 --- !u!1001 &887239581
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4465,7 +4513,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7645934499838840842, guid: c6842ea22088da542ac77fec21ab95b5, type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7645934499838840842, guid: c6842ea22088da542ac77fec21ab95b5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4513,7 +4561,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9062019569830792200, guid: c6842ea22088da542ac77fec21ab95b5, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c6842ea22088da542ac77fec21ab95b5, type: 3}
@@ -4563,6 +4611,7 @@ Transform:
   - {fileID: 2078776640}
   - {fileID: 1111925686}
   - {fileID: 1536688761}
+  - {fileID: 886070948}
   m_Father: {fileID: 309590545}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5189,7 +5238,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1280632580361666698, guid: bc99c291013953d409b6dba34aac83fd, type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 1280632580361666698, guid: bc99c291013953d409b6dba34aac83fd, type: 3}
       propertyPath: m_LocalPosition.x
@@ -42024,7 +42073,7 @@ MonoBehaviour:
     removeCollider: 1
     ignoreSelfIntersection: 1
   - name: MonsterSpawners
-    isSpawnable: 1
+    isSpawnable: 0
     prefabs:
     - {fileID: 3108367928545360356, guid: 99af859978518544f8b2ea731c4456e2, type: 3}
     - {fileID: 8676701523812636767, guid: 939eee34795b889468fc766d318d6eba, type: 3}
