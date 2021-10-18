@@ -31,7 +31,7 @@ public class Minimap : MonoBehaviour
 
     void Awake()
     {
-        playerBody = GameObject.FindGameObjectWithTag("PlayerBody").transform;
+        playerBody = GameObject.FindGameObjectWithTag("PlayerBody")?.transform;
     }
 
     private void InstantiateCampfireIcons()
