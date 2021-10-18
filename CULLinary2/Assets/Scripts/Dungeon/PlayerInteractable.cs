@@ -6,7 +6,7 @@ public abstract class PlayerInteractable : MonoBehaviour
 {
     private bool hasSetColliderParent = false;
 
-    void Update()
+    protected virtual void Update()
     {
         if (!hasSetColliderParent && BiomeGeneratorManager.IsGenerationComplete())
         {

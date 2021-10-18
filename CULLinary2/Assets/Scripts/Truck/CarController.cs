@@ -59,7 +59,7 @@ public class CarController : MonoBehaviour
     private float gearTimeCounter = 0.0f;
 
     // For floating-point comparison
-    private float epsilon = 0.001f;
+    private float epsilon = 0.05f;
 
     // For playing sounds
     private float prevSpeed = 0.0f;
