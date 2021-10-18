@@ -231,4 +231,9 @@ public class Population
         hasSpawnedMiniboss = value;
     }
 
+    public int GetBaseSpawningNumber()
+    {
+        return currentNumber / 2;
+    }
+
 }

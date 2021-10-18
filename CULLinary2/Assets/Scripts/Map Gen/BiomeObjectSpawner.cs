@@ -162,4 +162,9 @@ public class BiomeObjectSpawner : MonoBehaviour
 
         return false;
     }
+
+    public int GetSize()
+    {
+        return size;
+    }
 }

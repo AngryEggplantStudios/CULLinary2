@@ -12,7 +12,7 @@ public class MonsterScript : Monster
     [SerializeField] private float distanceTriggered;
     [SerializeField] private float stopChase;
     [SerializeField] private GameObject lootDropped;
-    [SerializeField] private int additionalSpawningNumbers = 0;
+    [SerializeField] private int additionalSpawning = 0;
     [HideInInspector] public GameObject spawner;
 
     [Header("UI Prefabs")]
@@ -303,13 +303,16 @@ public class MonsterScript : Monster
         {
             spawner.GetComponent<MonsterSpawn>().DecrementSpawnCap(1);
         }
+        else
+        {
+            MonsterBaseSpawning.instance.UpdateNumOfAliveMonsters(monsterName, -1);
+            Debug.Log("no spawner");
+        }
 
         if (TryGetComponent<MiniBoss>(out MiniBoss miniBossScript))
         {
             miniBossScript.Die();
         }
-
-        DungeonSpawnManager.CheckIfExtinct(monsterName);
     }
 
     private IEnumerator FlashOnDamage()
@@ -421,9 +424,9 @@ public class MonsterScript : Monster
         primaryEnemyAttack.attackDamage = Mathf.RoundToInt(primaryEnemyAttack.attackDamage * damageMultiplier);
     }
 
-    public int GetAdditionalSpawningNumber()
+    public int GetAdditionalSpawning()
     {
-        return additionalSpawningNumbers;
+        return additionalSpawning;
     }
 
     public Color[] GetOriginalColors()
