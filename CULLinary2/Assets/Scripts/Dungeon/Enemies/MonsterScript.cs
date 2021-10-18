@@ -303,6 +303,11 @@ public class MonsterScript : Monster
         {
             spawner.GetComponent<MonsterSpawn>().DecrementSpawnCap(1);
         }
+        else
+        {
+            MonsterBaseSpawning.instance.UpdateNumOfAliveMonsters(monsterName, -1);
+            Debug.Log("no spawner");
+        }
 
         if (TryGetComponent<MiniBoss>(out MiniBoss miniBossScript))
         {

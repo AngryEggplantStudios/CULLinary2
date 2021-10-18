@@ -3,11 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class MonsterBaseSpawning : MonoBehaviour
+public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
 {
     [SerializeField] private BiomeObjectSpawner biomeObjectSpawner;
     [SerializeField] private List<GameObject> monstersToSpawn;
+    [SerializeField] private GameObject parent;
     private int mapSize;
+    public Dictionary<MonsterName, int> numOfAliveMonsters = new Dictionary<MonsterName, int>{ // num of alive monsters from base spawning only
+        {MonsterName.Corn, 0},
+        {MonsterName.Potato, 0},
+        {MonsterName.Eggplant, 0},
+    };
 
     // Start is called before the first frame update
     void Start()
@@ -16,11 +22,14 @@ public class MonsterBaseSpawning : MonoBehaviour
         GameTimer.OnStartNewDay += SpawnBaseMonsters;
     }
 
+    public void UpdateNumOfAliveMonsters(MonsterName name, int value)
+    {
+        numOfAliveMonsters[name] += value;
+        Debug.Log("updated num of alive " + name + " to " + numOfAliveMonsters[name]);
+    }
+
     private void SpawnBaseMonsters()
     {
-        GameObject parent = new GameObject("BaseMonsters");
-        parent.transform.position = Vector3.zero;
-
         foreach (GameObject monster in monstersToSpawn)
         {
             MonsterScript monsterScript = monster.GetComponent<MonsterScript>();
@@ -28,10 +37,12 @@ public class MonsterBaseSpawning : MonoBehaviour
             {
                 return;
             }
+
             MonsterName name = monsterScript.GetMonsterName();
             int baseSpawningNumber = EcosystemManager.GetPopulation(name).GetBaseSpawningNumber();
-            int numSpawned = 0;
-            while (numSpawned < baseSpawningNumber)
+            int numCurrentlyAlive = numOfAliveMonsters[name];
+
+            while (numCurrentlyAlive < baseSpawningNumber)
             {
                 Vector3 spawnPosition = Vector3.zero;
                 while (Vector3.Equals(spawnPosition, Vector3.zero))
@@ -40,7 +51,7 @@ public class MonsterBaseSpawning : MonoBehaviour
                 }
 
                 Instantiate(monster, spawnPosition, Quaternion.identity, parent.transform);
-                numSpawned++;
+                numCurrentlyAlive++;
 
                 int batchSpawning = monsterScript.GetAdditionalSpawning();
                 // Spawn monsters in batches if applicable
@@ -48,14 +59,16 @@ public class MonsterBaseSpawning : MonoBehaviour
                 {
                     for (int i = 0; i < batchSpawning; i++)
                     {
-                        if (numSpawned < baseSpawningNumber)
+                        if (numCurrentlyAlive < baseSpawningNumber)
                         {
                             Instantiate(monster, spawnPosition + Vector3.right * (i + 1), Quaternion.identity, parent.transform);
-                            numSpawned++;
+                            numCurrentlyAlive++;
                         }
                     }
                 }
             }
+
+            numOfAliveMonsters[name] = numCurrentlyAlive;
         }
     }
 
