@@ -51,6 +51,7 @@ public class UIController : SingletonGeneric<UIController>
     public bool isMenuActive = false;
     public bool isFireplaceActive = false;
     public bool isPaused = false;
+    public bool isPlayerInVehicle = false;
     private bool deathMenuActive = false;
     private bool anyUIActive = false;
     private bool anyUIWasActive = false;
@@ -446,8 +447,13 @@ public class UIController : SingletonGeneric<UIController>
 
         if (!isMenuActive)
         {
+            // Exit the truck if possible
+            if (Input.GetKeyDown(interactKeyCode) && isPlayerInVehicle)
+            {
+                DrivingManager.instance.HandlePlayerLeaveVehicle();
+            }
             // Toggle fireplace if menu is not active
-            if (Input.GetKeyDown(interactKeyCode) && currentInteractable != null)
+            else if (Input.GetKeyDown(interactKeyCode) && currentInteractable != null)
             {
                 currentInteractable.OnPlayerInteract();
             }
