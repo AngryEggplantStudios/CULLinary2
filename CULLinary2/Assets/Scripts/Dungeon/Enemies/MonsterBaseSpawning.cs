@@ -61,7 +61,7 @@ public class MonsterBaseSpawning : MonoBehaviour
 
     private bool FindRandomPosition(out Vector3 result)
     {
-        Vector3 randomPos = new Vector3(Random.Range(-mapSize / 3f, mapSize / 3f), 0, Random.Range(-mapSize / 3f, mapSize / 3f));
+        Vector3 randomPos = new Vector3(Random.Range(-mapSize / 4f, mapSize / 4f), 0, Random.Range(-mapSize / 4f, mapSize / 4f));
         NavMeshHit hit;
         float maxDist = 2f;
         if (NavMesh.SamplePosition(randomPos, out hit, maxDist, NavMesh.AllAreas))

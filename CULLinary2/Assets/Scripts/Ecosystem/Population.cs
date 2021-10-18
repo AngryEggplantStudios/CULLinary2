@@ -233,8 +233,7 @@ public class Population
 
     public int GetBaseSpawningNumber()
     {
-        // return currentNumber / 2;
-        return 0;
+        return currentNumber / 2;
     }
 
 }

@@ -15,43 +15,6 @@ public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
         yield return null;
     }
 
-    public static void CheckIfExtinct(MonsterName name)
-    {
-        // Updates population level if found to be extinct and population level is not already Extinct
-
-        Population pop = EcosystemManager.GetPopulation(name);
-        if (pop.GetLevel() == PopulationLevel.Extinct)
-        {
-            return;
-        }
-
-        Debug.Log("check if extinct " + pop.GetCurrentNumber());
-        if (pop.GetCurrentNumber() == 0)
-        {
-            EcosystemManager.SetExtinct(name);
-            Debug.Log("extinct " + name);
-        }
-
-        // List<GameObject> spawners = GetSpawnersByName(name);
-        // bool isExtinct = true;
-
-        // foreach (GameObject spawner in spawners)
-        // {
-        //     MonsterSpawn monsterSpawn = spawner.GetComponent<MonsterSpawn>();
-        //     if (monsterSpawn.GetSpawnCap() > 0)
-        //     {
-        //         isExtinct = false;
-        //         break;
-        //     }
-        // }
-
-        // if (isExtinct)
-        // {
-        //     // All spawn caps for this enemy are 0
-        //     EcosystemManager.SetExtinct(name);
-        // }
-    }
-
     public static bool IsOverpopulated(MonsterName name)
     {
         Population pop = EcosystemManager.GetPopulation(name);
