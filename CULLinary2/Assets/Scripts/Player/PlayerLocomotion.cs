@@ -42,6 +42,10 @@ public class PlayerLocomotion : PlayerAction
 
     private void Run(Vector3 direction, bool isGrounded = true)
     {
+        if (Time.timeScale == 0f)
+        {
+            return;
+        }
         playerStamina.SetStaminaCircleActive(true);
         if (playerStamina && !playerStamina.HasStamina(staminaCost))
         {

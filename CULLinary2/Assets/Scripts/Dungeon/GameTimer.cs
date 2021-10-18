@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -58,6 +59,42 @@ public class GameTimer : SingletonGeneric<GameTimer>
             return;
 
         gameTime += Time.deltaTime * timeScale / 86400;
+        ClampTimeAndUpdateObjects();
+    }
+
+    // Returns the number of game minutes passed since the last frame update
+    public float GameMinutesPassedSinceLastUpdate()
+    {
+        return Time.deltaTime * timeScale / 60;
+    }
+
+    // Skip ahead by a certain number of minutes
+    // 
+    // Note: Number of minutes is in game time, not actual time!!
+    // 
+    // Action toRunWhenSkipping will be executed when the 
+    // screen fades in, and before the screen fades out
+    public void SkipTime(int minutes, Action toRunWhenSkipping)
+    {
+        if (gameTime < 1.0f)
+        {
+            SceneTransitionManager.instance.FadeInAndFadeOut(() =>
+            {
+                AddMinutes(minutes);
+                toRunWhenSkipping();
+            });
+        }
+    }
+
+    // Adds a certain number of minutes to the clock
+    private void AddMinutes(int minutes)
+    {
+        gameTime += (float)minutes / 1440;
+        ClampTimeAndUpdateObjects();
+    }
+
+    private void ClampTimeAndUpdateObjects()
+    {
         if (gameTime > 1f)
         {
             gameTime = 1f;
@@ -113,13 +150,14 @@ public class GameTimer : SingletonGeneric<GameTimer>
     private void ShowEndOfDayMenu()
     {
         UIController.instance.ShowEndOfDayMenu();
-        SaveGame();
+        //Restore health here
         GoToNextDay();
+        SaveGame();
     }
 
     public void SaveGame()
     {
-        PlayerManager.instance.currentDay = dayNum + 1;
+        PlayerManager.instance.currentDay = dayNum;
         EcosystemManager.SaveEcosystemPopulation();
         PlayerManager.instance.SaveData(InventoryManager.instance.itemListReference);
     }

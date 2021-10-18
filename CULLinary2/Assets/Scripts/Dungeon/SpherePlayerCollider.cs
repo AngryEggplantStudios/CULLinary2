@@ -34,6 +34,7 @@ public class SpherePlayerCollider : MonoBehaviour
         {
             playerWithinRange = true;
             popUpPrompts.SetActive(true);
+            parentInteractable.OnPlayerEnter();
             UIController.instance.SetPlayerInteractable(parentInteractable);
         }
     }

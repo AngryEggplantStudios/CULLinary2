@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 using System.Collections;
 
 /// <summary>
@@ -29,6 +30,9 @@ public class FadeInFadeOut : MonoBehaviour
 
     public delegate void FinishedDelegate(FadeAction type);
     public event FinishedDelegate OnFinished;
+
+    // To be run when the screen is faded in, and before the screen fades out
+    public Action OnPauseBetweenFadeInAndFadeOut;
 
     public void OnEnable()
     {
@@ -98,27 +102,30 @@ public class FadeInFadeOut : MonoBehaviour
         OnFinished?.Invoke(FadeAction.FadeOut);
     }
 
+    // Uses Time.unscaledDeltaTime instead to run when time is paused
     IEnumerator FadeInAndOut()
     {
         // loop over 1 second
-        for (float i = 0; i <= 1; i += Time.deltaTime)
+        for (float i = 0; i <= 1; i += Time.unscaledDeltaTime)
         {
             // set color with i as alpha
-            img.color = new Color(1, 1, 1, i);
+            img.color = new Color(img.color.r, img.color.g, img.color.b, i);
             yield return null;
         }
 
+        OnPauseBetweenFadeInAndFadeOut();
         //Temp to Fade Out
-        yield return new WaitForSeconds(fadePause);
+        yield return new WaitForSecondsRealtime(fadePause);
 
         // loop over 1 second backwards
-        for (float i = 1; i >= 0; i -= Time.deltaTime)
+        for (float i = 1; i >= 0; i -= Time.unscaledDeltaTime)
         {
             // set color with i as alpha
-            img.color = new Color(1, 1, 1, i);
+            img.color = new Color(img.color.r, img.color.g, img.color.b, i);
             yield return null;
         }
         isFinished = true;
+        OnFinished?.Invoke(FadeAction.FadeInAndOut);
     }
 
     IEnumerator FadeOutAndIn()

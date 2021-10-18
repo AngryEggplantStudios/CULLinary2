@@ -145,8 +145,7 @@ public class PlayerSlash : PlayerAction
         playerMelee.StopInvoking();
         weaponTrail.emitting = false;
 
-
-        playerSkill.StopInvoking(); //???
+        playerSkill.StopInvoking(); //Ran into the problem of the player being stuck when performing secondary attack right after melee. Hard to reproduce?
     }
 
     public void AttackEnd()
@@ -162,7 +161,6 @@ public class PlayerSlash : PlayerAction
         playerMelee.StopInvoking();
         weaponCollider.enabled = false;
         weaponTrail.emitting = false;
-
 
         playerSkill.StopInvoking(); //???
     }

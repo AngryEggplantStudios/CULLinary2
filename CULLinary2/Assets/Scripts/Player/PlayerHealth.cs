@@ -17,6 +17,7 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
     [SerializeField] private Animator healthBarAnimator;
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private Renderer rend;
+    [SerializeField] private GameObject healIcon;
 
     [Header("Variables")]
     [SerializeField] private float invincibilityDurationSeconds;
@@ -29,6 +30,8 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
 
     private bool isInvincible = false;
     private bool isDrowningActivated = false;
+    // Check if player is close to campfire
+    private bool isCloseToCampfire = false;
     private Color[] originalColors;
     private Color onDamageColor = Color.white;
     private float invincibilityDeltaTime = 0.025f;
@@ -68,6 +71,14 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
             HandleHit(drowningDamage, true);
         }
 
+        if (isCloseToCampfire)
+        {
+            IncreaseHealth(GameTimer.instance.GameMinutesPassedSinceLastUpdate() * (PlayerManager.instance
+                ? PlayerManager.instance.campfireRegenerationRate
+                : 0.0f
+            ));
+        }
+
         //Flash health bar if below 25%
         float currentHealthAsPercentage = PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth;
         healthBarAnimator.SetBool("flashing", currentHealthAsPercentage < thresholdHealth);
@@ -82,7 +93,7 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
 
     public bool IncreaseHealth(float health)
     {
-        health = health < 0 ? 0 : Mathf.CeilToInt(health);
+        // health = health < 0 ? 0 : Mathf.CeilToInt(health);
         PlayerManager.instance.currentHealth = Mathf.Min(PlayerManager.instance.currentHealth + health, PlayerManager.instance.maxHealth);
         float currentHealth = PlayerManager.instance.currentHealth;
         float maxHealth = PlayerManager.instance.maxHealth;
@@ -127,8 +138,41 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
             return true;
         }
 
-        StartCoroutine(BecomeTemporarilyInvincible());
+        StartCoroutine(BecomeTemporarilyInvincibleWithFlash(invincibilityDurationSeconds));
         return true;
+    }
+
+    // Rest for 1 hour (hard-coded)
+    public void HandlePlayerRest()
+    {
+        if (isCloseToCampfire)
+        {
+            int restMinutes = 60;
+            GameTimer.instance.SkipTime(restMinutes, () =>
+                IncreaseHealth(restMinutes * (PlayerManager.instance
+                    ? PlayerManager.instance.campfireRegenerationRate
+                    : 0.0f
+                ))
+            );
+        }
+        else
+        {
+            Debug.Log("PlayerHealth.cs: Trying to rest when not close to campfire!");
+        }
+    }
+
+    // Called when the player enters a campfire to heal
+    public void OnPlayerEnterCampfire()
+    {
+        isCloseToCampfire = true;
+        healIcon.SetActive(true);
+    }
+
+    // Called when the player leaves a campfire to stop healing
+    public void OnPlayerLeaveCampfire()
+    {
+        isCloseToCampfire = false;
+        healIcon.SetActive(false);
     }
 
     private void AnimTakeDamage()
@@ -172,7 +216,14 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         drowningAlert.transform.position = pos;
     }
 
-    private IEnumerator BecomeTemporarilyInvincible()
+    public IEnumerator BecomeTemporarilyInvincible(float invincibilityDurationSeconds)
+    {
+        isInvincible = true;
+        yield return new WaitForSeconds(invincibilityDurationSeconds);
+        isInvincible = false;
+    }
+
+    public IEnumerator BecomeTemporarilyInvincibleWithFlash(float invincibilityDurationSeconds)
     {
         isInvincible = true;
         bool isFlashing = false;
