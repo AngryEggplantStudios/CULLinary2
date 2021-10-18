@@ -2,26 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoneyLoot : MonoBehaviour
+public class MoneyLoot : Loot
 {
     [SerializeField] private int moneyAmount;
 
-    private Rigidbody rb;
-
-    void Start()
+    protected override void OnPickup(PlayerPickup playerPickup)
     {
-        rb = GetComponent<Rigidbody>();
-        rb.AddForce(Vector3.up * 20, ForceMode.Impulse);
-    }
+        PlayerManager.instance.currentMoney += moneyAmount;
+        playerPickup.PickUpMoney(moneyAmount);
 
-    private void OnTriggerEnter(Collider other)
-    {
-        PlayerPickup playerPickup = other.GetComponent<PlayerPickup>();
-        if (playerPickup != null)
-        {
-            PlayerManager.instance.currentMoney += moneyAmount;
-            playerPickup.PickUpMoney(moneyAmount);
-            Destroy(gameObject.transform.parent.gameObject);
-        }
+        LootManager.instance.removeLoot(this.gameObject);
+        Destroy(gameObject);
     }
 }

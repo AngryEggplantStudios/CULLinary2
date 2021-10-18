@@ -11,6 +11,7 @@ public class Chest : PlayerInteractable
     public ChestLoot[] loot;
 
     Animator animator;
+    bool lootable = true;
 
     void Start()
     {
@@ -29,6 +30,9 @@ public class Chest : PlayerInteractable
 
     public override void OnPlayerInteract()
     {
+        if (!lootable) return;
+
+        lootable = false;
         StartCoroutine(OpenChest());
     }
 
