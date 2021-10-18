@@ -36,7 +36,15 @@ public class PlayerData
         criticalChance = 0;
         evasionChance = 0;
         consumables = new int[3] { 0, 0, 0 }; //7,8,9 indices
-        recipesUnlocked = new bool[3] { true, true, true };
+        recipesUnlocked = new bool[36] {
+            true, true, true, true, true,
+            false, true, true, true, true,
+            true, false , false, false, false,
+            false, false, false, false , false,
+            false, false, false, false , false,
+            false, false, false, false , false,
+            false, false, false, false , false,
+            false, };
         upgradesArray = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         currentDay = 1;
         weaponSkillArray = new int[11] { 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 };
