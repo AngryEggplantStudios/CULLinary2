@@ -352,6 +352,15 @@ MonoBehaviour:
   minDist: 25
   timeBetweenAttacks: 3
   lineTest: 0
+  goingBackToStartTimer: 0
+  canAttack: 1
+  animator: {fileID: 0}
+  navMeshAgent: {fileID: 0}
+  timer: 0
+  startingPosition: {x: 0, y: 0, z: 0}
+  reachedPositionDistance: 0
+  monsterScript: {fileID: 0}
+  lineRenderer: {fileID: 0}
 --- !u!114 &6106420228487427490
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -367,8 +376,8 @@ MonoBehaviour:
   monsterHealth: 150
   distanceTriggered: 16
   stopChase: 20
-  lootDropped: {fileID: 5304752682466731814, guid: 94eed080e57614e9d84fdd0d2185bd37, type: 3}
-  additionalSpawningNumbers: 0
+  lootDropped: {fileID: 8706522679418664788, guid: 6077909beef467c47aa69ed987e9d336, type: 3}
+  additionalSpawning: 0
   spawner: {fileID: 0}
   hpBarPrefab: {fileID: 1085209639500972291, guid: 4614e0511cb49b14ebf0c58217d9d222, type: 3}
   damageCounterPrefab: {fileID: 1085209639500972291, guid: 24f41dda89c7bd648bd2796ac669721e, type: 3}
@@ -391,6 +400,8 @@ MonoBehaviour:
   texturesForFlash: []
   transparentMaterials:
   - {fileID: 2100000, guid: 3fdb8f5ce4608104fb04a39514808f91, type: 2}
+  currentState: 0
+  playerTransform: {fileID: 0}
 --- !u!114 &7510566642343784119
 MonoBehaviour:
   m_ObjectHideFlags: 0
