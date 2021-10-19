@@ -88,6 +88,7 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         //Check if player is dead
         if (PlayerManager.instance.currentHealth <= 0f && !deathIsCalled)
         {
+            BuffManager.instance.ClearBuffManager();
             deathIsCalled = true;
             Die();
         }
