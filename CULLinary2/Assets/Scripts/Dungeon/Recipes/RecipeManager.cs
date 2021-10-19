@@ -20,6 +20,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
     [Header("Item Pop-Up")]
     // For cooking, to play a sound and show a pop-up
     public PlayerPickup pickup;
+    public AudioSource cookingSound;
 
     private List<Recipe> innerUnlockedRecipesList = new List<Recipe>();
     private List<Recipe> innerLockedRecipesList = new List<Recipe>();
@@ -41,7 +42,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
 
     // List of all campfire locations for the minimap
     private List<Transform> campfires = new List<Transform>();
-    
+
 
     void Start()
     {
@@ -135,11 +136,15 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
 
         if (InventoryManager.instance.RemoveIdsFromInventory(r.GetIngredientIds()))
         {
+            // Sucessfully cooked!
+
             // UI will be updated in AddItem
             cookingInfoDisplay.IncreaseInventoryCountAndSetIngredients();
             InventoryManager.instance.AddItem(r.cookedDishItem);
             // Create a pop-up for the player
             pickup?.PickUp(r.cookedDishItem);
+            // Player cooking sfx
+            cookingSound.Play();
         }
         else
         {
@@ -199,7 +204,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         }
 
         for (int i = 0; i < innerUnlockedRecipesList.Count; i++)
-        {   
+        {
             Recipe r = innerUnlockedRecipesList[i];
             List<(int, int)> ingIds = r.GetIngredientIds();
             List<(int, int, int)> invReqCount = new List<(int, int, int)>();
@@ -251,7 +256,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             .transform
             .GetChild(currentlySelectedRecipeIndex)
             .GetComponent<RecipeUISlot>()
-            .DisplayRecipe();     
+            .DisplayRecipe();
         cookingRecipesContainer
             .transform
             .GetChild(currentlySelectedCookingIndex)

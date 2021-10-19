@@ -25,6 +25,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
     [SerializeField] private Button upgradeButton;
     [SerializeField] private TMP_Text consumableCounterText;
     [SerializeField] private GameObject itemPanel;
+    [SerializeField] private AudioSource kaching;
 
     private int selectedSlotId = -1;
     private List<ShopSlot> slots;
@@ -110,6 +111,8 @@ public class ShopManager : SingletonGeneric<ShopManager>
                     break;
             }
         }
+
+        kaching.Play();
 
         // Update all UIs
         PlayerManager.instance.currentMoney -= itemPrice;

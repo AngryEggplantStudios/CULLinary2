@@ -19,6 +19,7 @@ public class BGM : MonoBehaviour
         if (_instance != null && _instance != this)
         {
             BGM.Instance.SetVolume(volume);
+            BGM.Instance.SetTrack(track);
             Destroy(this.gameObject);
         }
         else
