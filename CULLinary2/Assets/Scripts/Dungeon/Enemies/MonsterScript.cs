@@ -62,6 +62,7 @@ public class MonsterScript : Monster
     // Store refference to collider so can disable when death
     private Collider monsterCollider;
     private bool deathCoroutine = false;
+    private bool wasAggressive = false;
     // Events & Delegates
 
     public delegate void EnemyIdleDelegate();
@@ -121,6 +122,18 @@ public class MonsterScript : Monster
     {
         SetupHpBar();
         SetupFlash();
+
+        foreach (GameObject ui in uiElements)
+        {
+            if (ui != null)
+            {
+                ui.SetActive(false);
+            }
+            else
+            {
+                uiElements.Remove(null);
+            }
+        }
     }
 
     private void Update()
@@ -130,7 +143,8 @@ public class MonsterScript : Monster
             playerTransform = GameObject.FindGameObjectWithTag("Player").transform; //Temp fix
         }
 
-        checkIfDead();
+        if (checkIfDead()) return;
+
         bool aggressive = false;
 
         switch (currentState)
@@ -168,6 +182,24 @@ public class MonsterScript : Monster
         // UI
         if (aggressive)
         {
+            if (!wasAggressive)
+            {
+                wasAggressive = aggressive;
+                EnemyAggressionManager.Instance.Add(1);
+
+                foreach (GameObject ui in uiElements)
+                {
+                    if (ui != null)
+                    {
+                        ui.SetActive(true);
+                    }
+                    else
+                    {
+                        uiElements.Remove(null);
+                    }
+                }
+            }
+
             Vector2 screenPos = playerCamera.WorldToScreenPoint(transform.position);
             if (screenPos != Vector2.zero)
             {
@@ -196,8 +228,11 @@ public class MonsterScript : Monster
                 }
             }
         }
-        else
+        else if (wasAggressive)
         {
+            wasAggressive = aggressive;
+            EnemyAggressionManager.Instance.Add(-1);
+
             foreach (GameObject ui in uiElements)
             {
                 if (ui != null)
@@ -212,7 +247,7 @@ public class MonsterScript : Monster
         }
     }
 
-    public void checkIfDead()
+    public bool checkIfDead()
     {
         if (this.currentHealth <= 0)
         {
@@ -222,7 +257,10 @@ public class MonsterScript : Monster
                 deathCoroutine = true;
                 DieAnimation();
             }
+
+            return true;
         }
+        return false;
     }
 
     public void SetStateMachine(MonsterState newState)
@@ -308,13 +346,22 @@ public class MonsterScript : Monster
         animator.ResetTrigger("attack");
         animator.SetBool("isMoving", false);
         animator.SetTrigger("death");
+
         // Disable collider to prevent spam hitting damage
         monsterCollider.enabled = false;
 
+        // Death audio
         audioSourceAttack.clip = deathSound;
         audioSourceAttack.volume = 0.7f;
         audioSourceAttack.pitch = Random.Range(1f, 2f);
         audioSourceAttack.Play();
+
+        // Handle aggression
+        if (wasAggressive)
+        {
+            wasAggressive = false;
+            EnemyAggressionManager.Instance.Add(-1);
+        }
     }
 
     public void Die()
