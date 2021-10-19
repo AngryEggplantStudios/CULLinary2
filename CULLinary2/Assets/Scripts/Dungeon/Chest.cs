@@ -6,6 +6,7 @@ public class Chest : PlayerInteractable
 {
     public SpherePlayerCollider spCollider;
     public Transform lootSpawnPoint;
+    public AudioSource openAudio;
     public GameObject[] spawnOnOpen;
     public GameObject[] destroyOnOpen;
     public ChestLoot[] loot;
@@ -43,6 +44,8 @@ public class Chest : PlayerInteractable
     IEnumerator OpenChest()
     {
         animator.enabled = true;
+        openAudio.Play();
+
         foreach (GameObject obj in spawnOnOpen)
         {
             Instantiate(obj, transform.position, transform.rotation);
@@ -71,6 +74,7 @@ public class Chest : PlayerInteractable
                 yield return new WaitForSeconds(0.2f);
             }
         }
+
         yield return null;
     }
 }
