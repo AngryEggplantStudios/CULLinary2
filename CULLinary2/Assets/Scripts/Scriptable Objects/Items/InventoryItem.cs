@@ -5,9 +5,21 @@ public class InventoryItem : Item
 {
     public int inventoryItemId;
     public bool isConsumable;
-    public float healHpAmount;
-    public float increaseMaxHpAmount;
-    public float increaseBaseDamageAmount;
+    public Sprite buffIcon;
+    [Header("Instant buffs")]
+    public float healHpAmount; // Heals for ___
+    public float increaseMaxHpAmount; // Increase max hp for ___
+    public float increaseBaseDamageAmount; // Increase base damage
+    [Header("Timed Buffs")]
+    public int buffDuration;
+    public bool isUnlimitedStamina; // Unlimited stamina for ____ s
+    public bool isPlayerInvincible; // Unlimited health for ____ s
+    public bool buffBaseDamage; // Double base damage for ____ s
+    public bool buffMoneyBonus; // Double money earnings for ____ s
+    public int evasionBoostAmount; // Boost evasion chance by ____ for ____ s
+    public int critBoostAmount; // Boost crit chance by ____ for ____ s
+    public BuffType buffType;
+
     public string description = "This is a new item";
 
     // Prints the consume effect nicely as a string
@@ -17,9 +29,9 @@ public class InventoryItem : Item
         float epsilon = 0.0001f;
 
         // All must have same length
-        float[] possibleBoosts = {healHpAmount, increaseMaxHpAmount, increaseBaseDamageAmount};
-        string[] prefixes = {"Heals for ", "+", "+"};
-        string[] suffixes = {"", " max health", " base damage"};
+        float[] possibleBoosts = { healHpAmount, increaseMaxHpAmount, increaseBaseDamageAmount };
+        string[] prefixes = { "Heals for ", "+", "+" };
+        string[] suffixes = { "", " max health", " base damage" };
 
         string effectString = "None";
         bool stringModified = false;
