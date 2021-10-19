@@ -110,44 +110,48 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
             slots[selectedSlotId].gameObject.GetComponent<Outline>().enabled = false;
             ResetSlot();
             InventoryManager.instance.RemoveItem(item);
-            switch (item.buffType)
+            foreach (BuffType buffType in item.buffTypes)
             {
-                case BuffType.HEAL_HEALTH:
-                    PlayerHealth.instance.IncreaseHealth(item.healHpAmount);
-                    break;
-                case BuffType.INCREASE_MAX_HEALTH:
-                    PlayerManager.instance.maxHealth += item.increaseMaxHpAmount;
-                    UIController.instance.UpdateFixedHUD();
-                    break;
-                case BuffType.INCREASE_BASE_DAMAGE:
-                    PlayerManager.instance.meleeDamage += item.increaseBaseDamageAmount;
-                    UIController.instance.UpdateFixedHUD();
-                    break;
-                case BuffType.BUFF_BASE_DAMAGE:
-                    BuffManager.instance.AddBuff(item.buffIcon, item.buffDuration, "Melee Boost");
-                    StartCoroutine(PlayerManager.instance.DoubleMeleeDamage(item.buffDuration));
-                    break;
-                case BuffType.BUFF_MONEY_BONUS:
-                    BuffManager.instance.AddBuff(item.buffIcon, item.buffDuration, "Double Earnings");
-                    StartCoroutine(OrdersManager.instance.ToggleDoubleEarnings(item.buffDuration));
-                    break;
-                case BuffType.BUFF_UNLIMITED_STAMINA:
-                    BuffManager.instance.AddBuff(item.buffIcon, item.buffDuration, "Unlimited Stamina");
-                    StartCoroutine(PlayerStamina.instance.ToggleUnlimitedStamina(item.buffDuration));
-                    break;
-                case BuffType.BUFF_INVINCIBILITY:
-                    BuffManager.instance.AddBuff(item.buffIcon, item.buffDuration, "Unlimited Health");
-                    StartCoroutine(PlayerHealth.instance.MakePlayerInvincibleByBuff(item.buffDuration));
-                    break;
-                case BuffType.BUFF_EVASION_BOOST:
-                    BuffManager.instance.AddBuff(item.buffIcon, item.buffDuration, "Evasion Boost");
-                    StartCoroutine(PlayerManager.instance.ToggleEvasionBoost(item.evasionBoostAmount, item.buffDuration));
-                    break;
-                case BuffType.BUFF_CRIT_BOOST:
-                    BuffManager.instance.AddBuff(item.buffIcon, item.buffDuration, "Crit Boost");
-                    StartCoroutine(PlayerManager.instance.ToggleCritBoost(item.critBoostAmount, item.buffDuration));
-                    break;
+                switch (buffType)
+                {
+                    case BuffType.HEAL_HEALTH:
+                        PlayerHealth.instance.IncreaseHealth(item.healHpAmount);
+                        break;
+                    case BuffType.INCREASE_MAX_HEALTH:
+                        PlayerManager.instance.maxHealth += item.increaseMaxHpAmount;
+                        UIController.instance.UpdateFixedHUD();
+                        break;
+                    case BuffType.INCREASE_BASE_DAMAGE:
+                        PlayerManager.instance.meleeDamage += item.increaseBaseDamageAmount;
+                        UIController.instance.UpdateFixedHUD();
+                        break;
+                    case BuffType.BUFF_BASE_DAMAGE:
+                        BuffManager.instance.AddBuff(item.buffIcon, item.buffDuration, "Melee Boost");
+                        StartCoroutine(PlayerManager.instance.DoubleMeleeDamage(item.buffDuration));
+                        break;
+                    case BuffType.BUFF_MONEY_BONUS:
+                        BuffManager.instance.AddBuff(item.buffIcon, item.buffDuration, "Double Earnings");
+                        StartCoroutine(OrdersManager.instance.ToggleDoubleEarnings(item.buffDuration));
+                        break;
+                    case BuffType.BUFF_UNLIMITED_STAMINA:
+                        BuffManager.instance.AddBuff(item.buffIcon, item.buffDuration, "Unlimited Stamina");
+                        StartCoroutine(PlayerStamina.instance.ToggleUnlimitedStamina(item.buffDuration));
+                        break;
+                    case BuffType.BUFF_INVINCIBILITY:
+                        BuffManager.instance.AddBuff(item.buffIcon, item.buffDuration, "Unlimited Health");
+                        StartCoroutine(PlayerHealth.instance.MakePlayerInvincibleByBuff(item.buffDuration));
+                        break;
+                    case BuffType.BUFF_EVASION_BOOST:
+                        BuffManager.instance.AddBuff(item.buffIcon, item.buffDuration, "Evasion Boost");
+                        StartCoroutine(PlayerManager.instance.ToggleEvasionBoost(item.evasionBoostAmount, item.buffDuration));
+                        break;
+                    case BuffType.BUFF_CRIT_BOOST:
+                        BuffManager.instance.AddBuff(item.buffIcon, item.buffDuration, "Crit Boost");
+                        StartCoroutine(PlayerManager.instance.ToggleCritBoost(item.critBoostAmount, item.buffDuration));
+                        break;
+                }
             }
+
         }
     }
 

@@ -18,7 +18,7 @@ public class InventoryItem : Item
     public bool buffMoneyBonus; // Double money earnings for ____ s
     public int evasionBoostAmount; // Boost evasion chance by ____ for ____ s
     public int critBoostAmount; // Boost crit chance by ____ for ____ s
-    public BuffType buffType;
+    public BuffType[] buffTypes;
 
     public string description = "This is a new item";
 
