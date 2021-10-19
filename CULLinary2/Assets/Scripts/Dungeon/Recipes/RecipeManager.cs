@@ -41,7 +41,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
 
     // List of all campfire locations for the minimap
     private List<Transform> campfires = new List<Transform>();
-    
+
 
     void Start()
     {
@@ -65,7 +65,15 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
     {
         bool[] recipesUnlocked = PlayerManager.instance
             ? PlayerManager.instance.recipesUnlocked
-            : new bool[3] { true, true, true };
+            : new bool[36] {
+                true, true, true, true, true,
+                false, true, true, true, true,
+                true, false , false, false, false,
+                false, false, false, false , false,
+                false, false, false, false , false,
+                false, false, false, false , false,
+                false, false, false, false , false,
+                false, };
 
         for (int id = 0; id < recipesUnlocked.Length; id++)
         {
@@ -199,7 +207,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         }
 
         for (int i = 0; i < innerUnlockedRecipesList.Count; i++)
-        {   
+        {
             Recipe r = innerUnlockedRecipesList[i];
             List<(int, int)> ingIds = r.GetIngredientIds();
             List<(int, int, int)> invReqCount = new List<(int, int, int)>();
@@ -251,7 +259,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             .transform
             .GetChild(currentlySelectedRecipeIndex)
             .GetComponent<RecipeUISlot>()
-            .DisplayRecipe();     
+            .DisplayRecipe();
         cookingRecipesContainer
             .transform
             .GetChild(currentlySelectedCookingIndex)

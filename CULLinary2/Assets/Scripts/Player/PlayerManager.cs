@@ -12,7 +12,15 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     public int criticalChance = 0;
     public int evasionChance = 0;
     public int[] consumables = new int[3] { 0, 0, 0 };
-    public bool[] recipesUnlocked = new bool[3] { true, true, true }; //use index
+    public bool[] recipesUnlocked = new bool[36] {
+        true, true, true, true, true,
+        false, true, true, true, true,
+        true, false , false, false, false,
+        false, false, false, false , false,
+        false, false, false, false , false,
+        false, false, false, false , false,
+        false, false, false, false , false,
+        false, }; //use index
     public int[] upgradesArray = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     public List<InventoryItem> itemList = new List<InventoryItem>();
     public int currentMoney;
@@ -56,7 +64,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.weaponSkillArray = weaponSkillArray;
         playerData.currentWeaponHeld = currentWeaponHeld;
         playerData.currentSecondaryHeld = currentSecondaryHeld;
-        playerData.campfireRegenerationRate =  campfireRegenerationRate;
+        playerData.campfireRegenerationRate = campfireRegenerationRate;
         SaveSystem.SaveData(playerData);
     }
 
