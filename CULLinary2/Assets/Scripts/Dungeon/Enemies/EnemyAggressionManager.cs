@@ -7,8 +7,8 @@ public class EnemyAggressionManager : MonoBehaviour
     private static EnemyAggressionManager _instance;
     public static EnemyAggressionManager Instance { get { return _instance; } }
 
-    int aggressiveEnemies = 0;
-    bool aggro = false;
+    int aggressiveEnemies;
+    bool aggro;
 
     private void Awake()
     {
@@ -20,6 +20,9 @@ public class EnemyAggressionManager : MonoBehaviour
         {
             _instance = this;
         }
+
+        aggressiveEnemies = 0;
+        aggro = false;
     }
 
     public void Add(int i)
