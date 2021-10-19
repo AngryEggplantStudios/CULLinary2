@@ -214,6 +214,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             bool areItemsInInventory =
                 InventoryManager.instance.CheckIfItemsExist(ingIds, out invReqCount);
             int numberOfOrders = GetNumberOfOrders(r.recipeId);
+            CheckIfRecipeHasCookedDish(r);
             int numberInInventory = InventoryManager.instance.GetAmountOfItem(r.cookedDishItem.inventoryItemId);
 
             // Add to Recipes UI
@@ -238,6 +239,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
 
         foreach (Recipe r in innerLockedRecipesList)
         {
+            CheckIfRecipeHasCookedDish(r);
             GameObject recipeEntry = Instantiate(recipeSlot,
                                                  new Vector3(0, 0, 0),
                                                  Quaternion.identity,
@@ -265,5 +267,13 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             .GetChild(currentlySelectedCookingIndex)
             .GetComponent<CookingUISlot>()
             .SelectRecipeForCooking();
+    }
+
+    private void CheckIfRecipeHasCookedDish(Recipe r)
+    {
+        if (r.cookedDishItem == null)
+        {
+            Debug.LogError("RecipeManager.cs: Cooked dish item for recipe ID " + r.recipeId + " not set!");
+        }
     }
 }
