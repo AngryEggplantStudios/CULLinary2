@@ -36,8 +36,16 @@ public class CarController : MonoBehaviour
 
     [Header("Reverse Lights")]
     [SerializeField] private GameObject reverseLights;
-    [Header("Audio Sources")]
-    [SerializeField] private AudioSource engineSound;
+    [Header("Audio Sources (Loops)")]
+    [SerializeField] private AudioSource[] gearEngineSound;
+    [SerializeField] private AudioSource reverseSound;
+    [SerializeField] private AudioSource brakeSound;
+    [Header("Audio Sources (Play and Forget)")]
+    [SerializeField] private AudioSource switchGearSound;
+    [Header("Other Audio Constants")]
+    // Divide the current acceleration by this value for volume
+    [SerializeField] private float accelToAudioVolumeDivisor = 10000.0f; 
+    [SerializeField] private float[] gearAccelMinVolume; 
 
 
     private Rigidbody rigidBody;
@@ -59,7 +67,9 @@ public class CarController : MonoBehaviour
     private float gearTimeCounter = 0.0f;
 
     // For floating-point comparison
-    private float epsilon = 0.05f;
+    private float epsilon = 0.001f;
+    // For switching between brake and reverse (isMoving)
+    private float stoppingEpsilon = 0.05f;
 
     // For playing sounds
     private float prevSpeed = 0.0f;
@@ -80,7 +90,9 @@ public class CarController : MonoBehaviour
         {
             isSwitchingGears = false;
             gearSwitchingTime = 0.0f;
+            gearEngineSound[currentGearLevel].volume = 0.0f;
             currentGearLevel++;
+            switchGearSound.Play();
         }
         else if (isSwitchingGears && isBraking)
         {
@@ -94,8 +106,12 @@ public class CarController : MonoBehaviour
         }
         else
         {
-            isSwitchingGears = !isReversing && currentGearLevel + 1 < numberOfGears &&
-                               !IsSpeedOkayForCurrentGear();
+            if (!isReversing && currentGearLevel + 1 < numberOfGears &&
+                !IsSpeedOkayForCurrentGear())
+            {
+                isSwitchingGears = true;
+                gearEngineSound[currentGearLevel].volume = 0.0f;
+            }
         }
 
         steeringInput = Input.GetAxis("Horizontal");
@@ -133,21 +149,44 @@ public class CarController : MonoBehaviour
         {
             isReversing = !isReversing;
             isAbleToSwitchToReverse = false;
+            if (isReversing)
+            {
+                reverseSound.Play();
+            }
+            else
+            {
+                reverseSound.Stop();
+            }
         }
 
-        float speedDiff = rigidBody.velocity.magnitude - prevSpeed;
-        if (speedDiff > epsilon)
-        {
-            engineSound.volume = speedDiff / 25;
-            engineSound.Play();
-        }
-        prevSpeed = rigidBody.velocity.magnitude;
+        brakeSound.volume = Mathf.Min(1.0f, currentBrakeForce / accelToAudioVolumeDivisor);
     }
 
-    // Checks if the car is moving
+    void OnEnable()
+    {
+        brakeSound.Play();
+        brakeSound.volume = 0.0f;
+
+        foreach (AudioSource asrc in gearEngineSound)
+        {
+            asrc.Play();
+            asrc.volume = 0.0f;
+        }
+    }
+
+    void OnDisable()
+    {
+        brakeSound.Stop();
+        foreach (AudioSource asrc in gearEngineSound)
+        {
+            asrc.Stop();
+        }
+    }
+
+    // Checks if the car is moving, relies on stoppingEpsilon
     public bool IsMoving()
     {
-        return rigidBody.velocity.magnitude > epsilon;
+        return rigidBody.velocity.magnitude > stoppingEpsilon;
     }
 
     // Checks if the speed is within limits for the current gear level
@@ -202,10 +241,16 @@ public class CarController : MonoBehaviour
         float accelerationForce = isSwitchingGears ? 0.0f : GetTorque();
         Debug.Log("Speed: " + rigidBody.velocity.magnitude + ", Gear: " + currentGearLevel + ", Accel: " + accelerationForce +
         ", PedalInput: " + pedalInput);
+        float pedalAccel = pedalInput * accelerationForce;
+
+        AudioSource engineSound = gearEngineSound[currentGearLevel];
+        float minGearVol = gearAccelMinVolume[currentGearLevel];
+        engineSound.volume = Mathf.Min(1.0f, (1.0f - minGearVol) * pedalAccel / accelToAudioVolumeDivisor +
+                             minGearVol);
 
         // apply force only to the front wheels
-        wheelFrontLeftCollider.motorTorque = pedalInput * accelerationForce;
-        wheelFrontRightCollider.motorTorque = pedalInput * accelerationForce;
+        wheelFrontLeftCollider.motorTorque = pedalAccel;
+        wheelFrontRightCollider.motorTorque = pedalAccel;
     }
 
     private void HandleBraking()
@@ -218,6 +263,7 @@ public class CarController : MonoBehaviour
         // lower gear level if car is slowing down
         if (currentGearLevel > 0 && rigidBody.velocity.magnitude < changeGearSpeeds[currentGearLevel - 1])
         {
+            gearEngineSound[currentGearLevel].volume = 0.0f;
             currentGearLevel--;
         }
     }
