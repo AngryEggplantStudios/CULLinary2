@@ -1672,7 +1672,7 @@ MonoBehaviour:
   criticalChance: 0
   evasionChance: 0
   consumables: 000000000000000000000000
-  recipesUnlocked: 010101010100010101010100000000000000000000000000000000000000000000000000
+  unlockedRecipesList: 0000000004000000060000000a00000020000000
   upgradesArray: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
   itemList: []
   currentMoney: 99999
@@ -5728,7 +5728,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   driveableTruck: {fileID: 388754734}
-  playerCamera: {fileID: 1202444186}
   truckCamera: {fileID: 601251936}
   interactionPrompt: {fileID: 1207567114}
 --- !u!1 &1839259084
@@ -28869,6 +28868,7 @@ MonoBehaviour:
   isMenuActive: 0
   isFireplaceActive: 0
   isPaused: 0
+  isPlayerInVehicle: 0
 --- !u!114 &3591150583398273734
 MonoBehaviour:
   m_ObjectHideFlags: 0

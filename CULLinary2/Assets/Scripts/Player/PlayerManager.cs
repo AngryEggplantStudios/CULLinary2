@@ -12,15 +12,8 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     public int criticalChance = 0;
     public int evasionChance = 0;
     public int[] consumables = new int[3] { 0, 0, 0 };
-    public bool[] recipesUnlocked = new bool[36] {
-        true, true, true, true, true,
-        false, true, true, true, true,
-        true, false , false, false, false,
-        false, false, false, false , false,
-        false, false, false, false , false,
-        false, false, false, false , false,
-        false, false, false, false , false,
-        false, }; //use index
+    public List<int> unlockedRecipesList = new List<int> { 0, 4, 6, 10, 32 };
+
     public int[] upgradesArray = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     public List<InventoryItem> itemList = new List<InventoryItem>();
     public int currentMoney;
@@ -52,7 +45,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.currentStamina = currentStamina;
         playerData.maxStamina = maxStamina;
         playerData.inventory = SerializeInventory(itemList);
-        playerData.recipesUnlocked = recipesUnlocked;
+        playerData.unlockedRecipes = unlockedRecipesList.ToArray();
         playerData.upgradesArray = upgradesArray;
         playerData.meleeDamage = meleeDamage;
         playerData.currentMoney = currentMoney;
@@ -127,12 +120,13 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
 
     public void SetupItems()
     {
+        unlockedRecipesList.Clear();
+        unlockedRecipesList.AddRange(playerData.unlockedRecipes);
         currentHealth = playerData.currentHealth;
         maxHealth = playerData.maxHealth;
         currentStamina = playerData.currentStamina;
         maxStamina = playerData.maxStamina;
         meleeDamage = playerData.meleeDamage;
-        recipesUnlocked = playerData.recipesUnlocked;
         upgradesArray = playerData.upgradesArray;
         currentMoney = playerData.currentMoney;
         criticalChance = playerData.criticalChance;

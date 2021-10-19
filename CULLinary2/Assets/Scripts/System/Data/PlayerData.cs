@@ -13,9 +13,9 @@ public class PlayerData
     public int criticalChance;
     public int evasionChance;
     public int[] consumables;
-    public bool[] recipesUnlocked;
     public int[] upgradesArray;
     public int currentDay;
+    public int[] unlockedRecipes;
     public MonsterSavedData[] monsterSavedDatas;
 
     public int[] weaponSkillArray;
@@ -36,15 +36,7 @@ public class PlayerData
         criticalChance = 0;
         evasionChance = 0;
         consumables = new int[3] { 0, 0, 0 }; //7,8,9 indices
-        recipesUnlocked = new bool[36] {
-            true, true, true, true, true,
-            false, true, true, true, true,
-            true, false , false, false, false,
-            false, false, false, false , false,
-            false, false, false, false , false,
-            false, false, false, false , false,
-            false, false, false, false , false,
-            false, };
+        unlockedRecipes = new int[5] { 0, 4, 6, 10, 32 };
         upgradesArray = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         currentDay = 1;
         weaponSkillArray = new int[11] { 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 };
