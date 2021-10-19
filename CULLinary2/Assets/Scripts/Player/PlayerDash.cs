@@ -58,7 +58,10 @@ public class PlayerDash : PlayerAction
 
     private IEnumerator StartDashWithLerp(Vector3 normalizedDirection)
     {
-        playerSlash.AttackCleanUp();
+        if (playerSlash != null)
+        {
+            playerSlash.AttackCleanUp();
+        }
         animator.SetTrigger("isDashing");
         audioSource.Play();
         Instantiate(dustKickupPrefab, playerbody);

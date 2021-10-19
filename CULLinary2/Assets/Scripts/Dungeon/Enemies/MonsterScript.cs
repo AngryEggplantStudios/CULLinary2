@@ -62,7 +62,6 @@ public class MonsterScript : Monster
     // Store refference to collider so can disable when death
     private Collider monsterCollider;
     private bool deathCoroutine = false;
-    private bool wasAggressive = false;
     // Events & Delegates
 
     public delegate void EnemyIdleDelegate();
@@ -122,18 +121,6 @@ public class MonsterScript : Monster
     {
         SetupHpBar();
         SetupFlash();
-
-        foreach (GameObject ui in uiElements)
-        {
-            if (ui != null)
-            {
-                ui.SetActive(false);
-            }
-            else
-            {
-                uiElements.Remove(null);
-            }
-        }
     }
 
     private void Update()
@@ -142,102 +129,58 @@ public class MonsterScript : Monster
         {
             playerTransform = GameObject.FindGameObjectWithTag("Player").transform; //Temp fix
         }
-
-        if (checkIfDead()) return;
-
-        bool aggressive = false;
-
         switch (currentState)
         {
             default:
             case MonsterState.Idle:
+                checkIfDead();
                 FindTarget();
                 onEnemyIdle?.Invoke();
                 break;
-
             case MonsterState.Roaming:
+                checkIfDead();
                 FindTarget();
                 onEnemyRoaming?.Invoke();
                 break;
-
             case MonsterState.ChaseTarget:
-                aggressive = true;
+                checkIfDead();
                 onEnemyChase?.Invoke(stopChase, playerTransform.position);
                 break;
-
             case MonsterState.AttackTarget:
-                aggressive = true;
+                checkIfDead();
                 // Hack to ensure attack trigger isn't triggered
                 if (this.currentHealth > 0)
                 {
                     onEnemyAttack?.Invoke(playerTransform.position, canMoveDuringAttack);
                 }
                 break;
-
             case MonsterState.GoingBackToStart:
+                checkIfDead();
                 onEnemyReturn?.Invoke();
                 break;
         }
 
-        // UI
-        if (aggressive)
+        //Need to find a better way to update this?
+
+        Vector2 screenPos = playerCamera.WorldToScreenPoint(transform.position);
+        if (screenPos != Vector2.zero)
         {
-            if (!wasAggressive)
-            {
-                wasAggressive = aggressive;
-                EnemyAggressionManager.Instance.Add(1);
-
-                foreach (GameObject ui in uiElements)
-                {
-                    if (ui != null)
-                    {
-                        ui.SetActive(true);
-                    }
-                    else
-                    {
-                        uiElements.Remove(null);
-                    }
-                }
-            }
-
-            Vector2 screenPos = playerCamera.WorldToScreenPoint(transform.position);
-            if (screenPos != Vector2.zero)
-            {
-                foreach (GameObject ui in uiElements)
-                {
-                    if (ui != null)
-                    {
-                        ui.SetActive(true);
-                        ui.transform.position = screenPos;
-                    }
-                    else
-                    {
-                        uiElements.Remove(null);
-                    }
-                }
-                foreach (GameObject ui in damageUiElements)
-                {
-                    if (ui != null)
-                    {
-                        ui.transform.position = screenPos;
-                    }
-                    else
-                    {
-                        uiElements.Remove(null);
-                    }
-                }
-            }
-        }
-        else if (wasAggressive)
-        {
-            wasAggressive = aggressive;
-            EnemyAggressionManager.Instance.Add(-1);
-
             foreach (GameObject ui in uiElements)
             {
                 if (ui != null)
                 {
-                    ui.SetActive(false);
+                    ui.transform.position = screenPos;
+                }
+                else
+                {
+                    uiElements.Remove(null);
+                }
+            }
+            foreach (GameObject ui in damageUiElements)
+            {
+                if (ui != null)
+                {
+                    ui.transform.position = screenPos;
                 }
                 else
                 {
@@ -247,7 +190,7 @@ public class MonsterScript : Monster
         }
     }
 
-    public bool checkIfDead()
+    public void checkIfDead()
     {
         if (this.currentHealth <= 0)
         {
@@ -257,12 +200,8 @@ public class MonsterScript : Monster
                 deathCoroutine = true;
                 DieAnimation();
             }
-
-            return true;
         }
-        return false;
     }
-
     public void SetStateMachine(MonsterState newState)
     {
         currentState = newState;
@@ -346,22 +285,13 @@ public class MonsterScript : Monster
         animator.ResetTrigger("attack");
         animator.SetBool("isMoving", false);
         animator.SetTrigger("death");
-
         // Disable collider to prevent spam hitting damage
         monsterCollider.enabled = false;
 
-        // Death audio
         audioSourceAttack.clip = deathSound;
         audioSourceAttack.volume = 0.7f;
         audioSourceAttack.pitch = Random.Range(1f, 2f);
         audioSourceAttack.Play();
-
-        // Handle aggression
-        if (wasAggressive)
-        {
-            wasAggressive = false;
-            EnemyAggressionManager.Instance.Add(-1);
-        }
     }
 
     public void Die()
