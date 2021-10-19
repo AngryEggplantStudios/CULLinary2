@@ -97,4 +97,8 @@ public class PlayerStamina : SingletonGeneric<PlayerStamina>
         }
         regenerationCoroutine = StartCoroutine(checkRegenerate());
     }
+    public void ClearBuffs()
+    {
+        isUnlimitedStamina = false;
+    }
 }

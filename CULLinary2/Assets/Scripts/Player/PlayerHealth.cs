@@ -271,6 +271,11 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         isInvincible = false;
     }
 
+    public void ClearBuffs()
+    {
+        isInvincibleByBuff = false;
+    }
+
 }
 
 /*

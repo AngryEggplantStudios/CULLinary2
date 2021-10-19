@@ -343,6 +343,11 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         }
     }
 
+    public void ClearBuffs()
+    {
+        isDoubled = false;
+    }
+
     public void OnDestroy()
     {
         GameTimer.OnStartNewDay -= OnNewDay;

@@ -206,4 +206,11 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         criticalBonus = 0;
     }
 
+    public void ClearBuffs()
+    {
+        criticalBonus = 0;
+        evasionBonus = 0;
+        isMeleeDamageDoubled = false;
+    }
+
 }
