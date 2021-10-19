@@ -4,31 +4,42 @@ using UnityEngine;
 
 public class PlayerManager : SingletonGeneric<PlayerManager>
 {
+    [Header("Health & Stamina")]
     public float currentHealth = 200f;
     public float maxHealth = 200f;
     public float currentStamina = 100f;
     public float maxStamina = 100f;
+    [Header("Combat / Stats / Buffs")]
     public float meleeDamage = 10f;
     public int criticalChance = 0;
     public int evasionChance = 0;
-    public int[] consumables = new int[3] { 0, 0, 0 };
-    public List<int> unlockedRecipesList = new List<int> { 0, 4, 6, 10, 32 };
-
-    public int[] upgradesArray = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    public List<InventoryItem> itemList = new List<InventoryItem>();
-    public int currentMoney;
-    public int currentDay;
-    public int[] weaponSkillArray = new int[11] { 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 };
     public int currentWeaponHeld = 0;
     public int currentSecondaryHeld = 3;
-    [Header("Health Regenerated per Game Minute at Campfire")]
-    public float campfireRegenerationRate = 0.5f;
+    public bool isMeleeDamageDoubled = false;
+    public int evasionBonus = 0;
+    public int criticalBonus = 0;
+    public float speedMultiplier = 1f;
 
+    [Header("Upgrades")]
+    public List<int> unlockedRecipesList = new List<int> { 0, 4, 6, 10, 32 };
+    public int[] upgradesArray = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    public int[] weaponSkillArray = new int[11] { 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 };
+
+    [Header("Inventory")]
+    public List<InventoryItem> itemList = new List<InventoryItem>();
+    public int[] consumables = new int[3] { 0, 0, 0 };
+    public int currentMoney;
+
+    [Header("Others")]
+    public int currentDay;
     public Dictionary<MonsterName, PopulationLevel> monsterDict = new Dictionary<MonsterName, PopulationLevel>{
         {MonsterName.Corn, PopulationLevel.Normal},
         {MonsterName.Potato, PopulationLevel.Normal},
         {MonsterName.Eggplant, PopulationLevel.Normal},
     };
+
+    [Header("Health Regenerated per Game Minute at Campfire")]
+    public float campfireRegenerationRate = 0.5f;
 
     // Private variables
     private static PlayerData playerData = new PlayerData();
@@ -59,6 +70,48 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.currentSecondaryHeld = currentSecondaryHeld;
         playerData.campfireRegenerationRate = campfireRegenerationRate;
         SaveSystem.SaveData(playerData);
+    }
+
+
+    public void LoadData()
+    {
+        playerData = SaveSystem.LoadData();
+        SetupItems();
+    }
+
+    public PlayerData CreateBlankData()
+    {
+        playerData = new PlayerData();
+        SetupManager();
+        return playerData;
+    }
+
+    public void SetupItems()
+    {
+        unlockedRecipesList.Clear();
+        unlockedRecipesList.AddRange(playerData.unlockedRecipes);
+        currentHealth = playerData.currentHealth;
+        maxHealth = playerData.maxHealth;
+        currentStamina = playerData.currentStamina;
+        maxStamina = playerData.maxStamina;
+        meleeDamage = playerData.meleeDamage;
+        upgradesArray = playerData.upgradesArray;
+        currentMoney = playerData.currentMoney;
+        criticalChance = playerData.criticalChance;
+        evasionChance = playerData.evasionChance;
+        consumables = playerData.consumables;
+        currentDay = playerData.currentDay;
+        weaponSkillArray = playerData.weaponSkillArray;
+        currentWeaponHeld = playerData.currentWeaponHeld;
+        currentSecondaryHeld = playerData.currentSecondaryHeld;
+        campfireRegenerationRate = playerData.campfireRegenerationRate;
+        LoadMonsters();
+    }
+
+    public void SetupManager()
+    {
+        itemList.Clear();
+        SetupItems();
     }
 
     public void LoadMonsters()
@@ -105,46 +158,6 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         }
     }
 
-    public void LoadData()
-    {
-        playerData = SaveSystem.LoadData();
-        SetupItems();
-    }
-
-    public PlayerData CreateBlankData()
-    {
-        playerData = new PlayerData();
-        SetupManager();
-        return playerData;
-    }
-
-    public void SetupItems()
-    {
-        unlockedRecipesList.Clear();
-        unlockedRecipesList.AddRange(playerData.unlockedRecipes);
-        currentHealth = playerData.currentHealth;
-        maxHealth = playerData.maxHealth;
-        currentStamina = playerData.currentStamina;
-        maxStamina = playerData.maxStamina;
-        meleeDamage = playerData.meleeDamage;
-        upgradesArray = playerData.upgradesArray;
-        currentMoney = playerData.currentMoney;
-        criticalChance = playerData.criticalChance;
-        evasionChance = playerData.evasionChance;
-        consumables = playerData.consumables;
-        currentDay = playerData.currentDay;
-        weaponSkillArray = playerData.weaponSkillArray;
-        currentWeaponHeld = playerData.currentWeaponHeld;
-        currentSecondaryHeld = playerData.currentSecondaryHeld;
-        campfireRegenerationRate = playerData.campfireRegenerationRate;
-        LoadMonsters();
-    }
-
-    public void SetupManager()
-    {
-        itemList.Clear();
-        SetupItems();
-    }
 
     private static string SerializeInventory(List<InventoryItem> itemList)
     {
@@ -170,6 +183,27 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
             i++;
         }
         return JsonArrayParser.ToJson(items, true);
+    }
+
+    public IEnumerator DoubleMeleeDamage(float duration)
+    {
+        isMeleeDamageDoubled = true;
+        yield return new WaitForSeconds(duration);
+        isMeleeDamageDoubled = false;
+    }
+
+    public IEnumerator ToggleEvasionBoost(int boost, float duration)
+    {
+        evasionBonus = boost;
+        yield return new WaitForSeconds(duration);
+        evasionBonus = 0;
+    }
+
+    public IEnumerator ToggleCritBoost(int boost, float duration)
+    {
+        criticalBonus = boost;
+        yield return new WaitForSeconds(duration);
+        criticalBonus = 0;
     }
 
 }
