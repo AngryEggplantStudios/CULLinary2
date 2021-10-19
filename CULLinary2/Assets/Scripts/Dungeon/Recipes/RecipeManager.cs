@@ -62,23 +62,28 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
     }
 
     // Update the unlocked and the locked recipes list
-    private void UpdateUnlockedRecipes()
+    public void UpdateUnlockedRecipes()
     {
-        bool[] recipesUnlocked = PlayerManager.instance
-            ? PlayerManager.instance.recipesUnlocked
-            : new bool[3] { true, true, true };
+        List<int> unlockedRecipes = PlayerManager.instance != null
+            ? PlayerManager.instance.unlockedRecipesList
+            : new List<int> { 0, 4, 6, 10, 32 };
 
-        for (int id = 0; id < recipesUnlocked.Length; id++)
+        innerLockedRecipesList.Clear();
+        innerUnlockedRecipesList.Clear();
+
+        foreach (int recipeId in unlockedRecipes)
         {
-            if (recipesUnlocked[id])
+            innerUnlockedRecipesList.Add(DatabaseLoader.GetRecipeById(recipeId));
+        }
+        //Not sure if there's a faster method or a one-liner
+        foreach (Recipe recipe in DatabaseLoader.GetAllRecipes())
+        {
+            if (!unlockedRecipes.Contains(recipe.recipeId))
             {
-                innerUnlockedRecipesList.Add(DatabaseLoader.GetRecipeById(id));
-            }
-            else
-            {
-                innerLockedRecipesList.Add(DatabaseLoader.GetRecipeById(id));
+                innerLockedRecipesList.Add(DatabaseLoader.GetRecipeById(recipe.recipeId));
             }
         }
+
         hasPopulatedUnlockedRecipes = true;
         recipesChanged = true;
         StopCoroutine(UpdateUI());
@@ -211,6 +216,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             bool areItemsInInventory =
                 InventoryManager.instance.CheckIfItemsExist(ingIds, out invReqCount);
             int numberOfOrders = GetNumberOfOrders(r.recipeId);
+            CheckIfRecipeHasCookedDish(r);
             int numberInInventory = InventoryManager.instance.GetAmountOfItem(r.cookedDishItem.inventoryItemId);
 
             // Add to Recipes UI
@@ -235,6 +241,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
 
         foreach (Recipe r in innerLockedRecipesList)
         {
+            CheckIfRecipeHasCookedDish(r);
             GameObject recipeEntry = Instantiate(recipeSlot,
                                                  new Vector3(0, 0, 0),
                                                  Quaternion.identity,
@@ -263,4 +270,40 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             .GetComponent<CookingUISlot>()
             .SelectRecipeForCooking();
     }
+
+    private void CheckIfRecipeHasCookedDish(Recipe r)
+    {
+        if (r.cookedDishItem == null)
+        {
+            Debug.LogError("RecipeManager.cs: Cooked dish item for recipe ID " + r.recipeId + " not set!");
+        }
+    }
 }
+
+
+
+/*
+bool[] recipesUnlocked = PlayerManager.instance
+? PlayerManager.instance.recipesUnlocked
+: new bool[36] {
+    true, true, true, true, true,
+    false, true, true, true, true,
+    true, false , false, false, false,
+    false, false, false, false , false,
+    false, false, false, false , false,
+    false, false, false, false , false,
+    false, false, false, false , false,
+    false, };
+
+for (int id = 0; id < recipesUnlocked.Length; id++)
+{
+if (recipesUnlocked[id])
+{
+    innerUnlockedRecipesList.Add(DatabaseLoader.GetRecipeById(id));
+}
+else
+{
+    innerLockedRecipesList.Add(DatabaseLoader.GetRecipeById(id));
+}
+}
+*/
