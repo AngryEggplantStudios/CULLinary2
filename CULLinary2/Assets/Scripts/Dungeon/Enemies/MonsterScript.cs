@@ -129,58 +129,80 @@ public class MonsterScript : Monster
         {
             playerTransform = GameObject.FindGameObjectWithTag("Player").transform; //Temp fix
         }
+
+        checkIfDead();
+        bool aggressive = false;
+
         switch (currentState)
         {
             default:
             case MonsterState.Idle:
-                checkIfDead();
                 FindTarget();
                 onEnemyIdle?.Invoke();
                 break;
+
             case MonsterState.Roaming:
-                checkIfDead();
                 FindTarget();
                 onEnemyRoaming?.Invoke();
                 break;
+
             case MonsterState.ChaseTarget:
-                checkIfDead();
+                aggressive = true;
                 onEnemyChase?.Invoke(stopChase, playerTransform.position);
                 break;
+
             case MonsterState.AttackTarget:
-                checkIfDead();
+                aggressive = true;
                 // Hack to ensure attack trigger isn't triggered
                 if (this.currentHealth > 0)
                 {
                     onEnemyAttack?.Invoke(playerTransform.position, canMoveDuringAttack);
                 }
                 break;
+
             case MonsterState.GoingBackToStart:
-                checkIfDead();
                 onEnemyReturn?.Invoke();
                 break;
         }
 
-        //Need to find a better way to update this?
-
-        Vector2 screenPos = playerCamera.WorldToScreenPoint(transform.position);
-        if (screenPos != Vector2.zero)
+        // UI
+        if (aggressive)
+        {
+            Vector2 screenPos = playerCamera.WorldToScreenPoint(transform.position);
+            if (screenPos != Vector2.zero)
+            {
+                foreach (GameObject ui in uiElements)
+                {
+                    if (ui != null)
+                    {
+                        ui.SetActive(true);
+                        ui.transform.position = screenPos;
+                    }
+                    else
+                    {
+                        uiElements.Remove(null);
+                    }
+                }
+                foreach (GameObject ui in damageUiElements)
+                {
+                    if (ui != null)
+                    {
+                        ui.transform.position = screenPos;
+                    }
+                    else
+                    {
+                        uiElements.Remove(null);
+                    }
+                }
+            }
+        }
+        else
         {
             foreach (GameObject ui in uiElements)
             {
                 if (ui != null)
                 {
-                    ui.transform.position = screenPos;
-                }
-                else
-                {
-                    uiElements.Remove(null);
-                }
-            }
-            foreach (GameObject ui in damageUiElements)
-            {
-                if (ui != null)
-                {
-                    ui.transform.position = screenPos;
+                    ui.SetActive(false);
                 }
                 else
                 {
@@ -202,6 +224,7 @@ public class MonsterScript : Monster
             }
         }
     }
+
     public void SetStateMachine(MonsterState newState)
     {
         currentState = newState;
