@@ -8,11 +8,13 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
     public GameObject driveableTruck;
     public GameObject truckCamera;
     public GameObject interactionPrompt;
+    public GameObject staminaIcon;
     public GameObject player;
     public GameObject responsiveUICanvas;
 
     private Vector3 spawnOffset = Vector3.left * 5;
     private bool isPlayerInVehicle = false;
+    private bool wasStaminaIconActivePreviously = false;
 
     void Update()
     {
@@ -31,6 +33,10 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         responsiveUICanvas.SetActive(false);
         isPlayerInVehicle = true;
         UIController.instance.isPlayerInVehicle = true;
+
+        // Hide stamina when driving
+        wasStaminaIconActivePreviously = staminaIcon.activeSelf;
+        staminaIcon.SetActive(false);
     }
 
     public void HandlePlayerLeaveVehicle()
@@ -40,6 +46,7 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         player.transform.position = driveableTruck.transform.position + spawnOffset;
         player.SetActive(true);
         interactionPrompt.SetActive(true);
+        staminaIcon.SetActive(wasStaminaIconActivePreviously);
         responsiveUICanvas.SetActive(true);
         isPlayerInVehicle = false;
         UIController.instance.isPlayerInVehicle = false;
