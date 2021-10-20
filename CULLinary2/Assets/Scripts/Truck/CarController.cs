@@ -69,7 +69,7 @@ public class CarController : MonoBehaviour
     // For floating-point comparison
     private float epsilon = 0.001f;
     // For switching between brake and reverse (isMoving)
-    private float stoppingEpsilon = 0.05f;
+    private float stoppingEpsilon = 0.15f;
 
     // For playing sounds
     private float prevSpeed = 0.0f;
