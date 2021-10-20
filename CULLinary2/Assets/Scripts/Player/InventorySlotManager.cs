@@ -108,8 +108,7 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
         if (InventoryManager.instance != null && item != null && item.isConsumable)
         {
             slots[selectedSlotId].gameObject.GetComponent<Outline>().enabled = false;
-            ResetSlot();
-            InventoryManager.instance.RemoveItem(item);
+            item.buffIcon = item.buffIcon == null ? item.icon : item.buffIcon;
             foreach (BuffType buffType in item.buffTypes)
             {
                 switch (buffType)
@@ -151,6 +150,8 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
                         break;
                 }
             }
+            ResetSlot();
+            InventoryManager.instance.RemoveItem(item);
 
         }
     }
