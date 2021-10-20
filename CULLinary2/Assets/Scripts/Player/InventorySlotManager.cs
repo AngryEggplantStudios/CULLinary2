@@ -108,6 +108,10 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
         {
             slots[selectedSlotId].gameObject.GetComponent<Outline>().enabled = false;
             item.buffIcon = item.buffIcon == null ? item.icon : item.buffIcon;
+            BuffManager.instance.ApplyBuff(item);
+            ResetSlot();
+            InventoryManager.instance.RemoveItem(item);
+            /*
             foreach (BuffType buffType in item.buffTypes)
             {
                 switch (buffType)
@@ -148,10 +152,9 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
                         StartCoroutine(PlayerManager.instance.ToggleCritBoost(item.critBoostAmount, item.buffDuration));
                         break;
                 }
-            }
-            ResetSlot();
-            InventoryManager.instance.RemoveItem(item);
-
+                
+        }
+        */
         }
     }
 
