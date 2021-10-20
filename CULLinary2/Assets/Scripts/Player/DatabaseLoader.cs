@@ -47,7 +47,7 @@ public class DatabaseLoader : MonoBehaviour
         monsterDict = new Dictionary<MonsterName, MonsterData>();
         monsterList = monsterDatabase.allMonsters;
         weaponSkillDict = new Dictionary<int, WeaponSkillItem>();
-        weaponSkillList = new List<WeaponSkillItem>();
+        weaponSkillList = weaponSkillDatabase.allItems;
         if (isAutoload)
         {
             StartCoroutine(Populate());

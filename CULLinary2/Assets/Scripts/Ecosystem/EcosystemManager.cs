@@ -19,6 +19,7 @@ public class EcosystemManager : SingletonGeneric<EcosystemManager>
         List<MonsterData> monsterList = DatabaseLoader.GetAllMonsters();
         foreach (MonsterData monsterData in monsterList)
         {
+            Debug.Log("instantiating ecosystem with " + monsterData.monsterName);
             populations.Add(new Population(monsterData.monsterName, monsterData.lowerBound, monsterData.upperBound, PlayerManager.instance.GetPopulationLevelByMonsterName(monsterData.monsterName)));
         }
 

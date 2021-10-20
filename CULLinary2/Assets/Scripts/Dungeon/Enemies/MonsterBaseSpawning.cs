@@ -9,7 +9,7 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
     [SerializeField] private List<GameObject> monstersToSpawn;
     [SerializeField] private GameObject parent;
     [SerializeField, Tooltip("Distance to spawn monster away from player and campfire")] private int distFromSafeSpace = 30; // Distance to spawn monster away from player and campfire
-    [SerializeField, Tooltip("Distance to spawn monster away from other objects")] private int distFromNormalObstacle = 3; // Distance to spawn monster away from landmarks and other objects
+    [SerializeField, Tooltip("Distance to spawn monster away from other objects")] private int distFromNormalObstacle = 2; // Distance to spawn monster away from landmarks and other objects
     private int mapSize;
     public Dictionary<MonsterName, int> numOfAliveMonsters = new Dictionary<MonsterName, int>{ // num of alive monsters from base spawning only
         {MonsterName.Corn, 0},
@@ -34,6 +34,7 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
 
     private void SpawnBaseMonsters()
     {
+        Debug.Log("start spawning base monsters");
         foreach (GameObject monster in monstersToSpawn)
         {
             MonsterScript monsterScript = monster.GetComponent<MonsterScript>();
@@ -56,6 +57,20 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
             {
                 Vector3 spawnPosition = Vector3.zero;
                 bool hasFoundPosition = false;
+                // for (int i = 0; i < 30; i++)
+                // {
+                //     hasFoundPosition = FindRandomPosition(out spawnPosition);
+                //     if (hasFoundPosition)
+                //     {
+                //         break;
+                //     }
+                // }
+
+                // if (!hasFoundPosition)
+                // {
+                //     Debug.Log("couldn't find position to spawn");
+                //     continue;
+                // }
                 while (!hasFoundPosition)
                 {
                     hasFoundPosition = FindRandomPosition(out spawnPosition);
@@ -91,11 +106,13 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
         float searchRadius = 2f;
         if (NavMesh.SamplePosition(randomPos, out hit, searchRadius, NavMesh.AllAreas))
         {
-            if (IsValidSpawnPosition(hit.position))
-            {
-                result = hit.position;
-                return true;
-            }
+            result = hit.position;
+            return true;
+            // if (IsValidSpawnPosition(hit.position))
+            // {
+            //     result = hit.position;
+            //     return true;
+            // }
         }
 
         result = Vector3.zero;
