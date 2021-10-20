@@ -306,7 +306,7 @@ public class DatabaseLoader : MonoBehaviour
             }
             yield return null;
         }
-
+        WeaponManager.instance.SetupShop();
         Debug.Log("Weapon Skill Item Database populated.");
     }
 

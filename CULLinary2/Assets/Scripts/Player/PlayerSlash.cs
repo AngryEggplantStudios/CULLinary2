@@ -85,6 +85,7 @@ public class PlayerSlash : PlayerAction
     }
 
     //For testing
+    /*
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha0))
@@ -94,6 +95,7 @@ public class PlayerSlash : PlayerAction
             ChangeWeapon(currentWeaponSelected);
         }
     }
+    */
 
     private IEnumerator RotatePlayer()
     {
