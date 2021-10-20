@@ -68,7 +68,7 @@ public class PlayerDash : PlayerAction
         isDashing = true;
         float startTime = Time.time;
         float currSpeed = startingSpeed;
-        StartCoroutine(playerHealth.BecomeTemporarilyInvincible(dashTime));
+        StartCoroutine(playerHealth.BecomeTemporarilyInvincibleByDash(dashTime));
         while (Time.time < startTime + dashTime)
         {
             characterController.Move(normalizedDirection * currSpeed * Time.deltaTime);

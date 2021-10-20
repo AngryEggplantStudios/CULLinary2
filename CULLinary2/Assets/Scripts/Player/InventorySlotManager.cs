@@ -37,8 +37,7 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
             return;
         }
 
-        //consumableButtonObject.SetActive(item.isConsumable);
-        consumableButtonObject.SetActive(false);
+        consumableButtonObject.SetActive(item.isConsumable);
         discardButtonObject.SetActive(true);
 
         itemMainIcon.enabled = true;
@@ -84,10 +83,10 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
             {
                 HandleDiscard();
             }
-            /* else if (Input.GetKeyDown(KeyCode.Z))
+            else if (Input.GetKeyDown(KeyCode.Z))
             {
                 HandleConsume();
-            } */
+            }
         }
     }
 
@@ -105,12 +104,13 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
     public void HandleConsume()
     {
         InventoryItem item = slots[selectedSlotId].item;
-        if (InventoryManager.instance != null && item != null && item.isConsumable && false) //Cannot consume for now
+        if (InventoryManager.instance != null && item != null && item.isConsumable)
         {
             slots[selectedSlotId].gameObject.GetComponent<Outline>().enabled = false;
+            item.buffIcon = item.buffIcon == null ? item.icon : item.buffIcon;
+            BuffManager.instance.ApplyBuff(item);
             ResetSlot();
             InventoryManager.instance.RemoveItem(item);
-            Debug.Log("Consumed!");
         }
     }
 
