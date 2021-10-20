@@ -86,8 +86,6 @@ public class PlayerConsume : MonoBehaviour
                 ConsumableShopItem consumableShopItem = (ConsumableShopItem)DatabaseLoader.GetShopItemById(11);
                 BuffManager.instance.ApplySingleBuff(modernaShotIcon, consumableShopItem.duration, BuffType.BUFF_BASE_DAMAGE);
             }
-
-            audioSource.Play();
             DisplayOnUI();
         }
     }
