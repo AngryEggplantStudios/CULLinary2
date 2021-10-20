@@ -45,7 +45,7 @@ public class ExplodingMonsterBehaviour : MonoBehaviour
     private NavMeshPath path;
 
     private void Start()
-	{
+    {
         chasingCouroutineStarted = false;
         navMeshAgent = GetComponent<NavMeshAgent>();
         path = new NavMeshPath();
@@ -82,7 +82,7 @@ public class ExplodingMonsterBehaviour : MonoBehaviour
 
     public virtual void EnemyIdle()
     {
-        monsterScript.checkIfDead();
+        monsterScript.CheckIfDead();
         animator.SetBool("isMoving", false);
         timer += Time.deltaTime;
         if (timer >= idleTimer)
@@ -111,10 +111,10 @@ public class ExplodingMonsterBehaviour : MonoBehaviour
         navMeshAgent.acceleration = chasingAccel;
         // if timer coroutine not started yet start here
         if (chasingCouroutineStarted != true)
-		{
+        {
             chasingCouroutineStarted = true;
             StartCoroutine(ChasingTimerBeforeStartExploding());
-		}
+        }
         Vector3 playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
         animator.SetBool("isMoving", true);
         float directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
@@ -140,7 +140,7 @@ public class ExplodingMonsterBehaviour : MonoBehaviour
         else
         {
             if (canSetDestination)
-			{
+            {
                 NavMesh.CalculatePath(transform.position, playerPositionWithoutYOffset, NavMesh.AllAreas, path);
                 canSetDestination = false;
                 StartCoroutine(DelayFindingPlayer());
@@ -150,14 +150,14 @@ public class ExplodingMonsterBehaviour : MonoBehaviour
     }
 
     private IEnumerator DelayFindingPlayer()
-	{
+    {
         yield return new WaitForSeconds(0.25f);
         canSetDestination = true;
-	}
+    }
 
     // Chases for n seconds before start exploding attack
     private IEnumerator ChasingTimerBeforeStartExploding()
-	{
+    {
         yield return new WaitForSeconds(3.0f);
         canStartExploding = true;
         yield return new WaitForSeconds(2.0f);
@@ -264,7 +264,7 @@ public class ExplodingMonsterBehaviour : MonoBehaviour
     private IEnumerator FlashOnExplosion()
     {
         while (true)
-		{
+        {
             for (var i = 0; i < rend.materials.Length; i++)
             {
                 Texture flashTex = null;
@@ -297,7 +297,7 @@ public class ExplodingMonsterBehaviour : MonoBehaviour
             }
         }
 
-   
+
     }
 
 }

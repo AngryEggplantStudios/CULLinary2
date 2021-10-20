@@ -29,24 +29,24 @@ public class TomatoAttack : MonsterAttack
     {
         attackCollider.enabled = false;
         canDealDamage = false;
-        Vector3 positionToInstantiate = findPositionInRadiusAround(0f, 90f);
+        Vector3 positionToInstantiate = FindPositionInRadiusAround(0f, 90f);
         Instantiate(prefabForExplosion, positionToInstantiate, Quaternion.identity);
-        positionToInstantiate = findPositionInRadiusAround(140f, 220f);
+        positionToInstantiate = FindPositionInRadiusAround(140f, 220f);
         Instantiate(prefabForExplosion, positionToInstantiate, Quaternion.identity);
-        positionToInstantiate = findPositionInRadiusAround(270f, 360f);
+        positionToInstantiate = FindPositionInRadiusAround(270f, 360f);
         Instantiate(prefabForExplosion, positionToInstantiate, Quaternion.identity);
         //TODO MC CHANGE TO DIE ANIMATION WITH LIO
         tomato.monsterDeathAnimation();
     }
 
-	private Vector3 findPositionInRadiusAround(float startDegree, float endDegree)
-	{
+    private Vector3 FindPositionInRadiusAround(float startDegree, float endDegree)
+    {
         float randomAngle = Random.Range(startDegree, endDegree);
         float xPos = transform.position.x + radiusAroundOrigin * Mathf.Cos(randomAngle * Mathf.PI * 2 / 360);
         float zPos = transform.position.z + radiusAroundOrigin * Mathf.Sin(randomAngle * Mathf.PI * 2 / 360);
 
         return new Vector3(xPos, transform.position.y, zPos);
-	}
+    }
 
     private void OnTriggerStay(Collider other)
     {

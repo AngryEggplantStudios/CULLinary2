@@ -41,6 +41,26 @@ public class Chest : PlayerInteractable
     {
     }
 
+    public void AddLoot(ChestLoot newLoot)
+    {
+        ChestLoot[] newLootArr = new ChestLoot[loot.Length + 1];
+        loot.CopyTo(newLootArr, 0);
+        newLootArr[newLootArr.Length - 1] = newLoot;
+        loot = newLootArr;
+    }
+
+    public int FindLootIndex(string name)
+    {
+        for (int i = 0; i < loot.Length; i++)
+        {
+            if (loot[i].prefab.name.Equals(name))
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     IEnumerator OpenChest()
     {
         animator.enabled = true;

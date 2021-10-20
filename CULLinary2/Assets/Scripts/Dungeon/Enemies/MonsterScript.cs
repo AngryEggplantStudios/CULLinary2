@@ -133,21 +133,21 @@ public class MonsterScript : Monster
         {
             default:
             case MonsterState.Idle:
-                checkIfDead();
+                CheckIfDead();
                 FindTarget();
                 onEnemyIdle?.Invoke();
                 break;
             case MonsterState.Roaming:
-                checkIfDead();
+                CheckIfDead();
                 FindTarget();
                 onEnemyRoaming?.Invoke();
                 break;
             case MonsterState.ChaseTarget:
-                checkIfDead();
+                CheckIfDead();
                 onEnemyChase?.Invoke(stopChase, playerTransform.position);
                 break;
             case MonsterState.AttackTarget:
-                checkIfDead();
+                CheckIfDead();
                 // Hack to ensure attack trigger isn't triggered
                 if (this.currentHealth > 0)
                 {
@@ -155,7 +155,7 @@ public class MonsterScript : Monster
                 }
                 break;
             case MonsterState.GoingBackToStart:
-                checkIfDead();
+                CheckIfDead();
                 onEnemyReturn?.Invoke();
                 break;
         }
@@ -190,7 +190,7 @@ public class MonsterScript : Monster
         }
     }
 
-    public void checkIfDead()
+    public void CheckIfDead()
     {
         if (this.currentHealth <= 0)
         {
@@ -306,12 +306,12 @@ public class MonsterScript : Monster
         else
         {
             MonsterBaseSpawning.instance.UpdateNumOfAliveMonsters(monsterName, -1);
-            Debug.Log("no spawner");
+            // Debug.Log("no spawner");
         }
 
-        if (TryGetComponent<MiniBoss>(out MiniBoss miniBossScript))
+        if (TryGetComponent<MiniBoss>(out MiniBoss miniBoss))
         {
-            miniBossScript.Die();
+            miniBoss.Die();
         }
     }
 
@@ -375,8 +375,13 @@ public class MonsterScript : Monster
 
     private void DropLoot()
     {
-        Vector3 tempVectors = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-        Instantiate(lootDropped, tempVectors, Quaternion.identity);
+        if (TryGetComponent<MiniBoss>(out MiniBoss miniBoss))
+        {
+            miniBoss.DropLoot();
+            return;
+        }
+
+        Instantiate(lootDropped, transform.position, Quaternion.identity);
     }
 
     public void attackPlayerStart()
@@ -444,8 +449,13 @@ public class MonsterScript : Monster
         return texturesForFlash;
     }
 
-    public float getStopChase()
+    public float GetStopChase()
     {
         return this.stopChase;
+    }
+
+    public GameObject GetLoot()
+    {
+        return lootDropped;
     }
 }
