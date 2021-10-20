@@ -38,7 +38,6 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
         }
 
         consumableButtonObject.SetActive(item.isConsumable);
-        consumableButtonObject.SetActive(false);
         discardButtonObject.SetActive(true);
 
         itemMainIcon.enabled = true;
