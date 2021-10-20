@@ -11,4 +11,5 @@ public class WeaponSkillManager : SingletonGeneric<WeaponSkillManager>
         playerSecondaryAttack.ChangeSecondaryAttack(PlayerManager.instance != null ? PlayerManager.instance.currentSecondaryHeld : 3);
         playerSlash.ChangeWeapon(PlayerManager.instance != null ? PlayerManager.instance.currentWeaponHeld : 0);
     }
+
 }
