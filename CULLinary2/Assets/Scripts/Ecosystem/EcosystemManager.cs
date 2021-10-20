@@ -74,9 +74,12 @@ public class EcosystemManager : SingletonGeneric<EcosystemManager>
     {
         Transform player = GameObject.FindGameObjectWithTag("Player").transform;
         GameObject nearestSpawner = DungeonSpawnManager.instance.GetSpawnerNearestTo(player.position, pop.GetName());
-        nearestSpawner.GetComponent<MonsterSpawn>().SpawnMiniBoss();
-        pop.SetHasSpawnedMiniboss(true);
-        Debug.Log("spawning miniboss for " + pop.GetName() + " at " + nearestSpawner.transform.position);
+        if (nearestSpawner)
+        {
+            nearestSpawner.GetComponent<MonsterSpawn>().SpawnMiniBoss();
+            pop.SetHasSpawnedMiniboss(true);
+            Debug.Log("spawning miniboss for " + pop.GetName() + " at " + nearestSpawner.transform.position);
+        }
     }
 
     public static void OnMiniBossDeath(MonsterName name)

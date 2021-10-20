@@ -20,6 +20,11 @@ public class GameTimer : SingletonGeneric<GameTimer>
     [SerializeField, Range(0, 1), Tooltip("e.g. 0.25 for 6am")] private float sunrise;
     [SerializeField, Range(0, 1), Tooltip("e.g. 0.75 for 6pm")] private float sunset;
     [SerializeField, Range(0, 1), Tooltip("e.g. 0.33 for 8am")] private float startOfDay;
+
+    [Header("Daily News")]
+    [SerializeField] private GameObject newspaper;
+    [SerializeField] private GameObject hudToHide;
+    
     private static float gameTime;
     private static float timeScale;
     private static int dayNum = 1; // TODO: to get from saved data
@@ -32,14 +37,21 @@ public class GameTimer : SingletonGeneric<GameTimer>
     private bool isNewDay = true; // prevent OnStartNewDay from being invoked multiple times
     private bool isRunning = false;
 
+    private NewspaperDetails newspaperDets;
+
     public delegate void StartNewDayDelegate();
     public static event StartNewDayDelegate OnStartNewDay;
     public delegate void EndOfDayDelegate();
     public static event EndOfDayDelegate OnEndOfDay;
 
+    private int currentIssueNumber = 1;
+    private bool showRandomNews = false;
+
     void Start()
     {
         dayNum = PlayerManager.instance != null ? PlayerManager.instance.currentDay : 1;
+        currentIssueNumber = PlayerManager.instance != null ? PlayerManager.instance.currentNewspaperIssue : 1;
+        newspaperDets = newspaper.GetComponent<NewspaperDetails>();
 
         if (sunrise > sunset) { Debug.LogError("Sunrise is after Sunset!"); }
 
@@ -86,6 +98,15 @@ public class GameTimer : SingletonGeneric<GameTimer>
         }
     }
 
+    // Starts the day after the newspaper is closed
+    public void CloseNewspaperAndStartDay()
+    {
+        newspaper.SetActive(false);
+        hudToHide.SetActive(true);
+        Time.timeScale = 1;
+        OnStartNewDay?.Invoke();
+    }
+
     // Adds a certain number of minutes to the clock
     private void AddMinutes(int minutes)
     {
@@ -106,11 +127,25 @@ public class GameTimer : SingletonGeneric<GameTimer>
         if (gameTime > startOfDay && isNewDay)
         {
             isNewDay = false;
-            if (dayNum == 2)
+
+            NewsIssue currentNews = showRandomNews
+                ? DatabaseLoader.GetRandomNewsIssue()
+                : DatabaseLoader.GetOrderedNewsIssueById(currentIssueNumber);
+            
+            if (currentNews == null)
             {
-                EcosystemManager.EnablePopulation(MonsterName.Potato);
+                Debug.Log("No newspaper for " + currentIssueNumber + " found");
+                OnStartNewDay?.Invoke();
             }
-            OnStartNewDay?.Invoke();
+            else
+            {
+                Time.timeScale = 0;
+                Debug.Log("My News" + currentNews);
+                newspaperDets.UpdateNewspaperIssueUI(currentNews);
+                newspaper.SetActive(true);
+                hudToHide.SetActive(false);
+            }
+            showRandomNews = false;
         }
 
         if (gameTime >= dayEndTime)
@@ -158,6 +193,14 @@ public class GameTimer : SingletonGeneric<GameTimer>
     private void ShowEndOfDayMenu()
     {
         UIController.instance.ShowEndOfDayMenu();
+        // Increment newspaper for next day
+        NewsIssue currentNews = DatabaseLoader.GetOrderedNewsIssueById(currentIssueNumber + 1);
+        if (currentNews)
+        {
+            currentIssueNumber++;
+            PlayerManager.instance.currentNewspaperIssue = currentIssueNumber;
+            DoProgression(currentNews);
+        }
         //Restore health here
         GoToNextDay();
         SaveGame();
@@ -216,6 +259,27 @@ public class GameTimer : SingletonGeneric<GameTimer>
     public static int GetDayNumber()
     {
         return dayNum;
+    }
+
+    // Shows a random newspaper issue the next day
+    public void ShowRandomNews()
+    {
+        showRandomNews = true;
+    }
+
+    // Uses the newspaper that is shown at the start of the day
+    // and applies the changes to the game
+    private void DoProgression(NewsIssue ni)
+    {
+        foreach (int id in ni.recipesUnlocked)
+        {
+            PlayerManager.instance.unlockedRecipesList.Add(id);
+        }
+        foreach (int id in ni.enemiesUnlocked)
+        {
+            // TODO - Unlock the enemies
+        }
+        RecipeManager.instance.UpdateUnlockedRecipes();
     }
 
     private void OnDestroy()
