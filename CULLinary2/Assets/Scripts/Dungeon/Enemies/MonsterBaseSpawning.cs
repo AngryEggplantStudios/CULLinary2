@@ -15,6 +15,8 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
         {MonsterName.Corn, 0},
         {MonsterName.Potato, 0},
         {MonsterName.Eggplant, 0},
+        {MonsterName.Bread, 0},
+        {MonsterName.Tomato, 0}, // refactor to get from MonsterName values
     };
 
     // Start is called before the first frame update

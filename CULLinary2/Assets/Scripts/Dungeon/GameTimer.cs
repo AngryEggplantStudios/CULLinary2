@@ -106,12 +106,16 @@ public class GameTimer : SingletonGeneric<GameTimer>
         if (gameTime > startOfDay && isNewDay)
         {
             isNewDay = false;
+            if (dayNum == 2)
+            {
+                EcosystemManager.EnablePopulation(MonsterName.Potato);
+            }
             OnStartNewDay?.Invoke();
         }
 
         if (gameTime >= dayEndTime)
         {
-            OnEndOfDay?.Invoke();                        
+            OnEndOfDay?.Invoke();
             if (DrivingManager.instance.IsPlayerInVehicle())
             {
                 DrivingManager.instance.HandlePlayerLeaveVehicle();

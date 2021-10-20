@@ -1517,7 +1517,7 @@ MonoBehaviour:
   playerCharacter: {fileID: 1719325387}
   truck: {fileID: 388754734}
   uiCanvas: {fileID: 117233503476727692}
-  loadType: 0
+  loadType: 1
 --- !u!4 &309590545
 Transform:
   m_ObjectHideFlags: 0
@@ -3082,7 +3082,7 @@ MonoBehaviour:
   - {fileID: 6308175630431047700}
   TimeText: {fileID: 6662030477123604032}
   DayProgress: {fileID: 8155810973879124581}
-  dayLengthInMinutes: 6
+  dayLengthInMinutes: 1
   sunrise: 0.25
   sunset: 0.833
   startOfDay: 0.33
@@ -3186,6 +3186,8 @@ MonoBehaviour:
   - {fileID: 5080297952357249674, guid: bc99c291013953d409b6dba34aac83fd, type: 3}
   - {fileID: 9062019569830792200, guid: c6842ea22088da542ac77fec21ab95b5, type: 3}
   - {fileID: 807139516458123811, guid: 4180c73d6e91a2048826a68a1d901107, type: 3}
+  - {fileID: 8476999911837097944, guid: 46ef6d6dce89a1c47923ed62fc0556a8, type: 3}
+  - {fileID: 9062019569830792200, guid: 20f131f2698cf684b8a8d0abd301276a, type: 3}
   parent: {fileID: 998160524}
   distFromSafeSpace: 30
   distFromNormalObstacle: 2
@@ -8118,6 +8120,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numDaysBetweenLevelIncrease: 1
   numDaysToIncreaseFromExtinct: 2
+  enableAllPopAtStart: 1
 --- !u!1001 &1300894976
 PrefabInstance:
   m_ObjectHideFlags: 0
