@@ -22,12 +22,16 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
 
     [Header("Upgrades")]
     public List<int> unlockedRecipesList = new List<int> { 0, 4, 6, 10, 32 };
-    public int[] upgradesArray = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    public int[] upgradesArray = new int[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     public int[] weaponSkillArray = new int[11] { 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 };
 
     [Header("Inventory")]
     public List<InventoryItem> itemList = new List<InventoryItem>();
-    public int[] consumables = new int[3] { 0, 0, 0 };
+    public int healthPill;
+    public int staminaPill;
+    public int potion;
+    public int pfizerShot;
+    public int modernaShot;
     public int currentMoney;
 
     [Header("Others")]
@@ -62,13 +66,17 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.currentMoney = currentMoney;
         playerData.evasionChance = evasionChance;
         playerData.criticalChance = criticalChance;
-        playerData.consumables = consumables;
         playerData.currentDay = currentDay;
         playerData.monsterSavedDatas = SaveMonsters();
         playerData.weaponSkillArray = weaponSkillArray;
         playerData.currentWeaponHeld = currentWeaponHeld;
         playerData.currentSecondaryHeld = currentSecondaryHeld;
         playerData.campfireRegenerationRate = campfireRegenerationRate;
+        playerData.healthPill = healthPill;
+        playerData.staminaPill = staminaPill;
+        playerData.potion = potion;
+        playerData.pfizerShot = pfizerShot;
+        playerData.modernaShot = modernaShot;
         SaveSystem.SaveData(playerData);
     }
 
@@ -99,12 +107,16 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         currentMoney = playerData.currentMoney;
         criticalChance = playerData.criticalChance;
         evasionChance = playerData.evasionChance;
-        consumables = playerData.consumables;
         currentDay = playerData.currentDay;
         weaponSkillArray = playerData.weaponSkillArray;
         currentWeaponHeld = playerData.currentWeaponHeld;
         currentSecondaryHeld = playerData.currentSecondaryHeld;
         campfireRegenerationRate = playerData.campfireRegenerationRate;
+        healthPill = playerData.healthPill;
+        staminaPill = playerData.staminaPill;
+        potion = playerData.potion;
+        pfizerShot = playerData.pfizerShot;
+        modernaShot = playerData.modernaShot;
         LoadMonsters();
     }
 
