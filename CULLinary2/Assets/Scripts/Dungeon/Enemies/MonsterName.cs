@@ -6,5 +6,7 @@ public enum MonsterName
 {
     Eggplant,
     Potato,
-    Corn
+    Corn,
+    Tomato,
+    Bread
 }
