@@ -11,6 +11,7 @@ public class OrdersUIMap : Minimap
 
     void OnEnable()  
     {
+        TryToSetPlayerBody();
         if (!hasInstantiatedIcons)
         {
             InstantiateMinimapIcons();
@@ -30,6 +31,12 @@ public class OrdersUIMap : Minimap
 
     protected override void SetPlayerIconPos()
     {
+        // Edge case where player gets into truck without opening the Orders UI before
+        // We set the transform to the truck's transform
+        if (DrivingManager.instance.IsPlayerInVehicle() && !hasSetPlayerBody)
+        {
+            playerBody = DrivingManager.instance.GetTruckTransform();
+        }
         SetIconPos(playerBody, navArrow, false);
     }
 
