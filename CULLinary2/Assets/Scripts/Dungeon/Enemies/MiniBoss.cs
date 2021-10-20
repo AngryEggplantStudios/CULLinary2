@@ -27,29 +27,7 @@ public class MiniBoss : MonoBehaviour
             lootToAdd.prefab = monsterScript.GetLoot();
             lootToAdd.quantity = Random.Range(randomLootRange[0], randomLootRange[1] + 1);
             Chest chestScript = lootChest.GetComponent<Chest>();
-            // int lootIndex = chestScript.FindLootIndex("PotatoLoot");
-            // if (lootIndex >= 0)
-            // {
             chestScript.loot[2] = lootToAdd;
-            foreach (ChestLoot l in chestScript.loot)
-            {
-                Debug.Log("loot: " + l.prefab.name + " x" + l.quantity);
-            }
-            // }
-            // else
-            // {
-            //     Debug.Log("cannot find PotatoLoot in MiniBossLootChest");
-            // }
-            // foreach (ChestLoot l in lootArr)
-            // {
-            //     if (l.prefab.name == lootToAdd.prefab.name)
-            //     {
-            //         Debug.Log("loot chest already has this loot: " + lootToAdd.prefab.name);
-            //         return;
-            //     }
-            // }
-            // lootChest.GetComponent<Chest>().AddLoot(lootToAdd);
-            // Debug.Log("added loot: " + lootToAdd.prefab.name);
         }
     }
 
