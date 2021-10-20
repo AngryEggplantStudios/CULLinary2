@@ -106,13 +106,13 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
         float searchRadius = 2f;
         if (NavMesh.SamplePosition(randomPos, out hit, searchRadius, NavMesh.AllAreas))
         {
-            result = hit.position;
-            return true;
-            // if (IsValidSpawnPosition(hit.position))
-            // {
-            //     result = hit.position;
-            //     return true;
-            // }
+            // result = hit.position;
+            // return true;
+            if (IsValidSpawnPosition(hit.position))
+            {
+                result = hit.position;
+                return true;
+            }
         }
 
         result = Vector3.zero;
@@ -122,12 +122,12 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
     private bool IsValidSpawnPosition(Vector3 position)
     {
         // Check distance from player and other objects
-        Collider[] playerCollider = Physics.OverlapSphere(position, distFromSafeSpace, LayerMask.NameToLayer("Player"));
-        if (playerCollider.Length != 0)
-        {
-            // Too close to player
-            return false;
-        }
+        // Collider[] playerCollider = Physics.OverlapSphere(position, distFromSafeSpace, LayerMask.NameToLayer("Player"));
+        // if (playerCollider.Length != 0)
+        // {
+        //     // Too close to player
+        //     return false;
+        // }
 
         // Check for collision with objects in the map
         Collider[] colliders = Physics.OverlapSphere(position, distFromNormalObstacle);
