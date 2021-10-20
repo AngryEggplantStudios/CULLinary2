@@ -15,15 +15,20 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
     [SerializeField] private TMP_Text currentLevelEffectText;
     [SerializeField] private TMP_Text nextLevelEffectText;
     [SerializeField] private TMP_Text nextLevelIncrementText;
-    [Header("Colors")]
-    [SerializeField] private Color ableToBePurchasedColor;
-    [SerializeField] private Color unableToBePurchasedColor;
+    [SerializeField] private TMP_Text itemName;
+    [SerializeField] private TMP_Text itemDescription;
+    [SerializeField] private Image itemIcon;
     [SerializeField] private Button equipButton;
     [SerializeField] private TMP_Text equipText;
     [SerializeField] private Button upgradeButton;
     [SerializeField] private AudioSource kaching;
+    [SerializeField] private GameObject itemPanel;
     [SerializeField] private PlayerSecondaryAttack playerSecondaryAttack;
     [SerializeField] private PlayerSlash playerSlash;
+    [Header("Colors")]
+    [SerializeField] private Color ableToBePurchasedColor;
+    [SerializeField] private Color unableToBePurchasedColor;
+
     private int currentTab = 0; //0 for primary, 1 for secondary
     private int primarySelectedSlotId = -1;
     private int secondarySelectedSlotId = -1;
@@ -79,6 +84,8 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
             weaponId = secondarySlots[secondarySelectedSlotId].weaponSkillItem.weaponSkillId;
             playerSecondaryAttack.ChangeSecondaryAttack(weaponId);
         }
+        UpdateShopDescription();
+        kaching.Play();
     }
 
     public void HandlePurchase()
@@ -88,25 +95,8 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
 
     public void HandleTabSwitch(int tab)
     {
-        /*
-        switch (currentTab)
-        {
-            case 0:
-                if (selectedSlotId != -1)
-                {
-                    secondarySlots[selectedSlotId].GetComponent<WeaponSlot>().ToggleSelect(false);
-                }
-                break;
-            case 1:
-                if (selectedSlotId != -1)
-                {
-                    primarySlots[selectedSlotId].GetComponent<WeaponSlot>().ToggleSelect(false);
-                }
-                break;
-        }
-        */
-        //selectedSlotId = -1;
         currentTab = tab;
+        UpdateShopDescription();
     }
 
     public void UpdateShopDescription()
@@ -115,10 +105,35 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
         {
             return;
         }
+        itemPanel.SetActive(true);
+        int weaponId = 0;
+        if (currentTab == 0)
+        {
+            weaponId = primarySlots[primarySelectedSlotId].weaponSkillItem.weaponSkillId;
+        }
+        else if (currentTab == 1)
+        {
+            weaponId = secondarySlots[secondarySelectedSlotId].weaponSkillItem.weaponSkillId;
+        }
+        WeaponSkillItem weaponSkillItem = DatabaseLoader.GetWeaponSkillById(weaponId);
+        itemName.text = weaponSkillItem.itemName;
+        itemDescription.text = weaponSkillItem.description[0];
+        itemIcon.sprite = weaponSkillItem.icon;
+        if (weaponId == PlayerManager.instance.currentWeaponHeld || weaponId == PlayerManager.instance.currentSecondaryHeld)
+        {
+            equipText.text = "Equipped";
+            equipButton.interactable = false;
+        }
+        else
+        {
+            equipText.text = "Equip";
+            equipButton.interactable = true;
+        }
     }
 
     public void SetupShop()
     {
+        itemPanel.SetActive(false);
         List<WeaponSkillItem> weaponSkillItems = DatabaseLoader.GetWeaponSkillList();
         primarySlots = new List<WeaponSlot>();
         secondarySlots = new List<WeaponSlot>();
