@@ -1202,6 +1202,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RecipeUISlot (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 7624554977404454818, guid: aa4beb72684b9ff4c8127b2afd6353ab, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 5819034279512177362, guid: a1bc1abf93d37c348ab5a4e3cdfdd48c, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa4beb72684b9ff4c8127b2afd6353ab, type: 3}
 --- !u!224 &325501040 stripped
@@ -1969,7 +1973,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cd1314ded2a14fa79c5f504f76054e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 10
+  currentHealth: 200
   maxHealth: 500
   currentStamina: 500
   maxStamina: 500
@@ -2446,6 +2450,8 @@ MonoBehaviour:
   - {fileID: 9062019569830792200, guid: c6842ea22088da542ac77fec21ab95b5, type: 3}
   - {fileID: 807139516458123811, guid: 4180c73d6e91a2048826a68a1d901107, type: 3}
   parent: {fileID: 998160524}
+  distFromSafeSpace: 30
+  distFromNormalObstacle: 2
 --- !u!1001 &535242617
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2602,6 +2608,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RecipeUISlot
       objectReference: {fileID: 0}
+    - target: {fileID: 7624554977404454818, guid: aa4beb72684b9ff4c8127b2afd6353ab, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 5819034279512177362, guid: a1bc1abf93d37c348ab5a4e3cdfdd48c, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa4beb72684b9ff4c8127b2afd6353ab, type: 3}
 --- !u!1 &548712075 stripped
@@ -3409,6 +3419,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RecipeUISlot (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 7624554977404454818, guid: aa4beb72684b9ff4c8127b2afd6353ab, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 5819034279512177362, guid: a1bc1abf93d37c348ab5a4e3cdfdd48c, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa4beb72684b9ff4c8127b2afd6353ab, type: 3}
 --- !u!224 &704043327 stripped
@@ -5188,6 +5202,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RecipeUISlot (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 7624554977404454818, guid: aa4beb72684b9ff4c8127b2afd6353ab, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 5819034279512177362, guid: a1bc1abf93d37c348ab5a4e3cdfdd48c, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa4beb72684b9ff4c8127b2afd6353ab, type: 3}
 --- !u!224 &1248385159 stripped
@@ -7315,6 +7333,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RecipeUISlot (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7624554977404454818, guid: aa4beb72684b9ff4c8127b2afd6353ab, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 5819034279512177362, guid: a1bc1abf93d37c348ab5a4e3cdfdd48c, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa4beb72684b9ff4c8127b2afd6353ab, type: 3}
 --- !u!224 &1964896592 stripped
@@ -7524,6 +7546,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RecipeUISlot (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 7624554977404454818, guid: aa4beb72684b9ff4c8127b2afd6353ab, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 5819034279512177362, guid: a1bc1abf93d37c348ab5a4e3cdfdd48c, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa4beb72684b9ff4c8127b2afd6353ab, type: 3}
 --- !u!224 &2067113307 stripped
@@ -20672,7 +20698,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2578241865804306865}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -32778,7 +32804,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 809483033586318061}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -35370,7 +35396,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 274557040925826651}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -66255,7 +66281,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6538383281638531190}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -67406,7 +67432,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6296295329762989260}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -68898,7 +68924,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6036449088896942933}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -69505,7 +69531,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5854395822120333641}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -76589,7 +76615,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4753325511019469386}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
