@@ -23,6 +23,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     [Header("Daily News")]
     [SerializeField] private GameObject newspaper;
+    [SerializeField] private GameObject hudToHide;
     
     private static float gameTime;
     private static float timeScale;
@@ -49,8 +50,8 @@ public class GameTimer : SingletonGeneric<GameTimer>
     void Start()
     {
         dayNum = PlayerManager.instance != null ? PlayerManager.instance.currentDay : 1;
+        currentIssueNumber = PlayerManager.instance != null ? PlayerManager.instance.currentNewspaperIssue : 1;
         newspaperDets = newspaper.GetComponent<NewspaperDetails>();
-        currentIssueNumber = PlayerManager.instance.currentNewspaperIssue;
 
         if (sunrise > sunset) { Debug.LogError("Sunrise is after Sunset!"); }
 
@@ -101,6 +102,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
     public void CloseNewspaperAndStartDay()
     {
         newspaper.SetActive(false);
+        hudToHide.SetActive(true);
         Time.timeScale = 1;
         OnStartNewDay?.Invoke();
     }
@@ -125,7 +127,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         if (gameTime > startOfDay && isNewDay)
         {
             isNewDay = false;
-            
+
             NewsIssue currentNews = showRandomNews
                 ? DatabaseLoader.GetRandomNewsIssue()
                 : DatabaseLoader.GetOrderedNewsIssueById(currentIssueNumber);
@@ -141,6 +143,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
                 Debug.Log("My News" + currentNews);
                 newspaperDets.UpdateNewspaperIssueUI(currentNews);
                 newspaper.SetActive(true);
+                hudToHide.SetActive(false);
             }
             showRandomNews = false;
         }
@@ -191,11 +194,11 @@ public class GameTimer : SingletonGeneric<GameTimer>
     {
         UIController.instance.ShowEndOfDayMenu();
         // Increment newspaper for next day
-        currentIssueNumber++;
-        PlayerManager.instance.currentNewspaperIssue = currentIssueNumber;
-        NewsIssue currentNews = DatabaseLoader.GetOrderedNewsIssueById(currentIssueNumber);
+        NewsIssue currentNews = DatabaseLoader.GetOrderedNewsIssueById(currentIssueNumber + 1);
         if (currentNews)
         {
+            currentIssueNumber++;
+            PlayerManager.instance.currentNewspaperIssue = currentIssueNumber;
             DoProgression(currentNews);
         }
         //Restore health here

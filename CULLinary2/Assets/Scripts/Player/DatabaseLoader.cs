@@ -388,7 +388,7 @@ public class DatabaseLoader : MonoBehaviour
         }
         catch (Exception e)
         {
-            Debug.Log("Error: " + e);
+            Debug.Log("Error: news with ID " + id + " not found, " + e);
             return null;
         }
     }
