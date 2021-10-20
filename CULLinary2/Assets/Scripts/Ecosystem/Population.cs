@@ -10,6 +10,7 @@ public class Population
     private int optimalNumber;
     private int currentNumber;
     private PopulationLevel level;
+    private bool isEnabled = false; // if not enabled, pop level does not increase and monsters do not spawn
     private const float chanceOfOverpopulation = 0.75f;
     private const float overpopulationMultiplier = 1.5f;
     private int numDaysBetweenLevelIncrease = 1; // num days it takes to increase pop level naturally (for endangered, vulnerable and normal (50% chance))
@@ -49,6 +50,17 @@ public class Population
     public int GetCurrentNumber()
     {
         return this.currentNumber;
+    }
+
+    public bool IsEnabled()
+    {
+        return isEnabled;
+    }
+
+    public void SetEnabled(bool value)
+    {
+        isEnabled = value;
+        Debug.Log("is population enabled for " + name + "?: " + isEnabled);
     }
 
     private void SetCurrentNumberBasedOnLevel()

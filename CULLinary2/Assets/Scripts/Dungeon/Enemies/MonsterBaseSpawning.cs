@@ -41,6 +41,12 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
             }
 
             MonsterName name = monsterScript.GetMonsterName();
+            if (!EcosystemManager.GetPopulation(name).IsEnabled())
+            {
+                // Don't spawn base monsters if population is disabled
+                continue;
+            }
+
             int baseSpawningNumber = EcosystemManager.GetPopulation(name).GetBaseSpawningNumber();
             int numCurrentlyAlive = numOfAliveMonsters[name];
 
