@@ -22,7 +22,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
     [SerializeField, Range(0, 1), Tooltip("e.g. 0.33 for 8am")] private float startOfDay;
 
     [Header("Daily News")]
-    [SerializeField] private NewspaperDetails newspaper;
+    [SerializeField] private GameObject newspaper;
     
     private static float gameTime;
     private static float timeScale;
@@ -36,14 +36,21 @@ public class GameTimer : SingletonGeneric<GameTimer>
     private bool isNewDay = true; // prevent OnStartNewDay from being invoked multiple times
     private bool isRunning = false;
 
+    private NewspaperDetails newspaperDets;
+
     public delegate void StartNewDayDelegate();
     public static event StartNewDayDelegate OnStartNewDay;
     public delegate void EndOfDayDelegate();
     public static event EndOfDayDelegate OnEndOfDay;
 
+    private int currentIssueNumber = 1;
+    private bool showRandomNews = false;
+
     void Start()
     {
         dayNum = PlayerManager.instance != null ? PlayerManager.instance.currentDay : 1;
+        newspaperDets = newspaper.GetComponent<NewspaperDetails>();
+        currentIssueNumber = PlayerManager.instance.currentNewspaperIssue;
 
         if (sunrise > sunset) { Debug.LogError("Sunrise is after Sunset!"); }
 
@@ -90,6 +97,14 @@ public class GameTimer : SingletonGeneric<GameTimer>
         }
     }
 
+    // Starts the day after the newspaper is closed
+    public void CloseNewspaperAndStartDay()
+    {
+        newspaper.SetActive(false);
+        Time.timeScale = 1;
+        OnStartNewDay?.Invoke();
+    }
+
     // Adds a certain number of minutes to the clock
     private void AddMinutes(int minutes)
     {
@@ -110,7 +125,24 @@ public class GameTimer : SingletonGeneric<GameTimer>
         if (gameTime > startOfDay && isNewDay)
         {
             isNewDay = false;
-            OnStartNewDay?.Invoke();
+            
+            NewsIssue currentNews = showRandomNews
+                ? DatabaseLoader.GetRandomNewsIssue()
+                : DatabaseLoader.GetOrderedNewsIssueById(currentIssueNumber);
+            
+            if (currentNews == null)
+            {
+                Debug.Log("No newspaper for " + currentIssueNumber + " found");
+                OnStartNewDay?.Invoke();
+            }
+            else
+            {
+                Time.timeScale = 0;
+                Debug.Log("My News" + currentNews);
+                newspaperDets.UpdateNewspaperIssueUI(currentNews);
+                newspaper.SetActive(true);
+            }
+            showRandomNews = false;
         }
 
         if (gameTime >= dayEndTime)
@@ -158,6 +190,14 @@ public class GameTimer : SingletonGeneric<GameTimer>
     private void ShowEndOfDayMenu()
     {
         UIController.instance.ShowEndOfDayMenu();
+        // Increment newspaper for next day
+        currentIssueNumber++;
+        PlayerManager.instance.currentNewspaperIssue = currentIssueNumber;
+        NewsIssue currentNews = DatabaseLoader.GetOrderedNewsIssueById(currentIssueNumber);
+        if (currentNews)
+        {
+            DoProgression(currentNews);
+        }
         //Restore health here
         GoToNextDay();
         SaveGame();
@@ -216,6 +256,27 @@ public class GameTimer : SingletonGeneric<GameTimer>
     public static int GetDayNumber()
     {
         return dayNum;
+    }
+
+    // Shows a random newspaper issue the next day
+    public void ShowRandomNews()
+    {
+        showRandomNews = true;
+    }
+
+    // Uses the newspaper that is shown at the start of the day
+    // and applies the changes to the game
+    private void DoProgression(NewsIssue ni)
+    {
+        foreach (int id in ni.recipesUnlocked)
+        {
+            PlayerManager.instance.unlockedRecipesList.Add(id);
+        }
+        foreach (int id in ni.enemiesUnlocked)
+        {
+            // TODO - Unlock the enemies
+        }
+        RecipeManager.instance.UpdateUnlockedRecipes();
     }
 
     private void OnDestroy()

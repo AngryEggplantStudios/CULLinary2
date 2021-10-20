@@ -20,7 +20,7 @@ public class PlayerData
     public int modernaShot;
     public int[] upgradesArray;
     public int currentDay;
-    public int currentNewspaperIssue;
+    public int currentNewspaperIssue = 1;
     public int[] unlockedRecipes;
     public MonsterSavedData[] monsterSavedDatas;
 

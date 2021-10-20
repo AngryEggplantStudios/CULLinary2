@@ -37,7 +37,7 @@ public class DatabaseLoader : MonoBehaviour
     private static Dictionary<int, WeaponSkillItem> weaponSkillDict;
     private static List<WeaponSkillItem> weaponSkillList;
     //Newspaper
-    private static Dictionary<int, NewsIssue> newsIssuesDict;
+    private static Dictionary<int, NewsIssue> orderedNewsIssuesDict;
     private static List<NewsIssue> orderedNewsIssuesList;
     private static List<NewsIssue> randomNewsIssuesList;
 
@@ -55,6 +55,9 @@ public class DatabaseLoader : MonoBehaviour
         monsterList = monsterDatabase.allMonsters;
         weaponSkillDict = new Dictionary<int, WeaponSkillItem>();
         weaponSkillList = new List<WeaponSkillItem>();
+        orderedNewsIssuesDict = new Dictionary<int, NewsIssue>();
+        orderedNewsIssuesList = new List<NewsIssue>();
+        randomNewsIssuesList = new List<NewsIssue>();
         if (isAutoload)
         {
             StartCoroutine(Populate());
@@ -347,7 +350,8 @@ public class DatabaseLoader : MonoBehaviour
         {
             try
             {
-                newsIssuesDict.Add(ni.issueId, ni);
+                orderedNewsIssuesDict.Add(ni.issueId, ni);
+                orderedNewsIssuesList.Add(ni);
             }
             catch (Exception e)
             {
@@ -361,7 +365,7 @@ public class DatabaseLoader : MonoBehaviour
         {
             try
             {
-                newsIssuesDict.Add(ni.issueId, ni);
+                randomNewsIssuesList.Add(ni);
             }
             catch (Exception e)
             {
@@ -379,14 +383,14 @@ public class DatabaseLoader : MonoBehaviour
         NewsIssue issue;
         try
         {
-            issue = newsIssuesDict[id];
+            issue = orderedNewsIssuesDict[id];
+            return issue;
         }
         catch (Exception e)
         {
             Debug.Log("Error: " + e);
-            issue = new NewsIssue();
+            return null;
         }
-        return issue;
     }
     public static List<NewsIssue> GetOrderedNewsIssuesList()
     {
@@ -394,7 +398,7 @@ public class DatabaseLoader : MonoBehaviour
     }
     public static Dictionary<int, NewsIssue> GetOrderedNewsIssuesDict()
     {
-        return newsIssuesDict;
+        return orderedNewsIssuesDict;
     }
 
     public static List<NewsIssue> GetRandomNewsIssuesList()
@@ -402,7 +406,7 @@ public class DatabaseLoader : MonoBehaviour
         return randomNewsIssuesList;
     }
 
-    public NewsIssue GetRandomNewsIssue()
+    public static NewsIssue GetRandomNewsIssue()
     {
         return randomNewsIssuesList[Random.Range(0, randomNewsIssuesList.Count)];
     }

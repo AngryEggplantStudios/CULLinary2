@@ -137,6 +137,7 @@ public class UIController : SingletonGeneric<UIController>
         deathMenuActive = false;
         //isPaused = false;
         player.GetComponent<CharacterController>().enabled = true;
+        GameTimer.instance.ShowRandomNews();
         GameTimer.instance.GoToNextDay();
         playerDeathMenu.SetActive(false);
         Time.timeScale = 1;

@@ -36,7 +36,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
 
     [Header("Others")]
     public int currentDay;
-    public int currentNewspaperIssue;
+    public int currentNewspaperIssue = 1;
     public Dictionary<MonsterName, PopulationLevel> monsterDict = new Dictionary<MonsterName, PopulationLevel>{
         {MonsterName.Corn, PopulationLevel.Normal},
         {MonsterName.Potato, PopulationLevel.Normal},
