@@ -36,6 +36,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
 
     [Header("Others")]
     public int currentDay;
+    public int currentNewspaperIssue;
     public Dictionary<MonsterName, PopulationLevel> monsterDict = new Dictionary<MonsterName, PopulationLevel>{
         {MonsterName.Corn, PopulationLevel.Normal},
         {MonsterName.Potato, PopulationLevel.Normal},
@@ -77,6 +78,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.potion = potion;
         playerData.pfizerShot = pfizerShot;
         playerData.modernaShot = modernaShot;
+        playerData.currentNewspaperIssue = currentNewspaperIssue;
         SaveSystem.SaveData(playerData);
     }
 
@@ -117,6 +119,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         potion = playerData.potion;
         pfizerShot = playerData.pfizerShot;
         modernaShot = playerData.modernaShot;
+        currentNewspaperIssue = playerData.currentNewspaperIssue;
         LoadMonsters();
     }
 

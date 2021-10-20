@@ -20,6 +20,10 @@ public class GameTimer : SingletonGeneric<GameTimer>
     [SerializeField, Range(0, 1), Tooltip("e.g. 0.25 for 6am")] private float sunrise;
     [SerializeField, Range(0, 1), Tooltip("e.g. 0.75 for 6pm")] private float sunset;
     [SerializeField, Range(0, 1), Tooltip("e.g. 0.33 for 8am")] private float startOfDay;
+
+    [Header("Daily News")]
+    [SerializeField] private NewspaperDetails newspaper;
+    
     private static float gameTime;
     private static float timeScale;
     private static int dayNum = 1; // TODO: to get from saved data

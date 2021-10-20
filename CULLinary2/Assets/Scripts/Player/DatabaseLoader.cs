@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Random = UnityEngine.Random;
+
 public class DatabaseLoader : MonoBehaviour
 {
     [Header("Autoload?")]
@@ -14,6 +16,7 @@ public class DatabaseLoader : MonoBehaviour
     [SerializeField] private EventsDatabase eventsDatabase;
     [SerializeField] private MonsterDatabase monsterDatabase;
     [SerializeField] private WeaponSkillDatabase weaponSkillDatabase;
+    [SerializeField] private NewspaperDatabase newspaperDatabase;
 
     //Inventory Items
     private static Dictionary<int, InventoryItem> inventoryItemDict;
@@ -33,6 +36,10 @@ public class DatabaseLoader : MonoBehaviour
     //Weapon Skill Items
     private static Dictionary<int, WeaponSkillItem> weaponSkillDict;
     private static List<WeaponSkillItem> weaponSkillList;
+    //Newspaper
+    private static Dictionary<int, NewsIssue> newsIssuesDict;
+    private static List<NewsIssue> orderedNewsIssuesList;
+    private static List<NewsIssue> randomNewsIssuesList;
 
     private void Awake()
     {
@@ -61,6 +68,7 @@ public class DatabaseLoader : MonoBehaviour
         yield return StartCoroutine(PopulateShopItemDatabase());
         yield return StartCoroutine(PopulateEventDatabase());
         yield return StartCoroutine(PopulateWeaponSkillItemDatabase());
+        yield return StartCoroutine(PopulateNewspaperDatabase());
     }
 
     private IEnumerator PopulateInventoryItemDatabase()
@@ -331,5 +339,71 @@ public class DatabaseLoader : MonoBehaviour
     public static Dictionary<int, WeaponSkillItem> GetWeaponSkillDict()
     {
         return weaponSkillDict;
+    }
+
+    private IEnumerator PopulateNewspaperDatabase()
+    {
+        foreach (NewsIssue ni in newspaperDatabase.orderedIssues)
+        {
+            try
+            {
+                newsIssuesDict.Add(ni.issueId, ni);
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Error: " + e);
+                Debug.Log("Unable to add news issue: " + ni.headlines);
+            }
+            yield return null;
+        }
+        
+        foreach (NewsIssue ni in newspaperDatabase.randomIssues)
+        {
+            try
+            {
+                newsIssuesDict.Add(ni.issueId, ni);
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Error: " + e);
+                Debug.Log("Unable to add news issue: " + ni.headlines);
+            }
+            yield return null;
+        }
+
+        Debug.Log("Newspaper Database populated.");
+    }
+
+    public static NewsIssue GetOrderedNewsIssueById(int id)
+    {
+        NewsIssue issue;
+        try
+        {
+            issue = newsIssuesDict[id];
+        }
+        catch (Exception e)
+        {
+            Debug.Log("Error: " + e);
+            issue = new NewsIssue();
+        }
+        return issue;
+    }
+    public static List<NewsIssue> GetOrderedNewsIssuesList()
+    {
+        return orderedNewsIssuesList;
+    }
+    public static Dictionary<int, NewsIssue> GetOrderedNewsIssuesDict()
+    {
+        return newsIssuesDict;
+    }
+
+    public static List<NewsIssue> GetRandomNewsIssuesList()
+    {
+        return randomNewsIssuesList;
+    }
+
+    public NewsIssue GetRandomNewsIssue()
+    {
+        return randomNewsIssuesList[Random.Range(0, randomNewsIssuesList.Count)];
     }
 }
