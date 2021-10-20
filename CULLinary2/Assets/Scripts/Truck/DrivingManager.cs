@@ -44,4 +44,22 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         isPlayerInVehicle = false;
         UIController.instance.isPlayerInVehicle = false;
     }
+
+    // Checks if the player is driving the truck
+    public bool IsPlayerInVehicle()
+    {
+        return isPlayerInVehicle;
+    }
+
+    // Returns the y-axis rotation of the truck
+    public float GetTruckYRotation()
+    {
+        return driveableTruck.transform.eulerAngles.y;
+    }
+
+    // Returns the transform of the truck
+    public Transform GetTruckTransform()
+    {
+        return driveableTruck.transform;
+    }
 }

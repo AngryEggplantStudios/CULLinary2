@@ -19,9 +19,9 @@ public class BreadMonsterScript : MonsterBehavior
             monsterScript.SetStateMachine(MonsterState.Idle);
         }
         else
-		{
+        {
             monsterScript.SetStateMachine(MonsterState.AttackTarget);
-		}
+        }
     }
 
     public override void EnemyAttackPlayer(Vector3 playerPosition, bool ableToMove)
@@ -35,7 +35,7 @@ public class BreadMonsterScript : MonsterBehavior
             StartCoroutine(DelayAttack(playerPositionWithoutYOffset));
         }
         float directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
-        if (directionVector >= monsterScript.getStopChase())
+        if (directionVector >= monsterScript.GetStopChase())
         {
             // Target within attack range
             monsterScript.SetStateMachine(MonsterState.Idle);
