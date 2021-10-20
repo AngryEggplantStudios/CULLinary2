@@ -7,25 +7,18 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
 {
     public GameObject driveableTruck;
     public GameObject truckCamera;
-    // Hide the interaction prompt as well 
     public GameObject interactionPrompt;
+    public GameObject player;
+    public GameObject responsiveUICanvas;
 
-    private GameObject player;
-    private bool hasSetPlayer = false;
-    private bool isPlayerInVehicle = false;
     private Vector3 spawnOffset = Vector3.left * 5;
-    
-    public void Update()
+    private bool isPlayerInVehicle = false;
+
+    void Update()
     {
-        if (!hasSetPlayer)
-        {
-            player = GameObject.FindGameObjectWithTag("Player");
-            hasSetPlayer = player != null;
-        }
         if (isPlayerInVehicle)
         {
             player.transform.position = driveableTruck.transform.position;
-            player.transform.rotation = driveableTruck.transform.rotation;
         }
     }
 
@@ -35,6 +28,7 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         truckCamera.SetActive(true);
         player.SetActive(false);
         interactionPrompt.SetActive(false);
+        responsiveUICanvas.SetActive(false);
         isPlayerInVehicle = true;
         UIController.instance.isPlayerInVehicle = true;
     }
@@ -46,6 +40,7 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         player.transform.position = driveableTruck.transform.position + spawnOffset;
         player.SetActive(true);
         interactionPrompt.SetActive(true);
+        responsiveUICanvas.SetActive(true);
         isPlayerInVehicle = false;
         UIController.instance.isPlayerInVehicle = false;
     }
