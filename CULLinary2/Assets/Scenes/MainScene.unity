@@ -14,7 +14,7 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
-  m_Fog: 1
+  m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.01
@@ -4608,7 +4608,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 18
+  m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1087583510
 PrefabInstance:
@@ -44483,7 +44483,7 @@ MonoBehaviour:
     isSpawnable: 1
     prefabs:
     - {fileID: 6012312926119733914, guid: f25ed080c168c6e4dafb4089a3361ab2, type: 3}
-    density: 5000
+    density: 6000
     intersectRadius: 3
     removeCollider: 1
     ignoreSelfIntersection: 1
@@ -44492,7 +44492,7 @@ MonoBehaviour:
     prefabs:
     - {fileID: 919132149155446097, guid: 5dcefc10aeecd425f8b73579f64bcab5, type: 3}
     - {fileID: 919132149155446097, guid: a764dbccd9bf2412aac9f1b4625d0367, type: 3}
-    density: 100
+    density: 50
     intersectRadius: 1
     removeCollider: 0
     ignoreSelfIntersection: 1
@@ -44529,7 +44529,7 @@ MonoBehaviour:
     - {fileID: 919132149155446097, guid: 4d9e8ff6db71840a3971a248bab7e777, type: 3}
     - {fileID: 919132149155446097, guid: da42020ba29fa4c2cb592c58cfe475a9, type: 3}
     - {fileID: 919132149155446097, guid: e38033a5600ad4756b82d3a21a54993a, type: 3}
-    density: 1000
+    density: 800
     intersectRadius: 1
     removeCollider: 0
     ignoreSelfIntersection: 1
@@ -44558,7 +44558,7 @@ MonoBehaviour:
     - {fileID: 919132149155446097, guid: c2ee9d41652a74bf8a58a1f6f9c45776, type: 3}
     - {fileID: 919132149155446097, guid: f8d0b23ced5cd430b8de45f619f24a18, type: 3}
     - {fileID: 919132149155446097, guid: 52f61bcfe534c4b3c81805012c94d6d5, type: 3}
-    density: 4000
+    density: 3000
     intersectRadius: 0.2
     removeCollider: 0
     ignoreSelfIntersection: 1
@@ -44574,7 +44574,7 @@ MonoBehaviour:
     - {fileID: 919132149155446097, guid: 9dcafc845a49a43b3938a614d71a05e4, type: 3}
     - {fileID: 919132149155446097, guid: cbec4d32e93b64c38bbbc131575a61ff, type: 3}
     - {fileID: 919132149155446097, guid: 5221a9833e5904d45849c42ee6f47ec6, type: 3}
-    density: 5000
+    density: 3000
     intersectRadius: 0.1
     removeCollider: 1
     ignoreSelfIntersection: 1
