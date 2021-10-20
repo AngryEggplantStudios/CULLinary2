@@ -60,6 +60,9 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     // Track amount of money earned today
     private int moneyEarnedToday = 0;
 
+    // Buff bonus
+    private bool isDoubled = false;
+
     void Start()
     {
         innerOrdersList = new List<Order>();
@@ -90,6 +93,13 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         isCacheValid = false;
         StopCoroutine(UpdateUI());
         StartCoroutine(UpdateUI());
+    }
+
+    public IEnumerator ToggleDoubleEarnings(float duration)
+    {
+        isDoubled = true;
+        yield return new WaitForSeconds(duration);
+        isDoubled = false;
     }
 
     // Tries to complete an order with a certain station ID
@@ -128,6 +138,10 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
 
             // Update money
             int earnings = orderToComplete.GetDeliveryReward();
+            if (isDoubled)
+            {
+                earnings *= 2;
+            }
             SpawnMoneyNotif(earnings);
             PlayerManager.instance.currentMoney += earnings;
 
@@ -327,6 +341,11 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         {
             onOrderGenerationCallback.Invoke();
         }
+    }
+
+    public void ClearBuffs()
+    {
+        isDoubled = false;
     }
 
     public void OnDestroy()

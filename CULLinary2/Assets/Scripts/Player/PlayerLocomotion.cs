@@ -27,6 +27,8 @@ public class PlayerLocomotion : PlayerAction
     private Vector3 prevDirection = Vector3.zero;
     private PlayerStamina playerStamina;
 
+    private float speedMultiplier = 1f;
+
     private void Awake()
     {
         playerController = GetComponent<PlayerController>();
@@ -74,7 +76,7 @@ public class PlayerLocomotion : PlayerAction
         float accelerationToApply = currSpeed < runSpeed ? acceleration : deceleration;
         prevDirection = direction.normalized;
         currSpeed = Mathf.Lerp(currSpeed, runSpeed, accelerationToApply * Time.deltaTime);
-        controller.Move(direction.normalized * currSpeed * Time.deltaTime);
+        controller.Move(direction.normalized * currSpeed * speedMultiplier * Time.deltaTime);
     }
 
     private void Stop(Vector3 direction, bool isGrounded = true)
@@ -106,7 +108,7 @@ public class PlayerLocomotion : PlayerAction
         }
 
         currSpeed = Mathf.Lerp(currSpeed, 0.0f, accelerationToApply * Time.deltaTime);
-        controller.Move(targetDirection * currSpeed * Time.deltaTime);
+        controller.Move(targetDirection * currSpeed * speedMultiplier * Time.deltaTime);
     }
 
     private void Move(Vector3 direction, bool isGrounded = true)
@@ -128,12 +130,12 @@ public class PlayerLocomotion : PlayerAction
         float accelerationToApply = currSpeed < walkSpeed ? acceleration : deceleration;
         prevDirection = direction.normalized;
         currSpeed = Mathf.Lerp(currSpeed, walkSpeed, accelerationToApply * Time.deltaTime);
-        controller.Move(targetDirection * currSpeed * Time.deltaTime);
+        controller.Move(targetDirection * currSpeed * speedMultiplier * Time.deltaTime);
     }
 
     public void Rotate(Vector3 direction, float speed)
     {
-        playerBody.transform.rotation = Quaternion.Slerp(playerBody.transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * speed);
+        playerBody.transform.rotation = Quaternion.Slerp(playerBody.transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * speed * speedMultiplier);
     }
 
     private void OnDestroy()

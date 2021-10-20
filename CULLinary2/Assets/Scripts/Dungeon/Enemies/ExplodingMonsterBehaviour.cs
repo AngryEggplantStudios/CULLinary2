@@ -82,7 +82,7 @@ public class ExplodingMonsterBehaviour : MonoBehaviour
 
     public virtual void EnemyIdle()
     {
-        monsterScript.CheckIfDead();
+        monsterScript.checkIfDead();
         animator.SetBool("isMoving", false);
         timer += Time.deltaTime;
         if (timer >= idleTimer)

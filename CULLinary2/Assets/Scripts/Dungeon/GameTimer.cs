@@ -170,6 +170,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         SpecialEventManager.instance.ClearCurrentEvents();
         player.GetComponent<PlayerHealth>().RestoreToFull();
         player.GetComponent<PlayerStamina>().RestoreToFull();
+        BuffManager.instance.ClearBuffManager();
         PlayerSpawnManager.instance.SpawnPlayer();
 
         // no choice find clown by tag because clown might not be around at start of GameTimer.
