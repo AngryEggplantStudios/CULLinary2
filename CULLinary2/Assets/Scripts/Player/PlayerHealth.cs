@@ -37,6 +37,8 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
     private float invincibilityDeltaTime = 0.025f;
     private Animator animator;
     private bool deathIsCalled = false;
+    private bool isInvincibleByBuff = false;
+    private bool isInvincibleByDash = false;
 
     public override void Awake()
     {
@@ -86,6 +88,7 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         //Check if player is dead
         if (PlayerManager.instance.currentHealth <= 0f && !deathIsCalled)
         {
+            BuffManager.instance.ClearBuffManager();
             deathIsCalled = true;
             Die();
         }
@@ -108,6 +111,13 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         DisplayOnUI(PlayerManager.instance.currentHealth, PlayerManager.instance.maxHealth);
     }
 
+    public IEnumerator MakePlayerInvincibleByBuff(float duration)
+    {
+        isInvincibleByBuff = true;
+        yield return new WaitForSeconds(duration);
+        isInvincibleByBuff = false;
+    }
+
     public bool HandleHit(float damage, bool drowning = false)
     {
         damage = damage < 0 ? 0 : Mathf.CeilToInt(damage); //Guard check
@@ -115,8 +125,20 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         {
             return false;
         }
+        if (isInvincibleByBuff)
+        {
+            SpawnDamageCounter("0");
+            return false;
+        }
+        if (isInvincibleByDash)
+        {
+            SpawnDamageCounter("DODGE");
+            return false;
+        }
 
-        if (PlayerManager.instance.evasionChance > 0 && Random.Range(0, 100) < PlayerManager.instance.evasionChance)
+        int evasionChance = PlayerManager.instance.evasionChance + PlayerManager.instance.evasionBonus;
+
+        if (evasionChance > 0 && Random.Range(0, 100) < evasionChance)
         {
             SpawnDamageCounter("MISS");
             return false;
@@ -216,11 +238,11 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         drowningAlert.transform.position = pos;
     }
 
-    public IEnumerator BecomeTemporarilyInvincible(float invincibilityDurationSeconds)
+    public IEnumerator BecomeTemporarilyInvincibleByDash(float invincibilityDurationSeconds)
     {
-        isInvincible = true;
+        isInvincibleByDash = true;
         yield return new WaitForSeconds(invincibilityDurationSeconds);
-        isInvincible = false;
+        isInvincibleByDash = false;
     }
 
     public IEnumerator BecomeTemporarilyInvincibleWithFlash(float invincibilityDurationSeconds)
@@ -248,6 +270,11 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
             yield return new WaitForSeconds(invincibilityDeltaTime);
         }
         isInvincible = false;
+    }
+
+    public void ClearBuffs()
+    {
+        isInvincibleByBuff = false;
     }
 
 }
