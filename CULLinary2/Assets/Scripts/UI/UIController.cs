@@ -30,11 +30,7 @@ public class UIController : SingletonGeneric<UIController>
     [SerializeField] private Image healthBar;
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private Image staminaCircleImage;
-    [SerializeField] private TMP_Text healthPill;
-    [SerializeField] private TMP_Text staminaPill;
-    [SerializeField] private TMP_Text potion;
-    [SerializeField] private TMP_Text pfizerShot;
-    [SerializeField] private TMP_Text modernaShot;
+    [SerializeField] private TMP_Text healthPotions;
     [Header("Winning Screen References")]
     [SerializeField] private AudioSource winningAudio;
     [SerializeField] private GameObject winPanel;
@@ -340,11 +336,7 @@ public class UIController : SingletonGeneric<UIController>
         healthBar.fillAmount = PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth;
         healthText.text = Mathf.CeilToInt(PlayerManager.instance.currentHealth) + "/" + Mathf.CeilToInt(PlayerManager.instance.maxHealth);
         staminaCircleImage.fillAmount = PlayerManager.instance.currentStamina / PlayerManager.instance.maxStamina;
-        healthPill.text = "x " + PlayerManager.instance.healthPill;
-        staminaPill.text = "x " + PlayerManager.instance.staminaPill;
-        potion.text = "x " + PlayerManager.instance.potion;
-        pfizerShot.text = "x " + PlayerManager.instance.pfizerShot;
-        modernaShot.text = "x " + PlayerManager.instance.modernaShot;
+        healthPotions.text = "x " + PlayerManager.instance.consumables[0];
     }
 
     // Call this to update all the UI

@@ -101,19 +101,13 @@ public class ShopManager : SingletonGeneric<ShopManager>
             switch (consumableItemPurchased.shopItemId)
             {
                 case 7:
-                    PlayerManager.instance.healthPill++;
+                    PlayerManager.instance.consumables[0]++;
                     break;
                 case 8:
-                    PlayerManager.instance.staminaPill++;
+                    PlayerManager.instance.consumables[1]++;
                     break;
                 case 9:
-                    PlayerManager.instance.potion++;
-                    break;
-                case 10:
-                    PlayerManager.instance.pfizerShot++;
-                    break;
-                case 11:
-                    PlayerManager.instance.modernaShot++;
+                    PlayerManager.instance.consumables[2]++;
                     break;
             }
         }
@@ -311,19 +305,13 @@ public class ShopManager : SingletonGeneric<ShopManager>
             switch (consumableItemSelected.shopItemId)
             {
                 case 7:
-                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.healthPill + " " + itemSelected.itemName + "(s).";
+                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.consumables[0] + " " + itemSelected.itemName + ".";
                     break;
                 case 8:
-                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.staminaPill + " " + itemSelected.itemName + "(s).";
+                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.consumables[1] + " " + itemSelected.itemName + ".";
                     break;
                 case 9:
-                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.potion + " " + itemSelected.itemName + "(s).";
-                    break;
-                case 10:
-                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.pfizerShot + " " + itemSelected.itemName + "(s).";
-                    break;
-                case 11:
-                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.modernaShot + " " + itemSelected.itemName + "(s).";
+                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.consumables[2] + " " + itemSelected.itemName + ".";
                     break;
             }
 

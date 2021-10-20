@@ -34,38 +34,6 @@ public class BuffManager : SingletonGeneric<BuffManager>
 
     }
 
-    public void ApplySingleBuff(Sprite buffIcon, int buffDuration, BuffType buffType, int buffAmount = 0)
-    {
-        switch (buffType)
-        {
-            case BuffType.BUFF_BASE_DAMAGE:
-                BuffManager.instance.AddBuff(buffIcon, buffDuration, "Melee Boost");
-                StartCoroutine(PlayerManager.instance.DoubleMeleeDamage(buffDuration));
-                break;
-            case BuffType.BUFF_MONEY_BONUS:
-                BuffManager.instance.AddBuff(buffIcon, buffDuration, "Double Earnings");
-                StartCoroutine(OrdersManager.instance.ToggleDoubleEarnings(buffDuration));
-                break;
-            case BuffType.BUFF_UNLIMITED_STAMINA:
-                BuffManager.instance.AddBuff(buffIcon, buffDuration, "Unlimited Stamina");
-                StartCoroutine(PlayerStamina.instance.ToggleUnlimitedStamina(buffDuration));
-                break;
-            case BuffType.BUFF_INVINCIBILITY:
-                BuffManager.instance.AddBuff(buffIcon, buffDuration, "Unlimited Health");
-                StartCoroutine(PlayerHealth.instance.MakePlayerInvincibleByBuff(buffDuration));
-                break;
-            case BuffType.BUFF_EVASION_BOOST:
-                BuffManager.instance.AddBuff(buffIcon, buffDuration, "Evasion Boost");
-                StartCoroutine(PlayerManager.instance.ToggleEvasionBoost(buffAmount, buffDuration));
-                break;
-            case BuffType.BUFF_CRIT_BOOST:
-                BuffManager.instance.AddBuff(buffIcon, buffDuration, "Crit Boost");
-                StartCoroutine(PlayerManager.instance.ToggleCritBoost(buffAmount, buffDuration));
-                break;
-        }
-
-    }
-
     public void ApplyBuff(InventoryItem item)
     {
         foreach (BuffType buffType in item.buffTypes)
