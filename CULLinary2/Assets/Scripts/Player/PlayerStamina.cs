@@ -16,6 +16,8 @@ public class PlayerStamina : SingletonGeneric<PlayerStamina>
     [SerializeField] private float thresholdStamina = 0.25f;
     private Coroutine regenerationCoroutine;
     private WaitForSeconds timeTakenRegen = new WaitForSeconds(0.05f);
+    private bool isUnlimitedStamina = false;
+    private bool isHalfStamina = false;
 
     public override void Awake()
     {
@@ -42,6 +44,13 @@ public class PlayerStamina : SingletonGeneric<PlayerStamina>
         DisplayOnUI(PlayerManager.instance.currentStamina, PlayerManager.instance.maxStamina);
     }
 
+    public IEnumerator ToggleUnlimitedStamina(float duration)
+    {
+        isUnlimitedStamina = true;
+        yield return new WaitForSeconds(duration);
+        isUnlimitedStamina = false;
+    }
+
     private IEnumerator checkRegenerate()
     {
         yield return new WaitForSeconds(pauseBeforeRegen);
@@ -58,11 +67,19 @@ public class PlayerStamina : SingletonGeneric<PlayerStamina>
 
     public bool HasStamina(float staminaCost)
     {
+        if (isUnlimitedStamina)
+        {
+            return true;
+        }
         return PlayerManager.instance.currentStamina - staminaCost >= 0.0f;
     }
 
     public void ReduceStamina(float staminaCost)
     {
+        if (isUnlimitedStamina)
+        {
+            staminaCost = 0;
+        }
         staminaCost = staminaCost < 0 ? 0 : staminaCost;
         PlayerManager.instance.currentStamina = Mathf.Max(0f, PlayerManager.instance.currentStamina - staminaCost);
         float currentStamina = PlayerManager.instance.currentStamina;
@@ -79,5 +96,9 @@ public class PlayerStamina : SingletonGeneric<PlayerStamina>
             StopCoroutine(regenerationCoroutine);
         }
         regenerationCoroutine = StartCoroutine(checkRegenerate());
+    }
+    public void ClearBuffs()
+    {
+        isUnlimitedStamina = false;
     }
 }
