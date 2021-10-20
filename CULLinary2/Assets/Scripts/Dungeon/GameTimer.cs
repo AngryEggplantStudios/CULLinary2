@@ -103,6 +103,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
     {
         newspaper.SetActive(false);
         hudToHide.SetActive(true);
+        UIController.instance.isNewspaperOpen = false;
         Time.timeScale = 1;
         OnStartNewDay?.Invoke();
     }
@@ -140,8 +141,8 @@ public class GameTimer : SingletonGeneric<GameTimer>
             else
             {
                 Time.timeScale = 0;
-                Debug.Log("My News" + currentNews);
                 newspaperDets.UpdateNewspaperIssueUI(currentNews);
+                UIController.instance.isNewspaperOpen = true;
                 newspaper.SetActive(true);
                 hudToHide.SetActive(false);
             }
