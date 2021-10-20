@@ -74,6 +74,23 @@ public class PlayerStamina : SingletonGeneric<PlayerStamina>
         return PlayerManager.instance.currentStamina - staminaCost >= 0.0f;
     }
 
+    public bool IncreaseStamina(float increase)
+    {
+        StartCoroutine(SetStaminaCircleActiveForTime());
+        PlayerManager.instance.currentStamina = Mathf.Min(PlayerManager.instance.currentStamina + increase, PlayerManager.instance.maxStamina);
+        float currentStamina = PlayerManager.instance.currentStamina;
+        float maxStamina = PlayerManager.instance.maxStamina;
+        DisplayOnUI(currentStamina, maxStamina);
+        return true;
+    }
+
+    public IEnumerator SetStaminaCircleActiveForTime()
+    {
+        SetStaminaCircleActive(true);
+        yield return new WaitForSeconds(3f);
+        SetStaminaCircleActive(false);
+    }
+
     public void ReduceStamina(float staminaCost)
     {
         if (isUnlimitedStamina)

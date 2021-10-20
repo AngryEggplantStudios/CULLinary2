@@ -10,18 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b45cbb98fe89452d85b32ce78e7d614, type: 3}
-  m_Name: Health Potion
+  m_Name: Stamina Pill
   m_EditorClassIdentifier: 
-  itemName: Health Potion
-  icon: {fileID: 21300000, guid: 5b1ff8b960b59479788794111bd1a51a, type: 3}
+  itemName: Stamina Pill
+  icon: {fileID: 21300000, guid: e99795cef54844ced8b772afb6d508c7, type: 3}
   maxLevel: 1
-  shopItemId: 7
+  shopItemId: 8
   price: 1e000000
   description:
-  - Don't ask what this is made of. +50HP when consumed.
+  - 'The other effective thing that Pfizer makes. +50 Stamina when consumed. '
   iconArr:
-  - {fileID: 21300000, guid: 5b1ff8b960b59479788794111bd1a51a, type: 3}
+  - {fileID: 21300000, guid: e99795cef54844ced8b772afb6d508c7, type: 3}
   eventId: 0
-  speedMultiplier: 0
-  healAmount: 50
-  recoverAmount: 0
+  healAmount: 0
+  staminaAmount: 50
+  duration: 0
+  evasionBoost: 0
+  critBoost: 0
+  attackBoost: 0

@@ -8,5 +8,6 @@ public enum BuffType
     BUFF_INVINCIBILITY = 5,
     BUFF_MONEY_BONUS = 6,
     BUFF_EVASION_BOOST = 7,
-    BUFF_CRIT_BOOST = 8
+    BUFF_CRIT_BOOST = 8,
+    HEAL_STAMINA = 9
 }
