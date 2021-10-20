@@ -33,6 +33,11 @@ public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
         foreach (MonsterName name in MonsterName.GetValues(typeof(MonsterName)))
         {
             Population pop = EcosystemManager.GetPopulation(name);
+            if (!pop.IsEnabled()) // Don't have to update population if is disabled
+            {
+                return;
+            }
+
             List<GameObject> spawners = GetSpawnersByName(name);
             if (spawners.Count == 0)
             {
@@ -68,6 +73,11 @@ public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
         foreach (MonsterName name in MonsterName.GetValues(typeof(MonsterName)))
         {
             Population pop = EcosystemManager.GetPopulation(name);
+            if (!pop.IsEnabled()) // Don't have to update population if is disabled
+            {
+                continue;
+            }
+
             List<GameObject> spawners = GetSpawnersByName(name);
             foreach (GameObject spawner in spawners)
             {

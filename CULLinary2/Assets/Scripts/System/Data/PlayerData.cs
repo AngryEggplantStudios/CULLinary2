@@ -55,10 +55,12 @@ public class PlayerData
         pfizerShot = 0;
         modernaShot = 0;
         currentNewspaperIssue = 1;
-        monsterSavedDatas = new MonsterSavedData[3] {
+        monsterSavedDatas = new MonsterSavedData[5] {
             new MonsterSavedData(MonsterName.Eggplant, PopulationLevel.Normal),
             new MonsterSavedData(MonsterName.Corn, PopulationLevel.Normal),
             new MonsterSavedData(MonsterName.Potato, PopulationLevel.Normal),
+            new MonsterSavedData(MonsterName.Tomato, PopulationLevel.Normal),
+            new MonsterSavedData(MonsterName.Bread, PopulationLevel.Normal),
             };
     }
 

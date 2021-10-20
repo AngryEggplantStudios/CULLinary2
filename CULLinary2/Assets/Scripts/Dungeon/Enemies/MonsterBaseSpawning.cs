@@ -9,12 +9,14 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
     [SerializeField] private List<GameObject> monstersToSpawn;
     [SerializeField] private GameObject parent;
     [SerializeField, Tooltip("Distance to spawn monster away from player and campfire")] private int distFromSafeSpace = 30; // Distance to spawn monster away from player and campfire
-    [SerializeField, Tooltip("Distance to spawn monster away from other objects")] private int distFromNormalObstacle = 3; // Distance to spawn monster away from landmarks and other objects
+    [SerializeField, Tooltip("Distance to spawn monster away from other objects")] private int distFromNormalObstacle = 2; // Distance to spawn monster away from landmarks and other objects
     private int mapSize;
     public Dictionary<MonsterName, int> numOfAliveMonsters = new Dictionary<MonsterName, int>{ // num of alive monsters from base spawning only
         {MonsterName.Corn, 0},
         {MonsterName.Potato, 0},
         {MonsterName.Eggplant, 0},
+        {MonsterName.Bread, 0},
+        {MonsterName.Tomato, 0}, // refactor to get from MonsterName values
     };
 
     // Start is called before the first frame update
@@ -32,6 +34,7 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
 
     private void SpawnBaseMonsters()
     {
+        Debug.Log("start spawning base monsters");
         foreach (GameObject monster in monstersToSpawn)
         {
             MonsterScript monsterScript = monster.GetComponent<MonsterScript>();
@@ -41,6 +44,12 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
             }
 
             MonsterName name = monsterScript.GetMonsterName();
+            if (!EcosystemManager.GetPopulation(name).IsEnabled())
+            {
+                // Don't spawn base monsters if population is disabled
+                continue;
+            }
+
             int baseSpawningNumber = EcosystemManager.GetPopulation(name).GetBaseSpawningNumber();
             int numCurrentlyAlive = numOfAliveMonsters[name];
 
@@ -48,6 +57,20 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
             {
                 Vector3 spawnPosition = Vector3.zero;
                 bool hasFoundPosition = false;
+                // for (int i = 0; i < 30; i++)
+                // {
+                //     hasFoundPosition = FindRandomPosition(out spawnPosition);
+                //     if (hasFoundPosition)
+                //     {
+                //         break;
+                //     }
+                // }
+
+                // if (!hasFoundPosition)
+                // {
+                //     Debug.Log("couldn't find position to spawn");
+                //     continue;
+                // }
                 while (!hasFoundPosition)
                 {
                     hasFoundPosition = FindRandomPosition(out spawnPosition);
@@ -83,6 +106,8 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
         float searchRadius = 2f;
         if (NavMesh.SamplePosition(randomPos, out hit, searchRadius, NavMesh.AllAreas))
         {
+            // result = hit.position;
+            // return true;
             if (IsValidSpawnPosition(hit.position))
             {
                 result = hit.position;
@@ -97,12 +122,12 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
     private bool IsValidSpawnPosition(Vector3 position)
     {
         // Check distance from player and other objects
-        Collider[] playerCollider = Physics.OverlapSphere(position, distFromSafeSpace, LayerMask.NameToLayer("Player"));
-        if (playerCollider.Length != 0)
-        {
-            // Too close to player
-            return false;
-        }
+        // Collider[] playerCollider = Physics.OverlapSphere(position, distFromSafeSpace, LayerMask.NameToLayer("Player"));
+        // if (playerCollider.Length != 0)
+        // {
+        //     // Too close to player
+        //     return false;
+        // }
 
         // Check for collision with objects in the map
         Collider[] colliders = Physics.OverlapSphere(position, distFromNormalObstacle);

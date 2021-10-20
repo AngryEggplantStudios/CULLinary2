@@ -150,7 +150,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
         if (gameTime >= dayEndTime)
         {
-            OnEndOfDay?.Invoke();                        
+            OnEndOfDay?.Invoke();
             if (DrivingManager.instance.IsPlayerInVehicle())
             {
                 DrivingManager.instance.HandlePlayerLeaveVehicle();
