@@ -376,12 +376,12 @@ public class MonsterScript : Monster
         else
         {
             MonsterBaseSpawning.instance.UpdateNumOfAliveMonsters(monsterName, -1);
-            Debug.Log("no spawner");
+            // Debug.Log("no spawner");
         }
 
-        if (TryGetComponent<MiniBoss>(out MiniBoss miniBossScript))
+        if (TryGetComponent<MiniBoss>(out MiniBoss miniBoss))
         {
-            miniBossScript.Die();
+            miniBoss.Die();
         }
     }
 
@@ -445,8 +445,13 @@ public class MonsterScript : Monster
 
     private void DropLoot()
     {
-        Vector3 tempVectors = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-        Instantiate(lootDropped, tempVectors, Quaternion.identity);
+        if (TryGetComponent<MiniBoss>(out MiniBoss miniBoss))
+        {
+            miniBoss.DropLoot();
+            return;
+        }
+
+        Instantiate(lootDropped, transform.position, Quaternion.identity);
     }
 
     public void attackPlayerStart()
@@ -514,8 +519,13 @@ public class MonsterScript : Monster
         return texturesForFlash;
     }
 
-    public float getStopChase()
+    public float GetStopChase()
     {
         return this.stopChase;
+    }
+
+    public GameObject GetLoot()
+    {
+        return lootDropped;
     }
 }
