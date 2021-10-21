@@ -10,6 +10,7 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
     [SerializeField] private Image itemMainIcon;
     [SerializeField] private TMP_Text itemName;
     [SerializeField] private TMP_Text itemDescription;
+    [SerializeField] private TMP_Text itemEffects;
     [SerializeField] private GameObject consumableButtonObject;
     [SerializeField] private GameObject discardButtonObject;
     private InventorySlot[] slots;
@@ -44,6 +45,7 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
         itemMainIcon.sprite = item.icon;
         itemName.text = item.itemName;
         itemDescription.text = item.description;
+        itemEffects.text = item.GetConsumeEffect();
         //StartCoroutine(UpdateLayoutGroup());
         itemSlot.gameObject.GetComponent<Outline>().enabled = true;
 
@@ -119,6 +121,7 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
         selectedSlotId = -1;
         itemName.text = "";
         itemDescription.text = "";
+        itemEffects.text = "";
         itemMainIcon.enabled = false;
         itemMainIcon.sprite = null;
         discardButtonObject.SetActive(false);
