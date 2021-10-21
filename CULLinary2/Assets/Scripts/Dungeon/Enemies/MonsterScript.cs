@@ -480,6 +480,10 @@ public class MonsterScript : Monster
     {
         //Death Animation too long destroy earlier
         Destroy(damageCounter);
+    }
+
+    public void destroyHpBarUi()
+	{
         uiElements.Remove(hpBarUi);
         Destroy(hpBarUi);
     }
