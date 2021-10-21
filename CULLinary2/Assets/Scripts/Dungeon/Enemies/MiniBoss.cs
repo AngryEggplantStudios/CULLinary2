@@ -21,13 +21,6 @@ public class MiniBoss : MonoBehaviour
             // Set monster variables for miniboss
             monsterName = monsterScript.GetMonsterName();
             monsterScript.SetMiniBossValues(health, distanceTriggered, stopChase, damageMultiplier);
-
-            // Set up loot
-            ChestLoot lootToAdd;
-            lootToAdd.prefab = monsterScript.GetLoot();
-            lootToAdd.quantity = Random.Range(randomLootRange[0], randomLootRange[1] + 1);
-            Chest chestScript = lootChest.GetComponent<Chest>();
-            chestScript.loot[2] = lootToAdd;
         }
     }
 
@@ -39,8 +32,19 @@ public class MiniBoss : MonoBehaviour
     public void DropLoot()
     {
         GameObject chestGO = Instantiate(lootChest, transform.position, Quaternion.identity);
+        SetUpLoot(chestGO);
         chestGO.transform.localScale *= 5;
         Chest chestScript = chestGO.GetComponent<Chest>();
         chestScript.spCollider.SetPlayerInteractable(chestScript);
+    }
+
+    private void SetUpLoot(GameObject chestGO)
+    {
+        MonsterScript monsterScript = gameObject.GetComponent<MonsterScript>();
+        ChestLoot lootToAdd;
+        lootToAdd.prefab = monsterScript.GetLoot();
+        lootToAdd.quantity = Random.Range(randomLootRange[0], randomLootRange[1] + 1);
+        Chest chestScript = chestGO.GetComponent<Chest>();
+        chestScript.loot[2] = lootToAdd;
     }
 }
