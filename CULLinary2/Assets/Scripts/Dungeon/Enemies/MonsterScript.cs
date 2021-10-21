@@ -63,6 +63,7 @@ public class MonsterScript : Monster
     private Collider monsterCollider;
     private bool deathCoroutine = false;
     private bool wasAggressive = false;
+    private GameObject hpBarUi;
     // Events & Delegates
 
     public delegate void EnemyIdleDelegate();
@@ -273,6 +274,7 @@ public class MonsterScript : Monster
         GameObject hpBarObject = Instantiate(hpBarPrefab);
         hpBarFull = hpBarObject.transform.Find("hpBar_full").gameObject.GetComponent<Image>();
         uiElements.Add(hpBarObject);
+        hpBarUi = hpBarObject;
         SetupUI(hpBarObject);
     }
 
@@ -478,6 +480,8 @@ public class MonsterScript : Monster
     {
         //Death Animation too long destroy earlier
         Destroy(damageCounter);
+        uiElements.Remove(hpBarUi);
+        Destroy(hpBarUi);
     }
 
     public void monsterDeathAnimation()
@@ -529,4 +533,9 @@ public class MonsterScript : Monster
     {
         return lootDropped;
     }
+
+    public Vector3 GetPlayerPosition()
+	{
+        return this.playerTransform.position;
+	}
 }

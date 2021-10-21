@@ -30,6 +30,7 @@ public class MonsterBehavior : MonoBehaviour
     public float reachedPositionDistance;
     public MonsterScript monsterScript;
     public LineRenderer lineRenderer;
+    private NavMeshPath path;
 
     private void Start()
     {
@@ -45,19 +46,20 @@ public class MonsterBehavior : MonoBehaviour
         reachedPositionDistance = navMeshAgent.stoppingDistance;
         startingPosition = transform.position;
         timer = wanderTimer;
+        path = new NavMeshPath();
         goingBackToStartTimer = 0;
     }
 
     public virtual void EnemyIdle()
     {
-        monsterScript.checkIfDead();
         animator.SetBool("isMoving", false);
         timer += Time.deltaTime;
         if (timer >= idleTimer)
         {
             Vector3 newPos = RandomNavSphere(startingPosition, wanderRadius, -1, minDist);
-            navMeshAgent.SetDestination(newPos);
-            timer = 0;
+			NavMesh.CalculatePath(transform.position, newPos, NavMesh.AllAreas, path);
+			navMeshAgent.SetPath(path);
+			timer = 0;
             monsterScript.SetStateMachine(MonsterState.Roaming);
             roamPosition = newPos;
 
