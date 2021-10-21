@@ -71,6 +71,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         innerLockedRecipesList.Clear();
         innerUnlockedRecipesList.Clear();
 
+        StopCoroutine(UpdateUI());
         foreach (int recipeId in unlockedRecipes)
         {
             innerUnlockedRecipesList.Add(DatabaseLoader.GetRecipeById(recipeId));
