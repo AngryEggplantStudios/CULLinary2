@@ -15,6 +15,9 @@ public class CarController : MonoBehaviour
     // gearSwitchingTime should be a shorter array as you
     // cannot switch the top gear even higher
     [SerializeField] private float gearSwitchingTime;
+    // Custom centre of mass height
+    // Original height is the centre of the BoxCollider - around 2.2
+    [SerializeField] private float centreOfMassHeight = 0.0f;
     [SerializeField] private int numberOfGears = 4;
 
 
@@ -66,13 +69,8 @@ public class CarController : MonoBehaviour
     // For switching gears
     private float gearTimeCounter = 0.0f;
 
-    // For floating-point comparison
-    private float epsilon = 0.001f;
     // For switching between brake and reverse (isMoving)
     private float stoppingEpsilon = 0.15f;
-
-    // For playing sounds
-    private float prevSpeed = 0.0f;
 
     // For realistic acceleration
     private List<float> gearH;
@@ -81,6 +79,9 @@ public class CarController : MonoBehaviour
     void Start()
     {
         rigidBody = GetComponent<Rigidbody>();
+        // Lower centre of mass for stability
+        GetComponent<Rigidbody>().centerOfMass = new Vector3(
+            rigidBody.centerOfMass.x, centreOfMassHeight, rigidBody.centerOfMass.z); 
         GenerateTorqueConstants();
     }
 
@@ -151,10 +152,12 @@ public class CarController : MonoBehaviour
             isAbleToSwitchToReverse = false;
             if (isReversing)
             {
+                switchGearSound.Play();
                 reverseSound.Play();
             }
             else
             {
+                switchGearSound.Play();
                 reverseSound.Stop();
             }
         }

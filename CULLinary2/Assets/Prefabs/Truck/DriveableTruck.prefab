@@ -69,8 +69,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.2934532, y: 1.3001095, z: 2.7460775}
-  m_Center: {x: -0.0002002716, y: 0.64957327, z: -0.003068924}
+  m_Size: {x: 1.2934532, y: 1.1050122, z: 2.7460775}
+  m_Center: {x: -0.0002002716, y: 0.7471229, z: -0.003068924}
 --- !u!114 &129657549831047756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -104,11 +104,12 @@ MonoBehaviour:
   - 48
   brakeForce: 45000
   gearMaxSteerAngles:
-  - 90
-  - 45
+  - 40
   - 20
   - 10
+  - 5
   gearSwitchingTime: 0.5
+  centreOfMassHeight: 0
   numberOfGears: 4
   wheelFrontLeftCollider: {fileID: 940631147339990007}
   wheelFrontRightCollider: {fileID: 940631146078469545}
@@ -633,7 +634,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_Stiffness: 2
   m_Enabled: 1
 --- !u!1 &940631146078469547
 GameObject:
@@ -912,7 +913,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_Stiffness: 2
   m_Enabled: 1
 --- !u!1 &940631147122784072
 GameObject:
