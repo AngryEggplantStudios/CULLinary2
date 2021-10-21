@@ -30,7 +30,7 @@ public class MonsterBehavior : MonoBehaviour
     public float reachedPositionDistance;
     public MonsterScript monsterScript;
     public LineRenderer lineRenderer;
-    private NavMeshPath path;
+    protected NavMeshPath path;
 
     private void Start()
     {
