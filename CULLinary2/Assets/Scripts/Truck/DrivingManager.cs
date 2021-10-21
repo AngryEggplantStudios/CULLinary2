@@ -6,6 +6,7 @@ using UnityEngine;
 public class DrivingManager : SingletonGeneric<DrivingManager>
 {
     public GameObject driveableTruck;
+    public GameObject truckAudio;
     public GameObject truckCamera;
     public GameObject interactionPrompt;
     public GameObject staminaIcon;
@@ -26,6 +27,7 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
 
     public void HandlePlayerEnterVehicle()
     {
+        truckAudio.SetActive(true);
         driveableTruck.GetComponent<CarController>().enabled = true;
         truckCamera.SetActive(true);
         player.SetActive(false);
@@ -41,6 +43,7 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
 
     public void HandlePlayerLeaveVehicle()
     {
+        truckAudio.SetActive(false);
         driveableTruck.GetComponent<CarController>().enabled = false;
         truckCamera.SetActive(false);
         player.transform.position = driveableTruck.transform.position + spawnOffset;
