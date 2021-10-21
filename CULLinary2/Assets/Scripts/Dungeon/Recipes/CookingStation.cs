@@ -16,6 +16,13 @@ public class CookingStation : PlayerInteractable
     {
         return spCollider;
     }
+
+    public override void OnPlayerEnter()
+    {
+        // Start healing
+        PlayerHealth.instance.OnPlayerEnterCampfire();
+    }
+    
     public override void OnPlayerInteract()
     {
         // Open Cooking Menu
@@ -24,6 +31,7 @@ public class CookingStation : PlayerInteractable
             ShopManager.instance.UpdateShop();
             RecipeManager.instance.ActivateCooking();
             UIController.instance.OpenCampfireInterface();
+            PlayerSpawnManager.instance.SetLastVisitedCampfire(transform);
         }
         // Close Cooking Menu
         else if (UIController.instance.isFireplaceActive)
@@ -43,5 +51,7 @@ public class CookingStation : PlayerInteractable
             RecipeManager.instance.DeactivateCooking();
             UIController.instance.CloseCampfireInterface();
         }
+        // Stop healing
+        PlayerHealth.instance.OnPlayerLeaveCampfire();
     }
 }

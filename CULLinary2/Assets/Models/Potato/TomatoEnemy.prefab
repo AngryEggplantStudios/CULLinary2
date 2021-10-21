@@ -165,7 +165,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 3e970a0a6aa62c24fa568ad102d5cd59, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.7
-  m_Pitch: 1.8976604
+  m_Pitch: 1.6978369
   Loop: 0
   Mute: 0
   Spatialize: 0
@@ -289,7 +289,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: e0112cdc2521c8a40872086bc6994256, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 753721637972729499255397c1a9d3a5, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.3
   m_Pitch: 1
@@ -892,7 +892,7 @@ MonoBehaviour:
   distanceTriggered: 10
   stopChase: 14
   lootDropped: {fileID: 8706522679418664788, guid: bb4dce76efdb34ce682008e7fbc6f1fe, type: 3}
-  additionalSpawningNumbers: 2
+  additionalSpawning: 0
   spawner: {fileID: 0}
   hpBarPrefab: {fileID: 1085209639500972291, guid: 4614e0511cb49b14ebf0c58217d9d222, type: 3}
   damageCounterPrefab: {fileID: 1085209639500972291, guid: 24f41dda89c7bd648bd2796ac669721e, type: 3}
@@ -915,6 +915,8 @@ MonoBehaviour:
   texturesForFlash: []
   transparentMaterials:
   - {fileID: 2100000, guid: 0b6d6b52dd1c4a34ebcc0cf26b462846, type: 2}
+  currentState: 0
+  playerTransform: {fileID: 0}
 --- !u!114 &5689706197273364680
 MonoBehaviour:
   m_ObjectHideFlags: 0

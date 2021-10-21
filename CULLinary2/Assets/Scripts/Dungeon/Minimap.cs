@@ -28,10 +28,13 @@ public class Minimap : MonoBehaviour
     private bool forceReupdate = true;
     // To make sure that OrderManager callbacks are not set more than once
     private bool firstInstantiation = true;
+    // Keep trying to set player body
+    protected bool hasSetPlayerBody = false;
 
     void Awake()
     {
-        playerBody = GameObject.FindGameObjectWithTag("PlayerBody").transform;
+        playerBody = new GameObject().transform;
+        TryToSetPlayerBody();
     }
 
     private void InstantiateCampfireIcons()
@@ -114,6 +117,7 @@ public class Minimap : MonoBehaviour
 
     public virtual void Update()
     {
+
         if (OrdersManager.instance.IsOrderGenerationComplete() && !hasInstantiatedIcons)
         {
             InstantiateMinimapIcons();
@@ -144,7 +148,14 @@ public class Minimap : MonoBehaviour
             }
             // Update player icon
             SetPlayerIconPos();
-            navArrow.eulerAngles = new Vector3(0, 0, -playerBody.eulerAngles.y);
+            if (DrivingManager.instance.IsPlayerInVehicle())
+            {
+                navArrow.eulerAngles = new Vector3(0, 0, -DrivingManager.instance.GetTruckYRotation());
+            }
+            else
+            {
+                navArrow.eulerAngles = new Vector3(0, 0, -playerBody.eulerAngles.y);
+            }
             forceReupdate = false;
         }
     }
@@ -209,5 +220,18 @@ public class Minimap : MonoBehaviour
         }
 
         icon.GetComponent<RectTransform>().anchoredPosition = localPos;
+    }
+
+    protected void TryToSetPlayerBody()
+    {        
+        if (!hasSetPlayerBody)
+        {
+            GameObject pBody = GameObject.FindGameObjectWithTag("PlayerBody");
+            if (pBody != null)
+            {
+                playerBody = pBody.transform;
+                hasSetPlayerBody = true;
+            }
+        }
     }
 }

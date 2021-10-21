@@ -12,7 +12,7 @@ public class MonsterScript : Monster
     [SerializeField] private float distanceTriggered;
     [SerializeField] private float stopChase;
     [SerializeField] private GameObject lootDropped;
-    [SerializeField] private int additionalSpawningNumbers = 0;
+    [SerializeField] private int additionalSpawning = 0;
     [HideInInspector] public GameObject spawner;
 
     [Header("UI Prefabs")]
@@ -62,6 +62,8 @@ public class MonsterScript : Monster
     // Store refference to collider so can disable when death
     private Collider monsterCollider;
     private bool deathCoroutine = false;
+    private bool wasAggressive = false;
+    private GameObject hpBarUi;
     // Events & Delegates
 
     public delegate void EnemyIdleDelegate();
@@ -121,6 +123,18 @@ public class MonsterScript : Monster
     {
         SetupHpBar();
         SetupFlash();
+
+        foreach (GameObject ui in uiElements)
+        {
+            if (ui != null)
+            {
+                ui.SetActive(false);
+            }
+            else
+            {
+                uiElements.Remove(null);
+            }
+        }
     }
 
     private void Update()
@@ -129,58 +143,102 @@ public class MonsterScript : Monster
         {
             playerTransform = GameObject.FindGameObjectWithTag("Player").transform; //Temp fix
         }
+
+        if (checkIfDead()) return;
+
+        bool aggressive = false;
+
         switch (currentState)
         {
             default:
             case MonsterState.Idle:
-                checkIfDead();
                 FindTarget();
                 onEnemyIdle?.Invoke();
                 break;
+
             case MonsterState.Roaming:
-                checkIfDead();
                 FindTarget();
                 onEnemyRoaming?.Invoke();
                 break;
+
             case MonsterState.ChaseTarget:
-                checkIfDead();
+                aggressive = true;
                 onEnemyChase?.Invoke(stopChase, playerTransform.position);
                 break;
+
             case MonsterState.AttackTarget:
-                checkIfDead();
+                aggressive = true;
                 // Hack to ensure attack trigger isn't triggered
                 if (this.currentHealth > 0)
                 {
                     onEnemyAttack?.Invoke(playerTransform.position, canMoveDuringAttack);
                 }
                 break;
+
             case MonsterState.GoingBackToStart:
-                checkIfDead();
                 onEnemyReturn?.Invoke();
                 break;
         }
 
-        //Need to find a better way to update this?
-
-        Vector2 screenPos = playerCamera.WorldToScreenPoint(transform.position);
-        if (screenPos != Vector2.zero)
+        // UI
+        if (aggressive)
         {
+            if (!wasAggressive)
+            {
+                wasAggressive = aggressive;
+                EnemyAggressionManager.Instance.Add(1);
+
+                foreach (GameObject ui in uiElements)
+                {
+                    if (ui != null)
+                    {
+                        ui.SetActive(true);
+                    }
+                    else
+                    {
+                        uiElements.Remove(null);
+                    }
+                }
+            }
+
+            Vector2 screenPos = playerCamera.WorldToScreenPoint(transform.position);
+            if (screenPos != Vector2.zero)
+            {
+                foreach (GameObject ui in uiElements)
+                {
+                    if (ui != null)
+                    {
+                        ui.SetActive(true);
+                        ui.transform.position = screenPos;
+                    }
+                    else
+                    {
+                        uiElements.Remove(null);
+                    }
+                }
+                foreach (GameObject ui in damageUiElements)
+                {
+                    if (ui != null)
+                    {
+                        ui.transform.position = screenPos;
+                    }
+                    else
+                    {
+                        uiElements.Remove(null);
+                    }
+                }
+            }
+        }
+        else if (wasAggressive)
+        {
+            wasAggressive = aggressive;
+            EnemyAggressionManager.Instance.Add(-1);
+
             foreach (GameObject ui in uiElements)
             {
                 if (ui != null)
                 {
-                    ui.transform.position = screenPos;
-                }
-                else
-                {
-                    uiElements.Remove(null);
-                }
-            }
-            foreach (GameObject ui in damageUiElements)
-            {
-                if (ui != null)
-                {
-                    ui.transform.position = screenPos;
+                    ui.SetActive(false);
                 }
                 else
                 {
@@ -190,7 +248,7 @@ public class MonsterScript : Monster
         }
     }
 
-    public void checkIfDead()
+    public bool checkIfDead()
     {
         if (this.currentHealth <= 0)
         {
@@ -200,8 +258,12 @@ public class MonsterScript : Monster
                 deathCoroutine = true;
                 DieAnimation();
             }
+
+            return true;
         }
+        return false;
     }
+
     public void SetStateMachine(MonsterState newState)
     {
         currentState = newState;
@@ -212,6 +274,7 @@ public class MonsterScript : Monster
         GameObject hpBarObject = Instantiate(hpBarPrefab);
         hpBarFull = hpBarObject.transform.Find("hpBar_full").gameObject.GetComponent<Image>();
         uiElements.Add(hpBarObject);
+        hpBarUi = hpBarObject;
         SetupUI(hpBarObject);
     }
 
@@ -285,13 +348,22 @@ public class MonsterScript : Monster
         animator.ResetTrigger("attack");
         animator.SetBool("isMoving", false);
         animator.SetTrigger("death");
+
         // Disable collider to prevent spam hitting damage
         monsterCollider.enabled = false;
 
+        // Death audio
         audioSourceAttack.clip = deathSound;
         audioSourceAttack.volume = 0.7f;
         audioSourceAttack.pitch = Random.Range(1f, 2f);
         audioSourceAttack.Play();
+
+        // Handle aggression
+        if (wasAggressive)
+        {
+            wasAggressive = false;
+            EnemyAggressionManager.Instance.Add(-1);
+        }
     }
 
     public void Die()
@@ -303,13 +375,16 @@ public class MonsterScript : Monster
         {
             spawner.GetComponent<MonsterSpawn>().DecrementSpawnCap(1);
         }
-
-        if (TryGetComponent<MiniBoss>(out MiniBoss miniBossScript))
+        else
         {
-            miniBossScript.Die();
+            MonsterBaseSpawning.instance.UpdateNumOfAliveMonsters(monsterName, -1);
+            // Debug.Log("no spawner");
         }
 
-        DungeonSpawnManager.CheckIfExtinct(monsterName);
+        if (TryGetComponent<MiniBoss>(out MiniBoss miniBoss))
+        {
+            miniBoss.Die();
+        }
     }
 
     private IEnumerator FlashOnDamage()
@@ -372,8 +447,13 @@ public class MonsterScript : Monster
 
     private void DropLoot()
     {
-        Vector3 tempVectors = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-        Instantiate(lootDropped, tempVectors, Quaternion.identity);
+        if (TryGetComponent<MiniBoss>(out MiniBoss miniBoss))
+        {
+            miniBoss.DropLoot();
+            return;
+        }
+
+        Instantiate(lootDropped, transform.position, Quaternion.identity);
     }
 
     public void attackPlayerStart()
@@ -399,6 +479,8 @@ public class MonsterScript : Monster
     {
         //Death Animation too long destroy earlier
         Destroy(damageCounter);
+        uiElements.Remove(hpBarUi);
+        Destroy(hpBarUi);
     }
 
     public void monsterDeathAnimation()
@@ -412,36 +494,47 @@ public class MonsterScript : Monster
         Destroy(gameObject);
     }
 
-    public void SetMiniBossValues(int health, float miniBossDistTriggered, float miniBossStopChase)
+    public void SetMiniBossValues(int health, float miniBossDistTriggered, float miniBossStopChase, float damageMultiplier)
     {
         currentHealth = health;
         monsterHealth = health;
         distanceTriggered = miniBossDistTriggered;
         stopChase = miniBossStopChase;
+        primaryEnemyAttack.attackDamage = Mathf.RoundToInt(primaryEnemyAttack.attackDamage * damageMultiplier);
     }
 
-    public int GetAdditionalSpawningNumber()
+    public int GetAdditionalSpawning()
     {
-        return additionalSpawningNumbers;
+        return additionalSpawning;
     }
 
     public Color[] GetOriginalColors()
-	{
+    {
         return originalColors;
-	}
+    }
 
     public Texture[] GetOriginalTextures()
-	{
+    {
         return originalTextures;
-	}
+    }
 
     public Texture[] GetTexturesForFlash()
     {
         return texturesForFlash;
     }
 
-    public float getStopChase()
+    public float GetStopChase()
     {
         return this.stopChase;
     }
+
+    public GameObject GetLoot()
+    {
+        return lootDropped;
+    }
+
+    public Vector3 GetPlayerPosition()
+	{
+        return this.playerTransform.position;
+	}
 }

@@ -15,6 +15,90 @@ MonoBehaviour:
   health: 250
   distanceTriggered: 24
   stopChase: 30
+  damageMultiplier: 1.5
+  randomLootRange: 0300000004000000
+  lootChest: {fileID: 3385460372706172451, guid: 8818a0d2de1827e448af9e60d68678c2, type: 3}
+--- !u!1001 &1375748564257753989
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 3126851871436816674}
+    m_Modifications:
+    - target: {fileID: 613303663732426333, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663732426333, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663732426333, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663732426333, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663732426333, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663732426333, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.0554789
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663732426333, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.0554789
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663732426333, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.704927
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663732426333, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.704927
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663747588207, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663747588207, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_UseCustomVertexStreams
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663747597151, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.a
+      value: 0.49803922
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663747597151, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663747597151, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0.13074237
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663747597151, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 0.2735849
+      objectReference: {fileID: 0}
+    - target: {fileID: 5156153164082516047, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: UVModule.startFrame.scalar
+      value: 0.33333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 8143590668843573490, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8143590668843573490, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_UseCustomVertexStreams
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
 --- !u!1001 &4719525978094539048
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -99,5 +183,10 @@ PrefabInstance:
 --- !u!1 &4376897499565825312 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9062019569830792200, guid: c6842ea22088da542ac77fec21ab95b5, type: 3}
+  m_PrefabInstance: {fileID: 4719525978094539048}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &3126851871436816674 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7645934499838840842, guid: c6842ea22088da542ac77fec21ab95b5, type: 3}
   m_PrefabInstance: {fileID: 4719525978094539048}
   m_PrefabAsset: {fileID: 0}

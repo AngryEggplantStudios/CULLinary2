@@ -30,6 +30,7 @@ public class MonsterBehavior : MonoBehaviour
     public float reachedPositionDistance;
     public MonsterScript monsterScript;
     public LineRenderer lineRenderer;
+    private NavMeshPath path;
 
     private void Start()
     {
@@ -45,6 +46,7 @@ public class MonsterBehavior : MonoBehaviour
         reachedPositionDistance = navMeshAgent.stoppingDistance;
         startingPosition = transform.position;
         timer = wanderTimer;
+        path = new NavMeshPath();
         goingBackToStartTimer = 0;
         childClassPreStartFunctions();
     }
@@ -56,14 +58,14 @@ public class MonsterBehavior : MonoBehaviour
 
     public virtual void EnemyIdle()
     {
-        monsterScript.checkIfDead();
         animator.SetBool("isMoving", false);
         timer += Time.deltaTime;
         if (timer >= idleTimer)
         {
             Vector3 newPos = RandomNavSphere(startingPosition, wanderRadius, -1, minDist);
-            navMeshAgent.SetDestination(newPos);
-            timer = 0;
+			NavMesh.CalculatePath(transform.position, newPos, NavMesh.AllAreas, path);
+			navMeshAgent.SetPath(path);
+			timer = 0;
             monsterScript.SetStateMachine(MonsterState.Roaming);
             roamPosition = newPos;
 
@@ -134,7 +136,7 @@ public class MonsterBehavior : MonoBehaviour
         Vector3 playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
         slowlyRotateToLookAt(playerPositionWithoutYOffset);
 
-        if (canAttack == true)
+        if (canAttack)
         {
             canAttack = false;
             StartCoroutine(DelayAttack(playerPositionWithoutYOffset));
@@ -148,7 +150,7 @@ public class MonsterBehavior : MonoBehaviour
     }
 
     public virtual IEnumerator DelayAttack(Vector3 playerPositionWithoutYOffset)
-	{
+    {
         yield return new WaitForSeconds(1);
         slowlyRotateToLookAt(playerPositionWithoutYOffset);
         animator.SetBool("isMoving", false);
@@ -218,7 +220,7 @@ public class MonsterBehavior : MonoBehaviour
     }
 
     public void slowlyRotateToLookAt(Vector3 target)
-	{
+    {
         transform.rotation = Quaternion.Lerp(
             transform.rotation,
             Quaternion.Euler(Quaternion.LookRotation(target - transform.position).eulerAngles),

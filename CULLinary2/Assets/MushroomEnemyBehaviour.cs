@@ -60,7 +60,7 @@ public class MushroomEnemyBehaviour : MonsterBehavior
                 Debug.Log("FindingPositionToRunTo");
                 float directionVector = Vector3.Distance(transform.position, playerPositionWithoutYOffset);
                 // use stopChase to stopRunningAway
-                if (directionVector >= monsterScript.getStopChase())
+                if (directionVector >= monsterScript.GetStopChase())
                 {
                     // fully reset canAttack, safe from player, can go back
                     resetAllVariables();

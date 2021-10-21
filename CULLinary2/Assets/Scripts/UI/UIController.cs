@@ -23,15 +23,22 @@ public class UIController : SingletonGeneric<UIController>
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject playerDeathMenu;
     [SerializeField] private GameObject endOfDayMenu;
+    [SerializeField] private GameObject confirmationToMainMenu;
+    [SerializeField] private GameObject confirmationToDesktop;
 
     [Header("Fixed HUD References")]
     [SerializeField] private Image healthBar;
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private Image staminaCircleImage;
-    [SerializeField] private TMP_Text healthPotions;
+    [SerializeField] private TMP_Text healthPill;
+    [SerializeField] private TMP_Text staminaPill;
+    [SerializeField] private TMP_Text potion;
+    [SerializeField] private TMP_Text pfizerShot;
+    [SerializeField] private TMP_Text modernaShot;
     [Header("Winning Screen References")]
     [SerializeField] private AudioSource winningAudio;
     [SerializeField] private GameObject winPanel;
+
 
     private KeyCode ToggleInventoryKeyCode;
     private KeyCode ToggleOrdersKeyCode;
@@ -48,6 +55,8 @@ public class UIController : SingletonGeneric<UIController>
     public bool isMenuActive = false;
     public bool isFireplaceActive = false;
     public bool isPaused = false;
+    public bool isPlayerInVehicle = false;
+    public bool isNewspaperOpen = false;
     private bool deathMenuActive = false;
     private bool anyUIActive = false;
     private bool anyUIWasActive = false;
@@ -78,6 +87,12 @@ public class UIController : SingletonGeneric<UIController>
 
     public void TogglePauseMenu()
     {
+        if (confirmationToMainMenu.activeSelf || confirmationToDesktop.activeSelf)
+        {
+            confirmationToDesktop.SetActive(false);
+            confirmationToMainMenu.SetActive(false);
+            return;
+        }
         pauseMenu.SetActive(!pauseMenu.activeSelf);
         isPaused = !isPaused;
         Time.timeScale = isPaused ? 0 : 1;
@@ -104,7 +119,7 @@ public class UIController : SingletonGeneric<UIController>
         {
             player.GetComponent<CharacterController>().enabled = false;
             deathMenuActive = true;
-            isPaused = true;
+            //isPaused = true;
             StartCoroutine(PauseToShowDeathAnimation());
         }
     }
@@ -121,8 +136,9 @@ public class UIController : SingletonGeneric<UIController>
     public void RespawnPlayer()
     {
         deathMenuActive = false;
-        isPaused = false;
+        //isPaused = false;
         player.GetComponent<CharacterController>().enabled = true;
+        GameTimer.instance.ShowRandomNews();
         GameTimer.instance.GoToNextDay();
         playerDeathMenu.SetActive(false);
         Time.timeScale = 1;
@@ -132,8 +148,7 @@ public class UIController : SingletonGeneric<UIController>
     {
         if (endOfDayMenu)
         {
-
-            isPaused = true;
+            //isPaused = true;
             endOfDayMenu.SetActive(true);
             EndOfDayPanelStatistics stats = endOfDayMenu.GetComponent<EndOfDayPanelStatistics>();
             stats.UpdateStatistics(GameTimer.GetDayNumber(),
@@ -146,7 +161,7 @@ public class UIController : SingletonGeneric<UIController>
 
     public void ContinueToNextDay()
     {
-        isPaused = false;
+        //isPaused = false;
         endOfDayMenu.SetActive(false);
         SceneTransitionManager.instance.FadeOutImage();
         Invoke("ResumeGameTimer", 1);
@@ -165,14 +180,14 @@ public class UIController : SingletonGeneric<UIController>
         }
 
         winPanel.SetActive(true);
-        isPaused = true;
+        //isPaused = true;
         Time.timeScale = 0;
     }
 
     public void CloseWinPanel()
     {
         winPanel.SetActive(false);
-        isPaused = false;
+        //isPaused = false;
         Time.timeScale = 1;
     }
 
@@ -327,7 +342,11 @@ public class UIController : SingletonGeneric<UIController>
         healthBar.fillAmount = PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth;
         healthText.text = Mathf.CeilToInt(PlayerManager.instance.currentHealth) + "/" + Mathf.CeilToInt(PlayerManager.instance.maxHealth);
         staminaCircleImage.fillAmount = PlayerManager.instance.currentStamina / PlayerManager.instance.maxStamina;
-        healthPotions.text = "x " + PlayerManager.instance.consumables[0];
+        healthPill.text = "x " + PlayerManager.instance.healthPill;
+        staminaPill.text = "x " + PlayerManager.instance.staminaPill;
+        potion.text = "x " + PlayerManager.instance.potion;
+        pfizerShot.text = "x " + PlayerManager.instance.pfizerShot;
+        modernaShot.text = "x " + PlayerManager.instance.modernaShot;
     }
 
     // Call this to update all the UI
@@ -360,7 +379,9 @@ public class UIController : SingletonGeneric<UIController>
         anyUIActive = playerDeathMenu.activeSelf
                 || isFireplaceActive
                 || isMenuActive
-                || isPaused;
+                || isPaused
+                || endOfDayMenu.activeSelf
+                || winPanel.activeSelf;
 
         if (anyUIActive != anyUIWasActive)
         {
@@ -368,7 +389,7 @@ public class UIController : SingletonGeneric<UIController>
             HandleUIActiveChange(anyUIActive);
         }
 
-        if (playerDeathMenu.activeSelf)
+        if (playerDeathMenu.activeSelf || isNewspaperOpen)
         {
             return;
         }
@@ -436,8 +457,13 @@ public class UIController : SingletonGeneric<UIController>
 
         if (!isMenuActive)
         {
+            // Exit the truck if possible
+            if (Input.GetKeyDown(interactKeyCode) && isPlayerInVehicle)
+            {
+                DrivingManager.instance.HandlePlayerLeaveVehicle();
+            }
             // Toggle fireplace if menu is not active
-            if (Input.GetKeyDown(interactKeyCode) && currentInteractable != null)
+            else if (Input.GetKeyDown(interactKeyCode) && currentInteractable != null)
             {
                 currentInteractable.OnPlayerInteract();
             }

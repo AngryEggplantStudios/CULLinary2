@@ -7,7 +7,7 @@ public class Recipe : ScriptableObject
 {
     public int recipeId;
     public InventoryItem cookedDishItem;
-    public int recipeEarnings;
+    public int recipeEarnings = 100; //Default
     // Important: Each inventory item should be unique!
     // Also, both arrays should be the same length.
     [SerializeField] private InventoryItem[] ingredientsList;

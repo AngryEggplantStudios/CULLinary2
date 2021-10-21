@@ -23,6 +23,10 @@ public class PlayerSecondaryAttack : PlayerAction
 
     private void PowerUp()
     {
+        if (Time.timeScale == 0f)
+        {
+            return;
+        }
         playerStamina.SetStaminaCircleActive(true);
         if (playerStamina != null && !playerStamina.HasStamina(staminaCost))
         {
@@ -38,6 +42,7 @@ public class PlayerSecondaryAttack : PlayerAction
     }
 
     //For testing
+    /*
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha9))
@@ -47,6 +52,7 @@ public class PlayerSecondaryAttack : PlayerAction
             ChangeSecondaryAttack(currentAttackSelected + 3);
         }
     }
+    */
 
     public void ChangeSecondaryAttack(int id)
     {

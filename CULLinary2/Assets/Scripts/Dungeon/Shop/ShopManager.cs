@@ -25,6 +25,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
     [SerializeField] private Button upgradeButton;
     [SerializeField] private TMP_Text consumableCounterText;
     [SerializeField] private GameObject itemPanel;
+    [SerializeField] private AudioSource kaching;
 
     private int selectedSlotId = -1;
     private List<ShopSlot> slots;
@@ -100,16 +101,24 @@ public class ShopManager : SingletonGeneric<ShopManager>
             switch (consumableItemPurchased.shopItemId)
             {
                 case 7:
-                    PlayerManager.instance.consumables[0]++;
+                    PlayerManager.instance.healthPill++;
                     break;
                 case 8:
-                    PlayerManager.instance.consumables[1]++;
+                    PlayerManager.instance.staminaPill++;
                     break;
                 case 9:
-                    PlayerManager.instance.consumables[2]++;
+                    PlayerManager.instance.potion++;
+                    break;
+                case 10:
+                    PlayerManager.instance.pfizerShot++;
+                    break;
+                case 11:
+                    PlayerManager.instance.modernaShot++;
                     break;
             }
         }
+
+        kaching.Play();
 
         // Update all UIs
         PlayerManager.instance.currentMoney -= itemPrice;
@@ -302,13 +311,19 @@ public class ShopManager : SingletonGeneric<ShopManager>
             switch (consumableItemSelected.shopItemId)
             {
                 case 7:
-                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.consumables[0] + " " + itemSelected.itemName + ".";
+                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.healthPill + " " + itemSelected.itemName + "(s).";
                     break;
                 case 8:
-                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.consumables[1] + " " + itemSelected.itemName + ".";
+                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.staminaPill + " " + itemSelected.itemName + "(s).";
                     break;
                 case 9:
-                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.consumables[2] + " " + itemSelected.itemName + ".";
+                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.potion + " " + itemSelected.itemName + "(s).";
+                    break;
+                case 10:
+                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.pfizerShot + " " + itemSelected.itemName + "(s).";
+                    break;
+                case 11:
+                    consumableCounterText.text = "Currently, you have " + PlayerManager.instance.modernaShot + " " + itemSelected.itemName + "(s).";
                     break;
             }
 

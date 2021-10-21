@@ -6,7 +6,10 @@ public class BGM : MonoBehaviour
 {
     [Range(0, 1)] public float volume = 1;
 
-    AudioSource audioSource;
+    public AudioSource[] audioSources;
+    public int track = 0;
+
+    float transitionSpeed = 0.2f;
 
     private static BGM _instance;
     public static BGM Instance { get { return _instance; } }
@@ -16,6 +19,7 @@ public class BGM : MonoBehaviour
         if (_instance != null && _instance != this)
         {
             BGM.Instance.SetVolume(volume);
+            BGM.Instance.SetTrack(track);
             Destroy(this.gameObject);
         }
         else
@@ -24,20 +28,49 @@ public class BGM : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
+
+        for (int i = 0; i < audioSources.Length; i++)
+        {
+            audioSources[i].volume = (i == track) ? volume : 0;
+        }
     }
 
-    void Start()
+    void Update()
     {
-        audioSource = GetComponent<AudioSource>();
-        SetVolume(volume);
+        for (int i = 0; i < audioSources.Length; i++)
+        {
+            if (i == track)
+            {
+                if (audioSources[i].volume < volume)
+                {
+                    audioSources[i].volume += Time.deltaTime * transitionSpeed;
+                }
+                else
+                {
+                    audioSources[i].volume = volume;
+                }
+            }
+            else
+            {
+                if (audioSources[i].volume > 0)
+                {
+                    audioSources[i].volume -= Time.deltaTime * transitionSpeed;
+                }
+                else
+                {
+                    audioSources[i].volume = 0;
+                }
+            }
+        }
     }
 
-    // 1 - Main Menu
-    // 0.5 - Gameplay
-    // 0.3 - UI
     public void SetVolume(float volume)
     {
-        audioSource.volume = volume;
+        this.volume = volume;
     }
 
+    public void SetTrack(int track)
+    {
+        this.track = track;
+    }
 }

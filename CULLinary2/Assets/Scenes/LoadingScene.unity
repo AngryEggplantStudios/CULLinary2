@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657815, g: 0.49641192, b: 0.57481617, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -786,7 +786,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -140}
+  m_AnchoredPosition: {x: 237, y: -125}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &923411032
@@ -811,16 +811,12 @@ MonoBehaviour:
       m_Calls: []
   m_text: '<u>To note:</u>
 
-    <color=#FA4041>Clown is scary.</color>
+    Thanks for all the feedback!
 
-    The day
-    ends at 24:00 and you get new orders!
+    Do note we still
+    have 100+ things on our Trello,
 
-    All this info will be made into a
-    nice tutorial in the final game ;)
-
-    Don''t worry if this takes a minute to
-    load...'
+    but feel free to have no mercy ;)'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a1bc1abf93d37c348ab5a4e3cdfdd48c, type: 2}
   m_sharedMaterial: {fileID: 5819034279512177362, guid: a1bc1abf93d37c348ab5a4e3cdfdd48c, type: 2}
@@ -854,7 +850,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 2
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -973,6 +969,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 983316967}
   m_CullTransparentMesh: 1
+--- !u!1001 &985405692
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3740950525160568754, guid: 74825ef033ae2244a91eef5d9a1aacd8, type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3740950525160568754, guid: 74825ef033ae2244a91eef5d9a1aacd8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3740950525160568754, guid: 74825ef033ae2244a91eef5d9a1aacd8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3740950525160568754, guid: 74825ef033ae2244a91eef5d9a1aacd8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3740950525160568754, guid: 74825ef033ae2244a91eef5d9a1aacd8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3740950525160568754, guid: 74825ef033ae2244a91eef5d9a1aacd8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3740950525160568754, guid: 74825ef033ae2244a91eef5d9a1aacd8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3740950525160568754, guid: 74825ef033ae2244a91eef5d9a1aacd8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3740950525160568754, guid: 74825ef033ae2244a91eef5d9a1aacd8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3740950525160568754, guid: 74825ef033ae2244a91eef5d9a1aacd8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3740950525160568754, guid: 74825ef033ae2244a91eef5d9a1aacd8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3740950525160568755, guid: 74825ef033ae2244a91eef5d9a1aacd8, type: 3}
+      propertyPath: m_Name
+      value: Button Audio
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 74825ef033ae2244a91eef5d9a1aacd8, type: 3}
 --- !u!1 &1214809934
 GameObject:
   m_ObjectHideFlags: 0
@@ -1400,7 +1453,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Welcome to the CULLinary 2 DEMO!
+  m_text: Welcome to the CULLinary 2 BETA!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a1bc1abf93d37c348ab5a4e3cdfdd48c, type: 2}
   m_sharedMaterial: {fileID: 5819034279512177362, guid: a1bc1abf93d37c348ab5a4e3cdfdd48c, type: 2}
@@ -1489,7 +1542,7 @@ GameObject:
   - component: {fileID: 1820756127}
   - component: {fileID: 1820756126}
   m_Layer: 0
-  m_Name: Text (TMP) - Instructions
+  m_Name: Text (TMP) - What's New
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1534,22 +1587,32 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '<u>Chef''s Guide</u>
+  m_text: '<u>What''s new?</u>
 
-    1. You get new orders at the start of each day
+    - Chests!
 
-    2.
-    Cull monsters to get ingredients
+    - New Skills!
 
-    3. Use campfires to cook dishes
+    - New Buffs!
 
-    4.
-    Deliver dishes to houses > ??? > Profit
+    -
+    New Recipes!
 
-    5. Purchase upgrades at campfires
+    - New Enemies!
 
-    6.
-    Repeat'
+    - New Weapons!
+
+    - You can eat food!!!
+
+    -
+    More pretty things!
+
+    - A Newspaper subscription?!
+
+    - Cool new places
+    to explore!
+
+    - A <b>TRUCK</b>?!?!?'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a1bc1abf93d37c348ab5a4e3cdfdd48c, type: 2}
   m_sharedMaterial: {fileID: 5819034279512177362, guid: a1bc1abf93d37c348ab5a4e3cdfdd48c, type: 2}
