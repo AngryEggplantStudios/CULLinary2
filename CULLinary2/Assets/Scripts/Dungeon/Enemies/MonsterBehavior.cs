@@ -12,7 +12,7 @@ public class MonsterBehavior : MonoBehaviour
 
     [Tooltip("The minimum distance to wander about. Needed because of the stopping distance being large makes the enemy only wander a bit before stopping.")]
     [SerializeField] private float minDist;
-    [SerializeField] private float timeBetweenAttacks;
+    [SerializeField] protected float timeBetweenAttacks;
 
     [Header("Test")]
     [SerializeField] public bool lineTest = false;
@@ -30,7 +30,7 @@ public class MonsterBehavior : MonoBehaviour
     public float reachedPositionDistance;
     public MonsterScript monsterScript;
     public LineRenderer lineRenderer;
-    private NavMeshPath path;
+    protected NavMeshPath path;
 
     private void Start()
     {
@@ -48,7 +48,13 @@ public class MonsterBehavior : MonoBehaviour
         timer = wanderTimer;
         path = new NavMeshPath();
         goingBackToStartTimer = 0;
+        childClassPreStartFunctions();
     }
+
+    protected virtual void childClassPreStartFunctions()
+	{
+        //default do nothing, for children class to override;
+	}
 
     public virtual void EnemyIdle()
     {
@@ -159,7 +165,6 @@ public class MonsterBehavior : MonoBehaviour
         slowlyRotateToLookAt(startingPosition);
         animator.SetBool("isMoving", true);
         navMeshAgent.SetDestination(startingPosition);
-
         if (lineTest)
         {
             Vector3[] points = new Vector3[2];
@@ -181,7 +186,7 @@ public class MonsterBehavior : MonoBehaviour
     }
 
 
-    private IEnumerator DelayFire()
+    protected virtual IEnumerator DelayFire()
     {
         yield return new WaitForSeconds(timeBetweenAttacks);
         canAttack = true;
