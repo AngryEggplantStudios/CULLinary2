@@ -27,7 +27,7 @@ public class HamAttack  : MonsterAttack
         //SetLineRendererForDebug();
     }
 
-    public bool getCanDealDamage()
+    public bool getCanMove()
 	{
         return canMove;
 	}
@@ -40,10 +40,14 @@ public class HamAttack  : MonsterAttack
         return angleBetweenTwoVectors <= angleFromForwardVectorToHit;
     }
 
+    public void hamAttackStopMoving()
+	{
+        canMove = false;
+    }
+
     public override void attackPlayerStart()
     {
         attackCollider.enabled = true;
-        canMove = false;
         canvasObject.SetActive(true);
     }
 

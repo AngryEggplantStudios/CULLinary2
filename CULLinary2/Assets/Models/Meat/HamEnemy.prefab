@@ -301,8 +301,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 7
-  m_Acceleration: 14
+  m_Speed: 10
+  m_Acceleration: 24
   avoidancePriority: 80
   m_AngularSpeed: 120
   m_StoppingDistance: 9
@@ -393,8 +393,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 3, y: 3, z: 6.030568}
-  m_Center: {x: 0, y: 2, z: 0.5152821}
+  m_Size: {x: 3, y: 3.6841269, z: 4.797043}
+  m_Center: {x: 0, y: 1.1986966, z: 0.27203116}
 --- !u!1 &831241655402918508
 GameObject:
   m_ObjectHideFlags: 0
@@ -1612,7 +1612,7 @@ GameObject:
   - component: {fileID: 5258331490015604108}
   - component: {fileID: 5673711461372084349}
   - component: {fileID: 8582491070640745546}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: AttackProjector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1660,7 +1660,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.8301887, g: 0.08358025, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
