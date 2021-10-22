@@ -71,6 +71,9 @@ public class OrderSubmissionStation : PlayerInteractable
     {
         return spCollider;
     }
+    
+    public override void OnPlayerEnter()
+    { }
 
     public override void OnPlayerInteract()
     {

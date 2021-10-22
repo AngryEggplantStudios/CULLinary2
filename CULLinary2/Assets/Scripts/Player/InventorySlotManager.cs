@@ -10,6 +10,7 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
     [SerializeField] private Image itemMainIcon;
     [SerializeField] private TMP_Text itemName;
     [SerializeField] private TMP_Text itemDescription;
+    [SerializeField] private TMP_Text itemEffects;
     [SerializeField] private GameObject consumableButtonObject;
     [SerializeField] private GameObject discardButtonObject;
     private InventorySlot[] slots;
@@ -37,14 +38,14 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
             return;
         }
 
-        //consumableButtonObject.SetActive(item.isConsumable);
-        consumableButtonObject.SetActive(false);
+        consumableButtonObject.SetActive(item.isConsumable);
         discardButtonObject.SetActive(true);
 
         itemMainIcon.enabled = true;
         itemMainIcon.sprite = item.icon;
         itemName.text = item.itemName;
         itemDescription.text = item.description;
+        itemEffects.text = item.GetConsumeEffect();
         //StartCoroutine(UpdateLayoutGroup());
         itemSlot.gameObject.GetComponent<Outline>().enabled = true;
 
@@ -84,10 +85,10 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
             {
                 HandleDiscard();
             }
-            /* else if (Input.GetKeyDown(KeyCode.Z))
+            else if (Input.GetKeyDown(KeyCode.Z))
             {
                 HandleConsume();
-            } */
+            }
         }
     }
 
@@ -105,12 +106,13 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
     public void HandleConsume()
     {
         InventoryItem item = slots[selectedSlotId].item;
-        if (InventoryManager.instance != null && item != null && item.isConsumable && false) //Cannot consume for now
+        if (InventoryManager.instance != null && item != null && item.isConsumable)
         {
             slots[selectedSlotId].gameObject.GetComponent<Outline>().enabled = false;
+            item.buffIcon = item.buffIcon == null ? item.icon : item.buffIcon;
+            BuffManager.instance.ApplyBuff(item);
             ResetSlot();
             InventoryManager.instance.RemoveItem(item);
-            Debug.Log("Consumed!");
         }
     }
 
@@ -119,6 +121,7 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
         selectedSlotId = -1;
         itemName.text = "";
         itemDescription.text = "";
+        itemEffects.text = "";
         itemMainIcon.enabled = false;
         itemMainIcon.sprite = null;
         discardButtonObject.SetActive(false);

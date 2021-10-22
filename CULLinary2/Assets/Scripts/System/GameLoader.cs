@@ -8,12 +8,14 @@ public class GameLoader : SingletonGeneric<GameLoader>
     [SerializeField] private DatabaseLoader databaseLoader;
     [SerializeField] private DungeonSpawnManager dungeonSpawnManager;
     [SerializeField] private GameObject playerCharacter;
+    [SerializeField] private GameObject truck;
     [SerializeField] private GameObject uiCanvas;
     [SerializeField] private LoadType loadType;
     private void Start()
     {
         uiCanvas.SetActive(false);
         playerCharacter.SetActive(false);
+        truck.SetActive(false);
 
         switch ((int)loadType)
         {
@@ -27,6 +29,7 @@ public class GameLoader : SingletonGeneric<GameLoader>
                 StartCoroutine(LoadWorldTesting());
                 break;
         }
+
     }
 
     public IEnumerator LoadWorldTesting()
@@ -61,11 +64,13 @@ public class GameLoader : SingletonGeneric<GameLoader>
         WeaponSkillManager.instance.InstantiateWeaponSkill();
         yield return null;
         playerCharacter.SetActive(true);
+        truck.SetActive(true);
         yield return null;
         UIController.UpdateAllUIs();
         uiCanvas.SetActive(true);
         yield return null;
         GameTimer.instance.Run();
+        PlayerSpawnManager.instance.SpawnPlayer();
     }
 }
 

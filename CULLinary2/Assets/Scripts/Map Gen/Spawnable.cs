@@ -5,10 +5,11 @@ using UnityEngine;
 [System.Serializable]
 public struct Spawnable
 {
-    public bool isSpawnable;
     public string name;
+    public bool isSpawnable;
     public GameObject[] prefabs;
     public int density;
     public float intersectRadius;
     public bool removeCollider;
+    public bool ignoreSelfIntersection;
 }

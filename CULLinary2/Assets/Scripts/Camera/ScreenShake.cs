@@ -12,16 +12,25 @@ public class ScreenShake : MonoBehaviour
         if (_instance != null && _instance != this)
         {
             Destroy(this.gameObject);
-        } else {
+        }
+        else
+        {
             _instance = this;
         }
     }
-    
+
     public void Shake(float duration, float magnitude, float fadeIn, float fadeOut)
     {
-        StartCoroutine(ShakeSequence(duration, magnitude, fadeIn, fadeOut));
+        if (gameObject.active)
+        {
+            StartCoroutine(ShakeSequence(duration, magnitude, fadeIn, fadeOut));
+        }
+        else
+        {
+            Debug.LogWarning("ScreenShake Object is not active!");
+        }
     }
-    
+
     private IEnumerator ShakeSequence(float duration, float magnitude, float fadeIn, float fadeOut)
     {
         Vector3 origPos = transform.localPosition;

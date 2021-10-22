@@ -12,7 +12,7 @@ public class MonsterBehavior : MonoBehaviour
 
     [Tooltip("The minimum distance to wander about. Needed because of the stopping distance being large makes the enemy only wander a bit before stopping.")]
     [SerializeField] private float minDist;
-    [SerializeField] private float timeBetweenAttacks;
+    [SerializeField] protected float timeBetweenAttacks;
 
     [Header("Test")]
     [SerializeField] public bool lineTest = false;
@@ -30,6 +30,7 @@ public class MonsterBehavior : MonoBehaviour
     public float reachedPositionDistance;
     public MonsterScript monsterScript;
     public LineRenderer lineRenderer;
+    protected NavMeshPath path;
 
     private void Start()
     {
@@ -45,19 +46,26 @@ public class MonsterBehavior : MonoBehaviour
         reachedPositionDistance = navMeshAgent.stoppingDistance;
         startingPosition = transform.position;
         timer = wanderTimer;
+        path = new NavMeshPath();
         goingBackToStartTimer = 0;
+        childClassPreStartFunctions();
     }
+
+    protected virtual void childClassPreStartFunctions()
+	{
+        //default do nothing, for children class to override;
+	}
 
     public virtual void EnemyIdle()
     {
-        monsterScript.checkIfDead();
         animator.SetBool("isMoving", false);
         timer += Time.deltaTime;
         if (timer >= idleTimer)
         {
             Vector3 newPos = RandomNavSphere(startingPosition, wanderRadius, -1, minDist);
-            navMeshAgent.SetDestination(newPos);
-            timer = 0;
+			NavMesh.CalculatePath(transform.position, newPos, NavMesh.AllAreas, path);
+			navMeshAgent.SetPath(path);
+			timer = 0;
             monsterScript.SetStateMachine(MonsterState.Roaming);
             roamPosition = newPos;
 
@@ -128,7 +136,7 @@ public class MonsterBehavior : MonoBehaviour
         Vector3 playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
         slowlyRotateToLookAt(playerPositionWithoutYOffset);
 
-        if (canAttack == true)
+        if (canAttack)
         {
             canAttack = false;
             StartCoroutine(DelayAttack(playerPositionWithoutYOffset));
@@ -142,7 +150,7 @@ public class MonsterBehavior : MonoBehaviour
     }
 
     public virtual IEnumerator DelayAttack(Vector3 playerPositionWithoutYOffset)
-	{
+    {
         yield return new WaitForSeconds(1);
         slowlyRotateToLookAt(playerPositionWithoutYOffset);
         animator.SetBool("isMoving", false);
@@ -157,7 +165,6 @@ public class MonsterBehavior : MonoBehaviour
         slowlyRotateToLookAt(startingPosition);
         animator.SetBool("isMoving", true);
         navMeshAgent.SetDestination(startingPosition);
-
         if (lineTest)
         {
             Vector3[] points = new Vector3[2];
@@ -179,7 +186,7 @@ public class MonsterBehavior : MonoBehaviour
     }
 
 
-    private IEnumerator DelayFire()
+    protected virtual IEnumerator DelayFire()
     {
         yield return new WaitForSeconds(timeBetweenAttacks);
         canAttack = true;
@@ -213,7 +220,7 @@ public class MonsterBehavior : MonoBehaviour
     }
 
     public void slowlyRotateToLookAt(Vector3 target)
-	{
+    {
         transform.rotation = Quaternion.Lerp(
             transform.rotation,
             Quaternion.Euler(Quaternion.LookRotation(target - transform.position).eulerAngles),

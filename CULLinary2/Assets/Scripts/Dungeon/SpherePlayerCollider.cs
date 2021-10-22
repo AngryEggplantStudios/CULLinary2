@@ -5,7 +5,7 @@ using UnityEngine;
 // A sphere to check whether the player is within the range
 // Note that these spheres should not overlap!
 public class SpherePlayerCollider : MonoBehaviour
-{    
+{
     // Prompts to disable or enable when the player is near
     public GameObject popUpPrompts;
     // Assumes player is not within the collider when game starts
@@ -34,6 +34,7 @@ public class SpherePlayerCollider : MonoBehaviour
         {
             playerWithinRange = true;
             popUpPrompts.SetActive(true);
+            parentInteractable.OnPlayerEnter();
             UIController.instance.SetPlayerInteractable(parentInteractable);
         }
     }

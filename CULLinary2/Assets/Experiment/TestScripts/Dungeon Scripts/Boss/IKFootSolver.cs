@@ -49,7 +49,7 @@ public class IKFootSolver : Monster
             {
                 int direction = body.InverseTransformPoint(info.point).z > body.InverseTransformPoint(newPosition).z ? 1 : -1;
                 if (!(parentController.GetState() == ClownController.State.Idle))
-				{
+                {
                     // Don't step if clown is in idle;
                     SetTarget(info.point + (body.forward * stepLength * direction) + footOffset,
                             info.normal);
@@ -90,7 +90,9 @@ public class IKFootSolver : Monster
                 {
                     audioSource.clip = meleeSound;
                     audioSource.Play();
-                } else {
+                }
+                else
+                {
                     audioSource.clip = stepSound;
                     audioSource.Play();
                 }

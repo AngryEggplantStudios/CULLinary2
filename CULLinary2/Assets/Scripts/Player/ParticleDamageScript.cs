@@ -47,7 +47,8 @@ public class ParticleDamageScript : MonoBehaviour
 
     private int CalculateDamage()
     {
-        bool isCritical = PlayerManager.instance != null && PlayerManager.instance.criticalChance > 0 ? Random.Range(0, 100) < PlayerManager.instance.criticalChance : false;
+        int totalCritChance = PlayerManager.instance != null ? PlayerManager.instance.criticalBonus + PlayerManager.instance.criticalChance : 0;
+        bool isCritical = totalCritChance > 0 ? Random.Range(0, 100) < totalCritChance : false;
         float finalDamage = attackDamage * Random.Range(0.85f, 1.15f);
         float finalDamageWithCrit = isCritical ? finalDamage * 2 : finalDamage;
         return Mathf.RoundToInt(finalDamageWithCrit);

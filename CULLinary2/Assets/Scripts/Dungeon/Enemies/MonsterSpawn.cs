@@ -82,7 +82,7 @@ public class MonsterSpawn : MonoBehaviour
     private int GetNumberToSpawn()
     {
         int baseNum = Random.Range(minEnemy, maxEnemy + 1);
-        int numToSpawn = baseNum + enemyToSpawn.GetComponent<MonsterScript>().GetAdditionalSpawningNumber();
+        int numToSpawn = baseNum + enemyToSpawn.GetComponent<MonsterScript>().GetAdditionalSpawning();
         return numToSpawn;
     }
 
