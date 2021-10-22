@@ -6,17 +6,20 @@ public class EnemyDetection : SingletonGeneric<EnemyDetection>
 {
     [SerializeField] float globalRadius;
     private List<MonsterScript> listOfEnemies;
-    private Transform playerTransform;
+    [SerializeField] private Transform playerTransform;
     // Start is called before the first frame update
     void Start()
     {
         listOfEnemies = new List<MonsterScript>();
-        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (playerTransform == null)
+		{
+            playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        }
         foreach (MonsterScript monster in listOfEnemies)
         {
             if (monster.IsFarEnoughFromPlayer(playerTransform.position, globalRadius))
