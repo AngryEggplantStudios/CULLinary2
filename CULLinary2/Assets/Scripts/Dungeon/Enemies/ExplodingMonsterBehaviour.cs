@@ -244,7 +244,7 @@ public class ExplodingMonsterBehaviour : MonoBehaviour
         return navHit.position;
     }
 
-    private void OnDestroy()
+    public void DestroyObjectEvents()
     {
         monsterScript.onEnemyRoaming -= EnemyRoaming;
         monsterScript.onEnemyChase -= EnemyChase;

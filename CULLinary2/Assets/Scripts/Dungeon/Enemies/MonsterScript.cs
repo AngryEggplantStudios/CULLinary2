@@ -43,6 +43,7 @@ public class MonsterScript : Monster
     [SerializeField] private Material[] transparentMaterials;
 
     // Variables
+    private EnemyDetection globalEnemyDetection;
     private MonsterName monsterName;
     private bool hasAssignedName = false;
     public MonsterState currentState;
@@ -99,6 +100,8 @@ public class MonsterScript : Monster
         }
         canvasDisplay = GameObject.FindGameObjectWithTag("GameCanvas");
         GetMonsterName();
+        globalEnemyDetection = EnemyDetection.Instance.GetComponentInChildren<EnemyDetection>();
+        globalEnemyDetection.AddToListOfEnemies(this);
     }
 
     public MonsterName GetMonsterName()
@@ -254,6 +257,7 @@ public class MonsterScript : Monster
         {
             if (!deathCoroutine)
             {
+                globalEnemyDetection.RemoveFromListOfEnemies(this);
                 // need this due to buggy triggers for death animation: Attack animation may be triggered immediately after death
                 deathCoroutine = true;
                 DieAnimation();
@@ -495,6 +499,15 @@ public class MonsterScript : Monster
         {
             Destroy(uiElement);
         }
+        // Cheat as Tomato has seperate script
+        if (TryGetComponent(out MonsterBehavior getMonsterBehav))
+        {
+            getMonsterBehav.DestroyObjectEvents();
+        } 
+        else
+		{
+            gameObject.GetComponent<ExplodingMonsterBehaviour>().DestroyObjectEvents();
+        }
         Destroy(gameObject);
     }
 
@@ -540,5 +553,17 @@ public class MonsterScript : Monster
     public Vector3 GetPlayerPosition()
 	{
         return this.playerTransform.position;
+	}
+
+    public bool IsFarEnoughFromPlayer(Vector3 playerPosition, float globalRadius)
+	{
+        Vector3 dist = playerPosition - transform.position;
+        float sqredMagnitude = Vector3.SqrMagnitude(dist);
+        return sqredMagnitude >= globalRadius * globalRadius;
+	}
+
+    public void SetActiveMonster(bool toActivate)
+	{
+        this.gameObject.SetActive(toActivate);
 	}
 }
