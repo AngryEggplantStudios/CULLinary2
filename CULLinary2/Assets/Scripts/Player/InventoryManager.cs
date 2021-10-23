@@ -35,6 +35,7 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
         PopulateUI(PlayerManager.instance.itemList);
     }
 
+    // Adds an item and updates inventory, recipe and order UIs
     public bool AddItem(InventoryItem item)
     {
         if (itemListReference.Count < inventoryLimit)

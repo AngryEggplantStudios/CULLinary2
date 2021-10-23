@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class RecipeManager : SingletonGeneric<RecipeManager>
 {
@@ -12,11 +14,10 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
     public GameObject recipeSlot;
     // Large info display of the recipe
     public RecipeUIInfoDisplay infoDisplay;
+    public TextMeshProUGUI filterButtonText;
+    public string[] filterButtonDisplayedTexts;
 
-    [Header("For Cooking UI")]
-    public GameObject cookingRecipesContainer;
-    public GameObject cookingUiSlot;
-    public RecipeUIInfoDisplay cookingInfoDisplay;
+    public Animator ingredientsEmphasisAnimator;
     [Header("Item Pop-Up")]
     // For cooking, to play a sound and show a pop-up
     public PlayerPickup pickup;
@@ -36,13 +37,18 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
     private bool hasPopulatedUnlockedRecipes = false;
     // Keep track of changes in the recipe list for the UI
     private bool recipesChanged = false;
-    // Save the currently selected index of recipes in the UIs
+    // Save the currently selected index of recipes in the UI
     private int currentlySelectedRecipeIndex = 0;
-    private int currentlySelectedCookingIndex = 0;
 
     // List of all campfire locations for the minimap
     private List<Transform> campfires = new List<Transform>();
 
+    // UI filters
+    // 0 - default
+    // 1 - ordered
+    // 2 - ready to cook
+    private int currentFilterState = 0;
+    private Action[] filterTransitions;
 
     void Start()
     {
@@ -50,6 +56,19 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         {
             Debug.Log("RecipeManager: Oops! Could not find PlayerPickup");
         }
+
+        foreach (Transform child in recipesContainer.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        filterTransitions = new Action[]{
+            FilterOrderedRecipesInUI,
+            FilterReadyToCookInstead,
+            ResetAllRecipesInUI
+        };
+
+        filterButtonText.text = filterButtonDisplayedTexts[currentFilterState];
     }
 
     // To be called when save data is loaded
@@ -71,7 +90,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         innerLockedRecipesList.Clear();
         innerUnlockedRecipesList.Clear();
 
-        StopCoroutine(UpdateUI());
+        StopAllCoroutines();
         foreach (int recipeId in unlockedRecipes)
         {
             innerUnlockedRecipesList.Add(DatabaseLoader.GetRecipeById(recipeId));
@@ -87,7 +106,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
 
         hasPopulatedUnlockedRecipes = true;
         recipesChanged = true;
-        StopCoroutine(UpdateUI());
+        StopAllCoroutines();
         StartCoroutine(UpdateUI());
     }
 
@@ -107,12 +126,15 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
     public void ActivateCooking()
     {
         isCooking = true;
+        StopAllCoroutines();
+        StartCoroutine(UpdateUI());
     }
 
     public void DeactivateCooking()
     {
         isCooking = false;
-        currentRecipe = null;
+        StopAllCoroutines();
+        StartCoroutine(UpdateUI());
     }
 
     public bool IsCookingActivated()
@@ -129,6 +151,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
     {
         if (currentRecipe == null)
         {
+            ButtonAudio.Instance.ClickFailed();
             Debug.Log("RecipeManager: No recipe selected!");
             return;
         }
@@ -136,6 +159,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
 
         if (!isCooking)
         {
+            ButtonAudio.Instance.ClickFailed();
             Debug.Log("RecipeManager: Not at campfire!");
             return;
         }
@@ -143,9 +167,10 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         if (InventoryManager.instance.RemoveIdsFromInventory(r.GetIngredientIds()))
         {
             // Sucessfully cooked!
+            ButtonAudio.Instance.Click();
 
             // UI will be updated in AddItem
-            cookingInfoDisplay.IncreaseInventoryCountAndSetIngredients();
+            infoDisplay.IncreaseInventoryCountAndSetIngredients();
             InventoryManager.instance.AddItem(r.cookedDishItem);
             // Create a pop-up for the player
             pickup?.PickUp(r.cookedDishItem);
@@ -154,6 +179,8 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         }
         else
         {
+            ButtonAudio.Instance.ClickFailed();
+            ingredientsEmphasisAnimator.SetTrigger("triggerFlash"); 
             Debug.Log("RecipeManager: ingredients required!");
         }
     }
@@ -173,11 +200,53 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         currentlySelectedRecipeIndex = index;
     }
 
-    public void SetCurrentlySelectedRecipeInCookingUi(int index)
+    public void FilterOrderedRecipesOnClick()
     {
-        currentlySelectedCookingIndex = index;
+        filterTransitions[currentFilterState]();
+        filterButtonText.text = filterButtonDisplayedTexts[currentFilterState];
     }
 
+    // Show all recipes in the UI
+    public void ResetAllRecipesInUI()
+    {
+        foreach (Transform child in recipesContainer.transform)
+        {
+            child.gameObject.SetActive(true);
+        }
+        currentFilterState = 0;
+    }
+
+    // Filters the UI by ordered recipes
+    private void FilterOrderedRecipesInUI()
+    {
+        foreach (Transform child in recipesContainer.transform)
+        {
+            RecipeUISlot recipeDetails = child.GetComponent<RecipeUISlot>();
+            if (!recipeDetails.IsOrdered())
+            {
+                child.gameObject.SetActive(false);
+            }
+        }
+        currentFilterState = 1;
+    }
+
+    // Switch from ordered recipes to cookable recipes
+    private void FilterReadyToCookInstead()
+    {
+        foreach (Transform child in recipesContainer.transform)
+        {
+            RecipeUISlot recipeDetails = child.GetComponent<RecipeUISlot>();
+            if (!recipeDetails.IsOrdered() && recipeDetails.IsCookable())
+            {
+                child.gameObject.SetActive(true);
+            }
+            else if (recipeDetails.IsOrdered() && !recipeDetails.IsCookable())
+            {
+                child.gameObject.SetActive(false);
+            }
+        }
+        currentFilterState = 2;
+    }
     public IEnumerator UpdateUI()
     {
         // Wait until all orders have generated
@@ -186,37 +255,55 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             yield break;
         }
 
+        if (recipesChanged)
+        {
+            yield return StartCoroutine(RegenerateRecipes());
+        }
+        else
+        {   
+            yield return StartCoroutine(RefreshRecipes());
+        }
+    }
+
+    // Goes through all unlocked recipes and updates them
+    private IEnumerator RefreshRecipes()
+    {
+        foreach (Transform child in recipesContainer.transform)
+        {
+            RecipeUISlot recipeDetails = child.GetComponent<RecipeUISlot>();
+            if (recipeDetails.IsRecipeKnown())
+            {
+                recipeDetails.UpdateInfo();
+            }
+            yield return null;
+        }
+    
+        // Retain the same index for the display after updating
+        recipesContainer
+            .transform
+            .GetChild(currentlySelectedRecipeIndex)
+            .GetComponent<RecipeUISlot>()
+            .DisplayRecipe();
+    }
+
+    // Destroys all the recipes and recreates them in the UI
+    private IEnumerator RegenerateRecipes()
+    {
         foreach (Transform child in recipesContainer.transform)
         {
             Destroy(child.gameObject);
-        }
-        foreach (Transform child in cookingRecipesContainer.transform)
-        {
-            Destroy(child.gameObject);
+            yield return null;
         }
         yield return null;
-
-        Dictionary<int, int> ordersByRecipe = OrdersManager.instance.GetNumberOfOrdersByRecipe();
-        int GetNumberOfOrders(int recipeId)
-        {
-            if (ordersByRecipe.ContainsKey(recipeId))
-            {
-                return ordersByRecipe[recipeId];
-            }
-            else
-            {
-                return 0;
-            }
-        }
 
         for (int i = 0; i < innerUnlockedRecipesList.Count; i++)
         {
             Recipe r = innerUnlockedRecipesList[i];
             List<(int, int)> ingIds = r.GetIngredientIds();
             List<(int, int, int)> invReqCount = new List<(int, int, int)>();
-            bool areItemsInInventory =
+            bool areIngresInInv =
                 InventoryManager.instance.CheckIfItemsExist(ingIds, out invReqCount);
-            int numberOfOrders = GetNumberOfOrders(r.recipeId);
+            int numberOfOrders = OrdersManager.instance.GetNumberOfOrders(r.recipeId);
             CheckIfRecipeHasCookedDish(r);
             int numberInInventory = InventoryManager.instance.GetAmountOfItem(r.cookedDishItem.inventoryItemId);
 
@@ -226,17 +313,8 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
                                                  Quaternion.identity,
                                                  recipesContainer.transform) as GameObject;
             RecipeUISlot recipeDetails = recipeEntry.GetComponent<RecipeUISlot>();
-            recipeDetails.AddRecipe(r, areItemsInInventory, invReqCount, numberOfOrders, numberInInventory, i);
+            recipeDetails.AddRecipe(r, areIngresInInv, invReqCount, numberOfOrders, numberInInventory, i);
             recipeDetails.SetInfoDisplay(infoDisplay);
-
-            // Add to Cooking UI as well
-            GameObject cookingUiEntry = Instantiate(cookingUiSlot,
-                                                    new Vector3(0, 0, 0),
-                                                    Quaternion.identity,
-                                                    cookingRecipesContainer.transform) as GameObject;
-            CookingUISlot cookingRecipeDetails = cookingUiEntry.GetComponent<CookingUISlot>();
-            cookingRecipeDetails.AddRecipe(r, areItemsInInventory, invReqCount, numberOfOrders, numberInInventory, i);
-            cookingRecipeDetails.SetInfoDisplay(cookingInfoDisplay);
             yield return null;
         }
 
@@ -252,24 +330,15 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             recipeDetails.SetInfoDisplay(infoDisplay);
             yield return null;
         }
-
-        // Retain the same index for the display after updating, unless recipes list changed
-        if (recipesChanged)
-        {
-            currentlySelectedRecipeIndex = 0;
-            currentlySelectedCookingIndex = 0;
-            recipesChanged = false;
-        }
+        
+        // Reset selected recipe index to 0
+        currentlySelectedRecipeIndex = 0;
+        recipesChanged = false;
         recipesContainer
             .transform
             .GetChild(currentlySelectedRecipeIndex)
             .GetComponent<RecipeUISlot>()
             .DisplayRecipe();
-        cookingRecipesContainer
-            .transform
-            .GetChild(currentlySelectedCookingIndex)
-            .GetComponent<CookingUISlot>()
-            .SelectRecipeForCooking();
     }
 
     private void CheckIfRecipeHasCookedDish(Recipe r)
