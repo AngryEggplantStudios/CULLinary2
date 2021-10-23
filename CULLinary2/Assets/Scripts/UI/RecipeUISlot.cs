@@ -7,6 +7,7 @@ using TMPro;
 public class RecipeUISlot : MonoBehaviour
 {
     public GameObject selectedButton;
+    public GameObject orderedIcon;
     public Image recipeIcon;
     public TextMeshProUGUI recipeDescription;
 
@@ -87,6 +88,7 @@ public class RecipeUISlot : MonoBehaviour
     private void UpdateUI()
     {
         recipeIcon.sprite = recipe.cookedDishItem.icon;
+        orderedIcon.SetActive(ordered);
         if (known)
         {
             recipeDescription.text = recipe.cookedDishItem.itemName;
