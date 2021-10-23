@@ -280,7 +280,10 @@ public class GameTimer : SingletonGeneric<GameTimer>
         {
             // TODO - Unlock the enemies
         }
-        RecipeManager.instance.UpdateUnlockedRecipes();
+        if (ni.recipesUnlocked.Length > 0)
+        {
+            RecipeManager.instance.UpdateUnlockedRecipes();
+        }
     }
 
     private void OnDestroy()

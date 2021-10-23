@@ -21,22 +21,28 @@ public class CookingStation : PlayerInteractable
     {
         // Start healing
         PlayerHealth.instance.OnPlayerEnterCampfire();
+        // Set this as last visited campfire
+        PlayerSpawnManager.instance.SetLastVisitedCampfire(transform);
+        // Update Campfire UIs
+        UIController.instance.OnPlayerEnterCampfire();
+        ShopManager.instance.UpdateShop(); // TODO: Should be removed when UI is merged
+        // Activate cooking
+        if (!RecipeManager.instance.IsCookingActivated())
+        {
+            RecipeManager.instance.ActivateCooking();
+        }
     }
     
     public override void OnPlayerInteract()
     {
         // Open Cooking Menu
-        if (!RecipeManager.instance.IsCookingActivated())
+        if (!UIController.instance.isFireplaceActive)
         {
-            ShopManager.instance.UpdateShop();
-            RecipeManager.instance.ActivateCooking();
             UIController.instance.OpenCampfireInterface();
-            PlayerSpawnManager.instance.SetLastVisitedCampfire(transform);
         }
         // Close Cooking Menu
-        else if (UIController.instance.isFireplaceActive)
+        else
         {
-            RecipeManager.instance.DeactivateCooking();
             UIController.instance.CloseCampfireInterface();
         }
     }
@@ -49,9 +55,10 @@ public class CookingStation : PlayerInteractable
         if (RecipeManager.instance.IsCookingActivated())
         {
             RecipeManager.instance.DeactivateCooking();
-            UIController.instance.CloseCampfireInterface();
         }
         // Stop healing
         PlayerHealth.instance.OnPlayerLeaveCampfire();
+        // Set back to normal menu
+        UIController.instance.OnPlayerLeaveCampfire();
     }
 }

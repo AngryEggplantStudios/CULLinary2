@@ -7,6 +7,7 @@ using TMPro;
 public class RecipeUISlot : MonoBehaviour
 {
     public GameObject selectedButton;
+    public GameObject cookableButton;
     public GameObject orderedIcon;
     public Image recipeIcon;
     public TextMeshProUGUI recipeDescription;
@@ -75,29 +76,43 @@ public class RecipeUISlot : MonoBehaviour
 
     public void DisplayRecipe()
     {
-        if (infoDisplay != null)
-        {
-            infoDisplay.ShowRecipe(selectedButton, recipe, invReqCount, numOfOrders, numInInv);
-        }
-        else
+        if (infoDisplay == null)
         {
             Debug.Log("RecipeUISlot: Missing information display!");
         }
-    }
-
-    private void UpdateUI()
-    {
-        recipeIcon.sprite = recipe.cookedDishItem.icon;
-        orderedIcon.SetActive(ordered);
-        if (known)
-        {
-            recipeDescription.text = recipe.cookedDishItem.itemName;
-        }
         else
         {
-            recipeDescription.text = textForUnknownRecipe;
-            recipeIcon.color = colourForUnknownRecipe;
+            infoDisplay.ShowRecipe(selectedButton, recipe, invReqCount, numOfOrders, numInInv);
+            RecipeManager.instance.SetCurrentlyCookingRecipe(recipe);
         }
+    }
+
+    public bool IsRecipeKnown()
+    {
+        return known;
+    }
+    
+    public bool IsOrdered()
+    {
+        return ordered;
+    }
+    
+    public bool IsCookable()
+    {
+        return cookable;
+    }
+
+    // Update the information of this recipe
+    public void UpdateInfo()
+    {        
+        List<(int, int)> ingIds = recipe.GetIngredientIds();
+        List<(int, int, int)> invReq = new List<(int, int, int)>();
+        cookable = InventoryManager.instance.CheckIfItemsExist(ingIds, out invReq);
+        numOfOrders = OrdersManager.instance.GetNumberOfOrders(recipe.recipeId);
+        numInInv = InventoryManager.instance.GetAmountOfItem(recipe.cookedDishItem.inventoryItemId);
+        invReqCount = invReq;
+        ordered = numOfOrders > 0;
+        UpdateUI();
     }
 
     public void ActivateSelectedButton()
@@ -108,5 +123,21 @@ public class RecipeUISlot : MonoBehaviour
     public void DeactivateSelectedButton()
     {
         selectedButton.SetActive(false);
+    }
+    
+    private void UpdateUI()
+    {
+        recipeIcon.sprite = recipe.cookedDishItem.icon;
+        orderedIcon.SetActive(ordered);
+        cookableButton.SetActive(RecipeManager.instance.IsCookingActivated() && cookable);
+        if (known)
+        {
+            recipeDescription.text = recipe.cookedDishItem.itemName;
+        }
+        else
+        {
+            recipeDescription.text = textForUnknownRecipe;
+            recipeIcon.color = colourForUnknownRecipe;
+        }
     }
 }

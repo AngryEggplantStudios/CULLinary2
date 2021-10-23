@@ -297,6 +297,19 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         return numberOfOrdersByRecipeCache;
     }
 
+    public int GetNumberOfOrders(int recipeId)
+    {
+        Dictionary<int, int> ordersByRecipe = GetNumberOfOrdersByRecipe();
+        if (ordersByRecipe.ContainsKey(recipeId))
+        {
+            return ordersByRecipe[recipeId];
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
     // Gets the number of orders that are generated automatically every day
     public static int GetNumberOfOrdersGeneratedDaily()
     {

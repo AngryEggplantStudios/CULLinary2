@@ -40,6 +40,12 @@ public class RecipeUIInfoDisplay : MonoBehaviour
     // CUrrently shown ingredients
     private List<RecipeUIInfoDisplayIngredient> ingredients = new List<RecipeUIInfoDisplayIngredient>();
 
+    // Reset the recipes filter on disable
+    public void OnDisable()
+    {
+        RecipeManager.instance.ResetAllRecipesInUI();
+    }
+
     public void ShowRecipe(GameObject selectedButton,
                            Recipe r,
                            List<(int, int, int)> ingredientsCount,

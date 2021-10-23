@@ -16,8 +16,8 @@ public class UIController : SingletonGeneric<UIController>
     [SerializeField] private GameObject inventoryTab;
     [SerializeField] private GameObject ordersTab;
     [SerializeField] private GameObject recipesTab;
-    [SerializeField] private GameObject creaturesTab;
-    [SerializeField] private GameObject mapTab;
+    [SerializeField] private GameObject weaponsTab;
+    [SerializeField] private GameObject shopTab;
     [Header("Main HUD")]
     [SerializeField] private GameObject mainHud;
     [SerializeField] private GameObject pauseMenu;
@@ -25,6 +25,10 @@ public class UIController : SingletonGeneric<UIController>
     [SerializeField] private GameObject endOfDayMenu;
     [SerializeField] private GameObject confirmationToMainMenu;
     [SerializeField] private GameObject confirmationToDesktop;
+    [Header("Uniquely Non-Campfire Elements")]
+    [SerializeField] private List<GameObject> hideAtCampfire;
+    [Header("Campfire Elements")]
+    [SerializeField] private List<GameObject> showAtCampfire;
 
     [Header("Fixed HUD References")]
     [SerializeField] private Image healthBar;
@@ -191,6 +195,16 @@ public class UIController : SingletonGeneric<UIController>
         Time.timeScale = 1;
     }
 
+    public void OnPlayerEnterCampfire()
+    {
+        StartCoroutine(ActivateCampfireInterface(true));
+    }
+
+    public void OnPlayerLeaveCampfire()
+    {
+        StartCoroutine(ActivateCampfireInterface(false));
+    }
+
     public void ToggleInventory()
     {
         StartCoroutine(InventoryManager.instance.UpdateUI());
@@ -200,8 +214,8 @@ public class UIController : SingletonGeneric<UIController>
         inventoryTab.SetActive(!inventoryTab.activeSelf);
         ordersTab.SetActive(false);
         recipesTab.SetActive(false);
-        creaturesTab.SetActive(false);
-        mapTab.SetActive(false);
+        weaponsTab.SetActive(false);
+        shopTab.SetActive(false);
         currentUiPage = (int)UIPage.INVENTORY;
     }
 
@@ -213,8 +227,8 @@ public class UIController : SingletonGeneric<UIController>
         inventoryTab.SetActive(false);
         ordersTab.SetActive(!ordersTab.activeSelf);
         recipesTab.SetActive(false);
-        creaturesTab.SetActive(false);
-        mapTab.SetActive(false);
+        weaponsTab.SetActive(false);
+        shopTab.SetActive(false);
         currentUiPage = (int)UIPage.ORDERS;
     }
 
@@ -226,34 +240,34 @@ public class UIController : SingletonGeneric<UIController>
         inventoryTab.SetActive(false);
         ordersTab.SetActive(false);
         recipesTab.SetActive(!recipesTab.activeSelf);
-        creaturesTab.SetActive(false);
-        mapTab.SetActive(false);
+        weaponsTab.SetActive(false);
+        shopTab.SetActive(false);
         currentUiPage = (int)UIPage.RECIPES;
     }
 
     public void ToggleCreatures()
     {
-        mainHud.SetActive(creaturesTab.activeSelf);
-        Time.timeScale = creaturesTab.activeSelf ? 1f : 0f;
-        isMenuActive = !creaturesTab.activeSelf;
+        mainHud.SetActive(weaponsTab.activeSelf);
+        Time.timeScale = weaponsTab.activeSelf ? 1f : 0f;
+        isMenuActive = !weaponsTab.activeSelf;
         inventoryTab.SetActive(false);
         ordersTab.SetActive(false);
         recipesTab.SetActive(false);
-        creaturesTab.SetActive(!creaturesTab.activeSelf);
-        mapTab.SetActive(false);
+        weaponsTab.SetActive(!weaponsTab.activeSelf);
+        shopTab.SetActive(false);
         currentUiPage = (int)UIPage.CREATURES;
     }
 
     public void ToggleMap()
     {
-        mainHud.SetActive(mapTab.activeSelf);
-        Time.timeScale = mapTab.activeSelf ? 1f : 0f;
-        isMenuActive = !mapTab.activeSelf;
+        mainHud.SetActive(shopTab.activeSelf);
+        Time.timeScale = shopTab.activeSelf ? 1f : 0f;
+        isMenuActive = !shopTab.activeSelf;
         inventoryTab.SetActive(false);
         ordersTab.SetActive(false);
         recipesTab.SetActive(false);
-        creaturesTab.SetActive(false);
-        mapTab.SetActive(!mapTab.activeSelf);
+        weaponsTab.SetActive(false);
+        shopTab.SetActive(!shopTab.activeSelf);
         currentUiPage = (int)UIPage.MAP;
     }
 
@@ -265,20 +279,21 @@ public class UIController : SingletonGeneric<UIController>
         inventoryTab.SetActive(false);
         ordersTab.SetActive(false);
         recipesTab.SetActive(false);
-        creaturesTab.SetActive(false);
-        mapTab.SetActive(false);
+        weaponsTab.SetActive(false);
+        shopTab.SetActive(false);
     }
 
     public void OpenCampfireInterface()
     {
-        mainHud.SetActive(false);
-        isFireplaceActive = true;
+        mainHud.SetActive(true);
         Time.timeScale = 0f;
-        campfireMenu.SetActive(true);
-        cookingInterface.SetActive(true);
-        upgradesInterface.SetActive(false);
-        weaponsInterface.SetActive(false);
-        currentFireplaceUiPage = (int)FireplaceUIPage.COOKING;
+        isMenuActive = true;
+        inventoryTab.SetActive(false);
+        ordersTab.SetActive(false);
+        recipesTab.SetActive(true);
+        weaponsTab.SetActive(false);
+        shopTab.SetActive(false);
+        currentUiPage = (int)UIPage.RECIPES;
     }
 
     public void OpenUpgradesInterface()
@@ -314,11 +329,12 @@ public class UIController : SingletonGeneric<UIController>
     {
         mainHud.SetActive(true);
         Time.timeScale = 1f;
-        isFireplaceActive = false;
-        campfireMenu.SetActive(false);
-        cookingInterface.SetActive(false);
-        upgradesInterface.SetActive(false);
-        weaponsInterface.SetActive(false);
+        isMenuActive = false;
+        inventoryTab.SetActive(false);
+        ordersTab.SetActive(false);
+        recipesTab.SetActive(false);
+        weaponsTab.SetActive(false);
+        shopTab.SetActive(false);
     }
 
     // Remembers the current player interactable for interaction
@@ -541,6 +557,21 @@ public class UIController : SingletonGeneric<UIController>
             case (int)UIPage.MAP:
                 ToggleMap();
                 break;
+        }
+    }
+
+    // Used to switch between campfire and non-campfire menu
+    private IEnumerator ActivateCampfireInterface(bool isCampfire)
+    {
+        foreach (GameObject obj in hideAtCampfire)
+        {
+            obj.SetActive(!isCampfire);
+            yield return null;
+        }
+        foreach (GameObject obj in showAtCampfire)
+        {
+            obj.SetActive(isCampfire);
+            yield return null;
         }
     }
 }
