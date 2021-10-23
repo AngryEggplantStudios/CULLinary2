@@ -50,7 +50,7 @@ public class PlayerConsume : MonoBehaviour
     }
     private void Update()
     {
-        if (!UIController.instance.isMenuActive && !UIController.instance.isFireplaceActive && !UIController.instance.isPaused)
+        if (!UIController.instance.isMenuActive && !UIController.instance.isPaused)
         {
             if (Input.GetKeyDown(consumableOneKeyCode) && PlayerManager.instance.healthPill > 0)
             {

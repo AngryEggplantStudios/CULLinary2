@@ -36,7 +36,7 @@ public class CookingStation : PlayerInteractable
     public override void OnPlayerInteract()
     {
         // Open Cooking Menu
-        if (!UIController.instance.isFireplaceActive)
+        if (!UIController.instance.isMenuActive)
         {
             UIController.instance.OpenCampfireInterface();
         }
