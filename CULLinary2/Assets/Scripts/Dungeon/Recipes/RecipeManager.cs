@@ -67,7 +67,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             FilterReadyToCookInstead,
             ResetAllRecipesInUI
         };
-        
+
         filterButtonText.text = filterButtonDisplayedTexts[currentFilterState];
     }
 
@@ -126,11 +126,15 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
     public void ActivateCooking()
     {
         isCooking = true;
+        StopAllCoroutines();
+        StartCoroutine(UpdateUI());
     }
 
     public void DeactivateCooking()
     {
         isCooking = false;
+        StopAllCoroutines();
+        StartCoroutine(UpdateUI());
     }
 
     public bool IsCookingActivated()
@@ -297,7 +301,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             Recipe r = innerUnlockedRecipesList[i];
             List<(int, int)> ingIds = r.GetIngredientIds();
             List<(int, int, int)> invReqCount = new List<(int, int, int)>();
-            bool areItemsInInventory =
+            bool areIngresInInv =
                 InventoryManager.instance.CheckIfItemsExist(ingIds, out invReqCount);
             int numberOfOrders = OrdersManager.instance.GetNumberOfOrders(r.recipeId);
             CheckIfRecipeHasCookedDish(r);
@@ -309,7 +313,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
                                                  Quaternion.identity,
                                                  recipesContainer.transform) as GameObject;
             RecipeUISlot recipeDetails = recipeEntry.GetComponent<RecipeUISlot>();
-            recipeDetails.AddRecipe(r, areItemsInInventory, invReqCount, numberOfOrders, numberInInventory, i);
+            recipeDetails.AddRecipe(r, areIngresInInv, invReqCount, numberOfOrders, numberInInventory, i);
             recipeDetails.SetInfoDisplay(infoDisplay);
             yield return null;
         }
