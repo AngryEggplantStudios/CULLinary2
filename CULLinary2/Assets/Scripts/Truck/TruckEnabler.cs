@@ -12,6 +12,8 @@ public class TruckEnabler : MonoBehaviour
         if (!hasEnabled)
         {
             truck.GetComponent<CarController>().enabled = true;
+            truck.GetComponent<CarController>().AddOnCollisionAction(decel =>
+                Debug.Log("Ouch! " + decel));
             hasEnabled = true;
         }
     }

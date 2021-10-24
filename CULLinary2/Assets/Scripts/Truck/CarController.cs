@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CarController : MonoBehaviour
 {
+    public delegate void OnCollisionDelegate(float collisionDeceleration);
+
     [Header("Car Constants")]
     [SerializeField] private float[] gearMinAccelForces;
     [SerializeField] private float[] gearMaxAccelForces;
@@ -19,6 +22,12 @@ public class CarController : MonoBehaviour
     // Original height is the centre of the BoxCollider - around 2.2
     [SerializeField] private float centreOfMassHeight = 0.0f;
     [SerializeField] private int numberOfGears = 4;
+    // If the car decelerates by more than this amount,
+    // it counts as a collision
+    // 
+    // 1500 is about a reduction in 30 units of velocity
+    // in one FixedUpdate (using fixed time scale 0.02)
+    [SerializeField] private float accelThreshholdForCollision = 1500.0f;
 
 
     [Header("Wheel Colliders")]
@@ -72,9 +81,14 @@ public class CarController : MonoBehaviour
     // For switching between brake and reverse (isMoving)
     private float stoppingEpsilon = 0.15f;
 
+    // For detecting collisions
+    private float previousVelocity = 0.0f;
+
     // For realistic acceleration
     private List<float> gearH;
     private List<float> gearM;
+
+    private OnCollisionDelegate OnCollision;
 
     void Start()
     {
@@ -87,7 +101,15 @@ public class CarController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isSwitchingGears && Time.fixedDeltaTime + gearTimeCounter > gearSwitchingTime)
+        float currentVelocity = rigidBody.velocity.magnitude;
+        float accelDiff = (previousVelocity - currentVelocity) / Time.deltaTime;
+        if (accelDiff > accelThreshholdForCollision)
+        {
+            OnCollision(accelDiff);
+        }
+        previousVelocity = currentVelocity;
+
+        if (isSwitchingGears && Time.deltaTime + gearTimeCounter > gearSwitchingTime)
         {
             isSwitchingGears = false;
             gearSwitchingTime = 0.0f;
@@ -103,7 +125,7 @@ public class CarController : MonoBehaviour
         }
         else if (isSwitchingGears)
         {
-            gearTimeCounter += Time.fixedDeltaTime;
+            gearTimeCounter += Time.deltaTime;
         }
         else
         {
@@ -184,6 +206,11 @@ public class CarController : MonoBehaviour
         {
             asrc.Stop();
         }
+    }
+
+    public void AddOnCollisionAction(OnCollisionDelegate ocd)
+    {
+        OnCollision += ocd;
     }
 
     // Checks if the car is moving, relies on stoppingEpsilon

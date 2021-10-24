@@ -91,8 +91,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     {
         innerOrdersList.Add(order);
         isCacheValid = false;
-        StopCoroutine(UpdateUI());
-        StartCoroutine(UpdateUI());
+        ForceUIUpdate();
     }
 
     public IEnumerator ToggleDoubleEarnings(float duration)
@@ -183,7 +182,13 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         moneyNotif.transform.localPosition = Vector3.zero;
     }
 
-    public IEnumerator UpdateUI()
+    public void ForceUIUpdate()
+    {
+        StopAllCoroutines();
+        StartCoroutine(UpdateUI());
+    }
+
+    private IEnumerator UpdateUI()
     {
         foreach (Transform child in ordersContainer.transform)
         {

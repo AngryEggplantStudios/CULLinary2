@@ -201,7 +201,7 @@ public class UIController : SingletonGeneric<UIController>
 
     public void ToggleInventory()
     {
-        StartCoroutine(InventoryManager.instance.UpdateUI());
+        InventoryManager.instance.ForceUIUpdate();
         mainHud.SetActive(inventoryTab.activeSelf);
         Time.timeScale = inventoryTab.activeSelf ? 1f : 0f;
         isMenuActive = !inventoryTab.activeSelf;
@@ -340,18 +340,15 @@ public class UIController : SingletonGeneric<UIController>
         // Stop the coroutines that are currently running
         if (InventoryManager.instance != null)
         {
-            InventoryManager.instance.StopAllCoroutines();
-            InventoryManager.instance.StartCoroutine(InventoryManager.instance.UpdateUI());
+            InventoryManager.instance.ForceUIUpdate();
         }
         if (RecipeManager.instance != null)
         {
-            RecipeManager.instance.StopAllCoroutines();
-            RecipeManager.instance.StartCoroutine(RecipeManager.instance.UpdateUI());
+            RecipeManager.instance.ForceUIUpdate();
         }
         if (OrdersManager.instance != null)
         {
-            OrdersManager.instance.StopAllCoroutines();
-            OrdersManager.instance.StartCoroutine(OrdersManager.instance.UpdateUI());
+            OrdersManager.instance.ForceUIUpdate();
         }
     }
 

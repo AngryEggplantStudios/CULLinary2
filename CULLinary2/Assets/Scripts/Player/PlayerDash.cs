@@ -37,6 +37,11 @@ public class PlayerDash : PlayerAction
         isDashing = false;
     }
 
+    private void OnDisable()
+    {
+        isDashing = false;
+    }
+
     private void Dash(Vector3 direction)
     {
         if (isDashing || Time.timeScale == 0f)
