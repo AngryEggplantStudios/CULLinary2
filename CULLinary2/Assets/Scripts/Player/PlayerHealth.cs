@@ -180,7 +180,6 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
     // Rest for 1 hour (hard-coded)
     public void HandlePlayerRest()
     {
-        Debug.Log("is clown active " + isClownActive);
         if (isCloseToCampfire && !isClownActive)
         {
             int restMinutes = 60;
@@ -219,7 +218,6 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
     private void Die()
     {
         animator.SetTrigger("isDead");
-        Debug.Log("Die called");
         UIController.instance.ShowDeathMenu();
     }
 
@@ -246,7 +244,6 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
 
     public void DestroyDamageCounter(GameObject damageNum)
 	{
-        Debug.Log("REmoved from List");
         if (playerDamagedNumbers.Contains(damageNum))
 		{
             playerDamagedNumbers.Remove(damageNum);
