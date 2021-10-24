@@ -221,6 +221,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         // reset player health and teleport player to origin for now
         SpecialEventManager.instance.ClearCurrentEvents();
         player.GetComponent<PlayerHealth>().RestoreToFull();
+        player.GetComponent<PlayerHealth>().DestroyAllDamageCounter();
         player.GetComponent<PlayerStamina>().RestoreToFull();
         BuffManager.instance.ClearBuffManager();
         PlayerSpawnManager.instance.SpawnPlayer();
