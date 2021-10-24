@@ -39,6 +39,8 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
     private bool deathIsCalled = false;
     private bool isInvincibleByBuff = false;
     private bool isInvincibleByDash = false;
+    private bool isClownActive = false;
+    private List<GameObject> playerDamagedNumbers = new List<GameObject>();
 
     public override void Awake()
     {
@@ -178,7 +180,8 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
     // Rest for 1 hour (hard-coded)
     public void HandlePlayerRest()
     {
-        if (isCloseToCampfire)
+        Debug.Log("is clown active " + isClownActive);
+        if (isCloseToCampfire && !isClownActive)
         {
             int restMinutes = 60;
             GameTimer.instance.SkipTime(restMinutes, () =>
@@ -190,7 +193,7 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         }
         else
         {
-            Debug.Log("PlayerHealth.cs: Trying to rest when not close to campfire!");
+            Debug.Log("PlayerHealth.cs: Trying to rest when not close to campfire! Or clown is active.");
         }
     }
 
@@ -238,6 +241,23 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         damageCounter.transform.GetComponentInChildren<Text>().text = damageText.ToString();
         damageCounter.transform.SetParent(canvasDisplay.transform);
         damageCounter.transform.position = cam.WorldToScreenPoint(transform.position);
+        playerDamagedNumbers.Add(damageCounter);
+    }
+
+    public void DestroyDamageCounter(GameObject damageNum)
+	{
+        Debug.Log("REmoved from List");
+        if (playerDamagedNumbers.Contains(damageNum))
+		{
+            playerDamagedNumbers.Remove(damageNum);
+        }
+    }
+    public void DestroyAllDamageCounter()
+    {
+        foreach (GameObject damageCounter in playerDamagedNumbers)
+		{
+            Destroy(damageCounter);
+		}
     }
 
     private void SpawnDrowningAlert()
@@ -288,6 +308,10 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         isInvincibleByBuff = false;
     }
 
+    public void SetIsClownActive(bool isActive)
+	{
+        isClownActive = isActive;
+	}
 }
 
 /*
