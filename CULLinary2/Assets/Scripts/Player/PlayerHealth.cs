@@ -94,6 +94,17 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         }
     }
 
+    private void OnDisable()
+    {
+        isInvincibleByDash = false;
+        isInvincible = false;
+        // Reset flash
+        for (var k = 0; k < rend.materials.Length; k++)
+        {
+            rend.materials[k].color = originalColors[k];
+        }
+    }
+
     public bool IncreaseHealth(float health)
     {
         // health = health < 0 ? 0 : Mathf.CeilToInt(health);

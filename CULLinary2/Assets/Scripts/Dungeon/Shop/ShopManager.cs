@@ -122,8 +122,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
 
         // Update all UIs
         PlayerManager.instance.currentMoney -= itemPrice;
-        InventoryManager.instance.StopAllCoroutines();
-        InventoryManager.instance.StartCoroutine(InventoryManager.instance.UpdateUI());
+        InventoryManager.instance.ForceUIUpdate();
         UpdateShop();
         UIController.instance.UpdateFixedHUD();
         itemPanel.SetActive(false);
