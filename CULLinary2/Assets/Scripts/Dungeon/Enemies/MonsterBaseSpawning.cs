@@ -16,7 +16,7 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
         {MonsterName.Potato, 0},
         {MonsterName.Eggplant, 0},
         {MonsterName.Bread, 0},
-        {MonsterName.Tomato, 0}, // refactor to get from MonsterName values
+        {MonsterName.Tomato, 0}, // refactor to get from monstersToSpawn
     };
 
     // Start is called before the first frame update
@@ -34,7 +34,6 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
 
     private void SpawnBaseMonsters()
     {
-        Debug.Log("start spawning base monsters");
         foreach (GameObject monster in monstersToSpawn)
         {
             MonsterScript monsterScript = monster.GetComponent<MonsterScript>();
@@ -47,6 +46,7 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
             if (!EcosystemManager.GetPopulation(name).IsEnabled())
             {
                 // Don't spawn base monsters if population is disabled
+                // Debug.Log(name + " is disabled, not spawning base monsters");
                 continue;
             }
 
@@ -94,7 +94,9 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
                 }
             }
 
-            Debug.Log("base spawning spawned " + (numCurrentlyAlive - numOfAliveMonsters[name]) + " " + name);
+            int numSpawned = numCurrentlyAlive - numOfAliveMonsters[name];
+            if (numSpawned > 0) { Debug.Log("base spawning spawned " + numSpawned + " " + name); }
+
             numOfAliveMonsters[name] = numCurrentlyAlive;
         }
     }

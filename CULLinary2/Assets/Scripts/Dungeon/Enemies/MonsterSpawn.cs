@@ -16,9 +16,9 @@ public class MonsterSpawn : MonoBehaviour
     [Tooltip("Random displacement of enemy spawn in X/Z axes")]
     [SerializeField] private float spawningRadius;
 
-    private int minEnemy;
-    private int maxEnemy;
-    private int localSpawnCap; //It will not spawn more than this amount in total
+    private int minEnemy = 0;
+    private int maxEnemy = 0;
+    private int localSpawnCap = 0; //It will not spawn more than this amount in total
     private int spawnAmount = 0;
 
     // Variables for spawning on a loop
@@ -34,7 +34,8 @@ public class MonsterSpawn : MonoBehaviour
 
     private void Start()
     {
-        GameTimer.OnStartNewDay += SpawnEnemies;
+        // GameTimer.OnStartNewDay += SpawnEnemies;
+        DungeonSpawnManager.OnSpawnEnemies += SpawnEnemies;
 
         // this.state = SpawnState.Inactive;
         // if (toLoop)
@@ -158,6 +159,7 @@ public class MonsterSpawn : MonoBehaviour
 
     public void OnDestroy()
     {
-        GameTimer.OnStartNewDay -= SpawnEnemies;
+        DungeonSpawnManager.OnSpawnEnemies -= SpawnEnemies;
+
     }
 }
