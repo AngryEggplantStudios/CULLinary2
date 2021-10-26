@@ -6,6 +6,7 @@ public class ParticleDamageScript : MonoBehaviour
 {
 
     [SerializeField] private float attackDamage = 50f;
+    private List<Monster> monsterList = new List<Monster>();
 
     private void OnParticleCollision(GameObject other)
     {
@@ -14,7 +15,12 @@ public class ParticleDamageScript : MonoBehaviour
         {
             return;
         }
-        target.HandleHit(CalculateDamage());
+        if (!monsterList.Contains(target))
+        {
+            target.HandleHit(CalculateDamage());
+        }
+        monsterList.Add(target);
+
     }
 
 

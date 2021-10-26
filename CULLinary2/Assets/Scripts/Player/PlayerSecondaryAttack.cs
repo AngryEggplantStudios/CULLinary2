@@ -52,23 +52,11 @@ public class PlayerSecondaryAttack : PlayerAction
 
         playerStamina.ReduceStamina(staminaCost);
         animator.SetBool("isPowerUp", true);
+        animator.SetTrigger("testSkillTrigger");
         skillObject = Instantiate(skillPrefab, holderObjectReference.transform);
         skillObject.transform.localPosition = new Vector3(0, 0, 0);
-        Destroy(skillObject, 1.5f);
+        //Destroy(skillObject, 1.5f);
     }
-
-    //For testing
-    /*
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha9))
-        {
-            currentAttackSelected++;
-            currentAttackSelected = currentAttackSelected % 2;
-            ChangeSecondaryAttack(currentAttackSelected + 3);
-        }
-    }
-    */
 
     public void ChangeSecondaryAttack(int id)
     {
