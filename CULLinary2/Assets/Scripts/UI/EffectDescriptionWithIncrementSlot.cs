@@ -13,7 +13,7 @@ public class EffectDescriptionWithIncrementSlot : MonoBehaviour
         effectText.text = effect;
         if (increment > 0)
         {
-            incrementText.text = "(+" + increment + ")";
+            incrementText.text = "(+" + string.Format("{0:#.00}", increment) + ")";
         }
         else if (increment == 0)
         {
@@ -21,7 +21,7 @@ public class EffectDescriptionWithIncrementSlot : MonoBehaviour
         }
         else
         {
-            incrementText.text = "(-" + increment + ")";
+            incrementText.text = "(-" + string.Format("{0:#.00}", increment) + ")";
         }
     }
 

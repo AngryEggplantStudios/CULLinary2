@@ -51,6 +51,7 @@ public class DamageScript : MonoBehaviour
 
     private int CalculateDamage()
     {
+        InstantiateDamageScript();
         int totalCritChance = PlayerManager.instance != null ? PlayerManager.instance.criticalBonus + PlayerManager.instance.criticalChance : 0;
         bool isCritical = totalCritChance > 0 ? Random.Range(0, 100) < totalCritChance : false;
         float baseDamage = PlayerManager.instance != null ? PlayerManager.instance.meleeDamage : 10;

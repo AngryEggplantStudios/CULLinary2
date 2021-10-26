@@ -203,23 +203,31 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
             Destroy(effect.gameObject);
         }
 
+        currentLevelText.text = "Current: Lvl " + currentLevel;
+        nextLevelText.text = "Next: Lvl " + (currentLevel + 1);
+
         if (weaponSkillItem.GetType() == typeof(WeaponItem))
         {
             WeaponItem weaponItem = (WeaponItem)weaponSkillItem;
-            GameObject damageEffectCurrent = Instantiate(currentLevelEffectPrefab);
-            damageEffectCurrent.GetComponent<EffectDescriptionSlot>().SetupSlot("Damage: " + weaponItem.baseDamage[currentLevel] + "DMG");
-            GameObject attackSpeedCurrent = Instantiate(currentLevelEffectPrefab);
-            attackSpeedCurrent.GetComponent<EffectDescriptionSlot>().SetupSlot("Attack Speed: " + weaponItem.attackSpeed[currentLevel]);
-            damageEffectCurrent.transform.SetParent(currentLevelEffectList.transform);
-            attackSpeedCurrent.transform.SetParent(currentLevelEffectList.transform);
+            if (currentLevel > 0)
+            {
+                GameObject damageEffectCurrent = Instantiate(currentLevelEffectPrefab);
+                damageEffectCurrent.GetComponent<EffectDescriptionSlot>().SetupSlot("Damage: " + weaponItem.baseDamage[currentLevel] + "DMG");
+                GameObject attackSpeedCurrent = Instantiate(currentLevelEffectPrefab);
+                attackSpeedCurrent.GetComponent<EffectDescriptionSlot>().SetupSlot("Attack Speed: " + weaponItem.attackSpeed[currentLevel]);
+                damageEffectCurrent.transform.SetParent(currentLevelEffectList.transform);
+                attackSpeedCurrent.transform.SetParent(currentLevelEffectList.transform);
+            }
 
             if (currentLevel + 1 > weaponItem.maxLevel)
             {
                 itemPrice.text = "$ N/A";
                 nextLevelText.text = "Max level reached";
+                upgradeButton.interactable = false;
             }
             else
             {
+                upgradeButton.interactable = true;
                 GameObject damageEffectNext = Instantiate(nextLevelEffectPrefab);
                 damageEffectNext.GetComponent<EffectDescriptionWithIncrementSlot>().SetupSlot(
                     "Damage: " + weaponItem.baseDamage[currentLevel + 1] + "DMG",
@@ -249,9 +257,11 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
             {
                 itemPrice.text = "$ N/A";
                 nextLevelText.text = "Max level reached";
+                upgradeButton.interactable = false;
             }
             else
             {
+                upgradeButton.interactable = true;
                 GameObject damageEffectNext = Instantiate(nextLevelEffectPrefab);
                 damageEffectNext.GetComponent<EffectDescriptionWithIncrementSlot>().SetupSlot(
                     "Damage: " + skillItem.attackDamage[currentLevel + 1] + "DMG",
