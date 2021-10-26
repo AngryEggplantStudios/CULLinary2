@@ -24,10 +24,10 @@ public class GameTimer : SingletonGeneric<GameTimer>
     [Header("Daily News")]
     [SerializeField] private GameObject newspaper;
     [SerializeField] private GameObject hudToHide;
-    
+
     private static float gameTime;
     private static float timeScale;
-    private static int dayNum = 1; // TODO: to get from saved data
+    private static int dayNum = 1;
     private int hourNum;
     private int minuteNum;
     private string timeAsString;
@@ -105,6 +105,14 @@ public class GameTimer : SingletonGeneric<GameTimer>
         hudToHide.SetActive(true);
         UIController.instance.isNewspaperOpen = false;
         Time.timeScale = 1;
+        if (GameTimer.GetDayNumber() >= 1 && !EcosystemManager.GetIsEnabled(MonsterName.Potato))
+        {
+            EcosystemManager.EnablePopulation(MonsterName.Potato);
+        }
+        if (GameTimer.GetDayNumber() >= 3 && !EcosystemManager.GetIsEnabled(MonsterName.Corn))
+        {
+            EcosystemManager.EnablePopulation(MonsterName.Corn);
+        }
         OnStartNewDay?.Invoke();
     }
 
@@ -132,7 +140,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
             NewsIssue currentNews = showRandomNews
                 ? DatabaseLoader.GetRandomNewsIssue()
                 : DatabaseLoader.GetOrderedNewsIssueById(currentIssueNumber);
-            
+
             if (currentNews == null)
             {
                 Debug.Log("No newspaper for " + currentIssueNumber + " found");

@@ -39,7 +39,7 @@ public class Population
         this.numDaysLeftToIncreaseLevel = numDaysBetweenLevelIncrease;
         this.numDaysToIncreaseFromExtinct = numDaysBetweenLevelIncrease + 1;
         SetLevel(level);
-        Debug.Log("current number for " + name + " : " + currentNumber);
+        // Debug.Log("current number for " + name + " : " + currentNumber);
     }
 
     public MonsterName GetName()
@@ -60,7 +60,7 @@ public class Population
     public void SetEnabled(bool value)
     {
         isEnabled = value;
-        Debug.Log("is population enabled for " + name + "?: " + isEnabled);
+        Debug.Log("set population isEnabled for " + name + " to " + isEnabled);
     }
 
     private void SetCurrentNumberBasedOnLevel()

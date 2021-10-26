@@ -7,7 +7,7 @@ public class EcosystemManager : SingletonGeneric<EcosystemManager>
     // to share among all the populations
     [SerializeField] private int numDaysBetweenLevelIncrease = 1; // num days it takes to increase pop level naturally (for endangered, vulnerable and normal (50% chance))
     [SerializeField] private int numDaysToIncreaseFromExtinct = 2; // num days it takes to increase pop level naturally from extinct
-    [Header("Enable populations for testing")]
+    [Header("Enable populations for testing?")]
     [SerializeField] private bool enableAllPopAtStart = true;
     private static List<Population> populations = new List<Population>();
 
@@ -19,7 +19,7 @@ public class EcosystemManager : SingletonGeneric<EcosystemManager>
         List<MonsterData> monsterList = DatabaseLoader.GetAllMonsters();
         foreach (MonsterData monsterData in monsterList)
         {
-            Debug.Log("instantiating ecosystem with " + monsterData.monsterName);
+            // Debug.Log("instantiating ecosystem with " + monsterData.monsterName);
             populations.Add(new Population(monsterData.monsterName, monsterData.lowerBound, monsterData.upperBound, PlayerManager.instance.GetPopulationLevelByMonsterName(monsterData.monsterName)));
         }
 
@@ -28,7 +28,7 @@ public class EcosystemManager : SingletonGeneric<EcosystemManager>
             pop.SetNumDaysBetweenLevelIncrease(numDaysBetweenLevelIncrease);
             pop.SetNumDaysToIncreaseFromExtinct(numDaysToIncreaseFromExtinct);
             pop.SetEnabled(enableAllPopAtStart);
-            Debug.Log(string.Format("instantiate ecosystem: {0} population level: {1} ({2})", pop.GetName(), pop.GetLevel(), pop.GetCurrentNumber()));
+            // Debug.Log(string.Format("instantiate ecosystem: {0} population level: {1} ({2})", pop.GetName(), pop.GetLevel(), pop.GetCurrentNumber()));
         }
 
         GameTimer.OnStartNewDay += CheckNaturalPopulationIncrease;
@@ -66,7 +66,7 @@ public class EcosystemManager : SingletonGeneric<EcosystemManager>
                 }
             }
 
-            DungeonSpawnManager.UpdateSpawners();
+            // DungeonSpawnManager.UpdateSpawners();
         }
     }
 
@@ -130,6 +130,12 @@ public class EcosystemManager : SingletonGeneric<EcosystemManager>
         // Enable population to let its population increase naturally and monsters to spawn
         Population pop = GetPopulation(name);
         pop.SetEnabled(true);
+    }
+
+    public static bool GetIsEnabled(MonsterName name)
+    {
+        Population pop = GetPopulation(name);
+        return pop.IsEnabled();
     }
 
     public static void SetExtinct(MonsterName name)

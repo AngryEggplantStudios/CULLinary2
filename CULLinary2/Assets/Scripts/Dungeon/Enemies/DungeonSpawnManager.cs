@@ -11,7 +11,8 @@ public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
         // Get spawners and update spawning caps and spawning numbers
         GameObject[] spawnObjectsArray = GameObject.FindGameObjectsWithTag("MonsterSpawn");
         monsterSpawners = new List<GameObject>(spawnObjectsArray);
-        UpdateSpawners();
+
+        GameTimer.OnStartNewDay += UpdateSpawners;
         yield return null;
     }
 
@@ -30,14 +31,21 @@ public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
 
     private static void UpdateLocalSpawnCaps()
     {
+        // foreach (MonsterName name in MonsterName.GetValues(typeof(MonsterName)))
+        // {
+        //     Debug.Log("dude " + name);
+        // }
         foreach (MonsterName name in MonsterName.GetValues(typeof(MonsterName)))
         {
+            Debug.Log("running update local spawn caps for " + MonsterName.GetValues(typeof(MonsterName)));
             Population pop = EcosystemManager.GetPopulation(name);
             if (!pop.IsEnabled()) // Don't have to update population if is disabled
             {
+                Debug.Log("update local spawn caps: " + name + " is disabled");
                 return;
             }
 
+            Debug.Log(name + " is enabled: updating local spawn caps");
             List<GameObject> spawners = GetSpawnersByName(name);
             if (spawners.Count == 0)
             {
@@ -72,12 +80,14 @@ public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
     {
         foreach (MonsterName name in MonsterName.GetValues(typeof(MonsterName)))
         {
+            Debug.Log("running update spawn amount for " + name);
             Population pop = EcosystemManager.GetPopulation(name);
             if (!pop.IsEnabled()) // Don't have to update population if is disabled
             {
                 continue;
             }
 
+            Debug.Log(name + "is enabled: updating spawn amount");
             List<GameObject> spawners = GetSpawnersByName(name);
             foreach (GameObject spawner in spawners)
             {
@@ -172,6 +182,11 @@ public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
     {
         MonsterSpawn monsterSpawn = monsterSpawnGO.GetComponent<MonsterSpawn>();
         return monsterSpawn.GetMonsterName();
+    }
+
+    void OnDestroy()
+    {
+        GameTimer.OnStartNewDay -= UpdateSpawners;
     }
 
 }
