@@ -35,8 +35,8 @@ public class PlayerData
         inventory = "";
         maxHealth = 200f;
         currentHealth = 200f;
-        maxStamina = 100f;
-        currentStamina = 100f;
+        maxStamina = 200f;
+        currentStamina = 200f;
         meleeDamage = 10f;
         currentMoney = 0;
         criticalChance = 0;

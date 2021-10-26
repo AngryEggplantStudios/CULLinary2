@@ -7,8 +7,8 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     [Header("Health & Stamina")]
     public float currentHealth = 200f;
     public float maxHealth = 200f;
-    public float currentStamina = 100f;
-    public float maxStamina = 100f;
+    public float currentStamina = 200f;
+    public float maxStamina = 200f;
     [Header("Combat / Stats / Buffs")]
     public float meleeDamage = 10f;
     public int criticalChance = 0;
