@@ -10,6 +10,10 @@ public class PlayerSecondaryAttack : PlayerAction
     [SerializeField] private GameObject skillPrefab;
     [SerializeField] private GameObject defaultSkillPrefab;
     [SerializeField] private GameObject skillObject;
+    [SerializeField] private GameObject playerBody;
+
+    [SerializeField] private Camera mainCamera;
+
     private int currentAttackSelected = 0;
     private PlayerStamina playerStamina;
     private float staminaCost = 100f;
@@ -34,6 +38,18 @@ public class PlayerSecondaryAttack : PlayerAction
             playerSkill.StopInvoking();
             return;
         }
+        RaycastHit hit;
+
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        bool hitGround = Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask("Ground"));
+        if (hitGround)
+        {
+            Vector3 rotateToFaceDirection = new Vector3(hit.point.x,
+                0.0f,
+                hit.point.z);
+            playerBody.transform.LookAt(rotateToFaceDirection);
+        }
+
         playerStamina.ReduceStamina(staminaCost);
         animator.SetBool("isPowerUp", true);
         skillObject = Instantiate(skillPrefab, holderObjectReference.transform);
