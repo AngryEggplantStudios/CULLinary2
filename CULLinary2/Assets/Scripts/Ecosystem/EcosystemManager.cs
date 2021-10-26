@@ -7,9 +7,13 @@ public class EcosystemManager : SingletonGeneric<EcosystemManager>
     // to share among all the populations
     [SerializeField] private int numDaysBetweenLevelIncrease = 1; // num days it takes to increase pop level naturally (for endangered, vulnerable and normal (50% chance))
     [SerializeField] private int numDaysToIncreaseFromExtinct = 2; // num days it takes to increase pop level naturally from extinct
-    [Header("Enable populations for testing?")]
+    [Header("Enable populations for testing? (excluding Potato and Bread)")]
     [SerializeField] private bool enableAllPopAtStart = true;
     private static List<Population> populations = new List<Population>();
+    private List<MonsterName> popEnabledByDefault = new List<MonsterName>() { // overrides enableAllPopAtStart
+        MonsterName.Potato,
+        MonsterName.Bread
+    };
 
     // Statistics for number of monsters killed
     private static int numOfMonstersKilledToday = 0;
@@ -28,6 +32,10 @@ public class EcosystemManager : SingletonGeneric<EcosystemManager>
             pop.SetNumDaysBetweenLevelIncrease(numDaysBetweenLevelIncrease);
             pop.SetNumDaysToIncreaseFromExtinct(numDaysToIncreaseFromExtinct);
             pop.SetEnabled(enableAllPopAtStart);
+            if (popEnabledByDefault.Contains(pop.GetName()))
+            {
+                pop.SetEnabled(true);
+            }
             // Debug.Log(string.Format("instantiate ecosystem: {0} population level: {1} ({2})", pop.GetName(), pop.GetLevel(), pop.GetCurrentNumber()));
         }
 
@@ -62,26 +70,28 @@ public class EcosystemManager : SingletonGeneric<EcosystemManager>
 
     private void CheckNaturalPopulationIncrease()
     {
-        if (GameTimer.GetDayNumber() > 1)
-        {
-            // don't increase if it's the first day
-            foreach (Population pop in populations)
-            {
-                if (!pop.IsEnabled()) // Don't increase population level if is disabled
-                {
-                    Debug.Log(pop.GetName() + " is not enabled");
-                    continue;
-                }
-                pop.CheckNaturalPopulationIncrease();
-                Debug.Log(string.Format("check pop increase: {0} population level: {1} ({2})", pop.GetName(), pop.GetLevel(), pop.GetCurrentNumber()));
-                if (pop.IsOverpopulated() && !pop.HasSpawnedMiniboss())
-                {
-                    SpawnMiniBoss(pop);
-                }
-            }
+        // check if population increases only starting from the day after it was enabled
+        // if (GameTimer.GetDayNumber() > 1)
+        // {
+        // don't increase if it's the first day
 
-            // DungeonSpawnManager.UpdateSpawners();
+        foreach (Population pop in populations)
+        {
+            // don't need to check if is disabled or if is enabled but not after the day enabled yet
+            if (!pop.IsEnabled() || (pop.IsEnabled() && GameTimer.GetDayNumber() <= pop.GetDayEnabled()))
+            {
+                Debug.Log("not checking pop increase for " + pop.GetName());
+                continue;
+            }
+            pop.CheckNaturalPopulationIncrease();
+            Debug.Log(string.Format("check pop increase: {0} population level: {1} ({2})", pop.GetName(), pop.GetLevel(), pop.GetCurrentNumber()));
+            if (pop.IsOverpopulated() && !pop.HasSpawnedMiniboss())
+            {
+                SpawnMiniBoss(pop);
+            }
         }
+
+        // }
     }
 
     private void SpawnMiniBoss(Population pop)

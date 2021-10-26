@@ -37,7 +37,6 @@ public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
     {
         foreach (MonsterName name in MonsterName.GetValues(typeof(MonsterName)))
         {
-            Debug.Log("running update local spawn caps for " + name);
             Population pop = EcosystemManager.GetPopulation(name);
             if (!pop.IsEnabled()) // Don't have to update population if is disabled
             {
@@ -81,7 +80,6 @@ public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
     {
         foreach (MonsterName name in MonsterName.GetValues(typeof(MonsterName)))
         {
-            Debug.Log("running update spawn amount for " + name);
             Population pop = EcosystemManager.GetPopulation(name);
             if (!pop.IsEnabled()) // Don't have to update population if is disabled
             {
