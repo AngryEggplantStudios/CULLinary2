@@ -10,20 +10,28 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
     [SerializeField] private GameObject primaryParentObject;
     [SerializeField] private GameObject secondaryParentObject;
     [SerializeField] private GameObject slotPrefab;
+    [SerializeField] private GameObject itemPanel;
+    [Header("Effect Description")]
     [SerializeField] private TMP_Text currentLevelText;
     [SerializeField] private TMP_Text nextLevelText;
-    [SerializeField] private TMP_Text currentLevelEffectText;
-    [SerializeField] private TMP_Text nextLevelEffectText;
-    [SerializeField] private TMP_Text nextLevelIncrementText;
+    [SerializeField] private GameObject currentLevelEffectPrefab;
+    [SerializeField] private GameObject nextLevelEffectPrefab;
+    [SerializeField] private GameObject currentLevelEffectList;
+    [SerializeField] private GameObject nextLevelEffectList;
     [SerializeField] private TMP_Text itemName;
     [SerializeField] private TMP_Text itemDescription;
     [SerializeField] private Image itemIcon;
     [SerializeField] private Button equipButton;
     [SerializeField] private TMP_Text equipText;
     [SerializeField] private Button upgradeButton;
+    [SerializeField] private TMP_Text upgradeText;
+    [SerializeField] private TMP_Text itemPrice;
+
+    [Header("Audio References")]
     [SerializeField] private AudioSource kaching;
     [SerializeField] private AudioSource equipSound;
-    [SerializeField] private GameObject itemPanel;
+    [Header("Player References")]
+
     [SerializeField] private PlayerSecondaryAttack playerSecondaryAttack;
     [SerializeField] private PlayerSlash playerSlash;
     [Header("Colors")]
@@ -86,7 +94,7 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
             playerSecondaryAttack.ChangeSecondaryAttack(weaponId);
         }
         UpdateShopDescription();
-        equipSound.Play();
+        kaching.Play();
     }
 
     public void HandlePurchase()
@@ -154,12 +162,19 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
             weaponId = secondarySlots[secondarySelectedSlotId].weaponSkillItem.weaponSkillId;
         }
         WeaponSkillItem weaponSkillItem = DatabaseLoader.GetWeaponSkillById(weaponId);
+        int currentLevel = PlayerManager.instance.weaponSkillArray[weaponSkillItem.weaponSkillId];
         itemName.text = weaponSkillItem.itemName;
-        itemDescription.text = weaponSkillItem.description[0];
+        itemDescription.text = weaponSkillItem.description[currentLevel];
         itemIcon.sprite = weaponSkillItem.icon;
+        itemPrice.text = "$" + weaponSkillItem.price[currentLevel];
         if (weaponId == PlayerManager.instance.currentWeaponHeld || weaponId == PlayerManager.instance.currentSecondaryHeld)
         {
             equipText.text = "Equipped";
+            equipButton.interactable = false;
+        }
+        else if (PlayerManager.instance.weaponSkillArray[weaponId] == 0)
+        {
+            equipText.text = "Not Owned";
             equipButton.interactable = false;
         }
         else
@@ -167,6 +182,92 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
             equipText.text = "Equip";
             equipButton.interactable = true;
         }
+
+        if (PlayerManager.instance.currentMoney < weaponSkillItem.price[currentLevel])
+        {
+            upgradeButton.interactable = false;
+            itemPrice.color = unableToBePurchasedColor;
+        }
+        else
+        {
+            upgradeButton.interactable = true;
+            itemPrice.color = ableToBePurchasedColor;
+        }
+
+        foreach (Transform effect in currentLevelEffectList.transform)
+        {
+            Destroy(effect.gameObject);
+        }
+        foreach (Transform effect in nextLevelEffectList.transform)
+        {
+            Destroy(effect.gameObject);
+        }
+
+        if (weaponSkillItem.GetType() == typeof(WeaponItem))
+        {
+            WeaponItem weaponItem = (WeaponItem)weaponSkillItem;
+            GameObject damageEffectCurrent = Instantiate(currentLevelEffectPrefab);
+            damageEffectCurrent.GetComponent<EffectDescriptionSlot>().SetupSlot("Damage: " + weaponItem.baseDamage[currentLevel] + "DMG");
+            GameObject attackSpeedCurrent = Instantiate(currentLevelEffectPrefab);
+            attackSpeedCurrent.GetComponent<EffectDescriptionSlot>().SetupSlot("Attack Speed: " + weaponItem.attackSpeed[currentLevel]);
+            damageEffectCurrent.transform.SetParent(currentLevelEffectList.transform);
+            attackSpeedCurrent.transform.SetParent(currentLevelEffectList.transform);
+
+            if (currentLevel + 1 > weaponItem.maxLevel)
+            {
+                itemPrice.text = "$ N/A";
+                nextLevelText.text = "Max level reached";
+            }
+            else
+            {
+                GameObject damageEffectNext = Instantiate(nextLevelEffectPrefab);
+                damageEffectNext.GetComponent<EffectDescriptionWithIncrementSlot>().SetupSlot(
+                    "Damage: " + weaponItem.baseDamage[currentLevel + 1] + "DMG",
+                    weaponItem.baseDamage[currentLevel + 1] - weaponItem.baseDamage[currentLevel]
+                );
+                GameObject attackSpeedNext = Instantiate(nextLevelEffectPrefab);
+                attackSpeedNext.GetComponent<EffectDescriptionWithIncrementSlot>().SetupSlot(
+                    "Attack Speed: " + weaponItem.attackSpeed[currentLevel],
+                    weaponItem.attackSpeed[currentLevel + 1] - weaponItem.attackSpeed[currentLevel]
+                );
+                damageEffectNext.transform.SetParent(nextLevelEffectList.transform);
+                attackSpeedNext.transform.SetParent(nextLevelEffectList.transform);
+            }
+
+        }
+        else if (weaponSkillItem.GetType() == typeof(SkillItem))
+        {
+            SkillItem skillItem = (SkillItem)weaponSkillItem;
+            GameObject damageEffectCurrent = Instantiate(currentLevelEffectPrefab);
+            damageEffectCurrent.GetComponent<EffectDescriptionSlot>().SetupSlot("Damage: " + skillItem.attackDamage[currentLevel] + "DMG");
+            GameObject staminaCostCurrent = Instantiate(currentLevelEffectPrefab);
+            staminaCostCurrent.GetComponent<EffectDescriptionSlot>().SetupSlot("Stamina Cost: " + skillItem.staminaCost[currentLevel]);
+            damageEffectCurrent.transform.SetParent(currentLevelEffectList.transform);
+            staminaCostCurrent.transform.SetParent(currentLevelEffectList.transform);
+
+            if (currentLevel + 1 > skillItem.maxLevel)
+            {
+                itemPrice.text = "$ N/A";
+                nextLevelText.text = "Max level reached";
+            }
+            else
+            {
+                GameObject damageEffectNext = Instantiate(nextLevelEffectPrefab);
+                damageEffectNext.GetComponent<EffectDescriptionWithIncrementSlot>().SetupSlot(
+                    "Damage: " + skillItem.attackDamage[currentLevel + 1] + "DMG",
+                    skillItem.attackDamage[currentLevel + 1] - skillItem.attackDamage[currentLevel]
+                );
+                GameObject staminaCostNext = Instantiate(nextLevelEffectPrefab);
+                staminaCostNext.GetComponent<EffectDescriptionWithIncrementSlot>().SetupSlot(
+                    "Stamina Cost: " + skillItem.staminaCost[currentLevel],
+                    skillItem.staminaCost[currentLevel + 1] - skillItem.staminaCost[currentLevel]
+                );
+                damageEffectNext.transform.SetParent(nextLevelEffectList.transform);
+                staminaCostNext.transform.SetParent(nextLevelEffectList.transform);
+            }
+
+        }
+
     }
 
     public void SetupShop()

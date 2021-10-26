@@ -10,11 +10,4 @@ public class SkillItem : WeaponSkillItem
     public int[] attackDamage;
     public GameObject skillPrefab;
 
-    public string GetLevelDescription(int level)
-    {
-        string damageDesc = "Damage: " + attackDamage[level] + "DMG";
-        string staminaCostDesc = "Stamina Cost: " + staminaCost[level];
-        return damageDesc + "\n" + staminaCostDesc;
-    }
-
 }
