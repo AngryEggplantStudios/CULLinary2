@@ -35,8 +35,8 @@ public class PlayerData
         inventory = "";
         maxHealth = 200f;
         currentHealth = 200f;
-        maxStamina = 100f;
-        currentStamina = 100f;
+        maxStamina = 200f;
+        currentStamina = 200f;
         meleeDamage = 10f;
         currentMoney = 0;
         criticalChance = 0;
@@ -45,9 +45,9 @@ public class PlayerData
         unlockedRecipes = new int[5] { 0, 4, 6, 10, 32 };
         upgradesArray = new int[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         currentDay = 1;
-        weaponSkillArray = new int[11] { 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 };
+        weaponSkillArray = new int[11] { 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 };
         currentWeaponHeld = 0;
-        currentSecondaryHeld = 3;
+        currentSecondaryHeld = 4;
         campfireRegenerationRate = 0.5f;
         healthPill = 0;
         staminaPill = 0;

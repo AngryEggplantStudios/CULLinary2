@@ -7,14 +7,14 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     [Header("Health & Stamina")]
     public float currentHealth = 200f;
     public float maxHealth = 200f;
-    public float currentStamina = 100f;
-    public float maxStamina = 100f;
+    public float currentStamina = 200f;
+    public float maxStamina = 200f;
     [Header("Combat / Stats / Buffs")]
     public float meleeDamage = 10f;
     public int criticalChance = 0;
     public int evasionChance = 0;
     public int currentWeaponHeld = 0;
-    public int currentSecondaryHeld = 3;
+    public int currentSecondaryHeld = 4;
     public bool isMeleeDamageDoubled = false;
     public int evasionBonus = 0;
     public int criticalBonus = 0;
@@ -23,7 +23,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     [Header("Upgrades")]
     public List<int> unlockedRecipesList = new List<int> { 0, 4, 6, 10, 32 };
     public int[] upgradesArray = new int[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    public int[] weaponSkillArray = new int[11] { 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 };
+    public int[] weaponSkillArray = new int[11] { 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 };
 
     [Header("Inventory")]
     public List<InventoryItem> itemList = new List<InventoryItem>();
