@@ -15,6 +15,10 @@ public class EffectDescriptionWithIncrementSlot : MonoBehaviour
         {
             incrementText.text = "(+" + increment + ")";
         }
+        else if (increment == 0)
+        {
+            incrementText.text = "";
+        }
         else
         {
             incrementText.text = "(-" + increment + ")";
