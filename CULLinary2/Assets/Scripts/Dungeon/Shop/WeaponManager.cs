@@ -22,6 +22,7 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
     [SerializeField] private TMP_Text equipText;
     [SerializeField] private Button upgradeButton;
     [SerializeField] private AudioSource kaching;
+    [SerializeField] private AudioSource equipSound;
     [SerializeField] private GameObject itemPanel;
     [SerializeField] private PlayerSecondaryAttack playerSecondaryAttack;
     [SerializeField] private PlayerSlash playerSlash;
@@ -85,12 +86,49 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
             playerSecondaryAttack.ChangeSecondaryAttack(weaponId);
         }
         UpdateShopDescription();
-        kaching.Play();
+        equipSound.Play();
     }
 
     public void HandlePurchase()
     {
+        WeaponSkillItem itemToBePurchased;
+        if (currentTab == 0 && primarySelectedSlotId != -1)
+        {
+            itemToBePurchased = primarySlots[primarySelectedSlotId].weaponSkillItem;
+        }
+        else if (currentTab == 1 && secondarySelectedSlotId != -1)
+        {
+            itemToBePurchased = secondarySlots[secondarySelectedSlotId].weaponSkillItem;
+        }
+        else
+        {
+            return;
+        }
 
+        int currentLevel = PlayerManager.instance.upgradesArray[itemToBePurchased.weaponSkillId];
+        int itemPrice = itemToBePurchased.price[currentLevel];
+
+        if (itemPrice > PlayerManager.instance.currentMoney)
+        {
+            return;
+        }
+
+        if (itemToBePurchased.GetType() == typeof(WeaponItem))
+        {
+            WeaponItem weaponItem = (WeaponItem)itemToBePurchased;
+            PlayerManager.instance.weaponSkillArray[weaponItem.weaponSkillId]++;
+        }
+        else if (itemToBePurchased.GetType() == typeof(SkillItem))
+        {
+            SkillItem skillItem = (SkillItem)itemToBePurchased;
+            PlayerManager.instance.weaponSkillArray[skillItem.weaponSkillId]++;
+        }
+
+        kaching.Play();
+        PlayerManager.instance.currentMoney -= itemPrice;
+        UpdateShopDescription();
+        InventoryManager.instance.ForceUIUpdate();
+        UIController.instance.UpdateFixedHUD();
     }
 
     public void HandleTabSwitch(int tab)
