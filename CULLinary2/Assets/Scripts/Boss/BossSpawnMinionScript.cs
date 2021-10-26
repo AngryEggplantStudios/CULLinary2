@@ -38,6 +38,9 @@ public class BossSpawnMinionScript : Monster
     [SerializeField] private AudioClip alertSound;
     [SerializeField] private AudioClip attackSound;
 
+    [Header("Fade out on Death")]
+    [SerializeField] private Material[] transparentMaterials;
+
     private float health;
     private Animator animator;
     private Camera cam;
@@ -321,5 +324,42 @@ public class BossSpawnMinionScript : Monster
             transform.rotation,
             Quaternion.Euler(Quaternion.LookRotation(target - transform.position).eulerAngles),
             Time.deltaTime * 3.0f);
+    }
+
+    private IEnumerator FadeOut(float duration)
+    {
+        float elapsed = 0;
+        Color clearWhite = new Color(1, 1, 1, 0);
+
+        if (rend.materials.Length == transparentMaterials.Length)
+        {
+            rend.materials = transparentMaterials;
+        }
+        else
+        {
+            Debug.LogWarning("Death fade out has the wrong number of transparent materials assigned");
+        }
+
+        while (elapsed < duration)
+        {
+            for (var i = 0; i < rend.materials.Length; i++)
+            {
+                rend.materials[i].color = Color.Lerp(originalColors[i], clearWhite, elapsed / duration);
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        for (var i = 0; i < rend.materials.Length; i++)
+        {
+            rend.materials[i].color = Color.clear;
+        }
+    }
+
+    public void destroyHpBarUi()
+    {
+        uiList.Remove(hpBar);
+        Destroy(hpBar);
     }
 }

@@ -12,10 +12,25 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
     public GameObject staminaIcon;
     public GameObject player;
     public GameObject responsiveUICanvas;
+    [Header("For Collision")]
+    public AudioSource collisionAudioSource;
+
+    // Threshhold is 1500 m/s-2
+    // At the threshhold, damage taken is 100 damage
+    public float accelToDamageRatio = 0.06666667f;
 
     private Vector3 spawnOffset = Vector3.left * 5;
     private bool isPlayerInVehicle = false;
     private bool wasStaminaIconActivePreviously = false;
+
+    void Start()
+    {
+        driveableTruck.GetComponent<CarController>().AddOnCollisionAction(decel => {
+            collisionAudioSource.Play();
+            HandlePlayerLeaveVehicle();
+            PlayerHealth.instance.HandleHit(decel * accelToDamageRatio);
+        });
+    }
 
     void Update()
     {

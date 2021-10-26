@@ -106,8 +106,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
 
         hasPopulatedUnlockedRecipes = true;
         recipesChanged = true;
-        StopAllCoroutines();
-        StartCoroutine(UpdateUI());
+        ForceUIUpdate();
     }
 
     public Recipe GetRandomRecipe()
@@ -126,15 +125,13 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
     public void ActivateCooking()
     {
         isCooking = true;
-        StopAllCoroutines();
-        StartCoroutine(UpdateUI());
+        ForceUIUpdate();
     }
 
     public void DeactivateCooking()
     {
         isCooking = false;
-        StopAllCoroutines();
-        StartCoroutine(UpdateUI());
+        ForceUIUpdate();
     }
 
     public bool IsCookingActivated()
@@ -247,7 +244,14 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         }
         currentFilterState = 2;
     }
-    public IEnumerator UpdateUI()
+
+    public void ForceUIUpdate()
+    {
+        StopAllCoroutines();
+        StartCoroutine(UpdateUI());
+    }
+
+    private IEnumerator UpdateUI()
     {
         // Wait until all orders have generated
         if (!OrdersManager.instance.IsOrderGenerationComplete())

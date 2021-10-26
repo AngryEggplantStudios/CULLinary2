@@ -86,7 +86,13 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
         UIController.UpdateAllUIs();
     }
 
-    public IEnumerator UpdateUI()
+    public void ForceUIUpdate()
+    {
+        StopAllCoroutines();
+        StartCoroutine(UpdateUI());
+    }
+
+    private IEnumerator UpdateUI()
     {
         healthPill.text = "x " + PlayerManager.instance.healthPill;
         staminaPill.text = "x " + PlayerManager.instance.staminaPill;
