@@ -94,7 +94,9 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
                 }
             }
 
-            Debug.Log("base spawning spawned " + (numCurrentlyAlive - numOfAliveMonsters[name]) + " " + name);
+            int numSpawned = numCurrentlyAlive - numOfAliveMonsters[name];
+            if (numSpawned > 0) { Debug.Log("base spawning spawned " + numSpawned + " " + name); }
+
             numOfAliveMonsters[name] = numCurrentlyAlive;
         }
     }

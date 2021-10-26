@@ -69,10 +69,7 @@ public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
                 monsterSpawn.SetSpawnCap(localSpawnCap);
 
                 spawningAmtForSpawners -= localSpawnCap;
-                // Debug.Log(string.Format("spawn cap for {0} set to {1}", name, localSpawnCap));
             }
-
-            Debug.Log("update local spawn caps for " + name + " to " + localSpawnCap);
         }
     }
 
@@ -97,7 +94,6 @@ public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
                 int maxEnemies = spawnAmtRange[1];
                 monsterSpawn.SetMinSpawn(minEnemies);
                 monsterSpawn.SetMaxSpawn(maxEnemies);
-                Debug.Log("update spawn amount for " + name + " to " + minEnemies + " - " + maxEnemies);
             }
         }
     }

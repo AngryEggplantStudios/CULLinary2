@@ -74,7 +74,6 @@ public class MonsterSpawn : MonoBehaviour
     private void SpawnEnemies()
     {
         int numberToSpawn = GetNumberToSpawn();
-        Debug.Log("SpawnEnemies: spawning " + numberToSpawn + " " + GetMonsterName());
         for (int i = 0; i < numberToSpawn; i++)
         {
             InstantiateEnemy();
