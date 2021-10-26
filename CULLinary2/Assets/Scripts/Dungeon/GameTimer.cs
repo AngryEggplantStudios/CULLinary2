@@ -41,6 +41,8 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     public delegate void StartNewDayDelegate();
     public static event StartNewDayDelegate OnStartNewDay;
+    public delegate void BeforeStartNewDayDelegate();
+    public static event BeforeStartNewDayDelegate OnBeforeStartNewDay; // invoked right before OnStartNewDay; for enabling certain populations
     public delegate void EndOfDayDelegate();
     public static event EndOfDayDelegate OnEndOfDay;
 
@@ -105,14 +107,8 @@ public class GameTimer : SingletonGeneric<GameTimer>
         hudToHide.SetActive(true);
         UIController.instance.isNewspaperOpen = false;
         Time.timeScale = 1;
-        if (GameTimer.GetDayNumber() >= 1 && !EcosystemManager.GetIsEnabled(MonsterName.Potato))
-        {
-            EcosystemManager.EnablePopulation(MonsterName.Potato);
-        }
-        if (GameTimer.GetDayNumber() >= 3 && !EcosystemManager.GetIsEnabled(MonsterName.Corn))
-        {
-            EcosystemManager.EnablePopulation(MonsterName.Corn);
-        }
+
+        OnBeforeStartNewDay?.Invoke();
         OnStartNewDay?.Invoke();
     }
 
@@ -144,6 +140,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
             if (currentNews == null)
             {
                 Debug.Log("No newspaper for " + currentIssueNumber + " found");
+                OnBeforeStartNewDay?.Invoke();
                 OnStartNewDay?.Invoke();
             }
             else
