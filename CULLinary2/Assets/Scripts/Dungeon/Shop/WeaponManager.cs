@@ -125,11 +125,19 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
         {
             WeaponItem weaponItem = (WeaponItem)itemToBePurchased;
             PlayerManager.instance.weaponSkillArray[weaponItem.weaponSkillId]++;
+            if (PlayerManager.instance.currentWeaponHeld == weaponItem.weaponSkillId)
+            {
+                playerSlash.ChangeWeapon(weaponItem.weaponSkillId);
+            }
         }
         else if (itemToBePurchased.GetType() == typeof(SkillItem))
         {
             SkillItem skillItem = (SkillItem)itemToBePurchased;
             PlayerManager.instance.weaponSkillArray[skillItem.weaponSkillId]++;
+            if (PlayerManager.instance.currentSecondaryHeld == skillItem.weaponSkillId)
+            {
+                playerSecondaryAttack.ChangeSecondaryAttack(skillItem.weaponSkillId);
+            }
         }
 
         kaching.Play();
@@ -212,15 +220,21 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
             if (currentLevel > 0)
             {
                 GameObject damageEffectCurrent = Instantiate(currentLevelEffectPrefab);
-                damageEffectCurrent.GetComponent<EffectDescriptionSlot>().SetupSlot("Damage: " + weaponItem.baseDamage[currentLevel] + "DMG");
+                damageEffectCurrent.GetComponent<EffectDescriptionSlot>().SetupSlot("Damage: " + weaponItem.baseDamage[currentLevel] + " DMG");
                 GameObject attackSpeedCurrent = Instantiate(currentLevelEffectPrefab);
                 attackSpeedCurrent.GetComponent<EffectDescriptionSlot>().SetupSlot("Attack Speed: " + weaponItem.attackSpeed[currentLevel]);
                 damageEffectCurrent.transform.SetParent(currentLevelEffectList.transform);
                 attackSpeedCurrent.transform.SetParent(currentLevelEffectList.transform);
+                upgradeText.text = "Upgrade";
+            }
+            else
+            {
+                upgradeText.text = "Purchase";
             }
 
             if (currentLevel + 1 > weaponItem.maxLevel)
             {
+                itemPrice.color = unableToBePurchasedColor;
                 itemPrice.text = "$ N/A";
                 nextLevelText.text = "Max level reached";
                 upgradeButton.interactable = false;
@@ -230,7 +244,7 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
                 upgradeButton.interactable = true;
                 GameObject damageEffectNext = Instantiate(nextLevelEffectPrefab);
                 damageEffectNext.GetComponent<EffectDescriptionWithIncrementSlot>().SetupSlot(
-                    "Damage: " + weaponItem.baseDamage[currentLevel + 1] + "DMG",
+                    "Damage: " + weaponItem.baseDamage[currentLevel + 1] + " DMG",
                     weaponItem.baseDamage[currentLevel + 1] - weaponItem.baseDamage[currentLevel]
                 );
                 GameObject attackSpeedNext = Instantiate(nextLevelEffectPrefab);
@@ -246,15 +260,24 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
         else if (weaponSkillItem.GetType() == typeof(SkillItem))
         {
             SkillItem skillItem = (SkillItem)weaponSkillItem;
-            GameObject damageEffectCurrent = Instantiate(currentLevelEffectPrefab);
-            damageEffectCurrent.GetComponent<EffectDescriptionSlot>().SetupSlot("Damage: " + skillItem.attackDamage[currentLevel] + "DMG");
-            GameObject staminaCostCurrent = Instantiate(currentLevelEffectPrefab);
-            staminaCostCurrent.GetComponent<EffectDescriptionSlot>().SetupSlot("Stamina Cost: " + skillItem.staminaCost[currentLevel]);
-            damageEffectCurrent.transform.SetParent(currentLevelEffectList.transform);
-            staminaCostCurrent.transform.SetParent(currentLevelEffectList.transform);
+            if (currentLevel > 0)
+            {
+                GameObject damageEffectCurrent = Instantiate(currentLevelEffectPrefab);
+                damageEffectCurrent.GetComponent<EffectDescriptionSlot>().SetupSlot("Damage: " + skillItem.attackDamage[currentLevel] + " DMG");
+                GameObject staminaCostCurrent = Instantiate(currentLevelEffectPrefab);
+                staminaCostCurrent.GetComponent<EffectDescriptionSlot>().SetupSlot("Stamina Cost: " + skillItem.staminaCost[currentLevel]);
+                damageEffectCurrent.transform.SetParent(currentLevelEffectList.transform);
+                staminaCostCurrent.transform.SetParent(currentLevelEffectList.transform);
+                upgradeText.text = "Upgrade";
+            }
+            else
+            {
+                upgradeText.text = "Purchase";
+            }
 
             if (currentLevel + 1 > skillItem.maxLevel)
             {
+                itemPrice.color = unableToBePurchasedColor;
                 itemPrice.text = "$ N/A";
                 nextLevelText.text = "Max level reached";
                 upgradeButton.interactable = false;
@@ -264,7 +287,7 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
                 upgradeButton.interactable = true;
                 GameObject damageEffectNext = Instantiate(nextLevelEffectPrefab);
                 damageEffectNext.GetComponent<EffectDescriptionWithIncrementSlot>().SetupSlot(
-                    "Damage: " + skillItem.attackDamage[currentLevel + 1] + "DMG",
+                    "Damage: " + skillItem.attackDamage[currentLevel + 1] + " DMG",
                     skillItem.attackDamage[currentLevel + 1] - skillItem.attackDamage[currentLevel]
                 );
                 GameObject staminaCostNext = Instantiate(nextLevelEffectPrefab);
