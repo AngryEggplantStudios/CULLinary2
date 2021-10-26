@@ -50,10 +50,10 @@ public class EcosystemManager : SingletonGeneric<EcosystemManager>
     private void CheckEnablePopulations()
     {
         // TEMP
-        if (GameTimer.GetDayNumber() >= 1 && !EcosystemManager.GetIsEnabled(MonsterName.Potato))
-        {
-            EcosystemManager.EnablePopulation(MonsterName.Potato);
-        }
+        // if (GameTimer.GetDayNumber() >= 1 && !EcosystemManager.GetIsEnabled(MonsterName.Potato))
+        // {
+        //     EcosystemManager.EnablePopulation(MonsterName.Potato);
+        // }
         if (GameTimer.GetDayNumber() >= 2 && !EcosystemManager.GetIsEnabled(MonsterName.Corn))
         {
             EcosystemManager.EnablePopulation(MonsterName.Corn);
