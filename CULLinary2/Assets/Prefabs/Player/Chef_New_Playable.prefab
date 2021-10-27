@@ -2909,6 +2909,7 @@ GameObject:
   - component: {fileID: 1248320868956174961}
   - component: {fileID: 1948873467281180754}
   - component: {fileID: 4182581135593577808}
+  - component: {fileID: 2996122695026055071}
   m_Layer: 7
   m_Name: Chef_New_Playable
   m_TagString: Player
@@ -3208,7 +3209,11 @@ MonoBehaviour:
   itemPickupNotificationPrefab: {fileID: 1085209639500972291, guid: 240a3117544637248943c375c966a1e1, type: 3}
   moneyNotif_prefab: {fileID: 4221391501477310976, guid: 729d9d3a7f96fd04e974bf10b3208db0, type: 3}
   canvasDisplay: {fileID: 0}
+  redPillIcon: {fileID: 0}
+  bluePillIcon: {fileID: 0}
   potionIcon: {fileID: 21300000, guid: 8c8185180ecafed4494814178624078e, type: 3}
+  pfizerIcon: {fileID: 0}
+  modernaIcon: {fileID: 0}
 --- !u!114 &5620305572254198168
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3268,7 +3273,13 @@ MonoBehaviour:
   canvasDisplay: {fileID: 0}
   audioSource: {fileID: 2697191252951612457}
   comsumeNotif: {fileID: 0}
-  healthPotions: {fileID: 0}
+  healthPill: {fileID: 0}
+  staminaPill: {fileID: 0}
+  potion: {fileID: 0}
+  pfizerShot: {fileID: 0}
+  modernaShot: {fileID: 0}
+  pfizerShotIcon: {fileID: 0}
+  modernaShotIcon: {fileID: 0}
 --- !u!114 &1948873467281180754
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3301,6 +3312,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0150f83d45e17a445b115477ae785de9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2996122695026055071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5620305572254198155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc1f32f6eaae8403f80a5c2e5c8ced50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  holderObjectReference: {fileID: 0}
+  skillPrefab: {fileID: 2676701880895923483, guid: 241e0ed838a444124860a353294d6856, type: 3}
+  defaultSkillPrefab: {fileID: 2676701880895923483, guid: 241e0ed838a444124860a353294d6856, type: 3}
+  skillObject: {fileID: 0}
+  playerBody: {fileID: 778855638082590159}
+  mainCamera: {fileID: 778855639286884074}
 --- !u!1 &5740855577425697628
 GameObject:
   m_ObjectHideFlags: 0

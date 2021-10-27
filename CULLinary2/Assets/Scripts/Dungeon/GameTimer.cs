@@ -24,10 +24,10 @@ public class GameTimer : SingletonGeneric<GameTimer>
     [Header("Daily News")]
     [SerializeField] private GameObject newspaper;
     [SerializeField] private GameObject hudToHide;
-    
+
     private static float gameTime;
     private static float timeScale;
-    private static int dayNum = 1; // TODO: to get from saved data
+    private static int dayNum = 1;
     private int hourNum;
     private int minuteNum;
     private string timeAsString;
@@ -41,6 +41,8 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     public delegate void StartNewDayDelegate();
     public static event StartNewDayDelegate OnStartNewDay;
+    public delegate void BeforeStartNewDayDelegate();
+    public static event BeforeStartNewDayDelegate OnBeforeStartNewDay; // invoked right before OnStartNewDay; for enabling certain populations
     public delegate void EndOfDayDelegate();
     public static event EndOfDayDelegate OnEndOfDay;
 
@@ -105,6 +107,8 @@ public class GameTimer : SingletonGeneric<GameTimer>
         hudToHide.SetActive(true);
         UIController.instance.isNewspaperOpen = false;
         Time.timeScale = 1;
+
+        OnBeforeStartNewDay?.Invoke();
         OnStartNewDay?.Invoke();
     }
 
@@ -132,10 +136,11 @@ public class GameTimer : SingletonGeneric<GameTimer>
             NewsIssue currentNews = showRandomNews
                 ? DatabaseLoader.GetRandomNewsIssue()
                 : DatabaseLoader.GetOrderedNewsIssueById(currentIssueNumber);
-            
+
             if (currentNews == null)
             {
                 Debug.Log("No newspaper for " + currentIssueNumber + " found");
+                OnBeforeStartNewDay?.Invoke();
                 OnStartNewDay?.Invoke();
             }
             else
@@ -221,6 +226,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         // reset player health and teleport player to origin for now
         SpecialEventManager.instance.ClearCurrentEvents();
         player.GetComponent<PlayerHealth>().RestoreToFull();
+        player.GetComponent<PlayerHealth>().DestroyAllDamageCounter();
         player.GetComponent<PlayerStamina>().RestoreToFull();
         BuffManager.instance.ClearBuffManager();
         PlayerSpawnManager.instance.SpawnPlayer();
@@ -280,7 +286,10 @@ public class GameTimer : SingletonGeneric<GameTimer>
         {
             // TODO - Unlock the enemies
         }
-        RecipeManager.instance.UpdateUnlockedRecipes();
+        if (ni.recipesUnlocked.Length > 0)
+        {
+            RecipeManager.instance.UpdateUnlockedRecipes();
+        }
     }
 
     private void OnDestroy()

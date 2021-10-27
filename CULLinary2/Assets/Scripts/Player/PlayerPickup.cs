@@ -37,8 +37,7 @@ public class PlayerPickup : MonoBehaviour
         // Update money UI
         if (InventoryManager.instance != null)
         {
-            InventoryManager.instance.StopAllCoroutines();
-            InventoryManager.instance.StartCoroutine(InventoryManager.instance.UpdateUI());
+            InventoryManager.instance.ForceUIUpdate();
         }
     }
 

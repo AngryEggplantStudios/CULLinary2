@@ -6,4 +6,5 @@ public class WeaponItem : WeaponSkillItem
     public int[] baseDamage;
     public float[] attackSpeed;
     public GameObject weaponPrefab;
+
 }

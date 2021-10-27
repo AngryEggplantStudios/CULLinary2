@@ -50,7 +50,7 @@ public class CookingUISlot : MonoBehaviour
 
     public void SelectRecipeForCookingOnClick()
     {
-        RecipeManager.instance.SetCurrentlySelectedRecipeInCookingUi(indexInMenu);
+        RecipeManager.instance.SetCurrentlySelectedRecipeInMenuUi(indexInMenu);
         SelectRecipeForCooking();
     }
 

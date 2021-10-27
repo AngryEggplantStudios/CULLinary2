@@ -210,8 +210,9 @@ public class MonsterBehavior : MonoBehaviour
         return navHit.position;
     }
 
-    private void OnDestroy()
-    {
+    // Use this isntead of OnDestroy due to global enemy Detection unable to call OnDestroy on disabled
+	public void DestroyObjectEvents()
+	{
         monsterScript.onEnemyRoaming -= EnemyRoaming;
         monsterScript.onEnemyChase -= EnemyChase;
         monsterScript.onEnemyIdle -= EnemyIdle;
@@ -219,7 +220,7 @@ public class MonsterBehavior : MonoBehaviour
         monsterScript.onEnemyReturn -= EnemyReturn;
     }
 
-    public void slowlyRotateToLookAt(Vector3 target)
+	public void slowlyRotateToLookAt(Vector3 target)
     {
         transform.rotation = Quaternion.Lerp(
             transform.rotation,

@@ -5,6 +5,7 @@ using UnityEngine;
 public class ButtonAudio : MonoBehaviour
 {
     public AudioSource click;
+    public AudioSource clickFailed;
     public AudioSource hover;
 
     private static ButtonAudio _instance;
@@ -27,6 +28,12 @@ public class ButtonAudio : MonoBehaviour
     public void Click()
     {
         click.Play();
+    }
+
+    public void ClickFailed()
+    {
+        click.Play();
+        clickFailed.Play();
     }
 
     public void Hover()

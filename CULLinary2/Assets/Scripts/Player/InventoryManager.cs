@@ -35,6 +35,7 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
         PopulateUI(PlayerManager.instance.itemList);
     }
 
+    // Adds an item and updates inventory, recipe and order UIs
     public bool AddItem(InventoryItem item)
     {
         if (itemListReference.Count < inventoryLimit)
@@ -85,7 +86,13 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
         UIController.UpdateAllUIs();
     }
 
-    public IEnumerator UpdateUI()
+    public void ForceUIUpdate()
+    {
+        StopAllCoroutines();
+        StartCoroutine(UpdateUI());
+    }
+
+    private IEnumerator UpdateUI()
     {
         healthPill.text = "x " + PlayerManager.instance.healthPill;
         staminaPill.text = "x " + PlayerManager.instance.staminaPill;

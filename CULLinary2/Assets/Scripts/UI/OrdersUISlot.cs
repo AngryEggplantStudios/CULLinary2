@@ -13,6 +13,7 @@ public class OrdersUISlot : MonoBehaviour
     public GameObject ingredientsContainer;
     public GameObject ingredientCounterPrefab;
     public TextMeshProUGUI rewardsMoneyText;
+    public TextMeshProUGUI dishNameText;
     
     private Order order;
 
@@ -49,6 +50,7 @@ public class OrdersUISlot : MonoBehaviour
         productIcon.sprite = order.GetProduct().icon;
         cookableIndicator.SetActive(cookable);
         rewardsMoneyText.text = order.GetDeliveryReward().ToString();
+        dishNameText.text = order.GetProduct().itemName;
 
         if (inInventory)
         {

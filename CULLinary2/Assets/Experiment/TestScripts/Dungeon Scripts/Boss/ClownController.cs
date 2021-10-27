@@ -61,6 +61,7 @@ public class ClownController : MonoBehaviour
     private bool coroutineSpawnRunning = false;
     private bool damageCoroutine = false;
     private string prevFoot = "leftFoot";
+    private PlayerHealth healthOfPlayer;
 
     public enum State
     {
@@ -76,6 +77,7 @@ public class ClownController : MonoBehaviour
         state = State.Idle;
         gameObject.tag = "ClownBoss";
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        healthOfPlayer = player.GetComponentInChildren<PlayerHealth>();
         playerCamera = player.GetComponentInChildren<Camera>();
         if (GameCanvas.instance != null)
         {
@@ -91,6 +93,7 @@ public class ClownController : MonoBehaviour
         spawnAttackScript = gameObject.transform.GetComponent<BossSpawnAttack>();
         health = maxHealth;
         SetupHpBar();
+        healthOfPlayer.SetIsClownActive(true);
     }
 
     //SpawnsClown at player position
@@ -98,12 +101,14 @@ public class ClownController : MonoBehaviour
     {
         gameObject.transform.parent.gameObject.SetActive(true);
         transform.position = player.position;
+        healthOfPlayer.SetIsClownActive(true);
     }
 
     //Destroys any spawned mosnters when player dies
     public void DeSpawnClown()
     {
         spawnAttackScript.destroySpawnPoints();
+        healthOfPlayer.SetIsClownActive(false);
         Destroy(hpBar);
         Destroy(gameObject.transform.parent.gameObject);
     }
@@ -148,6 +153,7 @@ public class ClownController : MonoBehaviour
                 spawnAttackScript.destroySpawnPoints();
                 //Don't rainburgers yet
                 //endingBurgers.GetComponent<SpawnBurger>().callRainBurger();
+                healthOfPlayer.SetIsClownActive(false);
                 UIController.instance.ShowWinPanel();
                 //whenClownKilledCallback.Invoke();
                 StartCoroutine(WaitZeroPointOneSecondBeforeKilling());

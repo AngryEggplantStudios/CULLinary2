@@ -6,6 +6,7 @@ public class ParticleDamageScript : MonoBehaviour
 {
 
     [SerializeField] private float attackDamage = 50f;
+    private List<Monster> monsterList = new List<Monster>();
 
     private void OnParticleCollision(GameObject other)
     {
@@ -14,7 +15,12 @@ public class ParticleDamageScript : MonoBehaviour
         {
             return;
         }
-        target.HandleHit(CalculateDamage());
+        if (!monsterList.Contains(target))
+        {
+            target.HandleHit(CalculateDamage());
+        }
+        monsterList.Add(target);
+
     }
 
 
@@ -47,6 +53,7 @@ public class ParticleDamageScript : MonoBehaviour
 
     private int CalculateDamage()
     {
+        InstantiateDamageScript();
         int totalCritChance = PlayerManager.instance != null ? PlayerManager.instance.criticalBonus + PlayerManager.instance.criticalChance : 0;
         bool isCritical = totalCritChance > 0 ? Random.Range(0, 100) < totalCritChance : false;
         float finalDamage = attackDamage * Random.Range(0.85f, 1.15f);

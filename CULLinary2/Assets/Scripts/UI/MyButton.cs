@@ -6,12 +6,17 @@ using UnityEngine.EventSystems;
 
 public class MyButton : MonoBehaviour, IPointerEnterHandler
 {
-    Button button;
+    [SerializeField] private bool doClickSound = true;
+
+    private Button button;
 
     void Start()
     {
         button = GetComponent<Button>();
-        button.onClick.AddListener(() => { ButtonAudio.Instance.Click(); });
+        if (doClickSound)
+        {
+            button.onClick.AddListener(() => { ButtonAudio.Instance.Click(); });
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
