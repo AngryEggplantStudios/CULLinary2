@@ -7,4 +7,9 @@ public class WeaponItem : WeaponSkillItem
     public float[] attackSpeed;
     public GameObject weaponPrefab;
 
+    public string GetDescription(int level)
+    {
+        return "Weapon Damage: " + baseDamage[level] + "\n" + "Attack Speed: " + attackSpeed[level];
+    }
+
 }
