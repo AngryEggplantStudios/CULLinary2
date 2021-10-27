@@ -43,6 +43,12 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         {MonsterName.Eggplant, PopulationLevel.Normal},
         {MonsterName.Bread, PopulationLevel.Normal},
         {MonsterName.Tomato, PopulationLevel.Normal},
+        {MonsterName.Meat, PopulationLevel.Normal},
+        {MonsterName.Cheese, PopulationLevel.Normal},
+        {MonsterName.Mushroom, PopulationLevel.Normal},
+        {MonsterName.DaddyCorn, PopulationLevel.Normal},
+        {MonsterName.DaddyEggplant, PopulationLevel.Normal},
+        {MonsterName.DaddyPotato, PopulationLevel.Normal},
     };
 
     [Header("Health Regenerated per Game Minute at Campfire")]

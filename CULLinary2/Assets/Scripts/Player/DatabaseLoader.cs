@@ -32,6 +32,7 @@ public class DatabaseLoader : MonoBehaviour
     private static List<SpecialEvent> eventList;
     //Monsters
     private static Dictionary<MonsterName, MonsterData> monsterDict;
+    private static Dictionary<int, MonsterData> monsterIdDict;
     private static List<MonsterData> monsterList;
     //Weapon Skill Items
     private static Dictionary<int, WeaponSkillItem> weaponSkillDict;
@@ -52,6 +53,7 @@ public class DatabaseLoader : MonoBehaviour
         specialEventDict = new Dictionary<int, SpecialEvent>();
         eventList = eventsDatabase.allEvents;
         monsterDict = new Dictionary<MonsterName, MonsterData>();
+        monsterIdDict = new Dictionary<int, MonsterData>();
         monsterList = monsterDatabase.allMonsters;
         weaponSkillDict = new Dictionary<int, WeaponSkillItem>();
         weaponSkillList = weaponSkillDatabase.allItems;
@@ -69,6 +71,7 @@ public class DatabaseLoader : MonoBehaviour
         yield return StartCoroutine(PopulateInventoryItemDatabase());
         yield return StartCoroutine(PopulateRecipeDatabase());
         yield return StartCoroutine(PopulateShopItemDatabase());
+        yield return StartCoroutine(PopulateMonsterDatabase());
         yield return StartCoroutine(PopulateEventDatabase());
         yield return StartCoroutine(PopulateWeaponSkillItemDatabase());
         yield return StartCoroutine(PopulateNewspaperDatabase());
@@ -266,6 +269,7 @@ public class DatabaseLoader : MonoBehaviour
             try
             {
                 monsterDict.Add(i.monsterName, i);
+                monsterIdDict.Add(i.monsterId, i);
             }
             catch (Exception e)
             {
@@ -274,7 +278,26 @@ public class DatabaseLoader : MonoBehaviour
             }
             yield return null;
         }
+        if (CreatureDexManager.instance != null)
+        {
+            CreatureDexManager.instance.SetupCreatureDex();
+        }
         Debug.Log("Shop Event Database populated.");
+    }
+
+    public static MonsterData GetMonsterById(int id)
+    {
+        MonsterData monsterData;
+        try
+        {
+            monsterData = monsterIdDict[id];
+        }
+        catch (Exception e)
+        {
+            Debug.Log("Error: " + e);
+            monsterData = new MonsterData();
+        }
+        return monsterData;
     }
 
     public static MonsterData GetMonsterByMonsterName(MonsterName monsterName)
@@ -360,7 +383,7 @@ public class DatabaseLoader : MonoBehaviour
             }
             yield return null;
         }
-        
+
         foreach (NewsIssue ni in newspaperDatabase.randomIssues)
         {
             try
