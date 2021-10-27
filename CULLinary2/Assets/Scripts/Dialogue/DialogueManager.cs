@@ -1,0 +1,207 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+
+public class DialogueManager : SingletonGeneric<DialogueManager>
+{
+    public GameObject theyPanel;
+    public TextMeshProUGUI theyPanelText;
+    public Image theyPanelSprite;
+
+    public GameObject choicePanel;
+    // Container to add the choices to
+    public GameObject choicePanelContainer;
+
+    public GameObject mePanel;
+    public TextMeshProUGUI mePanelText;
+    public Image mePanelSprite;
+
+    // The prefab to use for the choice selection
+    public GameObject choicePrefab;
+    // Array of sprites for the dialogue boxes
+    public Sprite[] sprites;
+
+    private Dialogue currentDialogue;
+    private Dialogue nextDialogue;
+    // Delegate to be run after dialogue ends
+    private static readonly Action defaultDialogueAction = () => {};
+    private Action endDialogueAction = defaultDialogueAction;
+
+    /*
+    private Restaurant_CustomerController currentCustomer;
+    */
+
+    private void DisplayNextAndCloseMePanel()
+    {
+        if (!currentDialogue.isLast)
+        {
+            currentDialogue = nextDialogue;
+            RunCurrentDialogue(mePanel);
+        }
+        else
+        {
+            if (UIController.instance != null)
+            {
+                UIController.instance.isDialogueOpen = false;
+                Time.timeScale = 1;
+            }
+            
+            // Invoke the ending action
+            mePanel.SetActive(false);
+            endDialogueAction.Invoke();
+            endDialogueAction = defaultDialogueAction;
+        }
+    }
+
+    private void DisplayNextAndCloseTheyPanel()
+    {
+        if (!currentDialogue.isLast) {
+            currentDialogue = nextDialogue;
+            RunCurrentDialogue(theyPanel);
+        }
+        else
+        {
+            if (UIController.instance != null)
+            {
+                UIController.instance.isDialogueOpen = false;
+                Time.timeScale = 1;
+            }
+            /*
+            if (currentCustomer != null) {
+                StartCoroutine(currentCustomer.TimeToLeave());
+            }
+            */
+
+            // Invoke the ending action
+            theyPanel.SetActive(false);
+            endDialogueAction.Invoke();
+            endDialogueAction = defaultDialogueAction;
+        }
+    }
+    
+    private void Start()
+    {
+        PlainDialogueSelector meSelector = mePanel.GetComponent<PlainDialogueSelector>();
+        meSelector.DisplayNextDialogue += DisplayNextAndCloseMePanel;
+
+        PlainDialogueSelector theySelector = theyPanel.GetComponent<PlainDialogueSelector>();
+        theySelector.DisplayNextDialogue += DisplayNextAndCloseTheyPanel;
+
+        DialogueDatabase.GenerateDialogues();
+
+        // For debug purposes
+        // LoadAndRunDebug(16);
+    }
+
+    private void RunMeDialogue(PlainDialogue meDialogue)
+    {
+        mePanelText.text = meDialogue.displayedText;
+        mePanelSprite.sprite = sprites[meDialogue.spriteId];
+
+        nextDialogue = meDialogue.next;
+        mePanel.SetActive(true);
+    }
+
+    private void RunTheyDialogue(PlainDialogue theyDialogue)
+    {
+        theyPanelText.text = theyDialogue.displayedText;
+        theyPanelSprite.sprite = sprites[theyDialogue.spriteId];
+
+        nextDialogue = theyDialogue.next;
+        theyPanel.SetActive(true);
+    }
+
+    private void RunChoiceDialogue(ChoiceDialogue choiceDialogue) 
+    {
+        // Clear the choices menu
+        foreach (Transform child in choicePanelContainer.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
+        // Add new choices to the menu
+        int numberOfChoices = choiceDialogue.choices.Length;
+        for (int i = 0; i < numberOfChoices; i++) {
+            GameObject choiceBox = Instantiate(choicePrefab,
+                                               new Vector3(0, 0, 0),
+                                               Quaternion.identity,
+                                               choicePanelContainer.transform) as GameObject;
+        
+            ChoiceSelector choiceOnClick = choiceBox.GetComponent<ChoiceSelector>();
+            TextMeshProUGUI choiceText = choiceOnClick.choiceText;
+            choiceText.text = choiceDialogue.choicesText[i];
+
+            // Capture the value of i for the lambda
+            int currentI = i;
+            choiceOnClick.SelectThisChoice += () =>
+            {
+                // close all panels
+                choicePanel.SetActive(false);
+                mePanel.SetActive(false);
+                theyPanel.SetActive(false);
+                // Assume choice box is never last
+                currentDialogue = choiceDialogue.choices[currentI];
+                RunCurrentDialogue();
+            };
+        }
+        choicePanel.SetActive(true);
+    }
+
+    private void LoadDialogue(Dialogue dialogue)
+    {
+        currentDialogue = dialogue;
+    }
+
+    // Checks what kind of dialogue it is and calls the correct function.
+    // Returns the next dialogue, or null, if it is the last dialogue.
+    private void RunCurrentDialogue(GameObject prevPanel = null)
+    {
+        if (currentDialogue.isPlain)
+        {
+            if (prevPanel != null)
+            {
+                prevPanel.SetActive(false);
+            }
+            PlainDialogue plain = (PlainDialogue)currentDialogue;
+            if (plain.isPlayer)
+            {
+                RunMeDialogue(plain);
+            }
+            else
+            {
+                RunTheyDialogue(plain);
+            }
+        }
+        else
+        {
+            ChoiceDialogue choice = (ChoiceDialogue)currentDialogue;
+            RunChoiceDialogue(choice);
+        }
+    }
+
+    // Loads and runs the dialogue tree provided
+    public void LoadAndRun(Dialogue dialogue)
+    {
+        UIController.instance.isDialogueOpen = true;
+        Time.timeScale = 0;
+        LoadDialogue(dialogue);
+        RunCurrentDialogue();
+    }
+
+    // For debugging, dialogue index refers to index
+    // rawDialoguesWithWeights in DialogueDatabase
+    public void LoadAndRunDebug(int dialogueIndex)
+    {
+        LoadAndRun(DialogueDatabase.GetDialogue(dialogueIndex));
+    }
+
+    // Sets the ending callback for the next dialogue.
+    // This callback will be unset after the next time it is triggered.
+    public void SetDialogueEndCallback(Action a)
+    {
+        endDialogueAction = a;
+    }
+}

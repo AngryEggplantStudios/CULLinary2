@@ -55,6 +55,7 @@ public class UIController : SingletonGeneric<UIController>
     public bool isPaused = false;
     public bool isPlayerInVehicle = false;
     public bool isNewspaperOpen = false;
+    public bool isDialogueOpen = false;
     private bool deathMenuActive = false;
     private bool anyUIActive = false;
     private bool anyUIWasActive = false;
@@ -366,7 +367,7 @@ public class UIController : SingletonGeneric<UIController>
             HandleUIActiveChange(anyUIActive);
         }
 
-        if (playerDeathMenu.activeSelf || isNewspaperOpen)
+        if (playerDeathMenu.activeSelf || isNewspaperOpen || isDialogueOpen)
         {
             return;
         }
