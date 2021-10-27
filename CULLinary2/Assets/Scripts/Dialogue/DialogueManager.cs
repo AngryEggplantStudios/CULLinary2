@@ -36,11 +36,10 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
 
     private void DisplayNextAndCloseMePanel()
     {
-        mePanel.SetActive(false);
         if (!currentDialogue.isLast)
         {
             currentDialogue = nextDialogue;
-            RunCurrentDialogue();
+            RunCurrentDialogue(mePanel);
         }
         else
         {
@@ -51,6 +50,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
             }
             
             // Invoke the ending action
+            mePanel.SetActive(false);
             endDialogueAction.Invoke();
             endDialogueAction = defaultDialogueAction;
         }
@@ -58,10 +58,9 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
 
     private void DisplayNextAndCloseTheyPanel()
     {
-        theyPanel.SetActive(false);
         if (!currentDialogue.isLast) {
             currentDialogue = nextDialogue;
-            RunCurrentDialogue();
+            RunCurrentDialogue(theyPanel);
         }
         else
         {
@@ -77,6 +76,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
             */
 
             // Invoke the ending action
+            theyPanel.SetActive(false);
             endDialogueAction.Invoke();
             endDialogueAction = defaultDialogueAction;
         }
@@ -93,7 +93,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
         DialogueDatabase.GenerateDialogues();
 
         // For debug purposes
-        // LoadAndRunWithoutCustomer(21);
+        // LoadAndRunDebug(16);
     }
 
     private void RunMeDialogue(PlainDialogue meDialogue)
@@ -117,7 +117,8 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
     private void RunChoiceDialogue(ChoiceDialogue choiceDialogue) 
     {
         // Clear the choices menu
-        foreach (Transform child in choicePanelContainer.transform) {
+        foreach (Transform child in choicePanelContainer.transform)
+        {
             GameObject.Destroy(child.gameObject);
         }
 
@@ -137,7 +138,10 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
             int currentI = i;
             choiceOnClick.SelectThisChoice += () =>
             {
+                // close all panels
                 choicePanel.SetActive(false);
+                mePanel.SetActive(false);
+                theyPanel.SetActive(false);
                 // Assume choice box is never last
                 currentDialogue = choiceDialogue.choices[currentI];
                 RunCurrentDialogue();
@@ -153,16 +157,26 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
 
     // Checks what kind of dialogue it is and calls the correct function.
     // Returns the next dialogue, or null, if it is the last dialogue.
-    private void RunCurrentDialogue()
+    private void RunCurrentDialogue(GameObject prevPanel = null)
     {
-        if (currentDialogue.isPlain) {
+        if (currentDialogue.isPlain)
+        {
+            if (prevPanel != null)
+            {
+                prevPanel.SetActive(false);
+            }
             PlainDialogue plain = (PlainDialogue)currentDialogue;
-            if (plain.isPlayer) {
+            if (plain.isPlayer)
+            {
                 RunMeDialogue(plain);
-            } else {
+            }
+            else
+            {
                 RunTheyDialogue(plain);
             }
-        } else {
+        }
+        else
+        {
             ChoiceDialogue choice = (ChoiceDialogue)currentDialogue;
             RunChoiceDialogue(choice);
         }
