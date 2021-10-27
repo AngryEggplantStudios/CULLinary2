@@ -12,7 +12,7 @@ AnimatorStateTransition:
     m_ConditionEvent: attack
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 0}
+  m_DstState: {fileID: 5200233440560682212}
   m_Solo: 0
   m_Mute: 0
   m_IsExit: 0
@@ -42,9 +42,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.12454974
+  m_TransitionDuration: 0.25
   m_TransitionOffset: 0
-  m_ExitTime: 7.826951e-10
+  m_ExitTime: 0.75
   m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -82,11 +82,12 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: BreadIdle
+  m_Name: HamIdle
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 2345333123913363339}
+  - {fileID: -30447643724946492}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -96,7 +97,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 225394f9914a55647b6cc2f6c0979092, type: 2}
+  m_Motion: {fileID: 7400000, guid: bbae1b7e4e4ece6439efed95268ba3fd, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -141,9 +142,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.44338468
+  m_TransitionDuration: 0.2
   m_TransitionOffset: 0
-  m_ExitTime: 0.000000011358479
+  m_ExitTime: 0.0259124
   m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -180,33 +181,33 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: BreadController
+  m_Name: HamController
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: isMoving
-    m_Type: 4
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 0}
-  - m_Name: death
-    m_Type: 9
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 0}
-  - m_Name: health
-    m_Type: 3
-    m_DefaultFloat: 0
-    m_DefaultInt: 100
-    m_DefaultBool: 0
-    m_Controller: {fileID: 0}
   - m_Name: attack
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
+  - m_Name: isMoving
+    m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+  - m_Name: death
+    m_Type: 9
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+  - m_Name: health
+    m_Type: 3
+    m_DefaultFloat: 0
+    m_DefaultInt: 100
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -227,11 +228,12 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: BreadWalk
-  m_Speed: 2
+  m_Name: HamWalk
+  m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -83731334400276305}
+  - {fileID: -4112199327906632895}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -241,7 +243,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: a953a585bfcb9a6478ecb98eea1703e7, type: 2}
+  m_Motion: {fileID: 7400000, guid: 89109a2dfc8000446906e0937d060d9b, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -259,6 +261,9 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: -2034923000154149069}
     m_Position: {x: 370, y: -40, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 5200233440560682212}
+    m_Position: {x: 750, y: -30, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 715393854193662607}
     m_Position: {x: 370, y: -160, z: 0}
@@ -308,7 +313,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: BreadDeath
+  m_Name: HamDeath
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -321,7 +326,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: edb3287f991ad0e45a85e9ddfd0c6993, type: 2}
+  m_Motion: {fileID: 7400000, guid: 6c5a0b20f2205744997ae38801e4e89e, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -334,7 +339,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PotatoAttack
+  m_Name: HamAttack
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -348,7 +353,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: c23d0b16b56d76e48ade82bfa3c214f2, type: 2}
+  m_Motion: {fileID: 7400000, guid: 32858c4499f868c44b821819dbb3d50c, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
