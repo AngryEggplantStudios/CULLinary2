@@ -20,7 +20,17 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
     [SerializeField] private TMP_Text potion;
     [SerializeField] private TMP_Text pfizerShot;
     [SerializeField] private TMP_Text modernaShot;
-
+    [Header("Weapon & Skill references")]
+    [SerializeField] private Image primaryWeaponImage;
+    [SerializeField] private Image secondarySkillImage;
+    [Header("Stats")]
+    [SerializeField] private TMP_Text staminaText;
+    [SerializeField] private TMP_Text baseDamageText;
+    [SerializeField] private TMP_Text weaponDamageText;
+    [SerializeField] private TMP_Text totalDamageText;
+    [SerializeField] private TMP_Text critChanceText;
+    [SerializeField] private TMP_Text evasionChanceText;
+    [SerializeField] private TMP_Text secondaryDamageText;
     private InventorySlot[] slots;
     private int inventoryLimit = 20;
 
@@ -33,6 +43,38 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
         slots = inventoryPanel.GetComponentsInChildren<InventorySlot>();
         PopulateUI(PlayerManager.instance.itemList);
     }
+
+    private void UpdateWeaponSkillStats()
+    {
+        WeaponSkillItem primaryWeapon = DatabaseLoader.GetWeaponSkillById(PlayerManager.instance.currentWeaponHeld);
+        WeaponSkillItem secondarySkill = DatabaseLoader.GetWeaponSkillById(PlayerManager.instance.currentSecondaryHeld);
+        int primaryWeaponDamage = 0;
+        int secondarySkillDamage = 0;
+        if (primaryWeapon.GetType() == typeof(WeaponItem))
+        {
+            WeaponItem weaponItem = (WeaponItem)primaryWeapon;
+            primaryWeaponImage.sprite = weaponItem.icon;
+            primaryWeaponDamage = weaponItem.baseDamage[PlayerManager.instance.weaponSkillArray[weaponItem.weaponSkillId]];
+            weaponDamageText.text = primaryWeaponDamage + " DMG";
+        }
+        if (secondarySkill.GetType() == typeof(SkillItem))
+        {
+            SkillItem skillItem = (SkillItem)secondarySkill;
+            secondarySkillImage.sprite = skillItem.icon;
+            secondarySkillDamage = skillItem.attackDamage[PlayerManager.instance.weaponSkillArray[skillItem.weaponSkillId]];
+        }
+        staminaText.text = PlayerManager.instance.currentStamina + " / " + PlayerManager.instance.maxStamina;
+        baseDamageText.text = PlayerManager.instance.isMeleeDamageDoubled ? (PlayerManager.instance.meleeDamage * 2) + " DMG" : PlayerManager.instance.meleeDamage + " DMG";
+        int minTotalMeleeDamage = Mathf.RoundToInt((PlayerManager.instance.isMeleeDamageDoubled ? PlayerManager.instance.meleeDamage * 2 : PlayerManager.instance.meleeDamage) + 0.85f * primaryWeaponDamage);
+        int maxTotalMeleeDamage = Mathf.RoundToInt((PlayerManager.instance.isMeleeDamageDoubled ? PlayerManager.instance.meleeDamage * 2 : PlayerManager.instance.meleeDamage) + 1.15f * primaryWeaponDamage);
+        totalDamageText.text = minTotalMeleeDamage + " ~ " + maxTotalMeleeDamage + " DMG";
+        int minSecondaryDamage = Mathf.RoundToInt(secondarySkillDamage * 0.85f);
+        int maxSecondaryDamage = Mathf.RoundToInt(secondarySkillDamage * 1.15f);
+        secondaryDamageText.text = minSecondaryDamage + " ~ " + maxSecondaryDamage + " DMG";
+        critChanceText.text = (PlayerManager.instance.criticalChance + PlayerManager.instance.criticalBonus) + "%";
+        evasionChanceText.text = (PlayerManager.instance.evasionBonus + PlayerManager.instance.evasionChance) + "%";
+    }
+
 
     // Adds an item and updates inventory, recipe and order UIs
     public bool AddItem(InventoryItem item)
@@ -93,6 +135,7 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
 
     private IEnumerator UpdateUI()
     {
+        UpdateWeaponSkillStats();
         healthPill.text = "x " + PlayerManager.instance.healthPill;
         staminaPill.text = "x " + PlayerManager.instance.staminaPill;
         potion.text = "x " + PlayerManager.instance.potion;

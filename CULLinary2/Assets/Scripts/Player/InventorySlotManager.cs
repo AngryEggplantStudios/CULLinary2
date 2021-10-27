@@ -50,7 +50,7 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
             itemDescription.text = weaponItem.description[0];
             itemMainIcon.enabled = true;
             itemMainIcon.sprite = weaponItem.icon;
-            itemType.text = "Weapon";
+            itemType.text = "Melee Weapon";
             itemEffects.text = weaponItem.GetDescription(PlayerManager.instance.weaponSkillArray[weaponItem.weaponSkillId]);
         }
     }
@@ -66,7 +66,7 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
             itemDescription.text = skillItem.description[0];
             itemMainIcon.enabled = true;
             itemMainIcon.sprite = skillItem.icon;
-            itemType.text = "Weapon";
+            itemType.text = "Skill";
             itemEffects.text = skillItem.GetDescription(PlayerManager.instance.weaponSkillArray[skillItem.weaponSkillId]);
         }
     }
@@ -115,6 +115,7 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
     private void OnEnable()
     {
         ResetSlot();
+        InventoryManager.instance.ForceUIUpdate();
     }
 
     private void OnDisable()
