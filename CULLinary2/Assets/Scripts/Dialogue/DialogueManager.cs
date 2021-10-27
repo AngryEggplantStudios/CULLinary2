@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class DialogueManager : SingletonGeneric<DialogueManager>
 {
     public GameObject theyPanel;
-    public Text theyPanelText;
+    public TextMeshProUGUI theyPanelText;
     public Image theyPanelSprite;
 
     public GameObject choicePanel;
@@ -15,7 +16,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
     public GameObject choicePanelContainer;
 
     public GameObject mePanel;
-    public Text mePanelText;
+    public TextMeshProUGUI mePanelText;
     public Image mePanelSprite;
 
     // The prefab to use for the choice selection
@@ -127,11 +128,10 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
                                                new Vector3(0, 0, 0),
                                                Quaternion.identity,
                                                choicePanelContainer.transform) as GameObject;
-            
-            Text choiceText = choiceBox.GetComponent<Text>();
-            choiceText.text = choiceDialogue.choicesText[i];
-
+        
             ChoiceSelector choiceOnClick = choiceBox.GetComponent<ChoiceSelector>();
+            TextMeshProUGUI choiceText = choiceOnClick.choiceText;
+            choiceText.text = choiceDialogue.choicesText[i];
 
             // Capture the value of i for the lambda
             int currentI = i;
