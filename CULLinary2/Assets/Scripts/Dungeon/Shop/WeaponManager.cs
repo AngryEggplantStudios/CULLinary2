@@ -38,11 +38,46 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
     [SerializeField] private Color ableToBePurchasedColor;
     [SerializeField] private Color unableToBePurchasedColor;
 
+    [Header("Stats")]
+    [SerializeField] private TMP_Text staminaText;
+    [SerializeField] private TMP_Text baseDamageText;
+    [SerializeField] private TMP_Text weaponDamageText;
+    [SerializeField] private TMP_Text totalDamageText;
+    [SerializeField] private TMP_Text secondaryDamageText;
+
     private int currentTab = 0; //0 for primary, 1 for secondary
     private int primarySelectedSlotId = -1;
     private int secondarySelectedSlotId = -1;
     private List<WeaponSlot> primarySlots;
     private List<WeaponSlot> secondarySlots;
+
+    private void UpdateWeaponSkillStats()
+    {
+        WeaponSkillItem primaryWeapon = DatabaseLoader.GetWeaponSkillById(PlayerManager.instance.currentWeaponHeld);
+        WeaponSkillItem secondarySkill = DatabaseLoader.GetWeaponSkillById(PlayerManager.instance.currentSecondaryHeld);
+        int primaryWeaponDamage = 0;
+        int secondarySkillDamage = 0;
+        if (primaryWeapon.GetType() == typeof(WeaponItem))
+        {
+            WeaponItem weaponItem = (WeaponItem)primaryWeapon;
+            primaryWeaponDamage = weaponItem.baseDamage[PlayerManager.instance.weaponSkillArray[weaponItem.weaponSkillId]];
+            weaponDamageText.text = primaryWeaponDamage + " DMG";
+        }
+        if (secondarySkill.GetType() == typeof(SkillItem))
+        {
+            SkillItem skillItem = (SkillItem)secondarySkill;
+            secondarySkillDamage = skillItem.attackDamage[PlayerManager.instance.weaponSkillArray[skillItem.weaponSkillId]];
+        }
+        staminaText.text = PlayerManager.instance.currentStamina + " / " + PlayerManager.instance.maxStamina;
+        baseDamageText.text = PlayerManager.instance.isMeleeDamageDoubled ? (PlayerManager.instance.meleeDamage * 2) + " DMG" : PlayerManager.instance.meleeDamage + " DMG";
+        int minTotalMeleeDamage = Mathf.RoundToInt((PlayerManager.instance.isMeleeDamageDoubled ? PlayerManager.instance.meleeDamage * 2 : PlayerManager.instance.meleeDamage) + 0.85f * primaryWeaponDamage);
+        int maxTotalMeleeDamage = Mathf.RoundToInt((PlayerManager.instance.isMeleeDamageDoubled ? PlayerManager.instance.meleeDamage * 2 : PlayerManager.instance.meleeDamage) + 1.15f * primaryWeaponDamage);
+        totalDamageText.text = minTotalMeleeDamage + " ~ " + maxTotalMeleeDamage + " DMG";
+        int minSecondaryDamage = Mathf.RoundToInt(secondarySkillDamage * 0.85f);
+        int maxSecondaryDamage = Mathf.RoundToInt(secondarySkillDamage * 1.15f);
+        secondaryDamageText.text = minSecondaryDamage + " ~ " + maxSecondaryDamage + " DMG";
+    }
+
 
     public void HandleClick(int index)
     {
@@ -155,6 +190,7 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
 
     public void UpdateShopDescription()
     {
+        UpdateWeaponSkillStats();
         if ((currentTab == 0 && primarySelectedSlotId == -1) || (currentTab == 1 && secondarySelectedSlotId == -1))
         {
             return;
