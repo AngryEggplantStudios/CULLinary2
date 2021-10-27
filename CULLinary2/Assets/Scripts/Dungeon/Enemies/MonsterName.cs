@@ -8,5 +8,11 @@ public enum MonsterName
     Potato,
     Corn,
     Tomato,
-    Bread
+    Bread,
+    Cheese,
+    Meat,
+    Mushroom,
+    DaddyEggplant,
+    DaddyPotato,
+    DaddyCorn
 }
