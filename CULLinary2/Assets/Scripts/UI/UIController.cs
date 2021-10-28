@@ -429,7 +429,7 @@ public class UIController : SingletonGeneric<UIController>
             HandleCampfireAction();
         }
 
-        if (!isMenuActive)
+        if (!isMenuActive && !PlayerHealth.instance.WasDeathCalled())
         {
             // Exit the truck if possible
             if (Input.GetKeyDown(interactKeyCode) && isPlayerInVehicle)
