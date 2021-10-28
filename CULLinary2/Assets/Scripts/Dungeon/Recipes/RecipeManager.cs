@@ -80,7 +80,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         }
     }
 
-    // Update the unlocked and the locked recipes list
+    // Update the unlocked and the locked recipes list based on PlayerManager
     public void UpdateUnlockedRecipes()
     {
         List<int> unlockedRecipes = PlayerManager.instance != null
@@ -90,7 +90,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         StopAllCoroutines();
         innerLockedRecipesList.Clear();
         innerUnlockedRecipesList.Clear();
-        
+
         foreach (int recipeId in unlockedRecipes)
         {
             innerUnlockedRecipesList.Add(DatabaseLoader.GetRecipeById(recipeId));
@@ -200,7 +200,6 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
     public void FilterOrderedRecipesOnClick()
     {
         filterTransitions[currentFilterState]();
-        filterButtonText.text = filterButtonDisplayedTexts[currentFilterState];
     }
 
     // Show all recipes in the UI
@@ -211,6 +210,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             child.gameObject.SetActive(true);
         }
         currentFilterState = 0;
+        filterButtonText.text = filterButtonDisplayedTexts[currentFilterState];
     }
 
     // Filters the UI by ordered recipes
@@ -225,6 +225,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             }
         }
         currentFilterState = 1;
+        filterButtonText.text = filterButtonDisplayedTexts[currentFilterState];
     }
 
     // Switch from ordered recipes to cookable recipes
@@ -243,6 +244,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             }
         }
         currentFilterState = 2;
+        filterButtonText.text = filterButtonDisplayedTexts[currentFilterState];
     }
 
     public void ForceUIUpdate()
@@ -296,10 +298,12 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         foreach (Transform child in recipesContainer.transform)
         {
             Destroy(child.gameObject);
-            yield return null;
         }
-        yield return null;
+        yield return StartCoroutine(RecreateUnlockedRecipes());
+    }
 
+    private IEnumerator RecreateUnlockedRecipes()
+    {
         for (int i = 0; i < innerUnlockedRecipesList.Count; i++)
         {
             Recipe r = innerUnlockedRecipesList[i];
@@ -321,7 +325,11 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             recipeDetails.SetInfoDisplay(infoDisplay);
             yield return null;
         }
+        yield return StartCoroutine(RecreateLockedRecipes());
+    }
 
+    private IEnumerator RecreateLockedRecipes()
+    {
         foreach (Recipe r in innerLockedRecipesList)
         {
             CheckIfRecipeHasCookedDish(r);
