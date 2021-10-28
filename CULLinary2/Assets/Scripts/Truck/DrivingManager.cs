@@ -19,7 +19,7 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
     // At the threshhold, damage taken is 100 damage
     public float accelToDamageRatio = 0.06666667f;
 
-    private Vector3 spawnOffset = Vector3.left * 5;
+    private Vector3 spawnOffset = Vector3.right * 5;
     private bool isPlayerInVehicle = false;
     private bool wasStaminaIconActivePreviously = false;
 
@@ -62,7 +62,7 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         truckAudio.SetActive(false);
         driveableTruck.GetComponent<CarController>().enabled = false;
         truckCamera.SetActive(false);
-        player.transform.position = driveableTruck.transform.position + spawnOffset;
+        player.transform.position = driveableTruck.transform.position + driveableTruck.transform.rotation * spawnOffset;
         player.SetActive(true);
         interactionPrompt.SetActive(true);
         staminaIcon.SetActive(wasStaminaIconActivePreviously);
