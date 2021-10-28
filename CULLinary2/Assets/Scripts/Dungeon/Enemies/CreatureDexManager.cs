@@ -38,6 +38,7 @@ public class CreatureDexManager : SingletonGeneric<CreatureDexManager>
 
     public void SetupCreatureDex()
     {
+        creaturePanel.SetActive(false);
         List<MonsterData> monsterDataList = DatabaseLoader.GetAllMonsters();
         slots = new List<CreatureSlot>();
         int currentSlotId = 0;
