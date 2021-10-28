@@ -61,7 +61,7 @@ public class UIController : SingletonGeneric<UIController>
     private bool anyUIWasActive = false;
     private GameObject player;
     // For interacting with objects
-    private PlayerInteractable currentInteractable = null;
+    private List<PlayerInteractable> currentInteractables = new List<PlayerInteractable>();
 
     public override void Awake()
     {
@@ -306,16 +306,33 @@ public class UIController : SingletonGeneric<UIController>
     // Remembers the current player interactable for interaction
     public void SetPlayerInteractable(PlayerInteractable interactable)
     {
-        currentInteractable = interactable;
+        currentInteractables.Add(interactable);
     }
 
-    // Triggers the OnPlayerLeave callback and clears the current interactable
-    public void TriggerLeaveAndClearPlayerInteractable()
+    // Clears the current interactable if possible
+    public void ClearPlayerInteractable(PlayerInteractable interactable)
     {
-        if (currentInteractable != null)
+        currentInteractables.Remove(interactable);
+    }
+
+    // Clears all interactables except one
+    // Also triggers leaving for each player interactable
+    public void ClearPlayerInteractablesButOne(PlayerInteractable interactable)
+    {
+        // Need to copy to another list before triggering leave
+        // Otherwise triggering leave would modify the list
+        List<PlayerInteractable> oldInteractables = new List<PlayerInteractable>();
+        foreach (PlayerInteractable pi in currentInteractables)
         {
-            currentInteractable.OnPlayerLeave();
-            currentInteractable = null;
+            if (pi != interactable)
+            {
+                oldInteractables.Add(pi);
+            }
+        }
+        currentInteractables = new List<PlayerInteractable>{interactable};
+        foreach (PlayerInteractable pi in oldInteractables)
+        {
+            pi.ForceExit();
         }
     }
 
@@ -417,12 +434,13 @@ public class UIController : SingletonGeneric<UIController>
             // Exit the truck if possible
             if (Input.GetKeyDown(interactKeyCode) && isPlayerInVehicle)
             {
-                DrivingManager.instance.HandlePlayerLeaveVehicle();
+                DrivingManager.instance.HandlePlayerLeaveVehicle(false);
             }
             // Toggle interactable if menu is not active
-            else if (Input.GetKeyDown(interactKeyCode) && currentInteractable != null)
+            else if (Input.GetKeyDown(interactKeyCode) && currentInteractables.Count > 0)
             {
-                currentInteractable.OnPlayerInteract();
+                // Interact with the top of the interactables stack
+                currentInteractables[currentInteractables.Count - 1].OnPlayerInteract();
             }
         }
         // Menu/Tabs interface is active

@@ -30,6 +30,11 @@ public class PlayerMelee : PlayerAction
         }
     }
 
+    private void OnDisable()
+    {
+        this.SetIsInvoking(false);
+    }
+
     public void StopInvoking()
     {
         this.SetIsInvoking(false);

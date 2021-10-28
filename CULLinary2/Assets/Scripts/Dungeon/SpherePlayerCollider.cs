@@ -43,9 +43,16 @@ public class SpherePlayerCollider : MonoBehaviour
     {
         if (otherObject.tag == "Player" && playerWithinRange)
         {
-            playerWithinRange = false;
-            popUpPrompts.SetActive(false);
-            UIController.instance.TriggerLeaveAndClearPlayerInteractable();
+            DoExit();
         }
+    }
+
+    // To be called when player leaves the collider
+    public void DoExit()
+    {
+        playerWithinRange = false;
+        popUpPrompts.SetActive(false);
+        parentInteractable.OnPlayerLeave();
+        UIController.instance.ClearPlayerInteractable(parentInteractable);
     }
 }

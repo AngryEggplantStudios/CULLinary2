@@ -17,6 +17,7 @@ public class VehicleInteractable : PlayerInteractable
     public override void OnPlayerInteract()
     {
         DrivingManager.instance.HandlePlayerEnterVehicle();
+        UIController.instance.ClearPlayerInteractablesButOne(this);
     }
 
     public override void OnPlayerLeave()

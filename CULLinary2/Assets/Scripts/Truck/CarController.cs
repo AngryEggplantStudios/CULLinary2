@@ -82,7 +82,7 @@ public class CarController : MonoBehaviour
     private float stoppingEpsilon = 0.15f;
 
     // For detecting collisions
-    private float previousVelocity = 0.0f;
+    private float previousAccel = 0.0f;
 
     // For realistic acceleration
     private List<float> gearH;
@@ -102,12 +102,13 @@ public class CarController : MonoBehaviour
     void FixedUpdate()
     {
         float currentVelocity = rigidBody.velocity.magnitude;
-        float accelDiff = (previousVelocity - currentVelocity) / Time.deltaTime;
+        float currentAccel = currentVelocity / Time.deltaTime;
+        float accelDiff = previousAccel - currentAccel;
         if (accelDiff > accelThreshholdForCollision)
         {
             OnCollision(accelDiff);
         }
-        previousVelocity = currentVelocity;
+        previousAccel = currentAccel;
 
         if (isSwitchingGears && Time.deltaTime + gearTimeCounter > gearSwitchingTime)
         {
@@ -211,7 +212,7 @@ public class CarController : MonoBehaviour
         pedalInput = 0.0f;
         currentBrakeForce = isBraking ? brakeForce : 0.0f;
         // Prevent player taking damage when entering again
-        previousVelocity = 0.0f;
+        previousAccel = 0.0f;
         HandleMotor();
         HandleBraking();
         UpdateWheels();
@@ -226,6 +227,24 @@ public class CarController : MonoBehaviour
     public bool IsMoving()
     {
         return rigidBody.velocity.magnitude > stoppingEpsilon;
+    }
+    
+    // Checks if the car is moving faster than the collision speed
+    public bool IsPastCollisionSpeed()
+    {
+        return previousAccel > accelThreshholdForCollision;
+    }
+
+    // Force brakes to be applied and stop wheels
+    public void ResetCarMotion()
+    {
+        wheelFrontLeftCollider.brakeTorque = brakeForce;
+        wheelFrontRightCollider.brakeTorque = brakeForce;
+        wheelBackLeftCollider.brakeTorque = brakeForce;
+        wheelBackRightCollider.brakeTorque = brakeForce;
+        wheelFrontLeftCollider.motorTorque = 0.0f;
+        wheelFrontRightCollider.motorTorque = 0.0f;
+        UpdateWheels();
     }
 
     // Checks if the speed is within limits for the current gear level

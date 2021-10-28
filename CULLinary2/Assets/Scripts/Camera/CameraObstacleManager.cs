@@ -6,24 +6,41 @@ public class CameraObstacleManager : MonoBehaviour
 {
     public Transform cam;
     public Transform player;
+    public Transform truckCam;
+    public Transform driveableTruck;
 
+    private Transform currentCam;
+    private Transform currentEntity;
     private List<CameraObstacle> blocking;
     private List<CameraObstacle> transparent;
 
     void Start()
     {
+        currentCam = cam;
+        currentEntity = player;
         blocking = new List<CameraObstacle>();
         transparent = new List<CameraObstacle>();
     }
 
     void Update()
     {
+        if (DrivingManager.instance.IsPlayerInVehicle())
+        {
+            currentCam = truckCam;
+            currentEntity = driveableTruck;
+        }
+        else
+        {
+            currentCam = cam;
+            currentEntity = player;
+        }
+
         blocking.Clear();
 
-        float dist = Vector3.Magnitude(cam.position - player.position);
+        float dist = Vector3.Magnitude(currentCam.position - currentEntity.position);
 
-        Ray rayF = new Ray(cam.position, player.position - cam.position);
-        Ray rayB = new Ray(player.position, cam.position - player.position);
+        Ray rayF = new Ray(currentCam.position, currentEntity.position - currentCam.position);
+        Ray rayB = new Ray(currentEntity.position, currentCam.position - currentEntity.position);
 
         var hitsF = Physics.RaycastAll(rayF, dist);
         var hitsB = Physics.RaycastAll(rayB, dist);

@@ -169,7 +169,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
             OnEndOfDay?.Invoke();
             if (DrivingManager.instance.IsPlayerInVehicle())
             {
-                DrivingManager.instance.HandlePlayerLeaveVehicle();
+                DrivingManager.instance.HandlePlayerLeaveVehicle(true);
             }
             StartSceneFadeOut();
         }

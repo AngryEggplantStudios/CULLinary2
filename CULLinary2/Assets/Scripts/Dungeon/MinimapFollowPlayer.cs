@@ -8,7 +8,7 @@ using UnityEngine;
 // disabling the minimap as well
 public class MinimapFollowPlayer : MonoBehaviour
 {
-    public float zCoordinate = 0.0f;
+    public float yCoordinate = 2.0f;
     private Transform player;
 
     void Start()
@@ -19,6 +19,7 @@ public class MinimapFollowPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        gameObject.transform.position = player.position;
+        Vector3 playerPos = player.position;
+        gameObject.transform.position = new Vector3(playerPos.x, yCoordinate, playerPos.z);
     }
 }

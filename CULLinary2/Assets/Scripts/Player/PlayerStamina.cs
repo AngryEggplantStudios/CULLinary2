@@ -14,7 +14,7 @@ public class PlayerStamina : SingletonGeneric<PlayerStamina>
     [SerializeField] private float regenerationRate = 1f;
     [SerializeField] private float pauseBeforeRegen = 1.5f;
     [SerializeField] private float thresholdStamina = 0.25f;
-    private Coroutine regenerationCoroutine;
+    private Coroutine regenerationCoroutine = null; 
     private WaitForSeconds timeTakenRegen = new WaitForSeconds(0.05f);
     private bool isUnlimitedStamina = false;
     private bool isHalfStamina = false;
@@ -26,6 +26,20 @@ public class PlayerStamina : SingletonGeneric<PlayerStamina>
         float maxStamina = PlayerManager.instance ? PlayerManager.instance.maxStamina : 100f;
         DisplayOnUI(currentStamina, maxStamina);
         staminaCircle.SetActive(false);
+    }
+
+    private void OnEnable()
+    {
+        StartCoroutine(checkRegenerate());
+    }
+
+    private void OnDisable()
+    {
+        StopCoroutine(SetStaminaCircleActiveForTime());
+        if (regenerationCoroutine != null)
+        {
+            StopCoroutine(regenerationCoroutine);
+        }
     }
 
     private void DisplayOnUI(float currentStamina, float maxStamina)

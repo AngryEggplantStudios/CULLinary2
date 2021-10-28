@@ -17,7 +17,7 @@ public abstract class PlayerInteractable : MonoBehaviour
 
     public bool PlayerWithinRange()
     {
-        return GetCollider().PlayerWithinRange();
+        return hasSetColliderParent && GetCollider().PlayerWithinRange();
     }
 
     // Gets the sphere player collider of the object
@@ -31,4 +31,13 @@ public abstract class PlayerInteractable : MonoBehaviour
 
     // Called when player has interacted with the object and goes out of range
     public abstract void OnPlayerLeave();
+
+    // Called to manually make a player leave the interactable
+    public void ForceExit()
+    {
+        if (hasSetColliderParent)
+        {
+            GetCollider().DoExit();
+        }
+    }
 }

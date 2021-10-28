@@ -2043,7 +2043,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8720586934c876d4eb9fc455a37116fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  zCoordinate: 0
+  yCoordinate: 2
 --- !u!114 &124521709
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2161,6 +2161,14 @@ PrefabInstance:
     - target: {fileID: 7930579755670936842, guid: 7dc8ddbba68142e418a35b24cf7935a9, type: 3}
       propertyPath: offset.z
       value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7930579755670936842, guid: 7dc8ddbba68142e418a35b24cf7935a9, type: 3}
+      propertyPath: rotationSpeed
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 7930579755670936842, guid: 7dc8ddbba68142e418a35b24cf7935a9, type: 3}
+      propertyPath: translateSpeed
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 7930579755670936845, guid: 7dc8ddbba68142e418a35b24cf7935a9, type: 3}
       propertyPath: m_RootOrder
@@ -12154,6 +12162,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 597142118}
   m_CullTransparentMesh: 1
+--- !u!4 &601251937 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7930579755670936845, guid: 7dc8ddbba68142e418a35b24cf7935a9, type: 3}
+  m_PrefabInstance: {fileID: 128467596}
+  m_PrefabAsset: {fileID: 0}
 --- !u!20 &601251941 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 7930579755670936844, guid: 7dc8ddbba68142e418a35b24cf7935a9, type: 3}
@@ -17547,6 +17560,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 884579623}
   m_CullTransparentMesh: 1
+--- !u!1 &889823317
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 889823318}
+  - component: {fileID: 889823319}
+  m_Layer: 0
+  m_Name: CameraObstacleManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &889823318
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 889823317}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1627989594}
+  m_RootOrder: 23
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &889823319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 889823317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05d390f7de4433e4e9b786b6575b635a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 1202444187}
+  player: {fileID: 1719325388}
+  truckCam: {fileID: 601251937}
+  driveableTruck: {fileID: 1665800894}
 --- !u!1001 &889826412
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25837,30 +25897,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 828658509780848544, guid: 36c6a61983250bf4e9dfcbe1092b795a, type: 3}
   m_PrefabInstance: {fileID: 1185455166}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1202444186 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 778855639286883990, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
-  m_PrefabInstance: {fileID: 510496869}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1202444187 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 778855639286883991, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
   m_PrefabInstance: {fileID: 510496869}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1202444190
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1202444186}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05d390f7de4433e4e9b786b6575b635a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cam: {fileID: 1202444187}
-  player: {fileID: 1719325388}
 --- !u!1 &1206849611
 GameObject:
   m_ObjectHideFlags: 0
@@ -27916,6 +27957,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!20 &1289944774 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 778855639286884074, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
+  m_PrefabInstance: {fileID: 510496869}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1293629224
 GameObject:
   m_ObjectHideFlags: 0
@@ -35250,6 +35296,7 @@ Transform:
   - {fileID: 1815364424}
   - {fileID: 1503719122}
   - {fileID: 648252430}
+  - {fileID: 889823318}
   m_Father: {fileID: 309590545}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -38319,12 +38366,20 @@ MonoBehaviour:
   staminaIcon: {fileID: 6662030478785053681}
   player: {fileID: 1719325387}
   responsiveUICanvas: {fileID: 2110931401}
-  minimapIcon: {fileID: 0}
-  ordersMapIcon: {fileID: 0}
+  minimapIcon: {fileID: 1056167188}
+  ordersMapIcon: {fileID: 432410340}
   collisionAudioSource: {fileID: 22937015}
   accelToDamageRatio: 0.06666667
+  minimumHeightToStartDrowning: -5
   warningPrefab: {fileID: 1085209639500972291, guid: 3e665808b292d594ba263a057e333c32, type: 3}
   truckCanvas: {fileID: 680700435}
+  truckDiameter: 10
+  truckEdgeFromCentre: 3.1
+  maxRaycastDistance: 10
+  playerSpawnOffset: {x: 5, y: 0, z: 0}
+  unitsFromPlayer: 5
+  playerCamera: {fileID: 1289944774}
+  playerCanvas: {fileID: 2110931401}
 --- !u!1 &1812206966
 GameObject:
   m_ObjectHideFlags: 0

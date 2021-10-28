@@ -40,6 +40,22 @@ public class PlayerSlash : PlayerAction
         animator = GetComponent<Animator>();
     }
 
+    private void OnDisable()
+    {
+        if (weaponCollider != null)
+        {
+            weaponCollider.enabled = false;
+        }
+        if (weaponTrail != null)
+        {
+            weaponTrail.emitting = false;
+        }
+        animator.SetBool("isPowerUp", false);
+        animator.SetBool("isMelee", false);
+        playerMelee.StopInvoking();
+        playerSkill.StopInvoking(); 
+    }
+
     public void ChangeWeapon(int id)
     {
         if (instantiatedWeapon != null)
