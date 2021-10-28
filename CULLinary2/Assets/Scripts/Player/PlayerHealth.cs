@@ -75,14 +75,6 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
             HandleHit(drowningDamage, true);
         }
 
-        if (isCloseToCampfire)
-        {
-            IncreaseHealth(GameTimer.instance.GameMinutesPassedSinceLastUpdate() * (PlayerManager.instance
-                ? PlayerManager.instance.campfireRegenerationRate
-                : 0.0f
-            ));
-        }
-
         //Flash health bar if below 25%
         float currentHealthAsPercentage = PlayerManager.instance.currentHealth / PlayerManager.instance.maxHealth;
         healthBarAnimator.SetBool("flashing", currentHealthAsPercentage < thresholdHealth);
@@ -93,6 +85,16 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
             BuffManager.instance.ClearBuffManager();
             deathIsCalled = true;
             Die();
+        }
+        else if (!deathIsCalled)
+        {
+            if (isCloseToCampfire)
+            {
+                IncreaseHealth(GameTimer.instance.GameMinutesPassedSinceLastUpdate() * (PlayerManager.instance
+                    ? PlayerManager.instance.campfireRegenerationRate
+                    : 0.0f
+                ));
+            }
         }
     }
 
