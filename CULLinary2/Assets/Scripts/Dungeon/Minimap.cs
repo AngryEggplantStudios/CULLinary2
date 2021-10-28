@@ -183,7 +183,7 @@ public class Minimap : MonoBehaviour
 
     protected virtual void SetTruckIconPos()
     {
-
+        SetIconPos(truckBody, truckIcon, false);
     }
 
     // The centre point of the minimap
