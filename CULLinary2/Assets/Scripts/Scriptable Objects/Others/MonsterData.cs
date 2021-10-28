@@ -13,7 +13,7 @@ public class MonsterData : ScriptableObject
     public Sprite unlockedIcon;
     public string lockedName;
     public string unlockedName;
-    public int healthAmount;
+    public string dropDescription;
     public string remarksDescription;
     public string enemyTypeDescription;
     public int lowerBound;

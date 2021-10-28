@@ -27,8 +27,17 @@ public class CreatureSlot : MonoBehaviour
     }
     public void UpdateUI()
     {
-        creatureSlotName.text = monsterData.unlockedName;
-        creatureSlotIcon.sprite = monsterData.unlockedIcon;
+        if (PlayerManager.instance.unlockedMonsters.Contains(monsterData.monsterName))
+        {
+            creatureSlotName.text = monsterData.unlockedName;
+            creatureSlotIcon.sprite = monsterData.unlockedIcon;
+        }
+        else
+        {
+            creatureSlotName.text = monsterData.lockedName;
+            creatureSlotIcon.sprite = monsterData.lockedIcon;
+        }
+
     }
 
 }
