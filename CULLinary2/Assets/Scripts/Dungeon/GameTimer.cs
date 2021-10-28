@@ -42,7 +42,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
     public delegate void StartNewDayDelegate();
     public static event StartNewDayDelegate OnStartNewDay;
     public delegate void BeforeStartNewDayDelegate();
-    public static event BeforeStartNewDayDelegate OnBeforeStartNewDay; // invoked right before OnStartNewDay; for enabling certain populations
+    // public static event BeforeStartNewDayDelegate OnBeforeStartNewDay; // invoked right before OnStartNewDay; for enabling certain populations
     public delegate void EndOfDayDelegate();
     public static event EndOfDayDelegate OnEndOfDay;
 
@@ -117,7 +117,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         UIController.instance.isNewspaperOpen = false;
         Time.timeScale = 1;
 
-        OnBeforeStartNewDay?.Invoke();
+        // OnBeforeStartNewDay?.Invoke();
         OnStartNewDay?.Invoke();
     }
 
@@ -149,7 +149,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
             if (currentNews == null)
             {
                 Debug.Log("No newspaper for " + currentIssueNumber + " found");
-                OnBeforeStartNewDay?.Invoke();
+                // OnBeforeStartNewDay?.Invoke();
                 OnStartNewDay?.Invoke();
             }
             else
