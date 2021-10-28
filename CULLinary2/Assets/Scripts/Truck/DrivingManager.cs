@@ -6,9 +6,9 @@ using UnityEngine.UI;
 // Handles the player entering and leaving vehicle
 public class DrivingManager : SingletonGeneric<DrivingManager>
 {
+    public Camera truckCamera;
     public GameObject driveableTruck;
     public GameObject truckAudio;
-    public GameObject truckCamera;
     public GameObject interactionPrompt;
     public GameObject staminaIcon;
     public GameObject player;
@@ -19,7 +19,6 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
     // At the threshhold, damage taken is 100 damage
     public float accelToDamageRatio = 0.06666667f;
     [Header("UI References")]
-    [SerializeField] private Camera cam;
     [SerializeField] private GameObject warningPrefab;
     [SerializeField] private GameObject truckCanvas;
 
@@ -55,7 +54,7 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
     {
         truckAudio.SetActive(true);
         driveableTruck.GetComponent<CarController>().enabled = true;
-        truckCamera.SetActive(true);
+        truckCamera.gameObject.SetActive(true);
         player.SetActive(false);
         interactionPrompt.SetActive(false);
         responsiveUICanvas.SetActive(false);
@@ -80,7 +79,7 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
 
         truckAudio.SetActive(false);
         driveableTruck.GetComponent<CarController>().enabled = false;
-        truckCamera.SetActive(false);
+        truckCamera.gameObject.SetActive(false);
         player.transform.position = driveableTruck.transform.position + driveableTruck.transform.rotation * spawnOffset;
         player.SetActive(true);
         interactionPrompt.SetActive(true);
@@ -113,6 +112,6 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         GameObject warning = Instantiate(warningPrefab);
         warning.transform.GetComponentInChildren<Text>().text = message.ToString();
         warning.transform.SetParent(truckCanvas.transform);
-        warning.transform.position = cam.WorldToScreenPoint(transform.position);
+        warning.transform.position = truckCamera.WorldToScreenPoint(driveableTruck.transform.position);
     }
 }
