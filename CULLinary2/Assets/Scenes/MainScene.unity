@@ -8737,6 +8737,7 @@ MonoBehaviour:
   currentMoney: 99999
   currentDay: 1
   currentNewspaperIssue: 1
+  unlockedMonsters: 
   campfireRegenerationRate: 0.25
 --- !u!4 &489993154
 Transform:
@@ -12078,9 +12079,9 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 597142118}
   m_CullTransparentMesh: 1
---- !u!1 &601251936 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7930579755670936833, guid: 7dc8ddbba68142e418a35b24cf7935a9, type: 3}
+--- !u!20 &601251941 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 7930579755670936844, guid: 7dc8ddbba68142e418a35b24cf7935a9, type: 3}
   m_PrefabInstance: {fileID: 128467596}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &605397735
@@ -13563,6 +13564,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 676164877}
   m_CullTransparentMesh: 1
+--- !u!1 &680700435 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4287737670564508334, guid: 7dc8ddbba68142e418a35b24cf7935a9, type: 3}
+  m_PrefabInstance: {fileID: 128467596}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &683488514
 GameObject:
   m_ObjectHideFlags: 0
@@ -38156,15 +38162,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 865ee75f70679b948a4b1a8f4c5493fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  truckCamera: {fileID: 601251941}
   driveableTruck: {fileID: 1665800889}
   truckAudio: {fileID: 1701017519}
-  truckCamera: {fileID: 601251936}
   interactionPrompt: {fileID: 921201920}
   staminaIcon: {fileID: 6662030478785053681}
   player: {fileID: 1719325387}
   responsiveUICanvas: {fileID: 2110931401}
   collisionAudioSource: {fileID: 22937015}
   accelToDamageRatio: 0.06666667
+  warningPrefab: {fileID: 1085209639500972291, guid: 3e665808b292d594ba263a057e333c32, type: 3}
+  truckCanvas: {fileID: 680700435}
 --- !u!1 &1812206966
 GameObject:
   m_ObjectHideFlags: 0

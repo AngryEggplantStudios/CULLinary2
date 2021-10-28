@@ -8,7 +8,7 @@ public class FloatingText : MonoBehaviour
     private PlayerHealth healthPlayer;
     void Start()
     {
-        healthPlayer = GameObject.FindGameObjectWithTag("Player").transform.GetComponent<PlayerHealth>();
+        healthPlayer = GameObject.FindGameObjectWithTag("Player")?.transform?.GetComponent<PlayerHealth>();
         Destroy(gameObject, destroyTime);
     }
 
