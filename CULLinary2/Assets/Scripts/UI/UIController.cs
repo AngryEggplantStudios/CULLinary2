@@ -417,7 +417,7 @@ public class UIController : SingletonGeneric<UIController>
             // Exit the truck if possible
             if (Input.GetKeyDown(interactKeyCode) && isPlayerInVehicle)
             {
-                DrivingManager.instance.HandlePlayerLeaveVehicle();
+                DrivingManager.instance.HandlePlayerLeaveVehicle(false);
             }
             // Toggle interactable if menu is not active
             else if (Input.GetKeyDown(interactKeyCode) && currentInteractable != null)

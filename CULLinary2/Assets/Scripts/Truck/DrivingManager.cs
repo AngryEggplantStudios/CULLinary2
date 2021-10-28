@@ -17,11 +17,13 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
     [SerializeField] private GameObject responsiveUICanvas;
     [SerializeField] private GameObject minimapIcon;
     [SerializeField] private GameObject ordersMapIcon;
-    [Header("For Collision")]
+    [Header("For Collision and Drowning")]
     [SerializeField] private AudioSource collisionAudioSource;
     // Threshhold is 1500 m/s-2
     // At the threshhold, damage taken is 100 damage
     public float accelToDamageRatio = 0.06666667f;
+    // The height below the ground where player will be kicked out
+    public float minimumHeightToStartDrowning = -5.0f;
     [Header("UI References")]
     [SerializeField] private GameObject warningPrefab;
     [SerializeField] private GameObject truckCanvas;
@@ -41,7 +43,7 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         driveableTruck.GetComponent<CarController>().AddOnCollisionAction(decel =>
         {
             collisionAudioSource.Play();
-            HandlePlayerLeaveVehicle();
+            HandlePlayerLeaveVehicle(true);
             PlayerHealth.instance.HandleHit(decel * accelToDamageRatio);
         });
     }
@@ -51,6 +53,10 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         if (isPlayerInVehicle)
         {
             player.transform.position = driveableTruck.transform.position;
+            if (driveableTruck.transform.position.y < minimumHeightToStartDrowning)
+            {
+                HandlePlayerLeaveVehicle(true);
+            }
         }
     }
 
@@ -72,19 +78,33 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         staminaIcon.SetActive(false);
     }
 
-    public void HandlePlayerLeaveVehicle()
+    // Makes the player leave the vehicle
+    // 
+    // If skipChecks is set to true, player will leave
+    // regardless of the vehicle's speed or location
+    public void HandlePlayerLeaveVehicle(bool skipChecks)
     {
-        Vector3 playerOffset = driveableTruck.transform.rotation * spawnOffset;
-        Vector3 newPlayerPos = driveableTruck.transform.position;
-        RaycastHit hit;
-        if (Physics.Raycast(driveableTruck.transform.position, playerOffset, out hit, maxRaycastDistance, LayerMask.GetMask("Environment")))
+        CarController truckController = driveableTruck.GetComponent<CarController>();
+        if (!skipChecks)
         {
-            SpawnWarningMessage("Can't get out safely!");
-            return;
+            if (truckController.IsPastCollisionSpeed())
+            {
+                SpawnWarningMessage("Moving too fast!");
+                return;
+            }
+
+            Vector3 playerOffset = driveableTruck.transform.rotation * spawnOffset;
+            Vector3 newPlayerPos = driveableTruck.transform.position;
+            RaycastHit hit;
+            if (Physics.Raycast(driveableTruck.transform.position, playerOffset, out hit, maxRaycastDistance, LayerMask.GetMask("Environment")))
+            {
+                SpawnWarningMessage("Can't get out safely!");
+                return;
+            }
         }
 
         truckAudio.SetActive(false);
-        driveableTruck.GetComponent<CarController>().enabled = false;
+        truckController.enabled = false;
         truckCamera.gameObject.SetActive(false);
         player.transform.position = driveableTruck.transform.position + driveableTruck.transform.rotation * spawnOffset;
         player.SetActive(true);
