@@ -10,5 +10,5 @@ public class NewsIssue : ScriptableObject
     public string subhead;
 
     public int[] recipesUnlocked;
-    public int[] enemiesUnlocked;
+    public MonsterName[] enemiesUnlocked;
 }

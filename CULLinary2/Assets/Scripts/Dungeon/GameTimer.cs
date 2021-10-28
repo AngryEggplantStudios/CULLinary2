@@ -65,6 +65,15 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
         DayText.text = "DAY " + dayNum;
         UpdateTimedObjects();
+
+        // enable unlocked monsters
+        OnStartNewDay += () =>
+        {
+            foreach (MonsterName mn in PlayerManager.instance.unlockedMonsters)
+            {
+                EcosystemManager.EnablePopulation(mn);
+            }
+        };
     }
 
     private void Update()
@@ -150,6 +159,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
                 UIController.instance.isNewspaperOpen = true;
                 newspaper.SetActive(true);
                 hudToHide.SetActive(false);
+                // when newspaper is closed, CloseNewspaperAndStartDay is called
             }
             showRandomNews = false;
         }
@@ -274,7 +284,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         showRandomNews = true;
     }
 
-    // Uses the newspaper that is shown at the start of the day
+    // Uses the newspaper that is shown at the start of the next day
     // and applies the changes to the game
     private void DoProgression(NewsIssue ni)
     {
@@ -282,9 +292,9 @@ public class GameTimer : SingletonGeneric<GameTimer>
         {
             PlayerManager.instance.unlockedRecipesList.Add(id);
         }
-        foreach (int id in ni.enemiesUnlocked)
+        foreach (MonsterName mn in ni.enemiesUnlocked)
         {
-            // TODO - Unlock the enemies
+            PlayerManager.instance.unlockedMonsters.Add(mn);
         }
         if (ni.recipesUnlocked.Length > 0)
         {

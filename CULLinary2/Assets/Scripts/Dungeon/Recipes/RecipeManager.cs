@@ -87,10 +87,10 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             ? PlayerManager.instance.unlockedRecipesList
             : new List<int> { 0, 4, 6, 10, 32 };
 
+        StopAllCoroutines();
         innerLockedRecipesList.Clear();
         innerUnlockedRecipesList.Clear();
-
-        StopAllCoroutines();
+        
         foreach (int recipeId in unlockedRecipes)
         {
             innerUnlockedRecipesList.Add(DatabaseLoader.GetRecipeById(recipeId));
