@@ -201,6 +201,7 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         {
             if (!Physics.CheckSphere(possiblePos, truckDiameter, LayerMask.GetMask("Environment")))
             {
+                driveableTruck.GetComponent<CarController>().ResetCarMotion();
                 driveableTruck.transform.position = possiblePos;
                 return true;
             }

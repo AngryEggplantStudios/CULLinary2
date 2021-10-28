@@ -235,6 +235,18 @@ public class CarController : MonoBehaviour
         return previousAccel > accelThreshholdForCollision;
     }
 
+    // Force brakes to be applied and stop wheels
+    public void ResetCarMotion()
+    {
+        wheelFrontLeftCollider.brakeTorque = brakeForce;
+        wheelFrontRightCollider.brakeTorque = brakeForce;
+        wheelBackLeftCollider.brakeTorque = brakeForce;
+        wheelBackRightCollider.brakeTorque = brakeForce;
+        wheelFrontLeftCollider.motorTorque = 0.0f;
+        wheelFrontRightCollider.motorTorque = 0.0f;
+        UpdateWheels();
+    }
+
     // Checks if the speed is within limits for the current gear level
     private bool IsSpeedOkayForCurrentGear()
     {
