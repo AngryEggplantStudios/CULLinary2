@@ -14,6 +14,6 @@ public class FloatingText : MonoBehaviour
 
 	private void OnDestroy()
 	{
-        healthPlayer.DestroyDamageCounter(gameObject);
+        healthPlayer?.DestroyDamageCounter(gameObject);
 	}
 }

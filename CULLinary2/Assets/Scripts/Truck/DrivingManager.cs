@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 // Handles the player entering and leaving vehicle
 public class DrivingManager : SingletonGeneric<DrivingManager>
@@ -13,18 +14,27 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
     public GameObject player;
     public GameObject responsiveUICanvas;
     [Header("For Collision")]
-    public AudioSource collisionAudioSource;
-
+    [SerializeField] private AudioSource collisionAudioSource;
     // Threshhold is 1500 m/s-2
     // At the threshhold, damage taken is 100 damage
     public float accelToDamageRatio = 0.06666667f;
+    [Header("UI References")]
+    [SerializeField] private Camera cam;
+    [SerializeField] private GameObject warningPrefab;
+    [SerializeField] private GameObject truckCanvas;
+
+    // 3.1 is manually determined, the half width of truck in MainScene
+    private float truckEdgeFromCentre = 3.1f;
+    private float maxRaycastDistance = 10.0f;
 
     private Vector3 spawnOffset = Vector3.right * 5;
+    private Vector3 rightEdgeOfTruck;
     private bool isPlayerInVehicle = false;
     private bool wasStaminaIconActivePreviously = false;
 
     void Start()
     {
+        rightEdgeOfTruck = Vector3.right * truckEdgeFromCentre;
         driveableTruck.GetComponent<CarController>().AddOnCollisionAction(decel =>
         {
             collisionAudioSource.Play();
@@ -59,6 +69,15 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
 
     public void HandlePlayerLeaveVehicle()
     {
+        Vector3 playerOffset = driveableTruck.transform.rotation * spawnOffset;
+        Vector3 newPlayerPos = driveableTruck.transform.position;
+        RaycastHit hit;
+        if (Physics.Raycast(driveableTruck.transform.position, playerOffset, out hit, maxRaycastDistance, LayerMask.GetMask("Environment")))
+        {
+            SpawnWarningMessage("Can't get out safely!");
+            return;
+        }
+
         truckAudio.SetActive(false);
         driveableTruck.GetComponent<CarController>().enabled = false;
         truckCamera.SetActive(false);
@@ -87,5 +106,13 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
     public Transform GetTruckTransform()
     {
         return driveableTruck.transform;
+    }
+
+    private void SpawnWarningMessage(string message)
+    {
+        GameObject warning = Instantiate(warningPrefab);
+        warning.transform.GetComponentInChildren<Text>().text = message.ToString();
+        warning.transform.SetParent(truckCanvas.transform);
+        warning.transform.position = cam.WorldToScreenPoint(transform.position);
     }
 }
