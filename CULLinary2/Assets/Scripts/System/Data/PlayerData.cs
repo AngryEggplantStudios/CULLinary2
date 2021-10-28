@@ -56,7 +56,7 @@ public class PlayerData
         pfizerShot = 0;
         modernaShot = 0;
         currentNewspaperIssue = 1;
-        unlockedMonsters = new MonsterName[0] { };
+        unlockedMonsters = new MonsterName[3] { MonsterName.Bread, MonsterName.DaddyPotato, MonsterName.Potato };
         monsterSavedDatas = new MonsterSavedData[11] {
             new MonsterSavedData(MonsterName.Bread, PopulationLevel.Normal),
             new MonsterSavedData(MonsterName.Potato, PopulationLevel.Normal),
