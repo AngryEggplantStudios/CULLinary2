@@ -22,6 +22,7 @@ public class PlayerData
     public int currentDay;
     public int currentNewspaperIssue = 1;
     public int[] unlockedRecipes;
+    public MonsterName[] unlockedMonsters;
     public MonsterSavedData[] monsterSavedDatas;
 
     public int[] weaponSkillArray;
@@ -55,6 +56,7 @@ public class PlayerData
         pfizerShot = 0;
         modernaShot = 0;
         currentNewspaperIssue = 1;
+        unlockedMonsters = new MonsterName[0]{};
         monsterSavedDatas = new MonsterSavedData[11] {
             new MonsterSavedData(MonsterName.Eggplant, PopulationLevel.Normal),
             new MonsterSavedData(MonsterName.Corn, PopulationLevel.Normal),

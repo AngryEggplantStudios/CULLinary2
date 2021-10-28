@@ -206,6 +206,15 @@ public class CarController : MonoBehaviour
         {
             asrc.Stop();
         }
+
+        // Cut the engine and apply brakes on disable
+        pedalInput = 0.0f;
+        currentBrakeForce = isBraking ? brakeForce : 0.0f;
+        // Prevent player taking damage when entering again
+        previousVelocity = 0.0f;
+        HandleMotor();
+        HandleBraking();
+        UpdateWheels();
     }
 
     public void AddOnCollisionAction(OnCollisionDelegate ocd)
