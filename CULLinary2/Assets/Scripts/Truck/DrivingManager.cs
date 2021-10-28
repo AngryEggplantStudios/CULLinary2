@@ -37,6 +37,13 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
     private bool isPlayerInVehicle = false;
     private bool wasStaminaIconActivePreviously = false;
 
+    // Show error message when trying to eat something
+    private KeyCode consumableOneKeyCode;
+    private KeyCode consumableTwoKeyCode;
+    private KeyCode consumableThreeKeyCode;
+    private KeyCode consumableFourKeyCode;
+    private KeyCode consumableFiveKeyCode;
+
     void Start()
     {
         rightEdgeOfTruck = Vector3.right * truckEdgeFromCentre;
@@ -46,6 +53,12 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
             HandlePlayerLeaveVehicle(true);
             PlayerHealth.instance.HandleHit(decel * accelToDamageRatio);
         });
+
+        consumableOneKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.Consumable1); //Health (Red Pill) 
+        consumableTwoKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.Consumable2); //Stamina (Blue pill)
+        consumableThreeKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.Consumable3); //Health + Stamina(Potion)
+        consumableFourKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.Consumable4); //Crit & Evasion(Pfizer)
+        consumableFiveKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.Consumable5); //Attack(Moderna)
     }
 
     void Update()
@@ -56,6 +69,15 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
             if (driveableTruck.transform.position.y < minimumHeightToStartDrowning)
             {
                 HandlePlayerLeaveVehicle(true);
+            }
+
+            if ((Input.GetKeyDown(consumableOneKeyCode) && PlayerManager.instance.healthPill > 0) ||
+                (Input.GetKeyDown(consumableTwoKeyCode) && PlayerManager.instance.staminaPill > 0) ||
+                (Input.GetKeyDown(consumableThreeKeyCode) && PlayerManager.instance.potion > 0) ||
+                (Input.GetKeyDown(consumableFourKeyCode) && PlayerManager.instance.pfizerShot > 0) ||
+                (Input.GetKeyDown(consumableFiveKeyCode) && PlayerManager.instance.modernaShot > 0))
+            {
+                SpawnWarningMessage("Don't drink and drive!");
             }
         }
     }

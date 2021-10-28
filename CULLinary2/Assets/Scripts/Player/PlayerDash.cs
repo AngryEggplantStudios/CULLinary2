@@ -24,6 +24,7 @@ public class PlayerDash : PlayerAction
     private CharacterController characterController;
     private bool isDashing;
     private PlayerSlash playerSlash;
+    private Coroutine currentCoroutine = null;
 
     private void Awake()
     {
@@ -39,6 +40,10 @@ public class PlayerDash : PlayerAction
 
     private void OnDisable()
     {
+        if (currentCoroutine != null)
+        {
+            StopCoroutine(currentCoroutine);
+        }
         isDashing = false;
     }
 
@@ -58,7 +63,7 @@ public class PlayerDash : PlayerAction
         {
             playerStamina.ReduceStamina(staminaCost);
         }
-        StartCoroutine(StartDashWithLerp(direction.normalized));
+        currentCoroutine = StartCoroutine(StartDashWithLerp(direction.normalized));
     }
 
     private IEnumerator StartDashWithLerp(Vector3 normalizedDirection)

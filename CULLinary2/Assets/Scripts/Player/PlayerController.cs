@@ -86,6 +86,10 @@ public class PlayerController : PlayerAction
 
     }
 
+    private void OnDisable()
+    {   
+        this.SetIsInvoking(false);
+    }
 }
 
 

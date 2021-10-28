@@ -25,6 +25,13 @@ public class PlayerSecondaryAttack : PlayerAction
         playerStamina = GetComponent<PlayerStamina>();
     }
 
+    private void OnDisable()
+    {
+        Destroy(skillObject);
+        animator.SetBool("isPowerUp", false);
+        playerSkill.StopInvoking();
+    }
+
     private void PowerUp()
     {
         if (Time.timeScale == 0f)

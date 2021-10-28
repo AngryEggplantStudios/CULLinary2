@@ -28,6 +28,17 @@ public class PlayerStamina : SingletonGeneric<PlayerStamina>
         staminaCircle.SetActive(false);
     }
 
+    private void OnEnable()
+    {
+        StartCoroutine(checkRegenerate());
+    }
+
+    private void OnDisable()
+    {
+        StopCoroutine(SetStaminaCircleActiveForTime());
+        StopCoroutine(regenerationCoroutine);
+    }
+
     private void DisplayOnUI(float currentStamina, float maxStamina)
     {
         staminaCircleImage.fillAmount = currentStamina / maxStamina;
