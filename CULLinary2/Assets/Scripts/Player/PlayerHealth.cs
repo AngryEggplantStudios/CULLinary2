@@ -120,6 +120,11 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         return true;
     }
 
+    public bool WasDeathCalled()
+    {
+        return deathIsCalled;
+    }
+
     public void RestoreToFull()
     {
         deathIsCalled = false;

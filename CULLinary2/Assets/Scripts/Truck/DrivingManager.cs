@@ -38,6 +38,8 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
     [SerializeField] private float maxRaycastDistance = 10.0f;
     // Eject player 5 units to the right
     [SerializeField] private Vector3 playerSpawnOffset = new Vector3(5, 0, 0);
+    // To spawn the player on the ground
+    [SerializeField] private Collider groundCollider;
     [Header("Spawn Truck")]
     // Number of units to spawn the truck away from the player
     [SerializeField] private float unitsFromPlayer = 5.0f;
@@ -142,19 +144,27 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
 
             Vector3 playerOffset = driveableTruck.transform.rotation * playerSpawnOffset;
             Vector3 newPlayerPos = driveableTruck.transform.position;
-            RaycastHit hit;
-            if (Physics.Raycast(driveableTruck.transform.position, playerOffset, out hit, maxRaycastDistance, LayerMask.GetMask("Environment")))
+            if (Physics.Raycast(driveableTruck.transform.position, playerOffset, out _, maxRaycastDistance, LayerMask.GetMask("Environment")))
             {
                 SpawnWarningMessage("Can't get out safely!");
                 return;
             }
         }
+        Vector3 exitPlayerPos = driveableTruck.transform.position + driveableTruck.transform.rotation * playerSpawnOffset;
+        // 20.0f is above the ground for sure
+        Vector3 aboveExitPos = new Vector3(exitPlayerPos.x, 20.0f, exitPlayerPos.z);
+        // Find ground Y by raycast
+        RaycastHit hit;
+        if (!groundCollider.Raycast(new Ray(aboveExitPos, Vector3.down), out hit, Mathf.Infinity))
+        {
+            SpawnWarningMessage("No ground to land on!");
+            return;
+        }
 
         truckAudio.SetActive(false);
         truckController.enabled = false;
         truckCamera.gameObject.SetActive(false);
-        Vector3 exitPlayerPos = driveableTruck.transform.position + driveableTruck.transform.rotation * playerSpawnOffset;
-        player.transform.position = new Vector3(exitPlayerPos.x, 0.0f, exitPlayerPos.z);
+        player.transform.position = new Vector3(exitPlayerPos.x, hit.point.y, exitPlayerPos.z);
         player.SetActive(true);
         interactionPrompt.SetActive(true);
         staminaIcon.SetActive(wasStaminaIconActivePreviously);
