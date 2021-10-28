@@ -25,7 +25,8 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
 
     void Start()
     {
-        driveableTruck.GetComponent<CarController>().AddOnCollisionAction(decel => {
+        driveableTruck.GetComponent<CarController>().AddOnCollisionAction(decel =>
+        {
             collisionAudioSource.Play();
             HandlePlayerLeaveVehicle();
             PlayerHealth.instance.HandleHit(decel * accelToDamageRatio);

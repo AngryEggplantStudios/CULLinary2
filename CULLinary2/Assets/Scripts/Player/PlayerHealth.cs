@@ -105,6 +105,7 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         {
             rend.materials[k].color = originalColors[k];
         }
+        ScreenFlash.Instance.ResetScreenColour();
     }
 
     public bool IncreaseHealth(float health)
