@@ -37,19 +37,19 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     [Header("Others")]
     public int currentDay;
     public int currentNewspaperIssue = 1;
-    public List<MonsterName> unlockedMonsters;
+    public List<MonsterName> unlockedMonsters = new List<MonsterName> { MonsterName.Bread, MonsterName.DaddyPotato, MonsterName.Potato };
     public Dictionary<MonsterName, PopulationLevel> monsterDict = new Dictionary<MonsterName, PopulationLevel>{
-        {MonsterName.Corn, PopulationLevel.Normal},
-        {MonsterName.Potato, PopulationLevel.Normal},
-        {MonsterName.Eggplant, PopulationLevel.Normal},
         {MonsterName.Bread, PopulationLevel.Normal},
+        {MonsterName.Potato, PopulationLevel.Normal},
+        {MonsterName.DaddyPotato, PopulationLevel.Normal},
+        {MonsterName.Corn, PopulationLevel.Normal},
+        {MonsterName.DaddyCorn, PopulationLevel.Normal},
+        {MonsterName.Eggplant, PopulationLevel.Normal},
+        {MonsterName.DaddyEggplant, PopulationLevel.Normal},
         {MonsterName.Tomato, PopulationLevel.Normal},
         {MonsterName.Meat, PopulationLevel.Normal},
-        {MonsterName.Cheese, PopulationLevel.Normal},
         {MonsterName.Mushroom, PopulationLevel.Normal},
-        {MonsterName.DaddyCorn, PopulationLevel.Normal},
-        {MonsterName.DaddyEggplant, PopulationLevel.Normal},
-        {MonsterName.DaddyPotato, PopulationLevel.Normal},
+        {MonsterName.Cheese, PopulationLevel.Normal},
     };
 
     [Header("Health Regenerated per Game Minute at Campfire")]

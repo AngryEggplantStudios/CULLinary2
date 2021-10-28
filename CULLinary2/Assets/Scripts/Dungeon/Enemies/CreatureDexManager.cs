@@ -11,16 +11,18 @@ public class CreatureDexManager : SingletonGeneric<CreatureDexManager>
     [SerializeField] private Image creatureIcon;
     [SerializeField] private TMP_Text creatureDesc;
     [SerializeField] private TMP_Text creatureRemarks;
-    [SerializeField] private TMP_Text creatureHealth;
+    [SerializeField] private TMP_Text creatureDrop;
     [SerializeField] private TMP_Text creatureType;
     [SerializeField] private GameObject slotPrefab;
     [SerializeField] private GameObject slotsParentObject;
+    [SerializeField] private GameObject creaturePanel;
 
     private int selectedSlotId = -1;
     private List<CreatureSlot> slots;
 
     public void HandleClick(int slotId)
     {
+        creaturePanel.SetActive(true);
         if (selectedSlotId == slotId)
         {
             return;
@@ -36,6 +38,7 @@ public class CreatureDexManager : SingletonGeneric<CreatureDexManager>
 
     public void SetupCreatureDex()
     {
+        creaturePanel.SetActive(false);
         List<MonsterData> monsterDataList = DatabaseLoader.GetAllMonsters();
         slots = new List<CreatureSlot>();
         int currentSlotId = 0;
@@ -58,12 +61,25 @@ public class CreatureDexManager : SingletonGeneric<CreatureDexManager>
             return;
         }
         MonsterData monsterSelected = slots[selectedSlotId].monsterData;
-        creatureName.text = monsterSelected.unlockedName;
-        creatureIcon.sprite = monsterSelected.unlockedIcon;
-        creatureDesc.text = monsterSelected.unlockedDescription;
-        creatureRemarks.text = "Remarks: " + monsterSelected.remarksDescription;
-        creatureHealth.text = "Health: " + monsterSelected.healthAmount + " HP";
-        creatureType.text = "Type: " + monsterSelected.enemyTypeDescription;
+        if (PlayerManager.instance.unlockedMonsters.Contains(monsterSelected.monsterName))
+        {
+            creatureName.text = monsterSelected.unlockedName;
+            creatureIcon.sprite = monsterSelected.unlockedIcon;
+            creatureDesc.text = monsterSelected.unlockedDescription;
+            creatureRemarks.text = "Behavior: " + monsterSelected.remarksDescription;
+            creatureDrop.text = "Drops: " + monsterSelected.dropDescription;
+            creatureType.text = "Category: " + monsterSelected.enemyTypeDescription;
+        }
+        else
+        {
+            creatureName.text = monsterSelected.lockedName;
+            creatureIcon.sprite = monsterSelected.lockedIcon;
+            creatureDesc.text = monsterSelected.lockedDescription;
+            creatureRemarks.text = "Behavior: ???";
+            creatureDrop.text = "Drops: ???";
+            creatureType.text = "Category: ???";
+        }
+
     }
 
     public void UpdateCreatureSlots()

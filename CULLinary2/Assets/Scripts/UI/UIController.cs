@@ -13,6 +13,7 @@ public class UIController : SingletonGeneric<UIController>
     [SerializeField] private GameObject recipesTab;
     [SerializeField] private GameObject weaponsTab;
     [SerializeField] private GameObject shopTab;
+    [SerializeField] private GameObject creatureTab;
     [Header("Main HUD")]
     [SerializeField] private GameObject mainHud;
     [SerializeField] private GameObject pauseMenu;
@@ -211,6 +212,7 @@ public class UIController : SingletonGeneric<UIController>
         recipesTab.SetActive(false);
         weaponsTab.SetActive(false);
         shopTab.SetActive(false);
+        creatureTab.SetActive(false);
         currentUiPage = (int)UIPage.INVENTORY;
     }
 
@@ -224,6 +226,7 @@ public class UIController : SingletonGeneric<UIController>
         recipesTab.SetActive(false);
         weaponsTab.SetActive(false);
         shopTab.SetActive(false);
+        creatureTab.SetActive(false);
         currentUiPage = (int)UIPage.ORDERS;
     }
 
@@ -237,6 +240,7 @@ public class UIController : SingletonGeneric<UIController>
         recipesTab.SetActive(!recipesTab.activeSelf);
         weaponsTab.SetActive(false);
         shopTab.SetActive(false);
+        creatureTab.SetActive(false);
         currentUiPage = (int)UIPage.RECIPES;
     }
 
@@ -250,6 +254,7 @@ public class UIController : SingletonGeneric<UIController>
         recipesTab.SetActive(false);
         weaponsTab.SetActive(!weaponsTab.activeSelf);
         shopTab.SetActive(false);
+        creatureTab.SetActive(false);
         currentUiPage = (int)UIPage.WEAPONS;
     }
 
@@ -262,8 +267,23 @@ public class UIController : SingletonGeneric<UIController>
         ordersTab.SetActive(false);
         recipesTab.SetActive(false);
         weaponsTab.SetActive(false);
+        creatureTab.SetActive(false);
         shopTab.SetActive(!shopTab.activeSelf);
         currentUiPage = (int)UIPage.SHOP;
+    }
+
+    public void ToggleCreatures()
+    {
+        mainHud.SetActive(creatureTab.activeSelf);
+        Time.timeScale = creatureTab.activeSelf ? 1f : 0f;
+        isMenuActive = !creatureTab.activeSelf;
+        inventoryTab.SetActive(false);
+        ordersTab.SetActive(false);
+        recipesTab.SetActive(false);
+        weaponsTab.SetActive(false);
+        creatureTab.SetActive(!creatureTab.activeSelf);
+        shopTab.SetActive(false);
+        currentUiPage = (int)UIPage.CREATURES;
     }
 
     public void CloseMenu()
@@ -276,6 +296,7 @@ public class UIController : SingletonGeneric<UIController>
         recipesTab.SetActive(false);
         weaponsTab.SetActive(false);
         shopTab.SetActive(false);
+        creatureTab.SetActive(false);
     }
 
     public void OpenCampfireInterface()
@@ -288,6 +309,7 @@ public class UIController : SingletonGeneric<UIController>
         recipesTab.SetActive(true);
         weaponsTab.SetActive(false);
         shopTab.SetActive(false);
+        creatureTab.SetActive(false);
         currentUiPage = (int)UIPage.RECIPES;
     }
 
@@ -301,6 +323,7 @@ public class UIController : SingletonGeneric<UIController>
         recipesTab.SetActive(false);
         weaponsTab.SetActive(false);
         shopTab.SetActive(false);
+        creatureTab.SetActive(false);
     }
 
     // Remembers the current player interactable for interaction
@@ -329,7 +352,7 @@ public class UIController : SingletonGeneric<UIController>
                 oldInteractables.Add(pi);
             }
         }
-        currentInteractables = new List<PlayerInteractable>{interactable};
+        currentInteractables = new List<PlayerInteractable> { interactable };
         foreach (PlayerInteractable pi in oldInteractables)
         {
             pi.ForceExit();
@@ -500,6 +523,9 @@ public class UIController : SingletonGeneric<UIController>
             case (int)UIPage.SHOP:
                 ToggleShop();
                 break;
+            case (int)UIPage.CREATURES:
+                ToggleCreatures();
+                break;
         }
     }
 
@@ -525,5 +551,6 @@ public enum UIPage
     ORDERS = 1,
     RECIPES = 2,
     WEAPONS = 3,
-    SHOP = 4
+    SHOP = 4,
+    CREATURES = 5
 }

@@ -300,6 +300,10 @@ public class GameTimer : SingletonGeneric<GameTimer>
         {
             RecipeManager.instance.UpdateUnlockedRecipes();
         }
+        if (CreatureDexManager.instance != null)
+        {
+            CreatureDexManager.instance.UpdateCreatureSlots();
+        }
     }
 
     private void OnDestroy()

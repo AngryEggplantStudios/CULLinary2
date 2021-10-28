@@ -56,19 +56,19 @@ public class PlayerData
         pfizerShot = 0;
         modernaShot = 0;
         currentNewspaperIssue = 1;
-        unlockedMonsters = new MonsterName[0]{};
+        unlockedMonsters = new MonsterName[3] { MonsterName.Bread, MonsterName.DaddyPotato, MonsterName.Potato };
         monsterSavedDatas = new MonsterSavedData[11] {
-            new MonsterSavedData(MonsterName.Eggplant, PopulationLevel.Normal),
-            new MonsterSavedData(MonsterName.Corn, PopulationLevel.Normal),
-            new MonsterSavedData(MonsterName.Potato, PopulationLevel.Normal),
-            new MonsterSavedData(MonsterName.Tomato, PopulationLevel.Normal),
             new MonsterSavedData(MonsterName.Bread, PopulationLevel.Normal),
-            new MonsterSavedData(MonsterName.Meat, PopulationLevel.Normal),
-            new MonsterSavedData(MonsterName.Cheese, PopulationLevel.Normal),
-            new MonsterSavedData(MonsterName.Mushroom, PopulationLevel.Normal),
-            new MonsterSavedData(MonsterName.DaddyCorn, PopulationLevel.Normal),
-            new MonsterSavedData(MonsterName.DaddyEggplant, PopulationLevel.Normal),
+            new MonsterSavedData(MonsterName.Potato, PopulationLevel.Normal),
             new MonsterSavedData(MonsterName.DaddyPotato, PopulationLevel.Normal),
+            new MonsterSavedData(MonsterName.Corn, PopulationLevel.Normal),
+            new MonsterSavedData(MonsterName.DaddyCorn, PopulationLevel.Normal),
+            new MonsterSavedData(MonsterName.Eggplant, PopulationLevel.Normal),
+            new MonsterSavedData(MonsterName.DaddyEggplant, PopulationLevel.Normal),
+            new MonsterSavedData(MonsterName.Tomato, PopulationLevel.Normal),
+            new MonsterSavedData(MonsterName.Meat, PopulationLevel.Normal),
+            new MonsterSavedData(MonsterName.Mushroom, PopulationLevel.Normal),
+            new MonsterSavedData(MonsterName.Cheese, PopulationLevel.Normal),
         };
     }
 
