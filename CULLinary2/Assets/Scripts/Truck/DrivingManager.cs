@@ -6,13 +6,17 @@ using UnityEngine.UI;
 // Handles the player entering and leaving vehicle
 public class DrivingManager : SingletonGeneric<DrivingManager>
 {
-    public Camera truckCamera;
-    public GameObject driveableTruck;
-    public GameObject truckAudio;
-    public GameObject interactionPrompt;
-    public GameObject staminaIcon;
-    public GameObject player;
-    public GameObject responsiveUICanvas;
+    [Header("Items to Activate")]
+    [SerializeField] private Camera truckCamera;
+    [SerializeField] private GameObject driveableTruck;
+    [SerializeField] private GameObject truckAudio;
+    [Header("Items to Hide")]
+    [SerializeField] private GameObject interactionPrompt;
+    [SerializeField] private GameObject staminaIcon;
+    [SerializeField] private GameObject player;
+    [SerializeField] private GameObject responsiveUICanvas;
+    [SerializeField] private GameObject minimapIcon;
+    [SerializeField] private GameObject ordersMapIcon;
     [Header("For Collision")]
     [SerializeField] private AudioSource collisionAudioSource;
     // Threshhold is 1500 m/s-2
@@ -58,6 +62,8 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         player.SetActive(false);
         interactionPrompt.SetActive(false);
         responsiveUICanvas.SetActive(false);
+        minimapIcon.SetActive(false);
+        ordersMapIcon.SetActive(false);
         isPlayerInVehicle = true;
         UIController.instance.isPlayerInVehicle = true;
 
@@ -85,6 +91,8 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         interactionPrompt.SetActive(true);
         staminaIcon.SetActive(wasStaminaIconActivePreviously);
         responsiveUICanvas.SetActive(true);
+        minimapIcon.SetActive(true);
+        ordersMapIcon.SetActive(true);
         isPlayerInVehicle = false;
         UIController.instance.isPlayerInVehicle = false;
     }

@@ -10,6 +10,8 @@ public class Minimap : MonoBehaviour
     [SerializeField] public GameObject iconPrefab;
     [SerializeField] public Transform iconsParent;
     [SerializeField] public Sprite campfireSprite;
+    [SerializeField] public Transform truckBody;
+    [SerializeField] public Transform truckIcon;
     // Set the icons not to go all the way to the edge
     [SerializeField] public float borderPadding = 11.0f;
 
@@ -155,6 +157,7 @@ public class Minimap : MonoBehaviour
             else
             {
                 navArrow.eulerAngles = new Vector3(0, 0, -playerBody.eulerAngles.y);
+                SetTruckIconPos();
             }
             forceReupdate = false;
         }
@@ -177,6 +180,11 @@ public class Minimap : MonoBehaviour
     // Do nothing, player is always in the centre of the minimap
     protected virtual void SetPlayerIconPos()
     { }
+
+    protected virtual void SetTruckIconPos()
+    {
+
+    }
 
     // The centre point of the minimap
     protected virtual Vector3 GetCentrePointOfMap()
