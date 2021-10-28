@@ -42,11 +42,17 @@ public class PlayerSlash : PlayerAction
 
     private void OnDisable()
     {
-        weaponCollider.enabled = false;
+        if (weaponCollider != null)
+        {
+            weaponCollider.enabled = false;
+        }
+        if (weaponTrail != null)
+        {
+            weaponTrail.emitting = false;
+        }
         animator.SetBool("isPowerUp", false);
         animator.SetBool("isMelee", false);
         playerMelee.StopInvoking();
-        weaponTrail.emitting = false;
         playerSkill.StopInvoking(); 
     }
 
