@@ -97,6 +97,10 @@ public class CarController : MonoBehaviour
         GetComponent<Rigidbody>().centerOfMass = new Vector3(
             rigidBody.centerOfMass.x, centreOfMassHeight, rigidBody.centerOfMass.z); 
         GenerateTorqueConstants();
+
+        // Stop vehicle wobbling
+        // Only need to set for one WheelCollider
+        wheelFrontLeftCollider.ConfigureVehicleSubsteps(5, 12, 15);
     }
 
     void FixedUpdate()
