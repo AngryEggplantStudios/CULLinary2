@@ -213,6 +213,11 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         {
             if (!Physics.CheckSphere(possiblePos, truckDiameter, LayerMask.GetMask("Environment")))
             {
+                if (!driveableTruck.activeSelf)
+                {
+                    driveableTruck.SetActive(true);
+                }
+                
                 foreach (GameObject go in toHideTemporarilyWhenSummoning)
                 {
                     go.SetActive(false);
