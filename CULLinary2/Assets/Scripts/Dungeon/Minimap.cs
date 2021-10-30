@@ -194,7 +194,7 @@ public class Minimap : MonoBehaviour
 
     protected void SetIconPos(Transform target, Transform icon, bool hideIfFarAway)
     {
-        if (target == null)
+        if (target == null || !target.gameObject.activeSelf)
         {
             icon.gameObject.SetActive(false);
             return;

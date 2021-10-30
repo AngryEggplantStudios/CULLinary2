@@ -47,7 +47,7 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
     [SerializeField] private Camera playerCamera;
     [SerializeField] private GameObject playerCanvas;
     // Prevent trails moving when summoning truck
-    [SerializeField] private GameObject[] toHideTemporarilyWhenSummoning;
+    [SerializeField] private TrailRenderer[] hideTrailsWhenSummoning;
 
     private Vector3 rightEdgeOfTruck;
     private bool isPlayerInVehicle = false;
@@ -218,15 +218,11 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
                     driveableTruck.SetActive(true);
                 }
                 
-                foreach (GameObject go in toHideTemporarilyWhenSummoning)
-                {
-                    go.SetActive(false);
-                }
                 driveableTruck.GetComponent<CarController>().ResetCarMotion();
                 driveableTruck.transform.position = possiblePos;
-                foreach (GameObject go in toHideTemporarilyWhenSummoning)
+                foreach (TrailRenderer tr in hideTrailsWhenSummoning)
                 {
-                    go.SetActive(true);
+                    tr.Clear();
                 }
                 return true;
             }
