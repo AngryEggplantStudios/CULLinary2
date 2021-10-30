@@ -5324,9 +5324,9 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 227266289}
   m_CullTransparentMesh: 1
---- !u!1 &230342267 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4662854949586611613, guid: 2ad43ad68f934bb4bb84888bb9307272, type: 3}
+--- !u!96 &230342269 stripped
+TrailRenderer:
+  m_CorrespondingSourceObject: {fileID: 3117056379108162086, guid: 2ad43ad68f934bb4bb84888bb9307272, type: 3}
   m_PrefabInstance: {fileID: 6108661583946492934}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &240554311
@@ -6364,9 +6364,9 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!1 &289717052 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5572178903335805633, guid: 2ad43ad68f934bb4bb84888bb9307272, type: 3}
+--- !u!96 &289717054 stripped
+TrailRenderer:
+  m_CorrespondingSourceObject: {fileID: 2784228066251175290, guid: 2ad43ad68f934bb4bb84888bb9307272, type: 3}
   m_PrefabInstance: {fileID: 6108661583946492934}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &302544223 stripped
@@ -21053,9 +21053,9 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 981352113}
   m_CullTransparentMesh: 1
---- !u!1 &983940635 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1916316262923585162, guid: 2ad43ad68f934bb4bb84888bb9307272, type: 3}
+--- !u!96 &983940637 stripped
+TrailRenderer:
+  m_CorrespondingSourceObject: {fileID: 8173985910729085233, guid: 2ad43ad68f934bb4bb84888bb9307272, type: 3}
   m_PrefabInstance: {fileID: 6108661583946492934}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &984280088
@@ -28415,9 +28415,9 @@ Transform:
   m_Father: {fileID: 1627989594}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1262084694 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8378796370596082623, guid: 2ad43ad68f934bb4bb84888bb9307272, type: 3}
+--- !u!96 &1262084696 stripped
+TrailRenderer:
+  m_CorrespondingSourceObject: {fileID: 2283533317567767556, guid: 2ad43ad68f934bb4bb84888bb9307272, type: 3}
   m_PrefabInstance: {fileID: 6108661583946492934}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1265504556
@@ -39770,11 +39770,11 @@ MonoBehaviour:
   unitsFromPlayer: 5
   playerCamera: {fileID: 1289944774}
   playerCanvas: {fileID: 2110931401}
-  toHideTemporarilyWhenSummoning:
-  - {fileID: 1262084694}
-  - {fileID: 289717052}
-  - {fileID: 230342267}
-  - {fileID: 983940635}
+  hideTrailsWhenSummoning:
+  - {fileID: 1262084696}
+  - {fileID: 289717054}
+  - {fileID: 230342269}
+  - {fileID: 983940637}
 --- !u!1 &1812206966
 GameObject:
   m_ObjectHideFlags: 0
