@@ -46,6 +46,8 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
     // For truck spawning warning messages
     [SerializeField] private Camera playerCamera;
     [SerializeField] private GameObject playerCanvas;
+    // Prevent trails moving when summoning truck
+    [SerializeField] private GameObject[] toHideTemporarilyWhenSummoning;
 
     private Vector3 rightEdgeOfTruck;
     private bool isPlayerInVehicle = false;
@@ -211,8 +213,16 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         {
             if (!Physics.CheckSphere(possiblePos, truckDiameter, LayerMask.GetMask("Environment")))
             {
+                foreach (GameObject go in toHideTemporarilyWhenSummoning)
+                {
+                    go.SetActive(false);
+                }
                 driveableTruck.GetComponent<CarController>().ResetCarMotion();
                 driveableTruck.transform.position = possiblePos;
+                foreach (GameObject go in toHideTemporarilyWhenSummoning)
+                {
+                    go.SetActive(true);
+                }
                 return true;
             }
         }
