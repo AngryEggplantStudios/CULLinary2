@@ -8,5 +8,6 @@ public enum PopulationLevel
     Normal,
     Vulnerable,
     Endangered,
-    Extinct
+    Extinct,
+    Rare
 }
