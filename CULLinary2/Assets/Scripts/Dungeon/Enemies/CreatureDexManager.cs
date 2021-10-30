@@ -13,6 +13,7 @@ public class CreatureDexManager : SingletonGeneric<CreatureDexManager>
     [SerializeField] private TMP_Text creatureRemarks;
     [SerializeField] private TMP_Text creatureDrop;
     [SerializeField] private TMP_Text creatureType;
+    [SerializeField] private TMP_Text creaturePopulation;
     [SerializeField] private GameObject slotPrefab;
     [SerializeField] private GameObject slotsParentObject;
     [SerializeField] private GameObject creaturePanel;
@@ -69,6 +70,7 @@ public class CreatureDexManager : SingletonGeneric<CreatureDexManager>
             creatureRemarks.text = "Behavior: " + monsterSelected.remarksDescription;
             creatureDrop.text = "Drops: " + monsterSelected.dropDescription;
             creatureType.text = "Category: " + monsterSelected.enemyTypeDescription;
+            creaturePopulation.text = "Population Level: " + monsterSelected.populationLevel.ToString();
         }
         else
         {
@@ -78,6 +80,7 @@ public class CreatureDexManager : SingletonGeneric<CreatureDexManager>
             creatureRemarks.text = "Behavior: ???";
             creatureDrop.text = "Drops: ???";
             creatureType.text = "Category: ???";
+            creaturePopulation.text = "Status: Hasn't been spotted yet";
         }
 
     }
