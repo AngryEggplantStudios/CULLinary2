@@ -64,7 +64,6 @@ public class GameLoader : SingletonGeneric<GameLoader>
         WeaponSkillManager.instance.InstantiateWeaponSkill();
         yield return null;
         playerCharacter.SetActive(true);
-        truck.SetActive(true);
         yield return null;
         UIController.UpdateAllUIs();
         uiCanvas.SetActive(true);
