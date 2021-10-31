@@ -216,6 +216,7 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
                 if (!driveableTruck.activeSelf)
                 {
                     driveableTruck.SetActive(true);
+                    driveableTruck.GetComponent<VehicleInteractable>().ManuallySetPlayerInteractable();
                 }
                 
                 driveableTruck.GetComponent<CarController>().ResetCarMotion();

@@ -15,6 +15,14 @@ public abstract class PlayerInteractable : MonoBehaviour
         }
     }
 
+    // Manually trigger the setting of the
+    // PlayerInteractable for SpherePlayerCollider
+    public void ManuallySetPlayerInteractable()
+    {
+        GetCollider().SetPlayerInteractable(this);
+        hasSetColliderParent = true;
+    }
+
     public bool PlayerWithinRange()
     {
         return hasSetColliderParent && GetCollider().PlayerWithinRange();
