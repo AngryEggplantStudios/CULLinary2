@@ -8259,6 +8259,7 @@ GameObject:
   m_Component:
   - component: {fileID: 309590545}
   - component: {fileID: 309590544}
+  - component: {fileID: 309590546}
   m_Layer: 0
   m_Name: GameLoader
   m_TagString: Untagged
@@ -8300,6 +8301,14 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!81 &309590546
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 309590543}
+  m_Enabled: 1
 --- !u!1 &316297732
 GameObject:
   m_ObjectHideFlags: 0
@@ -12780,6 +12789,11 @@ PrefabInstance:
 --- !u!82 &510496870 stripped
 AudioSource:
   m_CorrespondingSourceObject: {fileID: 778855638484749070, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
+  m_PrefabInstance: {fileID: 510496869}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &510496871 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 778855639286883990, guid: f8ff873d5143141dbaf68a4dab8e16b5, type: 3}
   m_PrefabInstance: {fileID: 510496869}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &512057183
@@ -31239,6 +31253,10 @@ MonoBehaviour:
   progress: 0
   isComplete: 0
   loadingStatus: 
+  hideWhileLoading:
+  - {fileID: 510496871}
+  - {fileID: 124521706}
+  - {fileID: 1328722574}
 --- !u!1 &1151718563
 GameObject:
   m_ObjectHideFlags: 0

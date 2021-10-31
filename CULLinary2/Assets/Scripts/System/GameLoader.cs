@@ -11,11 +11,17 @@ public class GameLoader : SingletonGeneric<GameLoader>
     [SerializeField] private GameObject truck;
     [SerializeField] private GameObject uiCanvas;
     [SerializeField] private LoadType loadType;
+
+    AudioListener audioListener;
+
     private void Start()
     {
+        audioListener = GetComponent<AudioListener>();
+
         uiCanvas.SetActive(false);
         playerCharacter.SetActive(false);
         truck.SetActive(false);
+        audioListener.enabled = false;
 
         switch ((int)loadType)
         {
@@ -29,14 +35,15 @@ public class GameLoader : SingletonGeneric<GameLoader>
                 StartCoroutine(LoadWorldTesting());
                 break;
         }
-
     }
 
     public IEnumerator LoadWorldTesting()
     {
+        audioListener.enabled = true;
         yield return StartCoroutine(databaseLoader.Populate());
         yield return StartCoroutine(biomeGeneratorManager.LoadBiome());
         //yield return StartCoroutine(dungeonSpawnManager.GetSpawners());
+        audioListener.enabled = false;
         yield return StartCoroutine(LoadObjects());
     }
 
