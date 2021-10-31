@@ -21,7 +21,7 @@ public class ScreenShake : MonoBehaviour
 
     public void Shake(float duration, float magnitude, float fadeIn, float fadeOut)
     {
-        if (gameObject.active)
+        if (gameObject.activeInHierarchy)
         {
             StartCoroutine(ShakeSequence(duration, magnitude, fadeIn, fadeOut));
         }

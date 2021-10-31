@@ -26,6 +26,7 @@ public class PlayerController : PlayerAction
     private KeyCode runKeyCode;
     private PlayerMelee playerMelee;
     private PlayerSkill playerSkill;
+
     private void Awake()
     {
         playerMelee = GetComponent<PlayerMelee>();
@@ -87,7 +88,7 @@ public class PlayerController : PlayerAction
     }
 
     private void OnDisable()
-    {   
+    {
         this.SetIsInvoking(false);
     }
 }
