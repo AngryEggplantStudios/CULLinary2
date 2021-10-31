@@ -183,7 +183,7 @@ public class Minimap : MonoBehaviour
 
     protected virtual void SetTruckIconPos()
     {
-        SetIconPos(truckBody, truckIcon, false);
+        SetIconPos(truckBody, truckIcon, false, true);
     }
 
     // The centre point of the minimap
@@ -192,9 +192,9 @@ public class Minimap : MonoBehaviour
         return minimapCamera.WorldToScreenPoint(playerOldPosition);
     }
 
-    protected void SetIconPos(Transform target, Transform icon, bool hideIfFarAway)
+    protected void SetIconPos(Transform target, Transform icon, bool hideIfFarAway, bool hideIfNotActive = false)
     {
-        if (target == null || !target.gameObject.activeSelf)
+        if (target == null || (hideIfNotActive && !target.gameObject.activeSelf))
         {
             icon.gameObject.SetActive(false);
             return;
