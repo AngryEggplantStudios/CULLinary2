@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerSpawnManager : SingletonGeneric<PlayerSpawnManager>
 {
-    private GameObject[] campfires;
+    private List<GameObject> campfires;
     private bool hasFoundCampfires = false;
     private Vector3 lastVisitedCampfirePosition;
     private Vector3 spawnOffset = Vector3.left * 5;
@@ -20,7 +20,7 @@ public class PlayerSpawnManager : SingletonGeneric<PlayerSpawnManager>
     {
         if (!hasFoundCampfires)
         {
-            FindCampfires();
+            campfires = Campfire.GetAll();
             hasFoundCampfires = true;
         }
 
@@ -44,18 +44,13 @@ public class PlayerSpawnManager : SingletonGeneric<PlayerSpawnManager>
         // TODO: save to player data
     }
 
-    private void FindCampfires()
-    {
-        campfires = GameObject.FindGameObjectsWithTag("Campfire");
-    }
-
     public Transform GetCampfireNearestTo(Vector3 givenPosition)
     {
         // Get campfire nearest to givenPosition, using squared distance
         Transform nearestCampfire = null;
         float nearestDistSqr = Mathf.Infinity;
 
-        if (campfires.Length != 0)
+        if (campfires.Count != 0)
         {
             foreach (GameObject campfire in campfires)
             {

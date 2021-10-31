@@ -2,14 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CookingStation : PlayerInteractable
+public class Campfire : PlayerInteractable
 {
     public SpherePlayerCollider spCollider;
+
+    static List<GameObject> campfires = new List<GameObject>();
 
     public void Awake()
     {
         // Add to the list in RecipeManager for use in the minimap
         RecipeManager.instance.AddCampfire(this.GetComponent<Transform>());
+        campfires.Add(this.gameObject);
+    }
+
+    public static List<GameObject> GetAll()
+    {
+        return campfires;
     }
 
     public override SpherePlayerCollider GetCollider()
@@ -32,7 +40,7 @@ public class CookingStation : PlayerInteractable
             RecipeManager.instance.ActivateCooking();
         }
     }
-    
+
     public override void OnPlayerInteract()
     {
         // Open Cooking Menu
