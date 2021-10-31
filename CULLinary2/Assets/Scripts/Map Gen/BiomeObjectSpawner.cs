@@ -28,6 +28,8 @@ public class BiomeObjectSpawner : MonoBehaviour
         landmarkParent.transform.SetParent(origin);
         landmarkParent.transform.localScale = Vector3.one;
         parents.Add(landmarkParent);
+
+        //Debug.Break();
         foreach (Landmark landmark in landmarks)
         {
             for (int i = 0; i < 100; i++) // 100 tries
@@ -85,7 +87,7 @@ public class BiomeObjectSpawner : MonoBehaviour
                 break;
             }
 
-            yield return null;
+            //yield return null;
         }
 
         foreach (Spawnable spawnable in spawnables)
@@ -130,9 +132,11 @@ public class BiomeObjectSpawner : MonoBehaviour
 
             SpawnableHelper helper = parent.AddComponent<SpawnableHelper>() as SpawnableHelper;
             helper.removeCollider = spawnable.removeCollider;
-            yield return null;
+            //yield return null;
         }
         // Debug.Log(spawnedObjects.Count + " objects spawned");
+
+        BiomeGeneratorManager.Instance.ProcessComplete();
     }
 
     public void DestroyObjects()

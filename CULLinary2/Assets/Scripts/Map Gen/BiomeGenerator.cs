@@ -62,6 +62,7 @@ public class BiomeGenerator : MonoBehaviour
         }
 
     }
+
     public IEnumerator LoadGeneratedMap()
     {
         createdMeshPath = BiomeDataManager.instance.biomeCreatedMeshPath;
@@ -90,6 +91,14 @@ public class BiomeGenerator : MonoBehaviour
         //Deactivate and reactivate navmeshSurface due to strange bug NOTE if delete either NavMesh.asset walkable mesh or createdmesh all might cease to work. Assume user isn't stupid for now.
         yield return StartCoroutine(ReactivateNavMesh());
 
+        BiomeGeneratorManager.Instance.ProcessComplete();
+    }
+
+    public IEnumerator GenerateNewMap()
+    {
+        yield return StartCoroutine(GenerateMap(seed));
+
+        BiomeGeneratorManager.Instance.ProcessComplete();
     }
 
     public IEnumerator ReactivateMap()
@@ -97,6 +106,7 @@ public class BiomeGenerator : MonoBehaviour
         meshRenderer.enabled = false;
         yield return new WaitForSeconds(1f);
         meshRenderer.enabled = true;
+        BiomeGeneratorManager.Instance.ProcessComplete();
     }
 
     public IEnumerator ReactivateNavMesh()

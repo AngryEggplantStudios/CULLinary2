@@ -1,6 +1,7 @@
 using UnityEditor;
 using System;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,6 +12,8 @@ public class BiomeNavMeshGenerator : MonoBehaviour
     private NavMeshSurface surfaceForNavMesh;
     private NavMeshData navMeshData;
     private GameObject orderSubmissionStationParent;
+    private bool navMeshGenerated;
+
     private void Awake()
     {
         parent = this.gameObject.transform.parent.gameObject;
@@ -46,7 +49,7 @@ public class BiomeNavMeshGenerator : MonoBehaviour
 
     private void ActivateBoxCollider(bool activate, GameObject parent)
     {
-        Debug.Log(parent);
+        //Debug.Log(parent);
         //Iterate through all ordersubmissionstations
         foreach (Transform child in parent.transform)
         {
@@ -75,7 +78,7 @@ public class BiomeNavMeshGenerator : MonoBehaviour
             if (spawnable != null && spawnable.removeCollider)
             {
                 spawnable.enabled = activate;
-                Debug.Log("disabling " + spawnable.name);
+                //Debug.Log("disabling " + spawnable.name);
             }
         }
     }
@@ -96,13 +99,15 @@ public class BiomeNavMeshGenerator : MonoBehaviour
             ActivateSpawnableWithoutCollider(false, parent);
             BiomeDataManager.instance.biomeNavMeshPath = savePath;
             BiomeDataManager.instance.SaveData();
+            navMeshGenerated = false;
             surfaceForNavMesh.BuildNavMesh();
+
 #if UNITY_EDITOR
             AssetDatabase.CreateAsset(surfaceForNavMesh.navMeshData, savePath);
 #endif
             ActivateBoxCollider(true, orderSubmissionStationParent);
             ActivateSpawnableWithoutCollider(true, parent);
-            Debug.Log("Starting Coroiutine");
+            //Debug.Log("Starting Coroiutine");
             //first time generation, create walkable mesh with water and delete previous walkable mesh without water
             BiomeGenerator.Instance.CreateWalkableMeshWithWater();
         }
@@ -111,6 +116,8 @@ public class BiomeNavMeshGenerator : MonoBehaviour
             surfaceForNavMesh.navMeshData = navMeshData;
             surfaceForNavMesh.AddData();
         }
+
+        BiomeGeneratorManager.Instance.ProcessComplete();
     }
 
     private IEnumerator CombineMeshes(GameObject gameObjectToGenerateMesh)
