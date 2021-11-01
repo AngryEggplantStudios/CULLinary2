@@ -9,8 +9,8 @@ public enum KeybindAction
     OpenOrders,
     OpenInventory,
     OpenRecipeBook,
-    OpenCreatures,
-    OpenMap,
+    OpenWeapons,
+    OpenShop,
     UiMoveRight,
     UiMoveLeft,
     UiClose,
@@ -22,6 +22,8 @@ public enum KeybindAction
     Consumable1,
     Consumable2,
     Consumable3,
+    Consumable4,
+    Consumable5,
     CampfireAction
 }
 
@@ -36,8 +38,8 @@ public class PlayerKeybinds
         { KeybindAction.OpenOrders, KeyCode.Tab },
         { KeybindAction.OpenInventory, KeyCode.I },
         { KeybindAction.OpenRecipeBook, KeyCode.R },
-        { KeybindAction.OpenCreatures, KeyCode.C },
-        { KeybindAction.OpenMap, KeyCode.M },
+        { KeybindAction.OpenWeapons, KeyCode.C },
+        { KeybindAction.OpenShop, KeyCode.M },
         { KeybindAction.UiMoveRight, KeyCode.E },
         { KeybindAction.UiMoveLeft, KeyCode.Q },
         { KeybindAction.Trash, KeyCode.Delete },
@@ -49,6 +51,8 @@ public class PlayerKeybinds
         { KeybindAction.Consumable1, KeyCode.Alpha1 },
         { KeybindAction.Consumable2, KeyCode.Alpha2 },
         { KeybindAction.Consumable3, KeyCode.Alpha3 },
+        { KeybindAction.Consumable4, KeyCode.Alpha4 },
+        { KeybindAction.Consumable5, KeyCode.Alpha5 },
         { KeybindAction.CampfireAction, KeyCode.Z }
     };
 

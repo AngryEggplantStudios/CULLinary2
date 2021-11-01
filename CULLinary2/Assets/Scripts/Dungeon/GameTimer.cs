@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,9 +19,15 @@ public class GameTimer : SingletonGeneric<GameTimer>
     [SerializeField] private float dayLengthInMinutes;
     [SerializeField, Range(0, 1), Tooltip("e.g. 0.25 for 6am")] private float sunrise;
     [SerializeField, Range(0, 1), Tooltip("e.g. 0.75 for 6pm")] private float sunset;
+    [SerializeField, Range(0, 1), Tooltip("e.g. 0.33 for 8am")] private float startOfDay;
+
+    [Header("Daily News")]
+    [SerializeField] private GameObject newspaper;
+    [SerializeField] private GameObject hudToHide;
+
     private static float gameTime;
     private static float timeScale;
-    private static int dayNum = 1; // TODO: to get from saved data
+    private static int dayNum = 1;
     private int hourNum;
     private int minuteNum;
     private string timeAsString;
@@ -30,25 +37,43 @@ public class GameTimer : SingletonGeneric<GameTimer>
     private bool isNewDay = true; // prevent OnStartNewDay from being invoked multiple times
     private bool isRunning = false;
 
+    private NewspaperDetails newspaperDets;
+
     public delegate void StartNewDayDelegate();
     public static event StartNewDayDelegate OnStartNewDay;
+    public delegate void BeforeStartNewDayDelegate();
+    // public static event BeforeStartNewDayDelegate OnBeforeStartNewDay; // invoked right before OnStartNewDay; for enabling certain populations
     public delegate void EndOfDayDelegate();
     public static event EndOfDayDelegate OnEndOfDay;
+
+    private int currentIssueNumber = 1;
+    private bool showRandomNews = false;
 
     void Start()
     {
         dayNum = PlayerManager.instance != null ? PlayerManager.instance.currentDay : 1;
+        currentIssueNumber = PlayerManager.instance != null ? PlayerManager.instance.currentNewspaperIssue : 1;
+        newspaperDets = newspaper.GetComponent<NewspaperDetails>();
 
         if (sunrise > sunset) { Debug.LogError("Sunrise is after Sunset!"); }
 
         // Debug.Log("set timescale to 1");
         Time.timeScale = 1;
 
-        gameTime = (float)System.Math.Round(sunrise, 2);
+        gameTime = (float)System.Math.Round(startOfDay, 2);
         timeScale = 24 / (dayLengthInMinutes / 60);
 
         DayText.text = "DAY " + dayNum;
         UpdateTimedObjects();
+
+        // enable unlocked monsters
+        OnStartNewDay += () =>
+        {
+            foreach (MonsterName mn in PlayerManager.instance.unlockedMonsters)
+            {
+                EcosystemManager.EnablePopulation(mn);
+            }
+        };
     }
 
     private void Update()
@@ -57,6 +82,54 @@ public class GameTimer : SingletonGeneric<GameTimer>
             return;
 
         gameTime += Time.deltaTime * timeScale / 86400;
+        ClampTimeAndUpdateObjects();
+    }
+
+    // Returns the number of game minutes passed since the last frame update
+    public float GameMinutesPassedSinceLastUpdate()
+    {
+        return Time.deltaTime * timeScale / 60;
+    }
+
+    // Skip ahead by a certain number of minutes
+    // 
+    // Note: Number of minutes is in game time, not actual time!!
+    // 
+    // Action toRunWhenSkipping will be executed when the 
+    // screen fades in, and before the screen fades out
+    public void SkipTime(int minutes, Action toRunWhenSkipping)
+    {
+        if (gameTime < 1.0f)
+        {
+            SceneTransitionManager.instance.FadeInAndFadeOut(() =>
+            {
+                AddMinutes(minutes);
+                toRunWhenSkipping();
+            });
+        }
+    }
+
+    // Starts the day after the newspaper is closed
+    public void CloseNewspaperAndStartDay()
+    {
+        newspaper.SetActive(false);
+        hudToHide.SetActive(true);
+        UIController.instance.isNewspaperOpen = false;
+        Time.timeScale = 1;
+
+        // OnBeforeStartNewDay?.Invoke();
+        OnStartNewDay?.Invoke();
+    }
+
+    // Adds a certain number of minutes to the clock
+    private void AddMinutes(int minutes)
+    {
+        gameTime += (float)minutes / 1440;
+        ClampTimeAndUpdateObjects();
+    }
+
+    private void ClampTimeAndUpdateObjects()
+    {
         if (gameTime > 1f)
         {
             gameTime = 1f;
@@ -65,15 +138,39 @@ public class GameTimer : SingletonGeneric<GameTimer>
         UpdateTimedObjects();
         UpdateLighting(gameTime);
 
-        if (gameTime > sunrise && isNewDay)
+        if (gameTime > startOfDay && isNewDay)
         {
             isNewDay = false;
-            OnStartNewDay?.Invoke();
+
+            NewsIssue currentNews = showRandomNews
+                ? DatabaseLoader.GetRandomNewsIssue()
+                : DatabaseLoader.GetOrderedNewsIssueById(currentIssueNumber);
+
+            if (currentNews == null)
+            {
+                Debug.Log("No newspaper for " + currentIssueNumber + " found");
+                // OnBeforeStartNewDay?.Invoke();
+                OnStartNewDay?.Invoke();
+            }
+            else
+            {
+                Time.timeScale = 0;
+                newspaperDets.UpdateNewspaperIssueUI(currentNews);
+                UIController.instance.isNewspaperOpen = true;
+                newspaper.SetActive(true);
+                hudToHide.SetActive(false);
+                // when newspaper is closed, CloseNewspaperAndStartDay is called
+            }
+            showRandomNews = false;
         }
 
         if (gameTime >= dayEndTime)
         {
             OnEndOfDay?.Invoke();
+            if (DrivingManager.instance.IsPlayerInVehicle())
+            {
+                DrivingManager.instance.HandlePlayerLeaveVehicle(true);
+            }
             StartSceneFadeOut();
         }
     }
@@ -99,7 +196,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         }
 
         // Slider
-        DayProgress.value = (gameTime - sunrise) / (1 - sunrise);
+        DayProgress.value = (gameTime - startOfDay) / (1 - startOfDay);
     }
 
     private void StartSceneFadeOut()
@@ -112,13 +209,22 @@ public class GameTimer : SingletonGeneric<GameTimer>
     private void ShowEndOfDayMenu()
     {
         UIController.instance.ShowEndOfDayMenu();
-        SaveGame();
+        // Increment newspaper for next day
+        NewsIssue currentNews = DatabaseLoader.GetOrderedNewsIssueById(currentIssueNumber + 1);
+        if (currentNews)
+        {
+            currentIssueNumber++;
+            PlayerManager.instance.currentNewspaperIssue = currentIssueNumber;
+            DoProgression(currentNews);
+        }
+        //Restore health here
         GoToNextDay();
+        SaveGame();
     }
 
     public void SaveGame()
     {
-        PlayerManager.instance.currentDay = dayNum + 1;
+        PlayerManager.instance.currentDay = dayNum;
         EcosystemManager.SaveEcosystemPopulation();
         PlayerManager.instance.SaveData(InventoryManager.instance.itemListReference);
     }
@@ -130,10 +236,10 @@ public class GameTimer : SingletonGeneric<GameTimer>
         // reset player health and teleport player to origin for now
         SpecialEventManager.instance.ClearCurrentEvents();
         player.GetComponent<PlayerHealth>().RestoreToFull();
+        player.GetComponent<PlayerHealth>().DestroyAllDamageCounter();
         player.GetComponent<PlayerStamina>().RestoreToFull();
-        player.GetComponent<CharacterController>().enabled = false;
-        player.transform.position = new Vector3(0f, 0f, 0f); // TODO: go back to last saved campfire
-        player.GetComponent<CharacterController>().enabled = true;
+        BuffManager.instance.ClearBuffManager();
+        PlayerSpawnManager.instance.SpawnPlayer();
 
         // no choice find clown by tag because clown might not be around at start of GameTimer.
         GameObject bossClown = GameObject.FindWithTag("ClownBoss");
@@ -143,7 +249,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
         }
 
         // change time to next day
-        gameTime = (float)System.Math.Round(sunrise, 2);
+        gameTime = (float)System.Math.Round(startOfDay, 2);
         dayNum++;
         DayText.text = "DAY " + dayNum;
         isNewDay = true;
@@ -170,6 +276,34 @@ public class GameTimer : SingletonGeneric<GameTimer>
     public static int GetDayNumber()
     {
         return dayNum;
+    }
+
+    // Shows a random newspaper issue the next day
+    public void ShowRandomNews()
+    {
+        showRandomNews = true;
+    }
+
+    // Uses the newspaper that is shown at the start of the next day
+    // and applies the changes to the game
+    private void DoProgression(NewsIssue ni)
+    {
+        foreach (int id in ni.recipesUnlocked)
+        {
+            PlayerManager.instance.unlockedRecipesList.Add(id);
+        }
+        foreach (MonsterName mn in ni.enemiesUnlocked)
+        {
+            PlayerManager.instance.unlockedMonsters.Add(mn);
+        }
+        if (ni.recipesUnlocked.Length > 0)
+        {
+            RecipeManager.instance.UpdateUnlockedRecipes();
+        }
+        if (CreatureDexManager.instance != null)
+        {
+            CreatureDexManager.instance.UpdateCreatureSlots();
+        }
     }
 
     private void OnDestroy()

@@ -1,6 +1,7 @@
 using UnityEditor;
 using System;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,6 +12,8 @@ public class BiomeNavMeshGenerator : MonoBehaviour
     private NavMeshSurface surfaceForNavMesh;
     private NavMeshData navMeshData;
     private GameObject orderSubmissionStationParent;
+    private bool navMeshGenerated;
+
     private void Awake()
     {
         parent = this.gameObject.transform.parent.gameObject;
@@ -34,6 +37,10 @@ public class BiomeNavMeshGenerator : MonoBehaviour
                     orderSubmissionStationParent = child.gameObject;
                     continue;
                 }
+                if (child.gameObject.name == "Landmarks" || child.gameObject.name == "Chests" || child.gameObject.name == "Grass")
+                {
+                    continue;
+                }
                 yield return StartCoroutine(CombineMeshes(child.gameObject));
             }
         }
@@ -42,19 +49,20 @@ public class BiomeNavMeshGenerator : MonoBehaviour
 
     private void ActivateBoxCollider(bool activate, GameObject parent)
     {
-        Debug.Log(parent);
+        //Debug.Log(parent);
         //Iterate through all ordersubmissionstations
         foreach (Transform child in parent.transform)
         {
             //Deactivate the two boxcolliders on ordersubmissionstations
             foreach (Transform grandchild in child.transform)
-			{
+            {
                 if (grandchild.name == "Interactive Collider" || grandchild.name == "Camera Obstacle")
                 {
                     BoxCollider sphere = grandchild.GetComponentInChildren<BoxCollider>();
                     sphere.enabled = activate;
-                } else
-				{
+                }
+                else
+                {
                     grandchild.gameObject.tag = "Environment";
                     grandchild.gameObject.layer = 6;
                 }
@@ -70,7 +78,7 @@ public class BiomeNavMeshGenerator : MonoBehaviour
             if (spawnable != null && spawnable.removeCollider)
             {
                 spawnable.enabled = activate;
-                Debug.Log("disabling " + spawnable.name);
+                //Debug.Log("disabling " + spawnable.name);
             }
         }
     }
@@ -91,13 +99,15 @@ public class BiomeNavMeshGenerator : MonoBehaviour
             ActivateSpawnableWithoutCollider(false, parent);
             BiomeDataManager.instance.biomeNavMeshPath = savePath;
             BiomeDataManager.instance.SaveData();
+            navMeshGenerated = false;
             surfaceForNavMesh.BuildNavMesh();
-            #if UNITY_EDITOR
+
+#if UNITY_EDITOR
             AssetDatabase.CreateAsset(surfaceForNavMesh.navMeshData, savePath);
-            #endif
+#endif
             ActivateBoxCollider(true, orderSubmissionStationParent);
             ActivateSpawnableWithoutCollider(true, parent);
-            Debug.Log("Starting Coroiutine");
+            //Debug.Log("Starting Coroiutine");
             //first time generation, create walkable mesh with water and delete previous walkable mesh without water
             BiomeGenerator.Instance.CreateWalkableMeshWithWater();
         }
@@ -106,6 +116,8 @@ public class BiomeNavMeshGenerator : MonoBehaviour
             surfaceForNavMesh.navMeshData = navMeshData;
             surfaceForNavMesh.AddData();
         }
+
+        BiomeGeneratorManager.Instance.ProcessComplete();
     }
 
     private IEnumerator CombineMeshes(GameObject gameObjectToGenerateMesh)
@@ -169,7 +181,7 @@ public class BiomeNavMeshGenerator : MonoBehaviour
         {
             CombineInstance[] combineInstanceArray = (combineInstanceArrays[m] as ArrayList).ToArray(typeof(CombineInstance)) as CombineInstance[];
             meshes[m] = new Mesh();
-            meshes[m].indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;                
+            meshes[m].indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             meshes[m].CombineMeshes(combineInstanceArray, true, true);
 
             combineInstances[m] = new CombineInstance();

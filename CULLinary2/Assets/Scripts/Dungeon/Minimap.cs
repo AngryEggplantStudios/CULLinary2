@@ -10,6 +10,8 @@ public class Minimap : MonoBehaviour
     [SerializeField] public GameObject iconPrefab;
     [SerializeField] public Transform iconsParent;
     [SerializeField] public Sprite campfireSprite;
+    [SerializeField] public Transform truckBody;
+    [SerializeField] public Transform truckIcon;
     // Set the icons not to go all the way to the edge
     [SerializeField] public float borderPadding = 11.0f;
 
@@ -28,10 +30,13 @@ public class Minimap : MonoBehaviour
     private bool forceReupdate = true;
     // To make sure that OrderManager callbacks are not set more than once
     private bool firstInstantiation = true;
+    // Keep trying to set player body
+    protected bool hasSetPlayerBody = false;
 
     void Awake()
     {
-        playerBody = GameObject.FindGameObjectWithTag("PlayerBody").transform;
+        playerBody = new GameObject().transform;
+        TryToSetPlayerBody();
     }
 
     private void InstantiateCampfireIcons()
@@ -114,6 +119,7 @@ public class Minimap : MonoBehaviour
 
     public virtual void Update()
     {
+
         if (OrdersManager.instance.IsOrderGenerationComplete() && !hasInstantiatedIcons)
         {
             InstantiateMinimapIcons();
@@ -144,7 +150,15 @@ public class Minimap : MonoBehaviour
             }
             // Update player icon
             SetPlayerIconPos();
-            navArrow.eulerAngles = new Vector3(0, 0, -playerBody.eulerAngles.y);
+            if (DrivingManager.instance.IsPlayerInVehicle())
+            {
+                navArrow.eulerAngles = new Vector3(0, 0, -DrivingManager.instance.GetTruckYRotation());
+            }
+            else
+            {
+                navArrow.eulerAngles = new Vector3(0, 0, -playerBody.eulerAngles.y);
+                SetTruckIconPos();
+            }
             forceReupdate = false;
         }
     }
@@ -167,15 +181,20 @@ public class Minimap : MonoBehaviour
     protected virtual void SetPlayerIconPos()
     { }
 
+    protected virtual void SetTruckIconPos()
+    {
+        SetIconPos(truckBody, truckIcon, false, true);
+    }
+
     // The centre point of the minimap
     protected virtual Vector3 GetCentrePointOfMap()
     {
         return minimapCamera.WorldToScreenPoint(playerOldPosition);
     }
 
-    protected void SetIconPos(Transform target, Transform icon, bool hideIfFarAway)
+    protected void SetIconPos(Transform target, Transform icon, bool hideIfFarAway, bool hideIfNotActive = false)
     {
-        if (target == null)
+        if (target == null || (hideIfNotActive && !target.gameObject.activeSelf))
         {
             icon.gameObject.SetActive(false);
             return;
@@ -209,5 +228,18 @@ public class Minimap : MonoBehaviour
         }
 
         icon.GetComponent<RectTransform>().anchoredPosition = localPos;
+    }
+
+    protected void TryToSetPlayerBody()
+    {        
+        if (!hasSetPlayerBody)
+        {
+            GameObject pBody = GameObject.FindGameObjectWithTag("PlayerBody");
+            if (pBody != null)
+            {
+                playerBody = pBody.transform;
+                hasSetPlayerBody = true;
+            }
+        }
     }
 }

@@ -26,6 +26,7 @@ public class PlayerController : PlayerAction
     private KeyCode runKeyCode;
     private PlayerMelee playerMelee;
     private PlayerSkill playerSkill;
+
     private void Awake()
     {
         playerMelee = GetComponent<PlayerMelee>();
@@ -47,6 +48,12 @@ public class PlayerController : PlayerAction
 
         isGrounded = Physics.CheckSphere(transform.position, groundCheckDistance, groundMask);
 
+        if (Input.GetKeyDown(KeyCode.Space) && direction != Vector3.zero && !isSkillInvoked)
+        {
+            OnPlayerDash?.Invoke(moveDirection.normalized);
+            OnPlayerRotate?.Invoke(direction.normalized, turnSpeed);
+        }
+
         if (isMeleeInvoked || isSkillInvoked)
         {
             OnPlayerStop?.Invoke(moveDirection.normalized, isGrounded);
@@ -56,12 +63,7 @@ public class PlayerController : PlayerAction
 
         this.SetIsInvoking(true);
 
-        if (Input.GetKeyDown(KeyCode.Space) && direction != Vector3.zero)
-        {
-            OnPlayerDash?.Invoke(moveDirection.normalized);
-        }
-
-        if (direction != Vector3.zero)
+        if (direction != Vector3.zero && !Input.GetKeyDown(KeyCode.Space))
         {
             OnPlayerRotate?.Invoke(direction.normalized, turnSpeed);
         }
@@ -85,6 +87,10 @@ public class PlayerController : PlayerAction
 
     }
 
+    private void OnDisable()
+    {
+        this.SetIsInvoking(false);
+    }
 }
 
 

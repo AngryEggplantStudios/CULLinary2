@@ -51,4 +51,12 @@ public class ScreenFlash : MonoBehaviour
         tempColor.a = 0;
         image.color = tempColor;
     }
+
+    // Resets the screen to the original colour
+    public void ResetScreenColour()
+    {
+        Color tempColor = image.color;
+        tempColor.a = 0;
+        image.color = tempColor;
+    }
 }

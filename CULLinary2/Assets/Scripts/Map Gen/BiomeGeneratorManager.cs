@@ -11,7 +11,10 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
     public float progress;
     public bool isComplete;
     public string loadingStatus;
+    public GameObject[] hideWhileLoading;
+
     private bool hasExistingData;
+    private bool processing;
 
     public override void Awake()
     {
@@ -19,10 +22,21 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
         isComplete = false;
         loadingStatus = "Currently loading world...";
         progress = 0f;
+        processing = false;
+    }
+
+    public void ProcessComplete()
+    {
+        processing = false;
     }
 
     public IEnumerator LoadBiome()
     {
+        foreach (GameObject obj in hideWhileLoading)
+        {
+            obj.SetActive(false);
+        }
+
         CheckForExistingData();
         if (hasExistingData)
         {
@@ -33,6 +47,11 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
             yield return StartCoroutine(StartGeneration());
             yield return StartCoroutine(LoadExistingBiome());
         }
+
+        foreach (GameObject obj in hideWhileLoading)
+        {
+            obj.SetActive(true);
+        }
     }
 
     public static bool IsGenerationComplete()
@@ -40,38 +59,56 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
         return BiomeGeneratorManager.instance.isComplete;
     }
 
+    IEnumerator Process(string loadingStatus, float progress, IEnumerator process)
+    {
+        this.loadingStatus = loadingStatus;
+        this.progress = 0f;
+        processing = true;
+        Debug.Log("LOADING: " + loadingStatus);
+        StartCoroutine(process);
+        while (processing)
+        {
+            yield return null;
+        }
+    }
+
     private IEnumerator StartGeneration()
     {
-        Debug.Log("Starting Generation");
+        Debug.Log("LOADING: Starting Generation");
         BiomeDataManager.instance.CreateData();
-        yield return StartCoroutine(biomeGenerator.GenerateMap(BiomeDataManager.instance.seed));
-        loadingStatus = "Spawning some delicious eggplants";
-        progress = 0.33f;
-        yield return StartCoroutine(biomeObjectSpawner.SpawnObjects(BiomeDataManager.instance.seed));
-        loadingStatus = "Placing objects around the world";
-        progress = 0.66f;
-        yield return StartCoroutine(biomeNavMeshGenerator.GenerateMesh());
-        loadingStatus = "Generating AI map for monsters";
-        progress = 0.99f;
-        yield return StartCoroutine(biomeGenerator.ReactivateMap());
+
+        yield return StartCoroutine(Process("Generating Map", 0f,
+                biomeGenerator.GenerateMap(BiomeDataManager.instance.seed)));
+
+        yield return StartCoroutine(Process("Placing objects around the world", 0.33f,
+                biomeObjectSpawner.SpawnObjects(BiomeDataManager.instance.seed)));
+
+        yield return StartCoroutine(Process("Generating AI map for monsters", 0.66f,
+                biomeNavMeshGenerator.GenerateMesh()));
+
+        yield return StartCoroutine(Process("Final touches", 0.99f,
+                biomeGenerator.ReactivateMap()));
+
         isComplete = true;
         progress = 1f;
-
     }
 
     private IEnumerator LoadExistingBiome()
     {
-        Debug.Log("Loading existing map");
-        yield return StartCoroutine(biomeGenerator.LoadGeneratedMap());
-        loadingStatus = "Spawning some delicious eggplants";
-        progress = 0.33f;
-        yield return StartCoroutine(biomeObjectSpawner.SpawnObjects(BiomeDataManager.instance.seed));
-        loadingStatus = "Placing objects around the world";
-        progress = 0.66f;
-        yield return StartCoroutine(biomeNavMeshGenerator.GenerateMesh());
-        loadingStatus = "Generating AI map for monsters";
-        progress = 0.99f;
-        yield return StartCoroutine(biomeGenerator.ReactivateMap());
+        Debug.Log("LOADING: Loading existing map");
+
+        yield return StartCoroutine(Process("Generating Map", 0f,
+                biomeGenerator.LoadGeneratedMap()));
+
+        yield return StartCoroutine(Process("Placing objects around the world", 0.33f,
+                biomeObjectSpawner.SpawnObjects(BiomeDataManager.instance.seed)));
+
+        yield return StartCoroutine(Process("Generating AI map for monsters", 0.66f,
+                biomeNavMeshGenerator.GenerateMesh()));
+
+        yield return StartCoroutine(Process("Final touches", 0.99f,
+                biomeGenerator.ReactivateMap()));
+
         isComplete = true;
         progress = 1f;
     }

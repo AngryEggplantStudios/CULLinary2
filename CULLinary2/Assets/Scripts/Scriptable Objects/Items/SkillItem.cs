@@ -6,9 +6,13 @@ public class SkillItem : WeaponSkillItem
 {
     public int[] blockPercentage;
     public int[] staminaCost;
-    public int[] healAmount;
     public int[] skillDuration;
     public int[] attackDamage;
     public GameObject skillPrefab;
+
+    public string GetDescription(int level)
+    {
+        return "Damage: " + attackDamage[level] + "\n" + "Stamina Cost: " + staminaCost[level];
+    }
 
 }

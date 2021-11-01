@@ -6,5 +6,13 @@ public enum MonsterName
 {
     Eggplant,
     Potato,
-    Corn
+    Corn,
+    Tomato,
+    Bread,
+    Cheese,
+    Meat,
+    Mushroom,
+    DaddyEggplant,
+    DaddyPotato,
+    DaddyCorn
 }

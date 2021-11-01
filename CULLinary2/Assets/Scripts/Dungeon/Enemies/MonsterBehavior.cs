@@ -8,28 +8,29 @@ public class MonsterBehavior : MonoBehaviour
     [Header("Monster Behavior Variables")]
     [SerializeField] private float idleTimer;
     [SerializeField] private float wanderRadius;
-    [SerializeField] private float wanderTimer;
+    [SerializeField] public float wanderTimer;
 
     [Tooltip("The minimum distance to wander about. Needed because of the stopping distance being large makes the enemy only wander a bit before stopping.")]
     [SerializeField] private float minDist;
-    [SerializeField] private float timeBetweenAttacks;
+    [SerializeField] protected float timeBetweenAttacks;
 
     [Header("Test")]
-    [SerializeField] private bool lineTest = false;
+    [SerializeField] public bool lineTest = false;
     // Variables
 
-    private float goingBackToStartTimer;
+    public float goingBackToStartTimer;
     private Vector3 roamPosition;
-    private bool canAttack = true;
-    private Animator animator;
-    private NavMeshAgent navMeshAgent;
+    public bool canAttack = true;
+    public Animator animator;
+    public NavMeshAgent navMeshAgent;
 
-    private float timer;
-    private Vector3 startingPosition;
+    public float timer;
+    public Vector3 startingPosition;
     //The minimum distance to stop in front of the player. Has to be equal to Stopping distance. Cannot use stopping distance directly else navmesh agent will keep bumping into player/
-    private float reachedPositionDistance;
-    private MonsterScript monsterScript;
-    private LineRenderer lineRenderer;
+    public float reachedPositionDistance;
+    public MonsterScript monsterScript;
+    public LineRenderer lineRenderer;
+    protected NavMeshPath path;
 
     private void Start()
     {
@@ -45,19 +46,26 @@ public class MonsterBehavior : MonoBehaviour
         reachedPositionDistance = navMeshAgent.stoppingDistance;
         startingPosition = transform.position;
         timer = wanderTimer;
+        path = new NavMeshPath();
         goingBackToStartTimer = 0;
+        childClassPreStartFunctions();
     }
 
-    private void EnemyIdle()
+    protected virtual void childClassPreStartFunctions()
+	{
+        //default do nothing, for children class to override;
+	}
+
+    public virtual void EnemyIdle()
     {
-        monsterScript.checkIfDead();
         animator.SetBool("isMoving", false);
         timer += Time.deltaTime;
         if (timer >= idleTimer)
         {
             Vector3 newPos = RandomNavSphere(startingPosition, wanderRadius, -1, minDist);
-            navMeshAgent.SetDestination(newPos);
-            timer = 0;
+			NavMesh.CalculatePath(transform.position, newPos, NavMesh.AllAreas, path);
+			navMeshAgent.SetPath(path);
+			timer = 0;
             monsterScript.SetStateMachine(MonsterState.Roaming);
             roamPosition = newPos;
 
@@ -72,7 +80,7 @@ public class MonsterBehavior : MonoBehaviour
         }
     }
 
-    private void EnemyRoaming()
+    public virtual void EnemyRoaming()
     {
         animator.SetBool("isMoving", true);
         timer += Time.deltaTime;
@@ -87,7 +95,7 @@ public class MonsterBehavior : MonoBehaviour
         }
     }
 
-    private void EnemyChase(float stopChaseDistance, Vector3 playerPosition)
+    public virtual void EnemyChase(float stopChaseDistance, Vector3 playerPosition)
     {
         Vector3 playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
         animator.SetBool("isMoving", true);
@@ -100,6 +108,7 @@ public class MonsterBehavior : MonoBehaviour
             points[1] = playerPositionWithoutYOffset;
             lineRenderer.SetPositions(points);
         }
+
 
         if (directionVector <= reachedPositionDistance)
         {
@@ -122,12 +131,12 @@ public class MonsterBehavior : MonoBehaviour
         }
     }
 
-    private void EnemyAttackPlayer(Vector3 playerPosition, bool ableToMove)
+    public virtual void EnemyAttackPlayer(Vector3 playerPosition, bool ableToMove)
     {
         Vector3 playerPositionWithoutYOffset = new Vector3(playerPosition.x, transform.position.y, playerPosition.z);
         slowlyRotateToLookAt(playerPositionWithoutYOffset);
 
-        if (canAttack == true)
+        if (canAttack)
         {
             canAttack = false;
             StartCoroutine(DelayAttack(playerPositionWithoutYOffset));
@@ -139,8 +148,9 @@ public class MonsterBehavior : MonoBehaviour
             monsterScript.SetStateMachine(MonsterState.ChaseTarget);
         }
     }
-    private IEnumerator DelayAttack(Vector3 playerPositionWithoutYOffset)
-	{
+
+    public virtual IEnumerator DelayAttack(Vector3 playerPositionWithoutYOffset)
+    {
         yield return new WaitForSeconds(1);
         slowlyRotateToLookAt(playerPositionWithoutYOffset);
         animator.SetBool("isMoving", false);
@@ -149,13 +159,12 @@ public class MonsterBehavior : MonoBehaviour
         StartCoroutine(DelayFire());
     }
 
-    private void EnemyReturn()
+    public virtual void EnemyReturn()
     {
         goingBackToStartTimer += Time.deltaTime;
         slowlyRotateToLookAt(startingPosition);
         animator.SetBool("isMoving", true);
         navMeshAgent.SetDestination(startingPosition);
-
         if (lineTest)
         {
             Vector3[] points = new Vector3[2];
@@ -177,7 +186,7 @@ public class MonsterBehavior : MonoBehaviour
     }
 
 
-    private IEnumerator DelayFire()
+    protected virtual IEnumerator DelayFire()
     {
         yield return new WaitForSeconds(timeBetweenAttacks);
         canAttack = true;
@@ -201,8 +210,9 @@ public class MonsterBehavior : MonoBehaviour
         return navHit.position;
     }
 
-    private void OnDestroy()
-    {
+    // Use this isntead of OnDestroy due to global enemy Detection unable to call OnDestroy on disabled
+	public void DestroyObjectEvents()
+	{
         monsterScript.onEnemyRoaming -= EnemyRoaming;
         monsterScript.onEnemyChase -= EnemyChase;
         monsterScript.onEnemyIdle -= EnemyIdle;
@@ -210,8 +220,8 @@ public class MonsterBehavior : MonoBehaviour
         monsterScript.onEnemyReturn -= EnemyReturn;
     }
 
-    private void slowlyRotateToLookAt(Vector3 target)
-	{
+	public void slowlyRotateToLookAt(Vector3 target)
+    {
         transform.rotation = Quaternion.Lerp(
             transform.rotation,
             Quaternion.Euler(Quaternion.LookRotation(target - transform.position).eulerAngles),

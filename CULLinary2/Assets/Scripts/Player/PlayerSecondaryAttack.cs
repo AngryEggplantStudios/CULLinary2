@@ -10,6 +10,10 @@ public class PlayerSecondaryAttack : PlayerAction
     [SerializeField] private GameObject skillPrefab;
     [SerializeField] private GameObject defaultSkillPrefab;
     [SerializeField] private GameObject skillObject;
+    [SerializeField] private GameObject playerBody;
+
+    [SerializeField] private Camera mainCamera;
+
     private int currentAttackSelected = 0;
     private PlayerStamina playerStamina;
     private float staminaCost = 100f;
@@ -21,8 +25,19 @@ public class PlayerSecondaryAttack : PlayerAction
         playerStamina = GetComponent<PlayerStamina>();
     }
 
+    private void OnDisable()
+    {
+        Destroy(skillObject);
+        animator.SetBool("isPowerUp", false);
+        playerSkill.StopInvoking();
+    }
+
     private void PowerUp()
     {
+        if (Time.timeScale == 0f)
+        {
+            return;
+        }
         playerStamina.SetStaminaCircleActive(true);
         if (playerStamina != null && !playerStamina.HasStamina(staminaCost))
         {
@@ -30,22 +45,24 @@ public class PlayerSecondaryAttack : PlayerAction
             playerSkill.StopInvoking();
             return;
         }
+        RaycastHit hit;
+
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        bool hitGround = Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask("Ground"));
+        if (hitGround)
+        {
+            Vector3 rotateToFaceDirection = new Vector3(hit.point.x,
+                0.0f,
+                hit.point.z);
+            playerBody.transform.LookAt(rotateToFaceDirection);
+        }
+
         playerStamina.ReduceStamina(staminaCost);
         animator.SetBool("isPowerUp", true);
+        animator.SetTrigger("testSkillTrigger");
         skillObject = Instantiate(skillPrefab, holderObjectReference.transform);
         skillObject.transform.localPosition = new Vector3(0, 0, 0);
-        Destroy(skillObject, 1.5f);
-    }
-
-    //For testing
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha9))
-        {
-            currentAttackSelected++;
-            currentAttackSelected = currentAttackSelected % 2;
-            ChangeSecondaryAttack(currentAttackSelected + 3);
-        }
+        //Destroy(skillObject, 1.5f);
     }
 
     public void ChangeSecondaryAttack(int id)

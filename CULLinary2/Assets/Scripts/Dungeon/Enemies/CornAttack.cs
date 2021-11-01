@@ -73,6 +73,7 @@ public class CornAttack : MonsterAttack
             firePositions.Add(targetPosition);
         }
     }
+
     private IEnumerator PrepareToFire()
     {
         while (true)
@@ -95,7 +96,6 @@ public class CornAttack : MonsterAttack
         }
         StartCoroutine("PrepareToFire");
     }
-
 
     private void ThrowCorn(Vector3 sourcePosition, Vector3 targetPosition)
     {

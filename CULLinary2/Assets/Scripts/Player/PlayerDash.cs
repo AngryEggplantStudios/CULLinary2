@@ -6,7 +6,7 @@ public class PlayerDash : PlayerAction
 {
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
-    
+
     [Header("Visuals")]
     [SerializeField] private Transform playerbody;
     [SerializeField] private GameObject dustKickupPrefab;
@@ -20,22 +20,36 @@ public class PlayerDash : PlayerAction
     private Animator animator;
     private PlayerController playerController;
     private PlayerStamina playerStamina;
+    private PlayerHealth playerHealth;
     private CharacterController characterController;
     private bool isDashing;
+    private PlayerSlash playerSlash;
+    private Coroutine currentCoroutine = null;
 
     private void Awake()
     {
+        playerSlash = GetComponent<PlayerSlash>();
         playerController = GetComponent<PlayerController>();
         playerStamina = GetComponent<PlayerStamina>();
+        playerHealth = GetComponent<PlayerHealth>();
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
         playerController.OnPlayerDash += Dash;
         isDashing = false;
     }
 
+    private void OnDisable()
+    {
+        if (currentCoroutine != null)
+        {
+            StopCoroutine(currentCoroutine);
+        }
+        isDashing = false;
+    }
+
     private void Dash(Vector3 direction)
     {
-        if (isDashing)
+        if (isDashing || Time.timeScale == 0f)
         {
             return;
         }
@@ -49,16 +63,22 @@ public class PlayerDash : PlayerAction
         {
             playerStamina.ReduceStamina(staminaCost);
         }
-        StartCoroutine(StartDashWithLerp(direction.normalized));
+        currentCoroutine = StartCoroutine(StartDashWithLerp(direction.normalized));
     }
 
     private IEnumerator StartDashWithLerp(Vector3 normalizedDirection)
     {
+        if (playerSlash != null)
+        {
+            playerSlash.AttackCleanUp();
+        }
+        animator.SetTrigger("isDashing");
         audioSource.Play();
         Instantiate(dustKickupPrefab, playerbody);
         isDashing = true;
         float startTime = Time.time;
         float currSpeed = startingSpeed;
+        StartCoroutine(playerHealth.BecomeTemporarilyInvincibleByDash(dashTime));
         while (Time.time < startTime + dashTime)
         {
             characterController.Move(normalizedDirection * currSpeed * Time.deltaTime);

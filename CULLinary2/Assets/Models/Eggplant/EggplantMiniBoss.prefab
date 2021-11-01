@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 281a8af603257604d9094bdf7fbe58fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 750
+  health: 500
   distanceTriggered: 36
   stopChase: 40
+  damageMultiplier: 1.5
+  randomLootRange: 0400000005000000
+  lootChest: {fileID: 3385460372706172451, guid: 8818a0d2de1827e448af9e60d68678c2, type: 3}
 --- !u!1001 &3486008725511839847
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22,6 +25,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -8423316685757858577, guid: 4180c73d6e91a2048826a68a1d901107, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: eb374d02ca7f3a84795dfe9ea1922c59, type: 2}
     - target: {fileID: 807139516458123811, guid: 4180c73d6e91a2048826a68a1d901107, type: 3}
       propertyPath: m_Name
       value: EggplantMiniBoss
@@ -105,3 +112,85 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 807139516458123811, guid: 4180c73d6e91a2048826a68a1d901107, type: 3}
   m_PrefabInstance: {fileID: 3486008725511839847}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &8429458763813111377 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4943754348278179382, guid: 4180c73d6e91a2048826a68a1d901107, type: 3}
+  m_PrefabInstance: {fileID: 3486008725511839847}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &7421503168090561107
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 8429458763813111377}
+    m_Modifications:
+    - target: {fileID: 613303663732426333, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663732426333, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663732426333, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663732426333, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663732426333, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663732426333, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.0554789
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663732426333, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.0554789
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663732426333, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.704927
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663732426333, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.704927
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663747588207, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663747588207, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_UseCustomVertexStreams
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663747597151, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663747597151, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 613303663747597151, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 0.5542736
+      objectReference: {fileID: 0}
+    - target: {fileID: 5156153164082516047, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: UVModule.startFrame.scalar
+      value: 0.22222222
+      objectReference: {fileID: 0}
+    - target: {fileID: 8143590668843573490, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8143590668843573490, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}
+      propertyPath: m_UseCustomVertexStreams
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9e7010e7d9eceb64ab409cedf675d33c, type: 3}

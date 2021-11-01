@@ -111,6 +111,7 @@ GameObject:
   - component: {fileID: 6106420228487427490}
   - component: {fileID: -8872383971675245877}
   - component: {fileID: -8015557883694520765}
+  - component: {fileID: 8927638165345339595}
   m_Layer: 0
   m_Name: CheeseEnemy
   m_TagString: Untagged
@@ -282,7 +283,7 @@ NavMeshAgent:
   m_Acceleration: 24
   avoidancePriority: 80
   m_AngularSpeed: 120
-  m_StoppingDistance: 5
+  m_StoppingDistance: 7
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 0
   m_AutoRepath: 1
@@ -302,11 +303,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85312a11147074bd4a346f763020aae9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterHealth: 50
-  distanceTriggered: 10
+  monsterHealth: 300
+  distanceTriggered: 15
   stopChase: 35
-  lootDropped: {fileID: 5304752682466731814, guid: 94eed080e57614e9d84fdd0d2185bd37, type: 3}
-  additionalSpawningNumbers: 0
+  lootDropped: {fileID: 2315141807471270328, guid: f9048ce6f4c52bb4685a579820371299, type: 3}
+  additionalSpawning: 0
   spawner: {fileID: 0}
   hpBarPrefab: {fileID: 1085209639500972291, guid: 4614e0511cb49b14ebf0c58217d9d222, type: 3}
   damageCounterPrefab: {fileID: 1085209639500972291, guid: 24f41dda89c7bd648bd2796ac669721e, type: 3}
@@ -320,7 +321,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e0112cdc2521c8a40872086bc6994256, type: 3}
   - {fileID: 8300000, guid: 0a212b4caa7d7be44b784854f3a4eecc, type: 3}
   - {fileID: 8300000, guid: a45b2da923b66ba47ae8daf723c31c06, type: 3}
-  audioSourceAttack: {fileID: 0}
+  audioSourceAttack: {fileID: 4648799156462178380}
   alertSound: {fileID: 8300000, guid: f887160af86d3844b80236fc380ba79d, type: 3}
   attackSound: {fileID: 8300000, guid: b27e425790eebc643bf37744875e751c, type: 3}
   deathSound: {fileID: 8300000, guid: 9270765c7e69c68409898d68ee0124bc, type: 3}
@@ -329,6 +330,8 @@ MonoBehaviour:
   texturesForFlash: []
   transparentMaterials:
   - {fileID: 2100000, guid: 3fdb8f5ce4608104fb04a39514808f91, type: 2}
+  currentState: 0
+  playerTransform: {fileID: 0}
 --- !u!114 &-8872383971675245877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -341,7 +344,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94da401bb424fe346b8e617dc3e34b48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyScript: {fileID: 6106420228487427490}
   enemyAttack: {fileID: 8923984230425067015}
   idleTimer: 6
   wanderRadius: 50
@@ -352,6 +354,7 @@ MonoBehaviour:
   debugLine: {fileID: -8423316685757858577}
   lineTest: 0
   timeBetweenAttacks: 5
+  enemyScript: {fileID: 6106420228487427490}
 --- !u!54 &-8015557883694520765
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -368,6 +371,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &8927638165345339595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 807139516458123811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1b3de358436d2f418cd050bdac99ce2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1227547172340185897
 GameObject:
   m_ObjectHideFlags: 0

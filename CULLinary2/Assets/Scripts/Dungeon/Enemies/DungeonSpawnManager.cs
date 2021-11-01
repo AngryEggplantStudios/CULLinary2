@@ -5,44 +5,17 @@ using UnityEngine;
 public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
 {
     private static List<GameObject> monsterSpawners;
+    public delegate void SpawnEnemiesDelegate();
+    public static event SpawnEnemiesDelegate OnSpawnEnemies;
 
     public IEnumerator GetSpawners()
     {
         // Get spawners and update spawning caps and spawning numbers
         GameObject[] spawnObjectsArray = GameObject.FindGameObjectsWithTag("MonsterSpawn");
         monsterSpawners = new List<GameObject>(spawnObjectsArray);
-        UpdateSpawners();
+
+        GameTimer.OnStartNewDay += UpdateSpawnersAndTriggerSpawning;
         yield return null;
-    }
-
-    public static void CheckIfExtinct(MonsterName name)
-    {
-        // Updates population level if found to be extinct and population level is not already Extinct
-
-        Population pop = EcosystemManager.GetPopulation(name);
-        if (pop.GetLevel() == PopulationLevel.Extinct)
-        {
-            return;
-        }
-
-        List<GameObject> spawners = GetSpawnersByName(name);
-        bool isExtinct = true;
-
-        foreach (GameObject spawner in spawners)
-        {
-            MonsterSpawn monsterSpawn = spawner.GetComponent<MonsterSpawn>();
-            if (monsterSpawn.GetSpawnCap() > 0)
-            {
-                isExtinct = false;
-                break;
-            }
-        }
-
-        if (isExtinct)
-        {
-            // All spawn caps for this enemy are 0
-            EcosystemManager.SetExtinct(name);
-        }
     }
 
     public static bool IsOverpopulated(MonsterName name)
@@ -51,11 +24,13 @@ public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
         return pop.IsOverpopulated();
     }
 
-    public static void UpdateSpawners()
+    public static void UpdateSpawnersAndTriggerSpawning()
     {
         // updates every day
         UpdateLocalSpawnCaps();
         UpdateSpawnAmount();
+        // make sure spawning happens only after spawners are updated
+        OnSpawnEnemies?.Invoke();
     }
 
     private static void UpdateLocalSpawnCaps()
@@ -63,13 +38,19 @@ public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
         foreach (MonsterName name in MonsterName.GetValues(typeof(MonsterName)))
         {
             Population pop = EcosystemManager.GetPopulation(name);
+            if (!pop.IsEnabled()) // Don't have to update population if is disabled
+            {
+                // Debug.Log("update local spawn caps: " + name + " is disabled");
+                continue;
+            }
+
             List<GameObject> spawners = GetSpawnersByName(name);
             if (spawners.Count == 0)
             {
                 continue;
             }
-            int popNumber = pop.GetCurrentNumber();
-            int localSpawnCap = Mathf.FloorToInt(popNumber / spawners.Count);
+            int spawningAmtForSpawners = pop.GetCurrentNumber() - pop.GetBaseSpawningNumber();
+            int localSpawnCap = Mathf.FloorToInt(spawningAmtForSpawners / spawners.Count);
             if (localSpawnCap < 1 && pop.GetLevel() != PopulationLevel.Extinct)
             {
                 localSpawnCap = 1;
@@ -78,17 +59,16 @@ public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
             for (int i = 0; i < spawners.Count; i++)
             {
                 GameObject spawner = spawners[i];
-                if (localSpawnCap > popNumber || i == spawners.Count - 1)
+                if (localSpawnCap > spawningAmtForSpawners || i == spawners.Count - 1)
                 {
                     // population number not enough for localSpawnCap or is the last spawner
-                    localSpawnCap = popNumber;
+                    localSpawnCap = spawningAmtForSpawners;
                 }
 
                 MonsterSpawn monsterSpawn = spawner.GetComponent<MonsterSpawn>();
                 monsterSpawn.SetSpawnCap(localSpawnCap);
 
-                popNumber -= localSpawnCap;
-                // Debug.Log(string.Format("spawn cap for {0} set to {1}", name, localSpawnCap));
+                spawningAmtForSpawners -= localSpawnCap;
             }
         }
     }
@@ -98,6 +78,12 @@ public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
         foreach (MonsterName name in MonsterName.GetValues(typeof(MonsterName)))
         {
             Population pop = EcosystemManager.GetPopulation(name);
+            if (!pop.IsEnabled()) // Don't have to update population if is disabled
+            {
+                continue;
+            }
+
+
             List<GameObject> spawners = GetSpawnersByName(name);
             foreach (GameObject spawner in spawners)
             {
@@ -144,7 +130,7 @@ public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
         {
             case PopulationLevel.Overpopulated:
                 minSpawnAmount = 5;
-                maxSpawnAmount = 6;
+                maxSpawnAmount = 8;
                 break;
             case PopulationLevel.Normal:
                 minSpawnAmount = 3;
@@ -192,6 +178,11 @@ public class DungeonSpawnManager : SingletonGeneric<DungeonSpawnManager>
     {
         MonsterSpawn monsterSpawn = monsterSpawnGO.GetComponent<MonsterSpawn>();
         return monsterSpawn.GetMonsterName();
+    }
+
+    void OnDestroy()
+    {
+        GameTimer.OnStartNewDay -= UpdateSpawnersAndTriggerSpawning;
     }
 
 }

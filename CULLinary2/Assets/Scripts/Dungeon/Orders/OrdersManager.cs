@@ -60,6 +60,9 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     // Track amount of money earned today
     private int moneyEarnedToday = 0;
 
+    // Buff bonus
+    private bool isDoubled = false;
+
     void Start()
     {
         innerOrdersList = new List<Order>();
@@ -88,8 +91,14 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
     {
         innerOrdersList.Add(order);
         isCacheValid = false;
-        StopCoroutine(UpdateUI());
-        StartCoroutine(UpdateUI());
+        ForceUIUpdate();
+    }
+
+    public IEnumerator ToggleDoubleEarnings(float duration)
+    {
+        isDoubled = true;
+        yield return new WaitForSeconds(duration);
+        isDoubled = false;
     }
 
     // Tries to complete an order with a certain station ID
@@ -128,6 +137,10 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
 
             // Update money
             int earnings = orderToComplete.GetDeliveryReward();
+            if (isDoubled)
+            {
+                earnings *= 2;
+            }
             SpawnMoneyNotif(earnings);
             PlayerManager.instance.currentMoney += earnings;
 
@@ -169,7 +182,13 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         moneyNotif.transform.localPosition = Vector3.zero;
     }
 
-    public IEnumerator UpdateUI()
+    public void ForceUIUpdate()
+    {
+        StopAllCoroutines();
+        StartCoroutine(UpdateUI());
+    }
+
+    private IEnumerator UpdateUI()
     {
         foreach (Transform child in ordersContainer.transform)
         {
@@ -283,6 +302,19 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         return numberOfOrdersByRecipeCache;
     }
 
+    public int GetNumberOfOrders(int recipeId)
+    {
+        Dictionary<int, int> ordersByRecipe = GetNumberOfOrdersByRecipe();
+        if (ordersByRecipe.ContainsKey(recipeId))
+        {
+            return ordersByRecipe[recipeId];
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
     // Gets the number of orders that are generated automatically every day
     public static int GetNumberOfOrdersGeneratedDaily()
     {
@@ -327,6 +359,11 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         {
             onOrderGenerationCallback.Invoke();
         }
+    }
+
+    public void ClearBuffs()
+    {
+        isDoubled = false;
     }
 
     public void OnDestroy()

@@ -789,6 +789,7 @@ GameObject:
   - component: {fileID: 5543433350580354128}
   - component: {fileID: 1013324229052589080}
   - component: {fileID: 258879138758195646}
+  - component: {fileID: 3237049754924213055}
   m_Layer: 0
   m_Name: CornEnemyNew
   m_TagString: Untagged
@@ -848,7 +849,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: c9fef15b59604a04c8deddb68979eb26, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -961,8 +962,8 @@ MonoBehaviour:
   monsterHealth: 100
   distanceTriggered: 24
   stopChase: 28
-  lootDropped: {fileID: 326235487477366690, guid: 812db79b055094f5b9b31cba471340af, type: 3}
-  additionalSpawningNumbers: 0
+  lootDropped: {fileID: 8706522679418664788, guid: c860a51bbbe31f84a91c654f662bd6c4, type: 3}
+  additionalSpawning: 0
   spawner: {fileID: 0}
   hpBarPrefab: {fileID: 1085209639500972291, guid: 4614e0511cb49b14ebf0c58217d9d222, type: 3}
   damageCounterPrefab: {fileID: 1085209639500972291, guid: 24f41dda89c7bd648bd2796ac669721e, type: 3}
@@ -985,6 +986,8 @@ MonoBehaviour:
   texturesForFlash: []
   transparentMaterials:
   - {fileID: 2100000, guid: 8dbd19aaf0e3cfb488589daef57f3707, type: 2}
+  currentState: 0
+  playerTransform: {fileID: 0}
 --- !u!114 &5543433350580354128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1003,6 +1006,15 @@ MonoBehaviour:
   minDist: 30
   timeBetweenAttacks: 4
   lineTest: 0
+  goingBackToStartTimer: 0
+  canAttack: 1
+  animator: {fileID: 0}
+  navMeshAgent: {fileID: 0}
+  timer: 0
+  startingPosition: {x: 0, y: 0, z: 0}
+  reachedPositionDistance: 0
+  monsterScript: {fileID: 0}
+  lineRenderer: {fileID: 0}
 --- !u!114 &1013324229052589080
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1042,6 +1054,18 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &3237049754924213055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5080297952357249674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1b3de358436d2f418cd050bdac99ce2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5113691137659434615
 GameObject:
   m_ObjectHideFlags: 0

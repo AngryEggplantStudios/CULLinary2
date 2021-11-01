@@ -17,6 +17,7 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
     [SerializeField] private Animator healthBarAnimator;
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private Renderer rend;
+    [SerializeField] private GameObject healIcon;
 
     [Header("Variables")]
     [SerializeField] private float invincibilityDurationSeconds;
@@ -29,11 +30,17 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
 
     private bool isInvincible = false;
     private bool isDrowningActivated = false;
+    // Check if player is close to campfire
+    private bool isCloseToCampfire = false;
     private Color[] originalColors;
     private Color onDamageColor = Color.white;
     private float invincibilityDeltaTime = 0.025f;
     private Animator animator;
     private bool deathIsCalled = false;
+    private bool isInvincibleByBuff = false;
+    private bool isInvincibleByDash = false;
+    private bool isClownActive = false;
+    private List<GameObject> playerDamagedNumbers = new List<GameObject>();
 
     public override void Awake()
     {
@@ -75,19 +82,47 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         //Check if player is dead
         if (PlayerManager.instance.currentHealth <= 0f && !deathIsCalled)
         {
+            BuffManager.instance.ClearBuffManager();
             deathIsCalled = true;
             Die();
         }
+        else if (!deathIsCalled)
+        {
+            if (isCloseToCampfire)
+            {
+                IncreaseHealth(GameTimer.instance.GameMinutesPassedSinceLastUpdate() * (PlayerManager.instance
+                    ? PlayerManager.instance.campfireRegenerationRate
+                    : 0.0f
+                ));
+            }
+        }
+    }
+
+    private void OnDisable()
+    {
+        isInvincibleByDash = false;
+        isInvincible = false;
+        // Reset flash
+        for (var k = 0; k < rend.materials.Length; k++)
+        {
+            rend.materials[k].color = originalColors[k];
+        }
+        ScreenFlash.Instance.ResetScreenColour();
     }
 
     public bool IncreaseHealth(float health)
     {
-        health = health < 0 ? 0 : Mathf.CeilToInt(health);
+        // health = health < 0 ? 0 : Mathf.CeilToInt(health);
         PlayerManager.instance.currentHealth = Mathf.Min(PlayerManager.instance.currentHealth + health, PlayerManager.instance.maxHealth);
         float currentHealth = PlayerManager.instance.currentHealth;
         float maxHealth = PlayerManager.instance.maxHealth;
         DisplayOnUI(currentHealth, maxHealth);
         return true;
+    }
+
+    public bool WasDeathCalled()
+    {
+        return deathIsCalled;
     }
 
     public void RestoreToFull()
@@ -97,6 +132,13 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         DisplayOnUI(PlayerManager.instance.currentHealth, PlayerManager.instance.maxHealth);
     }
 
+    public IEnumerator MakePlayerInvincibleByBuff(float duration)
+    {
+        isInvincibleByBuff = true;
+        yield return new WaitForSeconds(duration);
+        isInvincibleByBuff = false;
+    }
+
     public bool HandleHit(float damage, bool drowning = false)
     {
         damage = damage < 0 ? 0 : Mathf.CeilToInt(damage); //Guard check
@@ -104,8 +146,20 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         {
             return false;
         }
+        if (isInvincibleByBuff)
+        {
+            SpawnDamageCounter("0");
+            return false;
+        }
+        if (isInvincibleByDash)
+        {
+            SpawnDamageCounter("DODGE");
+            return false;
+        }
 
-        if (PlayerManager.instance.evasionChance > 0 && Random.Range(0, 100) < PlayerManager.instance.evasionChance)
+        int evasionChance = PlayerManager.instance.evasionChance + PlayerManager.instance.evasionBonus;
+
+        if (evasionChance > 0 && Random.Range(0, 100) < evasionChance)
         {
             SpawnDamageCounter("MISS");
             return false;
@@ -127,8 +181,41 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
             return true;
         }
 
-        StartCoroutine(BecomeTemporarilyInvincible());
+        StartCoroutine(BecomeTemporarilyInvincibleWithFlash(invincibilityDurationSeconds));
         return true;
+    }
+
+    // Rest for 1 hour (hard-coded)
+    public void HandlePlayerRest()
+    {
+        if (isCloseToCampfire && !isClownActive)
+        {
+            int restMinutes = 60;
+            GameTimer.instance.SkipTime(restMinutes, () =>
+                IncreaseHealth(restMinutes * (PlayerManager.instance
+                    ? PlayerManager.instance.campfireRegenerationRate
+                    : 0.0f
+                ))
+            );
+        }
+        else
+        {
+            Debug.Log("PlayerHealth.cs: Trying to rest when not close to campfire! Or clown is active.");
+        }
+    }
+
+    // Called when the player enters a campfire to heal
+    public void OnPlayerEnterCampfire()
+    {
+        isCloseToCampfire = true;
+        healIcon.SetActive(true);
+    }
+
+    // Called when the player leaves a campfire to stop healing
+    public void OnPlayerLeaveCampfire()
+    {
+        isCloseToCampfire = false;
+        healIcon.SetActive(false);
     }
 
     private void AnimTakeDamage()
@@ -139,7 +226,6 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
     private void Die()
     {
         animator.SetTrigger("isDead");
-        Debug.Log("Die called");
         UIController.instance.ShowDeathMenu();
     }
 
@@ -161,6 +247,22 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         damageCounter.transform.GetComponentInChildren<Text>().text = damageText.ToString();
         damageCounter.transform.SetParent(canvasDisplay.transform);
         damageCounter.transform.position = cam.WorldToScreenPoint(transform.position);
+        playerDamagedNumbers.Add(damageCounter);
+    }
+
+    public void DestroyDamageCounter(GameObject damageNum)
+	{
+        if (playerDamagedNumbers.Contains(damageNum))
+		{
+            playerDamagedNumbers.Remove(damageNum);
+        }
+    }
+    public void DestroyAllDamageCounter()
+    {
+        foreach (GameObject damageCounter in playerDamagedNumbers)
+		{
+            Destroy(damageCounter);
+		}
     }
 
     private void SpawnDrowningAlert()
@@ -172,7 +274,14 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         drowningAlert.transform.position = pos;
     }
 
-    private IEnumerator BecomeTemporarilyInvincible()
+    public IEnumerator BecomeTemporarilyInvincibleByDash(float invincibilityDurationSeconds)
+    {
+        isInvincibleByDash = true;
+        yield return new WaitForSeconds(invincibilityDurationSeconds);
+        isInvincibleByDash = false;
+    }
+
+    public IEnumerator BecomeTemporarilyInvincibleWithFlash(float invincibilityDurationSeconds)
     {
         isInvincible = true;
         bool isFlashing = false;
@@ -199,6 +308,15 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         isInvincible = false;
     }
 
+    public void ClearBuffs()
+    {
+        isInvincibleByBuff = false;
+    }
+
+    public void SetIsClownActive(bool isActive)
+	{
+        isClownActive = isActive;
+	}
 }
 
 /*

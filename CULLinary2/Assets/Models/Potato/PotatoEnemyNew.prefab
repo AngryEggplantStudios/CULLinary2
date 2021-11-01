@@ -694,6 +694,7 @@ GameObject:
   - component: {fileID: -2664355154039104880}
   - component: {fileID: 3032895445469368953}
   - component: {fileID: 5689706197273364680}
+  - component: {fileID: -8072340948929554234}
   m_Layer: 0
   m_Name: PotatoEnemyNew
   m_TagString: Untagged
@@ -891,6 +892,15 @@ MonoBehaviour:
   minDist: 10
   timeBetweenAttacks: 4
   lineTest: 1
+  goingBackToStartTimer: 0
+  canAttack: 1
+  animator: {fileID: 0}
+  navMeshAgent: {fileID: 0}
+  timer: 0
+  startingPosition: {x: 0, y: 0, z: 0}
+  reachedPositionDistance: 0
+  monsterScript: {fileID: 0}
+  lineRenderer: {fileID: 0}
 --- !u!114 &3032895445469368953
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -907,7 +917,7 @@ MonoBehaviour:
   distanceTriggered: 10
   stopChase: 14
   lootDropped: {fileID: 8706522679418664788, guid: bb4dce76efdb34ce682008e7fbc6f1fe, type: 3}
-  additionalSpawningNumbers: 2
+  additionalSpawning: 1
   spawner: {fileID: 0}
   hpBarPrefab: {fileID: 1085209639500972291, guid: 4614e0511cb49b14ebf0c58217d9d222, type: 3}
   damageCounterPrefab: {fileID: 1085209639500972291, guid: 24f41dda89c7bd648bd2796ac669721e, type: 3}
@@ -930,6 +940,8 @@ MonoBehaviour:
   texturesForFlash: []
   transparentMaterials:
   - {fileID: 2100000, guid: 0b6d6b52dd1c4a34ebcc0cf26b462846, type: 2}
+  currentState: 0
+  playerTransform: {fileID: 0}
 --- !u!114 &5689706197273364680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -947,3 +959,15 @@ MonoBehaviour:
   - {r: 1, g: 0.9843137, b: 0.5254902, a: 1}
   - {r: 1, g: 0.73333335, b: 0.8666667, a: 1}
   - {r: 0.48235294, g: 0.39215687, b: 0.6039216, a: 1}
+--- !u!114 &-8072340948929554234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9062019569830792200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1b3de358436d2f418cd050bdac99ce2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

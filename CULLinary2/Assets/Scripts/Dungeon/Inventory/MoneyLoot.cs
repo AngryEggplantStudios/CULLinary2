@@ -1,0 +1,17 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MoneyLoot : Loot
+{
+    [SerializeField] private int moneyAmount;
+
+    protected override void OnPickup(PlayerPickup playerPickup)
+    {
+        PlayerManager.instance.currentMoney += moneyAmount;
+        playerPickup.PickUpMoney(moneyAmount);
+
+        LootManager.instance.removeLoot(this.gameObject);
+        Destroy(gameObject);
+    }
+}

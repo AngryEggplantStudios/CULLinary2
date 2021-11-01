@@ -40,6 +40,22 @@ public class PlayerSlash : PlayerAction
         animator = GetComponent<Animator>();
     }
 
+    private void OnDisable()
+    {
+        if (weaponCollider != null)
+        {
+            weaponCollider.enabled = false;
+        }
+        if (weaponTrail != null)
+        {
+            weaponTrail.emitting = false;
+        }
+        animator.SetBool("isPowerUp", false);
+        animator.SetBool("isMelee", false);
+        playerMelee.StopInvoking();
+        playerSkill.StopInvoking(); 
+    }
+
     public void ChangeWeapon(int id)
     {
         if (instantiatedWeapon != null)
@@ -82,17 +98,6 @@ public class PlayerSlash : PlayerAction
         weaponTrail = instantiatedWeapon.GetComponentInChildren<TrailRenderer>();
         weaponTrail.emitting = false;
         Debug.Log("Current weapon held id is: " + PlayerManager.instance.currentWeaponHeld);
-    }
-
-    //For testing
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha0))
-        {
-            currentWeaponSelected++;
-            currentWeaponSelected = currentWeaponSelected % 3;
-            ChangeWeapon(currentWeaponSelected);
-        }
     }
 
     private IEnumerator RotatePlayer()
@@ -144,9 +149,7 @@ public class PlayerSlash : PlayerAction
         animator.SetBool("isMelee", false);
         playerMelee.StopInvoking();
         weaponTrail.emitting = false;
-
-
-        playerSkill.StopInvoking(); //???
+        playerSkill.StopInvoking(); //Ran into the problem of the player being stuck when performing secondary attack right after melee. Hard to reproduce?
     }
 
     public void AttackEnd()
@@ -162,8 +165,6 @@ public class PlayerSlash : PlayerAction
         playerMelee.StopInvoking();
         weaponCollider.enabled = false;
         weaponTrail.emitting = false;
-
-
         playerSkill.StopInvoking(); //???
     }
 

@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Random = UnityEngine.Random;
+
 public class DatabaseLoader : MonoBehaviour
 {
     [Header("Autoload?")]
@@ -14,6 +16,7 @@ public class DatabaseLoader : MonoBehaviour
     [SerializeField] private EventsDatabase eventsDatabase;
     [SerializeField] private MonsterDatabase monsterDatabase;
     [SerializeField] private WeaponSkillDatabase weaponSkillDatabase;
+    [SerializeField] private NewspaperDatabase newspaperDatabase;
 
     //Inventory Items
     private static Dictionary<int, InventoryItem> inventoryItemDict;
@@ -29,10 +32,15 @@ public class DatabaseLoader : MonoBehaviour
     private static List<SpecialEvent> eventList;
     //Monsters
     private static Dictionary<MonsterName, MonsterData> monsterDict;
+    private static Dictionary<int, MonsterData> monsterIdDict;
     private static List<MonsterData> monsterList;
     //Weapon Skill Items
     private static Dictionary<int, WeaponSkillItem> weaponSkillDict;
     private static List<WeaponSkillItem> weaponSkillList;
+    //Newspaper
+    private static Dictionary<int, NewsIssue> orderedNewsIssuesDict;
+    private static List<NewsIssue> orderedNewsIssuesList;
+    private static List<NewsIssue> randomNewsIssuesList;
 
     private void Awake()
     {
@@ -45,9 +53,13 @@ public class DatabaseLoader : MonoBehaviour
         specialEventDict = new Dictionary<int, SpecialEvent>();
         eventList = eventsDatabase.allEvents;
         monsterDict = new Dictionary<MonsterName, MonsterData>();
+        monsterIdDict = new Dictionary<int, MonsterData>();
         monsterList = monsterDatabase.allMonsters;
         weaponSkillDict = new Dictionary<int, WeaponSkillItem>();
-        weaponSkillList = new List<WeaponSkillItem>();
+        weaponSkillList = weaponSkillDatabase.allItems;
+        orderedNewsIssuesDict = new Dictionary<int, NewsIssue>();
+        orderedNewsIssuesList = new List<NewsIssue>();
+        randomNewsIssuesList = new List<NewsIssue>();
         if (isAutoload)
         {
             StartCoroutine(Populate());
@@ -59,8 +71,10 @@ public class DatabaseLoader : MonoBehaviour
         yield return StartCoroutine(PopulateInventoryItemDatabase());
         yield return StartCoroutine(PopulateRecipeDatabase());
         yield return StartCoroutine(PopulateShopItemDatabase());
+        yield return StartCoroutine(PopulateMonsterDatabase());
         yield return StartCoroutine(PopulateEventDatabase());
         yield return StartCoroutine(PopulateWeaponSkillItemDatabase());
+        yield return StartCoroutine(PopulateNewspaperDatabase());
     }
 
     private IEnumerator PopulateInventoryItemDatabase()
@@ -255,6 +269,7 @@ public class DatabaseLoader : MonoBehaviour
             try
             {
                 monsterDict.Add(i.monsterName, i);
+                monsterIdDict.Add(i.monsterId, i);
             }
             catch (Exception e)
             {
@@ -263,7 +278,26 @@ public class DatabaseLoader : MonoBehaviour
             }
             yield return null;
         }
+        if (CreatureDexManager.instance != null)
+        {
+            CreatureDexManager.instance.SetupCreatureDex();
+        }
         Debug.Log("Shop Event Database populated.");
+    }
+
+    public static MonsterData GetMonsterById(int id)
+    {
+        MonsterData monsterData;
+        try
+        {
+            monsterData = monsterIdDict[id];
+        }
+        catch (Exception e)
+        {
+            Debug.Log("Error: " + e);
+            monsterData = new MonsterData();
+        }
+        return monsterData;
     }
 
     public static MonsterData GetMonsterByMonsterName(MonsterName monsterName)
@@ -306,7 +340,7 @@ public class DatabaseLoader : MonoBehaviour
             }
             yield return null;
         }
-
+        WeaponManager.instance.SetupShop();
         Debug.Log("Weapon Skill Item Database populated.");
     }
 
@@ -331,5 +365,72 @@ public class DatabaseLoader : MonoBehaviour
     public static Dictionary<int, WeaponSkillItem> GetWeaponSkillDict()
     {
         return weaponSkillDict;
+    }
+
+    private IEnumerator PopulateNewspaperDatabase()
+    {
+        foreach (NewsIssue ni in newspaperDatabase.orderedIssues)
+        {
+            try
+            {
+                orderedNewsIssuesDict.Add(ni.issueId, ni);
+                orderedNewsIssuesList.Add(ni);
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Error: " + e);
+                Debug.Log("Unable to add news issue: " + ni.headlines);
+            }
+            yield return null;
+        }
+
+        foreach (NewsIssue ni in newspaperDatabase.randomIssues)
+        {
+            try
+            {
+                randomNewsIssuesList.Add(ni);
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Error: " + e);
+                Debug.Log("Unable to add news issue: " + ni.headlines);
+            }
+            yield return null;
+        }
+
+        Debug.Log("Newspaper Database populated.");
+    }
+
+    public static NewsIssue GetOrderedNewsIssueById(int id)
+    {
+        NewsIssue issue;
+        try
+        {
+            issue = orderedNewsIssuesDict[id];
+            return issue;
+        }
+        catch (Exception e)
+        {
+            Debug.Log("Error: news with ID " + id + " not found, " + e);
+            return null;
+        }
+    }
+    public static List<NewsIssue> GetOrderedNewsIssuesList()
+    {
+        return orderedNewsIssuesList;
+    }
+    public static Dictionary<int, NewsIssue> GetOrderedNewsIssuesDict()
+    {
+        return orderedNewsIssuesDict;
+    }
+
+    public static List<NewsIssue> GetRandomNewsIssuesList()
+    {
+        return randomNewsIssuesList;
+    }
+
+    public static NewsIssue GetRandomNewsIssue()
+    {
+        return randomNewsIssuesList[Random.Range(0, randomNewsIssuesList.Count)];
     }
 }

@@ -9,6 +9,8 @@ public class OrderSubmissionStation : PlayerInteractable
     public GameObject[] activeIfOrdered;
     public Image floatingItemNotifImage;
     public int uniqueId = -1;
+    
+    private bool hasDialogue = false;
 
     public void Awake()
     {
@@ -71,10 +73,21 @@ public class OrderSubmissionStation : PlayerInteractable
     {
         return spCollider;
     }
+    
+    public override void OnPlayerEnter()
+    { }
 
     public override void OnPlayerInteract()
     {
-        OrdersManager.Instance.CompleteOrder(uniqueId);
+        if (OrdersManager.Instance.CompleteOrder(uniqueId))
+        {
+            hasDialogue = true;
+        }
+        if (hasDialogue)
+        {
+            DialogueManager.instance.LoadAndRun(DialogueDatabase.GetRandomDialogue());
+            hasDialogue = false;
+        }
     }
 
     public override void OnPlayerLeave()

@@ -6,7 +6,16 @@ using UnityEngine;
 public class MonsterData : ScriptableObject
 {
     public MonsterName monsterName;
-    public string description;
+    public string unlockedDescription;
+    public string lockedDescription;
+    public int monsterId;
+    public Sprite lockedIcon;
+    public Sprite unlockedIcon;
+    public string lockedName;
+    public string unlockedName;
+    public string dropDescription;
+    public string remarksDescription;
+    public string enemyTypeDescription;
     public int lowerBound;
     public int upperBound;
     public PopulationLevel populationLevel;
