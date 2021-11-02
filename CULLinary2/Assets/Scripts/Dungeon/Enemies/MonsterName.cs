@@ -14,5 +14,6 @@ public enum MonsterName
     Mushroom,
     DaddyEggplant,
     DaddyPotato,
-    DaddyCorn
+    DaddyCorn,
+    Clown
 }

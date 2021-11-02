@@ -29,6 +29,7 @@ public class PlayerData
     public int currentWeaponHeld = 0;
     public int currentSecondaryHeld = 3;
     public float campfireRegenerationRate;
+    public bool isTruckUnlocked = false;
 
 
     public PlayerData()
@@ -56,8 +57,9 @@ public class PlayerData
         pfizerShot = 0;
         modernaShot = 0;
         currentNewspaperIssue = 1;
+        isTruckUnlocked = false;
         unlockedMonsters = new MonsterName[3] { MonsterName.Bread, MonsterName.DaddyPotato, MonsterName.Potato };
-        monsterSavedDatas = new MonsterSavedData[11] {
+        monsterSavedDatas = new MonsterSavedData[12] {
             new MonsterSavedData(MonsterName.Bread, PopulationLevel.Normal),
             new MonsterSavedData(MonsterName.Potato, PopulationLevel.Normal),
             new MonsterSavedData(MonsterName.DaddyPotato, PopulationLevel.Rare),
@@ -69,6 +71,7 @@ public class PlayerData
             new MonsterSavedData(MonsterName.Ham, PopulationLevel.Normal),
             new MonsterSavedData(MonsterName.Mushroom, PopulationLevel.Normal),
             new MonsterSavedData(MonsterName.Cheese, PopulationLevel.Normal),
+            new MonsterSavedData(MonsterName.Clown, PopulationLevel.Rare)
         };
     }
 

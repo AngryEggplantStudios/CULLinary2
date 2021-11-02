@@ -102,7 +102,7 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
                 SpawnWarningMessage("Don't drink and drive!");
             }
         }
-        else if (!UIController.instance.isMenuActive && !UIController.instance.isPaused && Input.GetKeyDown(truckSummonKeycode))
+        else if (!UIController.instance.isMenuActive && !UIController.instance.isPaused && Input.GetKeyDown(truckSummonKeycode) && PlayerManager.instance.isTruckUnlocked)
         {
             if (!TryTruckSummon())
             {
@@ -208,7 +208,7 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
             positionRight,
             positionBack
         };
-        
+
         foreach (Vector3 possiblePos in possiblePositions)
         {
             if (!Physics.CheckSphere(possiblePos, truckDiameter, LayerMask.GetMask("Environment")))
@@ -218,7 +218,7 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
                     driveableTruck.SetActive(true);
                     driveableTruck.GetComponent<VehicleInteractable>().ManuallySetPlayerInteractable();
                 }
-                
+
                 driveableTruck.GetComponent<CarController>().ResetCarMotion();
                 driveableTruck.transform.position = possiblePos;
                 foreach (TrailRenderer tr in hideTrailsWhenSummoning)

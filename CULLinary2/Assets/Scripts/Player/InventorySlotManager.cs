@@ -142,9 +142,16 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
         InventoryItem item = slots[selectedSlotId].item;
         if (InventoryManager.instance != null && item != null && item.isConsumable)
         {
+            if (item.buffTypes[0] == BuffType.SUMMON_EVENT)
+            {
+                SpecialEventManager.instance.PlayEvent(item.eventTriggered);
+            }
+            else
+            {
+                item.buffIcon = item.buffIcon == null ? item.icon : item.buffIcon;
+                BuffManager.instance.ApplyBuff(item);
+            }
             slots[selectedSlotId].gameObject.GetComponent<Outline>().enabled = false;
-            item.buffIcon = item.buffIcon == null ? item.icon : item.buffIcon;
-            BuffManager.instance.ApplyBuff(item);
             ResetSlot();
             InventoryManager.instance.RemoveItem(item);
         }
