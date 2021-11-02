@@ -21,6 +21,8 @@ public class UIController : SingletonGeneric<UIController>
     [SerializeField] private GameObject endOfDayMenu;
     [SerializeField] private GameObject confirmationToMainMenu;
     [SerializeField] private GameObject confirmationToDesktop;
+    [SerializeField] private GameObject controlsPage;
+    [SerializeField] private GameObject settingsPage;
     [Header("Uniquely Non-Campfire Elements")]
     [SerializeField] private List<GameObject> hideAtCampfire;
     [Header("Campfire Elements")]
@@ -79,6 +81,16 @@ public class UIController : SingletonGeneric<UIController>
         campfireActionKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.CampfireAction);
     }
 
+    public void OpenControls()
+    {
+        controlsPage.SetActive(!controlsPage.activeSelf);
+    }
+
+    public void OpenSettings()
+    {
+        settingsPage.SetActive(!settingsPage.activeSelf);
+    }
+
     public void Start()
     {
         //Use this for now, later when have more scene only adjust accordingly. TODO MC.
@@ -92,6 +104,14 @@ public class UIController : SingletonGeneric<UIController>
             confirmationToDesktop.SetActive(false);
             confirmationToMainMenu.SetActive(false);
             return;
+        }
+        if (controlsPage.activeSelf)
+        {
+            controlsPage.SetActive(false);
+        }
+        if (settingsPage.activeSelf)
+        {
+            settingsPage.SetActive(false);
         }
         pauseMenu.SetActive(!pauseMenu.activeSelf);
         isPaused = !isPaused;
