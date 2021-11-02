@@ -17,6 +17,7 @@ public class CreatureDexManager : SingletonGeneric<CreatureDexManager>
     [SerializeField] private GameObject slotPrefab;
     [SerializeField] private GameObject slotsParentObject;
     [SerializeField] private GameObject creaturePanel;
+    [SerializeField] private Scrollbar scrollbar;
 
     private int selectedSlotId = -1;
     private List<CreatureSlot> slots;
@@ -53,6 +54,7 @@ public class CreatureDexManager : SingletonGeneric<CreatureDexManager>
             slotObject.transform.SetParent(slotsParentObject.transform);
         }
         UpdateCreatureSlots();
+        scrollbar.value = 1f;
     }
 
     public void UpdateCreatureDex()

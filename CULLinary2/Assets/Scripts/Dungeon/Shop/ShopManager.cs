@@ -26,6 +26,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
     [SerializeField] private TMP_Text consumableCounterText;
     [SerializeField] private GameObject itemPanel;
     [SerializeField] private AudioSource kaching;
+    [SerializeField] private Scrollbar scrollbar;
 
     private int selectedSlotId = -1;
     private List<ShopSlot> slots;
@@ -160,6 +161,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
         }
         UpdateShop();
         itemPanel.SetActive(false);
+        scrollbar.value = 1f;
     }
 
     public void UpdateShop()
