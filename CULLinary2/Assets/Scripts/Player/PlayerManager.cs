@@ -50,6 +50,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         {MonsterName.Ham, PopulationLevel.Normal},
         {MonsterName.Mushroom, PopulationLevel.Normal},
         {MonsterName.Cheese, PopulationLevel.Normal},
+        {MonsterName.Clown, PopulationLevel.Rare}
     };
 
     [Header("Health Regenerated per Game Minute at Campfire")]
