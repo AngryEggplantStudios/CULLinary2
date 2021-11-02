@@ -82,7 +82,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
         {
 
             EventShopItem eventItemPurchased = (EventShopItem)itemPurchased;
-            if (SpecialEventManager.instance.CheckIfEventIsRunning(eventItemPurchased.eventId))
+            if (SpecialEventManager.instance.CheckIfEventIsRunning(eventItemPurchased.eventId) || eventItemPurchased.CheckIfPurchased())
             {
                 return;
             }
@@ -303,6 +303,11 @@ public class ShopManager : SingletonGeneric<ShopManager>
             {
                 upgradeButton.interactable = false;
                 purchaseWarning.text = "You can't purchase this item today anymore."; //Temp fix
+            }
+            if (eventItemSelected.CheckIfPurchased())
+            {
+                upgradeButton.interactable = false;
+                purchaseWarning.text = "You already have this!"; //Temp fix
             }
         }
         else if (itemSelected.GetType() == typeof(ConsumableShopItem))
