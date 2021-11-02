@@ -72,7 +72,7 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
             isDrowningActivated = true;
             StartCoroutine(StartDrowning()); 
             */
-            HandleHit(drowningDamage, true);
+            HandleHit(PlayerManager.instance.maxHealth * 0.25f, true);
         }
 
         //Flash health bar if below 25%
@@ -159,27 +159,28 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
 
         int evasionChance = PlayerManager.instance.evasionChance + PlayerManager.instance.evasionBonus;
 
-        if (evasionChance > 0 && Random.Range(0, 100) < evasionChance)
+        if (evasionChance > 0 && Random.Range(0, 100) < evasionChance && !drowning)
         {
             SpawnDamageCounter("MISS");
             return false;
         }
 
+        if (PlayerManager.instance.currentHealth <= 0f)
+        {
+            return true;
+        }
         PlayerManager.instance.currentHealth = Mathf.Max(0f, PlayerManager.instance.currentHealth - damage);
         float currentHealth = PlayerManager.instance.currentHealth;
         float maxHealth = PlayerManager.instance.maxHealth;
         DisplayOnUI(currentHealth, maxHealth);
         SpawnDamageCounter(damage.ToString());
         if (drowning) { SpawnDrowningAlert(); }
-        ScreenFlash.Instance.Flash(0.01f * damage, 0.4f, 0.1f, 0.4f);
-        ScreenShake.Instance.Shake(0.01f * damage, 0.4f, 0.1f, 0.4f);
+        ScreenFlash.Instance.Flash(0.4f, 0.4f, 0.1f, 0.4f);
+        ScreenShake.Instance.Shake(0.4f, 0.4f, 0.1f, 0.4f);
         audioSource.Play();
         //AnimTakeDamage();
 
-        if (PlayerManager.instance.currentHealth <= 0f)
-        {
-            return true;
-        }
+
 
         StartCoroutine(BecomeTemporarilyInvincibleWithFlash(invincibilityDurationSeconds));
         return true;

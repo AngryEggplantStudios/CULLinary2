@@ -7,6 +7,7 @@ public class ObjectCuller : SingletonGeneric<ObjectCuller>
     public float activeRadius = 100;
     public float inactiveRadius = 150;
     public Transform playerTransform;
+    private bool isMushActive = false;
 
     List<GameObject> cullableObjects = new List<GameObject>();
 
@@ -31,19 +32,35 @@ public class ObjectCuller : SingletonGeneric<ObjectCuller>
     void Update()
     {
         if (playerTransform == null) return;
+        isMushActive = GameTimer.Instance.GetIsMushroomActive();
 
         foreach (GameObject obj in cullableObjects)
         {
+            MushroomEnemyBehaviour isMushroom = obj.GetComponent<MushroomEnemyBehaviour>();
             if (obj.activeInHierarchy)
             {
-                if (IsFar(obj.transform.position))
+                if (isMushroom)
+                {
+                    if (!isMushActive || IsFar(obj.transform.position))
+					{
+                        obj.SetActive(false);
+                    }
+                } 
+                else if (IsFar(obj.transform.position))
                 {
                     obj.SetActive(false);
                 }
             }
             else
             {
-                if (IsNear(obj.transform.position))
+                if (isMushroom)
+				{
+                    if (isMushActive && IsNear(obj.transform.position))
+					{
+                        obj.SetActive(true);
+                    }
+                }
+                else if (IsNear(obj.transform.position))
                 {
                     obj.SetActive(true);
                 }
