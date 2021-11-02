@@ -505,6 +505,10 @@ public class MonsterScript : Monster
         {
             getMonsterBehav.DestroyObjectEvents();
         }
+        else if (TryGetComponent(out RushEnemyScript rushEnemy))
+		{
+            rushEnemy.DestroyObjectEvents();
+        }
         else
         {
             gameObject.GetComponent<ExplodingMonsterBehaviour>().DestroyObjectEvents();
@@ -567,4 +571,9 @@ public class MonsterScript : Monster
     {
         this.gameObject.SetActive(toActivate);
     }
+
+    public float getStopChaseDistance()
+	{
+        return this.stopChase;
+	}
 }
