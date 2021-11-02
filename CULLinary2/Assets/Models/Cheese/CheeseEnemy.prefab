@@ -167,10 +167,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 1.6188021
-  m_Height: 3.8429706
+  m_Radius: 2.2307212
+  m_Height: 4.4614425
   m_Direction: 1
-  m_Center: {x: 0.005657832, y: 1.4214844, z: 0}
+  m_Center: {x: -0.1724364, y: 1.4214844, z: 0.071222305}
 --- !u!120 &-8423316685757858577
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -303,7 +303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85312a11147074bd4a346f763020aae9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterHealth: 300
+  monsterHealth: 1000
   distanceTriggered: 15
   stopChase: 35
   lootDropped: {fileID: 2315141807471270328, guid: f9048ce6f4c52bb4685a579820371299, type: 3}
@@ -938,7 +938,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e3e065c3803f404fa10259440ed2d8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackDamage: 30
+  attackDamage: 100
 --- !u!1 &6406951581187794144
 GameObject:
   m_ObjectHideFlags: 0
