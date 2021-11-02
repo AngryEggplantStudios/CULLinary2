@@ -51,7 +51,7 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
     private List<WeaponSlot> primarySlots;
     private List<WeaponSlot> secondarySlots;
 
-    private void UpdateWeaponSkillStats()
+    public void UpdateWeaponSkillStats()
     {
         WeaponSkillItem primaryWeapon = DatabaseLoader.GetWeaponSkillById(PlayerManager.instance.currentWeaponHeld);
         WeaponSkillItem secondarySkill = DatabaseLoader.GetWeaponSkillById(PlayerManager.instance.currentSecondaryHeld);
@@ -68,7 +68,7 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
             SkillItem skillItem = (SkillItem)secondarySkill;
             secondarySkillDamage = skillItem.attackDamage[PlayerManager.instance.weaponSkillArray[skillItem.weaponSkillId]];
         }
-        staminaText.text = PlayerManager.instance.currentStamina + " / " + PlayerManager.instance.maxStamina;
+        staminaText.text = Mathf.RoundToInt(PlayerManager.instance.currentStamina) + " / " + PlayerManager.instance.maxStamina;
         baseDamageText.text = PlayerManager.instance.isMeleeDamageDoubled ? (PlayerManager.instance.meleeDamage * 2) + " DMG" : PlayerManager.instance.meleeDamage + " DMG";
         int minTotalMeleeDamage = Mathf.RoundToInt((PlayerManager.instance.isMeleeDamageDoubled ? PlayerManager.instance.meleeDamage * 2 : PlayerManager.instance.meleeDamage) + 0.85f * primaryWeaponDamage);
         int maxTotalMeleeDamage = Mathf.RoundToInt((PlayerManager.instance.isMeleeDamageDoubled ? PlayerManager.instance.meleeDamage * 2 : PlayerManager.instance.meleeDamage) + 1.15f * primaryWeaponDamage);
@@ -130,6 +130,7 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
         }
         UpdateShopDescription();
         kaching.Play();
+        UIController.instance.UpdateFixedHUD();
     }
 
     public void HandlePurchase()

@@ -37,6 +37,8 @@ public class UIController : SingletonGeneric<UIController>
     [SerializeField] private TMP_Text potion;
     [SerializeField] private TMP_Text pfizerShot;
     [SerializeField] private TMP_Text modernaShot;
+    [SerializeField] private Image primaryAttack;
+    [SerializeField] private Image secondaryAttack;
     [Header("Winning Screen References")]
     [SerializeField] private AudioSource winningAudio;
     [SerializeField] private GameObject winPanel;
@@ -223,6 +225,7 @@ public class UIController : SingletonGeneric<UIController>
 
     public void ToggleInventory()
     {
+        WeaponManager.instance.UpdateWeaponSkillStats();
         InventoryManager.instance.ForceUIUpdate();
         mainHud.SetActive(inventoryTab.activeSelf);
         Time.timeScale = inventoryTab.activeSelf ? 1f : 0f;
@@ -389,6 +392,10 @@ public class UIController : SingletonGeneric<UIController>
         potion.text = "x " + PlayerManager.instance.potion;
         pfizerShot.text = "x " + PlayerManager.instance.pfizerShot;
         modernaShot.text = "x " + PlayerManager.instance.modernaShot;
+        WeaponSkillItem primaryWeapon = DatabaseLoader.GetWeaponSkillById(PlayerManager.instance.currentWeaponHeld);
+        WeaponSkillItem secondarySkill = DatabaseLoader.GetWeaponSkillById(PlayerManager.instance.currentSecondaryHeld);
+        primaryAttack.sprite = primaryWeapon.icon;
+        secondaryAttack.sprite = secondarySkill.icon;
     }
 
     // Call this to update all the UI
@@ -411,6 +418,11 @@ public class UIController : SingletonGeneric<UIController>
         {
             OrdersManager.instance.ForceUIUpdate();
         }
+        if (WeaponManager.instance != null)
+        {
+            WeaponManager.instance.UpdateWeaponSkillStats();
+        }
+        UIController.instance.UpdateFixedHUD();
     }
 
     private void Update()
