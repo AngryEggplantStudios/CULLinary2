@@ -2501,10 +2501,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 24100000, guid: dcc48ce34f0b14dcfb963d7aba14d337, type: 2}
   resolutionDropdown: {fileID: 297586183}
+  qualityDropdown: {fileID: 1108758493}
   currentBgValue: {fileID: 556107448}
   currentSfxValue: {fileID: 253441096}
-  bgSlider: {fileID: 0}
-  sfxSlider: {fileID: 0}
+  bgSlider: {fileID: 698488885}
+  sfxSlider: {fileID: 1457891323}
+  fullscreenToggle: {fileID: 1401734198}
 --- !u!1 &113357341
 GameObject:
   m_ObjectHideFlags: 0
@@ -8414,7 +8416,7 @@ MonoBehaviour:
   playerCharacter: {fileID: 1719325387}
   truck: {fileID: 1665800889}
   uiCanvas: {fileID: 117233503476727692}
-  loadType: 0
+  loadType: 1
 --- !u!4 &309590545
 Transform:
   m_ObjectHideFlags: 0
@@ -13663,10 +13665,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3740950524850715907, guid: 74825ef033ae2244a91eef5d9a1aacd8, type: 3}
-      propertyPath: OutputAudioMixerGroup
-      value: 
-      objectReference: {fileID: 7903792082912968285, guid: dcc48ce34f0b14dcfb963d7aba14d337, type: 2}
     - target: {fileID: 3740950525160568754, guid: 74825ef033ae2244a91eef5d9a1aacd8, type: 3}
       propertyPath: m_RootOrder
       value: 10
@@ -13715,14 +13713,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Button Audio
       objectReference: {fileID: 0}
-    - target: {fileID: 3740950526363714758, guid: 74825ef033ae2244a91eef5d9a1aacd8, type: 3}
-      propertyPath: OutputAudioMixerGroup
-      value: 
-      objectReference: {fileID: 7903792082912968285, guid: dcc48ce34f0b14dcfb963d7aba14d337, type: 2}
-    - target: {fileID: 6987132186135597553, guid: 74825ef033ae2244a91eef5d9a1aacd8, type: 3}
-      propertyPath: OutputAudioMixerGroup
-      value: 
-      objectReference: {fileID: 7903792082912968285, guid: dcc48ce34f0b14dcfb963d7aba14d337, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 74825ef033ae2244a91eef5d9a1aacd8, type: 3}
 --- !u!1 &536550700
@@ -93840,10 +93830,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1870523182724458281, guid: adbfc83f00df4bd418d80f412cf8885a, type: 3}
-      propertyPath: OutputAudioMixerGroup
-      value: 
-      objectReference: {fileID: 1538615399826383986, guid: dcc48ce34f0b14dcfb963d7aba14d337, type: 2}
     - target: {fileID: 7453474152595215344, guid: adbfc83f00df4bd418d80f412cf8885a, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -93900,10 +93886,6 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7841151218382454031, guid: adbfc83f00df4bd418d80f412cf8885a, type: 3}
-      propertyPath: OutputAudioMixerGroup
-      value: 
-      objectReference: {fileID: 1538615399826383986, guid: dcc48ce34f0b14dcfb963d7aba14d337, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: adbfc83f00df4bd418d80f412cf8885a, type: 3}
 --- !u!224 &7453814269356704826
