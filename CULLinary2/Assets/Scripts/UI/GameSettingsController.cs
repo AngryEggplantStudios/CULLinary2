@@ -29,8 +29,10 @@ public class GameSettingsController : SingletonGeneric<GameSettingsController>
         for (int i = 0; i < resolutions.Length; i++)
         {
             string option = resolutions[i].width + " x " + resolutions[i].height;
-            options.Add(option);
-
+            if (!options.Contains(option))
+            {
+                options.Add(option);
+            }
             if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
             {
                 currentResolutionIndex = i;
@@ -39,6 +41,7 @@ public class GameSettingsController : SingletonGeneric<GameSettingsController>
         }
         resolutionDropdown.AddOptions(options);
         resolutionDropdown.value = currentResolutionIndex;
+        SetResolution(currentResolutionIndex);
         resolutionDropdown.RefreshShownValue();
         audioMixer.GetFloat("BG_Vol", out float bgFloat);
         SetBGVolume(bgFloat);
@@ -47,8 +50,8 @@ public class GameSettingsController : SingletonGeneric<GameSettingsController>
         sfxSlider.value = sfxFloat;
         SetSFXVolume(sfxFloat);
         qualityDropdown.value = QualitySettings.GetQualityLevel();
+        qualityDropdown.RefreshShownValue();
         fullscreenToggle.isOn = Screen.fullScreen;
-
     }
 
     public void SetResolution(int resolutionIndex)
