@@ -9,6 +9,9 @@ public class BuffSlot : MonoBehaviour
     [SerializeField] private TMP_Text buffName;
     [SerializeField] private TMP_Text buffTimer;
     [SerializeField] private Image buffIcon;
+    [SerializeField] private Image buffBg;
+    [SerializeField] private float buffFlashTime = 5f;
+    [SerializeField] private float buffFlashStep = 10f;
     private int buffDuration;
 
     public void SetupBuffSlot(Sprite icon, int duration, string name)
@@ -30,12 +33,35 @@ public class BuffSlot : MonoBehaviour
 
     public IEnumerator StartBuff()
     {
+        bool flashStarted = false;
         while (buffDuration > 0)
         {
             buffTimer.text = ConvertString(buffDuration);
             buffDuration--;
             yield return new WaitForSeconds(1f);
+            if (buffDuration <= buffFlashTime && !flashStarted)
+            {
+                flashStarted = true;
+                StartCoroutine(FlashBuff());
+            }
         }
         Destroy(this.gameObject);
+    }
+
+    public IEnumerator FlashBuff()
+    {
+        while (true)
+        {
+            for (float i = 175; i >= 0; i -= buffFlashStep)
+            {
+                buffBg.color = new Color(0, 0, 0, i / 255);
+                yield return null;
+            }
+            for (float j = 0; j <= 175; j += buffFlashStep)
+            {
+                buffBg.color = new Color(0, 0, 0, j / 255);
+                yield return null;
+            }
+        }
     }
 }
