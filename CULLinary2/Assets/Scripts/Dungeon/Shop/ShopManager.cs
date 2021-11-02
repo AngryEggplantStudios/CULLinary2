@@ -126,7 +126,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
         InventoryManager.instance.ForceUIUpdate();
         UpdateShop();
         UIController.instance.UpdateFixedHUD();
-        itemPanel.SetActive(false);
+        //itemPanel.SetActive(false);
     }
 
     public void HandleClick(int slotId)
