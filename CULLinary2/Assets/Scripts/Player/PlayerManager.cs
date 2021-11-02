@@ -37,6 +37,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     [Header("Others")]
     public int currentDay;
     public int currentNewspaperIssue = 1;
+    public bool isTruckUnlocked = false;
     public List<MonsterName> unlockedMonsters = new List<MonsterName> { MonsterName.Bread, MonsterName.DaddyPotato, MonsterName.Potato };
     public Dictionary<MonsterName, PopulationLevel> monsterDict = new Dictionary<MonsterName, PopulationLevel>{
         {MonsterName.Bread, PopulationLevel.Normal},
@@ -90,6 +91,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.modernaShot = modernaShot;
         playerData.currentNewspaperIssue = currentNewspaperIssue;
         playerData.unlockedMonsters = unlockedMonsters.ToArray();
+        playerData.isTruckUnlocked = isTruckUnlocked;
         SaveSystem.SaveData(playerData);
     }
 
@@ -133,6 +135,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         pfizerShot = playerData.pfizerShot;
         modernaShot = playerData.modernaShot;
         currentNewspaperIssue = playerData.currentNewspaperIssue;
+        isTruckUnlocked = playerData.isTruckUnlocked;
         LoadMonsters();
     }
 
