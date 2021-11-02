@@ -51,7 +51,7 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
             if (!EcosystemManager.GetPopulation(name).IsEnabled())
             {
                 // Don't spawn base monsters if population is disabled
-                Debug.Log(name + " is disabled, not spawning base monsters");
+                // Debug.Log(name + " is disabled, not spawning base monsters");
                 continue;
             }
 
