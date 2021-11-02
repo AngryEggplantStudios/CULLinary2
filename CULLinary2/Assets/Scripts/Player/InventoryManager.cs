@@ -63,7 +63,7 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
             secondarySkillImage.sprite = skillItem.icon;
             secondarySkillDamage = skillItem.attackDamage[PlayerManager.instance.weaponSkillArray[skillItem.weaponSkillId]];
         }
-        staminaText.text = PlayerManager.instance.currentStamina + " / " + PlayerManager.instance.maxStamina;
+        staminaText.text = Mathf.RoundToInt(PlayerManager.instance.currentStamina) + " / " + PlayerManager.instance.maxStamina;
         baseDamageText.text = PlayerManager.instance.isMeleeDamageDoubled ? (PlayerManager.instance.meleeDamage * 2) + " DMG" : PlayerManager.instance.meleeDamage + " DMG";
         int minTotalMeleeDamage = Mathf.RoundToInt((PlayerManager.instance.isMeleeDamageDoubled ? PlayerManager.instance.meleeDamage * 2 : PlayerManager.instance.meleeDamage) + 0.85f * primaryWeaponDamage);
         int maxTotalMeleeDamage = Mathf.RoundToInt((PlayerManager.instance.isMeleeDamageDoubled ? PlayerManager.instance.meleeDamage * 2 : PlayerManager.instance.meleeDamage) + 1.15f * primaryWeaponDamage);
