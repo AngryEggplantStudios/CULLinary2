@@ -51,7 +51,7 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
     private List<WeaponSlot> primarySlots;
     private List<WeaponSlot> secondarySlots;
 
-    private void UpdateWeaponSkillStats()
+    public void UpdateWeaponSkillStats()
     {
         WeaponSkillItem primaryWeapon = DatabaseLoader.GetWeaponSkillById(PlayerManager.instance.currentWeaponHeld);
         WeaponSkillItem secondarySkill = DatabaseLoader.GetWeaponSkillById(PlayerManager.instance.currentSecondaryHeld);
@@ -130,6 +130,7 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
         }
         UpdateShopDescription();
         kaching.Play();
+        UIController.instance.UpdateFixedHUD();
     }
 
     public void HandlePurchase()

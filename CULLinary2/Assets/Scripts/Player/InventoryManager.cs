@@ -124,7 +124,7 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
     public void PopulateUI(List<InventoryItem> items)
     {
         itemListReference = items;
-        UIController.UpdateAllUIs();
+        //UIController.UpdateAllUIs();
     }
 
     public void ForceUIUpdate()
