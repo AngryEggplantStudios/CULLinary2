@@ -11,6 +11,10 @@ public class GameSettingsController : SingletonGeneric<GameSettingsController>
     [SerializeField] private TMP_Dropdown resolutionDropdown;
     [SerializeField] private TMP_Text currentBgValue;
     [SerializeField] private TMP_Text currentSfxValue;
+    [SerializeField] private Slider bgSlider;
+    [SerializeField] private Slider sfxSlider;
+    private float maxVol = 20f;
+    private float minVol = -30f;
 
     public Resolution[] resolutions;
 
@@ -34,6 +38,11 @@ public class GameSettingsController : SingletonGeneric<GameSettingsController>
         resolutionDropdown.AddOptions(options);
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
+        audioMixer.GetFloat("BG_Vol", out float bgFloat);
+        SetBGVolume(bgFloat);
+        audioMixer.GetFloat("SFX_Vol", out float sfxFloat);
+        SetSFXVolume(sfxFloat);
+
     }
 
     public void SetResolution(int resolutionIndex)
@@ -44,14 +53,38 @@ public class GameSettingsController : SingletonGeneric<GameSettingsController>
 
     public void SetBGVolume(float volume)
     {
+        if (Mathf.Floor(volume) <= minVol)
+        {
+            audioMixer.SetFloat("BG_Vol", -80f);
+            currentBgValue.text = "0";
+            return;
+        }
+        else if (Mathf.Floor(volume) >= maxVol)
+        {
+            audioMixer.SetFloat("BG_Vol", 20f);
+            currentBgValue.text = "100";
+            return;
+        }
         audioMixer.SetFloat("BG_Vol", volume);
-        currentBgValue.text = Mathf.RoundToInt(volume + 80f).ToString();
+        currentBgValue.text = Mathf.RoundToInt((volume - minVol) / (maxVol - minVol) * 100).ToString();
     }
 
     public void SetSFXVolume(float volume)
     {
+        if (Mathf.RoundToInt(volume) <= minVol)
+        {
+            audioMixer.SetFloat("SFX_Vol", -80f);
+            currentSfxValue.text = "0";
+            return;
+        }
+        else if (Mathf.Floor(volume) >= maxVol)
+        {
+            audioMixer.SetFloat("SFX_Vol", 20f);
+            currentBgValue.text = "100";
+            return;
+        }
         audioMixer.SetFloat("SFX_Vol", volume);
-        currentSfxValue.text = Mathf.RoundToInt(volume + 80f).ToString();
+        currentSfxValue.text = Mathf.RoundToInt((volume - minVol) / (maxVol - minVol) * 100).ToString();
     }
 
     public void SetQuality(int qualityIndex)
