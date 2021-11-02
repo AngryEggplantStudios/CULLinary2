@@ -35,7 +35,7 @@ public class ShopSlot : MonoBehaviour
         shopItemName.text = shopItem.itemName;
         shopItemIcon.sprite = shopItem.iconArr[level];
         button.interactable = true;
-        outline.enabled = false;
+        //outline.enabled = false;
 
         if (currentShopItem.GetType() == typeof(KeyShopItem) || currentShopItem.GetType() == typeof(UpgradeShopItem))
         {

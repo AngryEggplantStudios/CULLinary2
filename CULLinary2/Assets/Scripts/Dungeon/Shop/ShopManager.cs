@@ -122,10 +122,12 @@ public class ShopManager : SingletonGeneric<ShopManager>
         kaching.Play();
 
         // Update all UIs
+        UpdateShopDescription();
         PlayerManager.instance.currentMoney -= itemPrice;
         InventoryManager.instance.ForceUIUpdate();
         UpdateShop();
         UIController.instance.UpdateFixedHUD();
+
         //itemPanel.SetActive(false);
     }
 
@@ -159,6 +161,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
             slots.Add(slot);
             slotObject.transform.SetParent(slotsParentObject.transform);
         }
+        selectedSlotId = -1;
         UpdateShop();
         itemPanel.SetActive(false);
         scrollbar.value = 1f;
@@ -166,12 +169,11 @@ public class ShopManager : SingletonGeneric<ShopManager>
 
     public void UpdateShop()
     {
-        selectedSlotId = -1;
         foreach (ShopSlot slot in slots)
         {
             slot.UpdateUI(slot.shopItem);
         }
-        consumableCounterText.gameObject.SetActive(false);
+        //consumableCounterText.gameObject.SetActive(false);
     }
 
     public void UpdateShopDescription()
