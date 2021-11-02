@@ -11,18 +11,23 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
     [SerializeField, Tooltip("Distance to spawn monster away from player and campfire")] private int distFromSafeSpace = 30; // Distance to spawn monster away from player and campfire
     [SerializeField, Tooltip("Distance to spawn monster away from other objects")] private int distFromNormalObstacle = 2; // Distance to spawn monster away from landmarks and other objects
     private int mapSize;
-    public Dictionary<MonsterName, int> numOfAliveMonsters = new Dictionary<MonsterName, int>{ // num of alive monsters from base spawning only
-        {MonsterName.Corn, 0},
-        {MonsterName.Potato, 0},
-        {MonsterName.Eggplant, 0},
-        {MonsterName.Bread, 0},
-        {MonsterName.Tomato, 0}, // refactor to get from monstersToSpawn
-    };
+    public Dictionary<MonsterName, int> numOfAliveMonsters = new Dictionary<MonsterName, int>();
 
     // Start is called before the first frame update
     void Start()
     {
         mapSize = biomeObjectSpawner.GetSize();
+
+        // Initialise numOfAliveMonsters
+        foreach (GameObject monster in monstersToSpawn)
+        {
+            if (monster.GetComponent<MonsterScript>())
+            {
+                MonsterName name = monster.GetComponent<MonsterScript>().GetMonsterName();
+                numOfAliveMonsters.Add(name, 0);
+            }
+        }
+
         GameTimer.OnStartNewDay += SpawnBaseMonsters;
     }
 
@@ -39,14 +44,14 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
             MonsterScript monsterScript = monster.GetComponent<MonsterScript>();
             if (!monsterScript)
             {
-                return;
+                continue;
             }
 
             MonsterName name = monsterScript.GetMonsterName();
             if (!EcosystemManager.GetPopulation(name).IsEnabled())
             {
                 // Don't spawn base monsters if population is disabled
-                // Debug.Log(name + " is disabled, not spawning base monsters");
+                Debug.Log(name + " is disabled, not spawning base monsters");
                 continue;
             }
 
@@ -103,7 +108,7 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
 
     private bool FindRandomPosition(out Vector3 result)
     {
-        Vector3 randomPos = new Vector3(Random.Range(-mapSize / 3f, mapSize / 3f), 0, Random.Range(-mapSize / 3f, mapSize / 3f));
+        Vector3 randomPos = new Vector3(Random.Range(-mapSize, mapSize), 0, Random.Range(-mapSize, mapSize));
         NavMeshHit hit;
         float searchRadius = 2f;
         if (NavMesh.SamplePosition(randomPos, out hit, searchRadius, NavMesh.AllAreas))
