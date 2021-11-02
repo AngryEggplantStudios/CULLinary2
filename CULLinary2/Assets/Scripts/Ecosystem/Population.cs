@@ -67,7 +67,7 @@ public class Population
     {
         isEnabled = value;
         dayEnabled = GameTimer.GetDayNumber();
-        if (value) { Debug.Log("enabled population: " + name); }
+        // if (value) { Debug.Log("enabled population: " + name); }
     }
 
     private void SetCurrentNumberBasedOnLevel()

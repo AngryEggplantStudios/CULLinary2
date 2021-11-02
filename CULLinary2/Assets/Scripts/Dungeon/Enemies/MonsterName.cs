@@ -10,7 +10,7 @@ public enum MonsterName
     Tomato,
     Bread,
     Cheese,
-    Meat,
+    Ham,
     Mushroom,
     DaddyEggplant,
     DaddyPotato,

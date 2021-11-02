@@ -66,7 +66,7 @@ public class PlayerData
             new MonsterSavedData(MonsterName.Eggplant, PopulationLevel.Normal),
             new MonsterSavedData(MonsterName.DaddyEggplant, PopulationLevel.Rare),
             new MonsterSavedData(MonsterName.Tomato, PopulationLevel.Normal),
-            new MonsterSavedData(MonsterName.Meat, PopulationLevel.Normal),
+            new MonsterSavedData(MonsterName.Ham, PopulationLevel.Normal),
             new MonsterSavedData(MonsterName.Mushroom, PopulationLevel.Normal),
             new MonsterSavedData(MonsterName.Cheese, PopulationLevel.Normal),
         };

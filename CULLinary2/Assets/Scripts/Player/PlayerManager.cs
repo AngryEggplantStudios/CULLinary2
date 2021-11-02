@@ -47,7 +47,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         {MonsterName.Eggplant, PopulationLevel.Normal},
         {MonsterName.DaddyEggplant, PopulationLevel.Rare},
         {MonsterName.Tomato, PopulationLevel.Normal},
-        {MonsterName.Meat, PopulationLevel.Normal},
+        {MonsterName.Ham, PopulationLevel.Normal},
         {MonsterName.Mushroom, PopulationLevel.Normal},
         {MonsterName.Cheese, PopulationLevel.Normal},
     };
