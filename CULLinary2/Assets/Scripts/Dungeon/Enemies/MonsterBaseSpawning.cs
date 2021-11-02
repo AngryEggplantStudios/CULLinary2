@@ -12,6 +12,8 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
     [SerializeField, Tooltip("Distance to spawn monster away from other objects")] private int distFromNormalObstacle = 2; // Distance to spawn monster away from landmarks and other objects
     private int mapSize;
     public Dictionary<MonsterName, int> numOfAliveMonsters = new Dictionary<MonsterName, int>();
+    private List<GameObject> mushroomList = new List<GameObject>();
+    private bool isMushActivated = false;
 
     // Start is called before the first frame update
     void Start()
@@ -29,6 +31,7 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
         }
 
         GameTimer.OnStartNewDay += SpawnBaseMonsters;
+        GameTimer.OnStartNight += ActivateMushrooms;
     }
 
     public void UpdateNumOfAliveMonsters(MonsterName name, int value)
@@ -36,6 +39,24 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
         numOfAliveMonsters[name] += value;
         // Debug.Log("updated num of alive " + name + " to " + numOfAliveMonsters[name]);
     }
+
+    private void ActivateMushrooms()
+    {
+        isMushActivated = true;
+        foreach (GameObject mushroomObj in mushroomList)
+        {
+            mushroomObj.SetActive(true);
+        }
+    }
+
+    private void DeactivateMushrooms()
+	{
+        isMushActivated = false;
+        foreach(GameObject mushroomObj in mushroomList)
+		{
+            mushroomObj.SetActive(false);
+        }
+	}
 
     private void SpawnBaseMonsters()
     {
@@ -57,7 +78,7 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
 
             int baseSpawningNumber = EcosystemManager.GetPopulation(name).GetBaseSpawningNumber();
             int numCurrentlyAlive = numOfAliveMonsters[name];
-
+            bool isMushroom = name == MonsterName.Mushroom;
             while (numCurrentlyAlive < baseSpawningNumber)
             {
                 Vector3 spawnPosition = Vector3.zero;
@@ -81,7 +102,12 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
                     hasFoundPosition = FindRandomPosition(out spawnPosition);
                 }
 
-                Instantiate(monster, spawnPosition, Quaternion.identity, parent.transform);
+                GameObject returnedObject = Instantiate(monster, spawnPosition, Quaternion.identity, parent.transform);
+                if (isMushroom)
+				{
+                    //since this is only called on new day, deactivate all newly spawned mushroom
+                    mushroomList.Add(returnedObject);
+				}
                 numCurrentlyAlive++;
 
                 // Spawn monsters in batches if applicable
@@ -92,7 +118,11 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
                     {
                         if (numCurrentlyAlive < baseSpawningNumber)
                         {
-                            Instantiate(monster, spawnPosition + Vector3.right * (i + 1), Quaternion.identity, parent.transform);
+                            returnedObject = Instantiate(monster, spawnPosition + Vector3.right * (i + 1), Quaternion.identity, parent.transform);
+                            if (isMushroom)
+                            {
+                                mushroomList.Add(returnedObject);
+                            }
                             numCurrentlyAlive++;
                         }
                     }
@@ -104,6 +134,7 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
 
             numOfAliveMonsters[name] = numCurrentlyAlive;
         }
+        DeactivateMushrooms();
     }
 
     private bool FindRandomPosition(out Vector3 result)
@@ -165,5 +196,6 @@ public class MonsterBaseSpawning : SingletonGeneric<MonsterBaseSpawning>
     public void OnDestroy()
     {
         GameTimer.OnStartNewDay -= SpawnBaseMonsters;
+        GameTimer.OnStartNight -= ActivateMushrooms;
     }
 }
