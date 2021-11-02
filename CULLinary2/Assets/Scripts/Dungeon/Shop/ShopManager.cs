@@ -82,7 +82,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
         {
 
             EventShopItem eventItemPurchased = (EventShopItem)itemPurchased;
-            if (SpecialEventManager.instance.CheckIfEventIsRunning(eventItemPurchased.eventId))
+            if (SpecialEventManager.instance.CheckIfEventIsRunning(eventItemPurchased.eventId) || eventItemPurchased.CheckIfPurchased())
             {
                 return;
             }
@@ -122,11 +122,13 @@ public class ShopManager : SingletonGeneric<ShopManager>
         kaching.Play();
 
         // Update all UIs
+        UpdateShopDescription();
         PlayerManager.instance.currentMoney -= itemPrice;
         InventoryManager.instance.ForceUIUpdate();
         UpdateShop();
         UIController.instance.UpdateFixedHUD();
-        itemPanel.SetActive(false);
+
+        //itemPanel.SetActive(false);
     }
 
     public void HandleClick(int slotId)
@@ -159,6 +161,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
             slots.Add(slot);
             slotObject.transform.SetParent(slotsParentObject.transform);
         }
+        selectedSlotId = -1;
         UpdateShop();
         itemPanel.SetActive(false);
         scrollbar.value = 1f;
@@ -166,12 +169,11 @@ public class ShopManager : SingletonGeneric<ShopManager>
 
     public void UpdateShop()
     {
-        selectedSlotId = -1;
         foreach (ShopSlot slot in slots)
         {
             slot.UpdateUI(slot.shopItem);
         }
-        consumableCounterText.gameObject.SetActive(false);
+        //consumableCounterText.gameObject.SetActive(false);
     }
 
     public void UpdateShopDescription()
@@ -301,6 +303,11 @@ public class ShopManager : SingletonGeneric<ShopManager>
             {
                 upgradeButton.interactable = false;
                 purchaseWarning.text = "You can't purchase this item today anymore."; //Temp fix
+            }
+            if (eventItemSelected.CheckIfPurchased())
+            {
+                upgradeButton.interactable = false;
+                purchaseWarning.text = "You already have this!"; //Temp fix
             }
         }
         else if (itemSelected.GetType() == typeof(ConsumableShopItem))

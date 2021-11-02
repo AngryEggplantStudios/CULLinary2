@@ -21,6 +21,11 @@ public class SpecialEventManager : SingletonGeneric<SpecialEventManager>
             SpawnEvent spawnEvent = (SpawnEvent)specialEvent;
             spawnEvent.SpawnMonster();
         }
+        else if (specialEvent.GetType() == typeof(UnlockTruckEvent))
+        {
+            UnlockTruckEvent unlockTruckEvent = (UnlockTruckEvent)specialEvent;
+            unlockTruckEvent.UnlockTruck();
+        }
     }
 
     public void ClearCurrentEvents()
