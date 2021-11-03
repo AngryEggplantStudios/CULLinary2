@@ -252,6 +252,25 @@ public class MonsterScript : Monster
         }
     }
 
+    public void DeactivateAggression()
+	{
+        wasAggressive = false;
+        EnemyAggressionManager.Instance.Add(-1);
+
+        foreach (GameObject ui in uiElements)
+        {
+            if (ui != null)
+            {
+                ui.SetActive(false);
+            }
+            else
+            {
+                uiElements.Remove(null);
+            }
+        }
+    }
+
+
     public bool checkIfDead()
     {
         if (this.currentHealth <= 0)

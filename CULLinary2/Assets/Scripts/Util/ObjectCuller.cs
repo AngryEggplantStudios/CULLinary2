@@ -10,6 +10,8 @@ public class ObjectCuller : SingletonGeneric<ObjectCuller>
     private bool isMushActive = false;
 
     List<GameObject> cullableObjects = new List<GameObject>();
+    //Mushrooms need a seperate list to keep logic apart
+    List<MonsterScript> listOfMushrooms = new List<MonsterScript>();
 
     void Start()
     {
@@ -17,6 +19,11 @@ public class ObjectCuller : SingletonGeneric<ObjectCuller>
         {
             Debug.LogError("activeRadius should be smaller than inactiveRadius!");
         }
+    }
+
+    public void AddMushroom(MonsterScript obj)
+    {
+        listOfMushrooms.Add(obj);
     }
 
     public void Add(GameObject obj)
@@ -29,6 +36,11 @@ public class ObjectCuller : SingletonGeneric<ObjectCuller>
         cullableObjects.Remove(obj);
     }
 
+    public void RemoveMushroom(MonsterScript obj)
+    {
+        listOfMushrooms.Add(obj);
+    }
+
     void Update()
     {
         if (playerTransform == null) return;
@@ -36,35 +48,33 @@ public class ObjectCuller : SingletonGeneric<ObjectCuller>
 
         foreach (GameObject obj in cullableObjects)
         {
-            MushroomEnemyBehaviour isMushroom = obj.GetComponent<MushroomEnemyBehaviour>();
             if (obj.activeInHierarchy)
             {
-                if (isMushroom)
-                {
-                    if (!isMushActive || IsFar(obj.transform.position))
-					{
-                        obj.SetActive(false);
-                    }
-                } 
-                else if (IsFar(obj.transform.position))
+                if (IsFar(obj.transform.position))
                 {
                     obj.SetActive(false);
                 }
             }
             else
             {
-                if (isMushroom)
-				{
-                    if (isMushActive && IsNear(obj.transform.position))
-					{
-                        obj.SetActive(true);
-                    }
-                }
-                else if (IsNear(obj.transform.position))
+                if (IsNear(obj.transform.position))
                 {
                     obj.SetActive(true);
                 }
             }
+        }
+
+        foreach (MonsterScript obj in listOfMushrooms)
+        {
+            if (isMushActive && IsNear(obj.transform.position))
+            {
+                obj.SetActiveMonster(true);
+            }
+            else
+			{
+                obj.DeactivateAggression();
+                obj.SetActiveMonster(false);
+			}
         }
     }
 
