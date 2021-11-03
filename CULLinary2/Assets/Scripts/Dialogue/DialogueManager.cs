@@ -27,7 +27,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
     private Dialogue currentDialogue;
     private Dialogue nextDialogue;
     // Delegate to be run after dialogue ends
-    private static readonly Action defaultDialogueAction = () => {};
+    private static readonly Action defaultDialogueAction = () => { };
     private Action endDialogueAction = defaultDialogueAction;
 
     /*
@@ -48,7 +48,15 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
                 UIController.instance.isDialogueOpen = false;
                 Time.timeScale = 1;
             }
-            
+            else
+            {
+                if (TutorialUIController.instance != null)
+                {
+                    TutorialUIController.instance.isDialogueOpen = false;
+                    Time.timeScale = 1;
+                }
+            }
+
             // Invoke the ending action
             mePanel.SetActive(false);
             endDialogueAction.Invoke();
@@ -58,7 +66,8 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
 
     private void DisplayNextAndCloseTheyPanel()
     {
-        if (!currentDialogue.isLast) {
+        if (!currentDialogue.isLast)
+        {
             currentDialogue = nextDialogue;
             RunCurrentDialogue(theyPanel);
         }
@@ -68,6 +77,14 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
             {
                 UIController.instance.isDialogueOpen = false;
                 Time.timeScale = 1;
+            }
+            else
+            {
+                if (TutorialUIController.instance != null)
+                {
+                    TutorialUIController.instance.isDialogueOpen = false;
+                    Time.timeScale = 1;
+                }
             }
             /*
             if (currentCustomer != null) {
@@ -81,7 +98,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
             endDialogueAction = defaultDialogueAction;
         }
     }
-    
+
     private void Start()
     {
         PlainDialogueSelector meSelector = mePanel.GetComponent<PlainDialogueSelector>();
@@ -114,7 +131,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
         theyPanel.SetActive(true);
     }
 
-    private void RunChoiceDialogue(ChoiceDialogue choiceDialogue) 
+    private void RunChoiceDialogue(ChoiceDialogue choiceDialogue)
     {
         // Clear the choices menu
         foreach (Transform child in choicePanelContainer.transform)
@@ -124,12 +141,13 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
 
         // Add new choices to the menu
         int numberOfChoices = choiceDialogue.choices.Length;
-        for (int i = 0; i < numberOfChoices; i++) {
+        for (int i = 0; i < numberOfChoices; i++)
+        {
             GameObject choiceBox = Instantiate(choicePrefab,
                                                new Vector3(0, 0, 0),
                                                Quaternion.identity,
                                                choicePanelContainer.transform) as GameObject;
-        
+
             ChoiceSelector choiceOnClick = choiceBox.GetComponent<ChoiceSelector>();
             TextMeshProUGUI choiceText = choiceOnClick.choiceText;
             choiceText.text = choiceDialogue.choicesText[i];
@@ -185,7 +203,25 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
     // Loads and runs the dialogue tree provided
     public void LoadAndRun(Dialogue dialogue)
     {
-        UIController.instance.isDialogueOpen = true;
+        if (UIController.instance != null)
+        {
+            UIController.instance.isDialogueOpen = true;
+        }
+        else
+        {
+            if (TutorialUIController.instance != null)
+            {
+                TutorialUIController.instance.isDialogueOpen = true;
+            }
+        }
+        Time.timeScale = 0;
+        LoadDialogue(dialogue);
+        RunCurrentDialogue();
+    }
+
+    public void LoadAndRunTutorialDialogue(Dialogue dialogue)
+    {
+        TutorialUIController.instance.isDialogueOpen = true;
         Time.timeScale = 0;
         LoadDialogue(dialogue);
         RunCurrentDialogue();

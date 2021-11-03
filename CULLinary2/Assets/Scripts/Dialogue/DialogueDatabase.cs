@@ -46,7 +46,12 @@ public static class DialogueDatabase
         /*   21 */ ("{[R]1}I love eggplants!{[L]0}That's great! We only serve eggplants here.{[R]1}This is the best restaurant!", 3),
     };
 
+    private static string[] rawTutorialDialogues = {
+        /* 0 */ "{[L]0}*Rrring rrring* Oh, looks like I already have an order coming in!",
+    };
+
     private static (Dialogue, double)[] dialoguesWithCumulativeChance = null;
+    private static Dialogue[] generatedTutorialDialogue = null;
     private static bool hasGenerated = false;
 
     public static void GenerateDialogues()
@@ -78,7 +83,26 @@ public static class DialogueDatabase
         }
         hasGenerated = true;
     }
-    
+
+    public static void GenerateTutorialDialogues()
+    {
+        int numDialogue = rawTutorialDialogues.Length;
+        generatedTutorialDialogue = new Dialogue[numDialogue];
+
+        for (int i = 0; i < numDialogue; i++)
+        {
+            string rawDialogue = rawTutorialDialogues[i];
+            Dialogue parsedDialogue = DialogueParser.Parse(rawDialogue);
+            if (parsedDialogue == null)
+            {
+                Debug.Log("Oops, dialogue (" + rawDialogue + ") is malformed! Stopping generation of tutorial dialogue.");
+                break;
+            }
+
+            generatedTutorialDialogue[i] = parsedDialogue;
+        }
+    }
+
     public static Dialogue GetDialogue(int index)
     {
         if (!hasGenerated)
@@ -86,6 +110,11 @@ public static class DialogueDatabase
             GenerateDialogues();
         }
         return dialoguesWithCumulativeChance[index].Item1;
+    }
+
+    public static Dialogue GetTutorialDialogue(int index)
+    {
+        return generatedTutorialDialogue[index];
     }
 
     public static Dialogue GetRandomDialogue()
@@ -102,7 +131,8 @@ public static class DialogueDatabase
         for (int i = 0; i < numberOfDialogues; i++)
         {
             (Dialogue dialogue, double weight) = dialoguesWithCumulativeChance[i];
-            if (randomDouble < weight) {
+            if (randomDouble < weight)
+            {
                 return dialogue;
             }
         }
