@@ -11,7 +11,15 @@ public class BossSpawnSuicideScript : MonoBehaviour
         for (int i = 0; i < children; i++)
         {
             BossSpawnMinionScript minion = transform.GetChild(i).GetComponent<BossSpawnMinionScript>();
-            minion.DieAnimation();
+            if (minion != null)
+			{
+                minion.DieAnimation();
+            }
+            else
+			{
+                BossEnemyScript spawn = transform.GetChild(i).GetComponent<BossEnemyScript>();
+                spawn.DieAnimation();
+            }
         }
     }
 }

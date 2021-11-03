@@ -1,0 +1,166 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &5139165629842048589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8232738376212258284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f64c8439d5f1ce542b6beb7c79a0f49d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyAttack: {fileID: 192346993746321864}
+  idleTimer: 6
+  wanderRadius: 50
+  wanderTimer: 5
+  minDistanceToWander: 30
+  distToCharge: 40
+  rb: {fileID: 7615589584339941772}
+  debugLine: {fileID: 8244218347721941792}
+  lineTest: 0
+  timeBetweenAttacks: 5
+  enemyScript: {fileID: 7354713207681599046}
+--- !u!114 &7354713207681599046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8232738376212258284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a6173ce224ab354b80b3d9d7e53f619, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monsterHealth: 10
+  distanceTriggered: 15
+  stopChase: 35
+  lootDropped: {fileID: 2315141807471270328, guid: f9048ce6f4c52bb4685a579820371299, type: 3}
+  additionalSpawning: 0
+  spawner: {fileID: 0}
+  hpBarPrefab: {fileID: 1085209639500972291, guid: 4614e0511cb49b14ebf0c58217d9d222, type: 3}
+  damageCounterPrefab: {fileID: 1085209639500972291, guid: 24f41dda89c7bd648bd2796ac669721e, type: 3}
+  enemyAlertPrefab: {fileID: 1085209639500972291, guid: 186234b88676f4b4f872f98d3ab0973c, type: 3}
+  canvasDisplay: {fileID: 0}
+  onDeathParticles: {fileID: 3295506491500423538, guid: 6deda6ce43a969542925308d101ff721, type: 3}
+  audioSourceDamage: {fileID: 3357301466028492445}
+  stabSounds:
+  - {fileID: 8300000, guid: 20a1cfd81c3ef4b4288a2197d358d1a6, type: 3}
+  - {fileID: 8300000, guid: 753721637972729499255397c1a9d3a5, type: 3}
+  - {fileID: 8300000, guid: e0112cdc2521c8a40872086bc6994256, type: 3}
+  - {fileID: 8300000, guid: 0a212b4caa7d7be44b784854f3a4eecc, type: 3}
+  - {fileID: 8300000, guid: a45b2da923b66ba47ae8daf723c31c06, type: 3}
+  audioSourceAttack: {fileID: 4175079579706265475}
+  alertSound: {fileID: 8300000, guid: f887160af86d3844b80236fc380ba79d, type: 3}
+  attackSound: {fileID: 8300000, guid: b27e425790eebc643bf37744875e751c, type: 3}
+  deathSound: {fileID: 8300000, guid: 9270765c7e69c68409898d68ee0124bc, type: 3}
+  primaryEnemyAttack: {fileID: 192346993746321864}
+  onDamageColor: {r: 1, g: 1, b: 1, a: 1}
+  texturesForFlash: []
+  transparentMaterials:
+  - {fileID: -3120115489451326294, guid: c1d887e11c2790143bbd51ad8081bcb3, type: 3}
+  currentState: 2
+  playerTransform: {fileID: 0}
+--- !u!1001 &8751346137504505807
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 807139516458123811, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+      propertyPath: m_Name
+      value: BossCheese
+      objectReference: {fileID: 0}
+    - target: {fileID: 4943754348278179382, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4943754348278179382, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4943754348278179382, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4943754348278179382, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4943754348278179382, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4943754348278179382, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4943754348278179382, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4943754348278179382, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4943754348278179382, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4943754348278179382, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4943754348278179382, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6106420228487427490, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+      propertyPath: monsterHealth
+      value: 10
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 8927638165345339595, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+    - {fileID: -8872383971675245877, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+    - {fileID: 6106420228487427490, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+--- !u!1 &8232738376212258284 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 807139516458123811, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+  m_PrefabInstance: {fileID: 8751346137504505807}
+  m_PrefabAsset: {fileID: 0}
+--- !u!120 &8244218347721941792 stripped
+LineRenderer:
+  m_CorrespondingSourceObject: {fileID: -8423316685757858577, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+  m_PrefabInstance: {fileID: 8751346137504505807}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &7615589584339941772 stripped
+Rigidbody:
+  m_CorrespondingSourceObject: {fileID: -8015557883694520765, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+  m_PrefabInstance: {fileID: 8751346137504505807}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &192346993746321864 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8923984230425067015, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+  m_PrefabInstance: {fileID: 8751346137504505807}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e3e065c3803f404fa10259440ed2d8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!82 &3357301466028492445 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 6333328913098840402, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+  m_PrefabInstance: {fileID: 8751346137504505807}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &4175079579706265475 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 4648799156462178380, guid: b5699881c6499394f9e0969ae3c823a5, type: 3}
+  m_PrefabInstance: {fileID: 8751346137504505807}
+  m_PrefabAsset: {fileID: 0}
