@@ -35,9 +35,7 @@ public class TomatoAttack : MonsterAttack
         Instantiate(prefabForExplosion, positionToInstantiate, Quaternion.identity);
         positionToInstantiate = FindPositionInRadiusAround(270f, 360f);
         Instantiate(prefabForExplosion, positionToInstantiate, Quaternion.identity);
-        //TODO MC CHANGE TO DIE ANIMATION WITH LIO
-        tomato.monsterDeathAnimation();
-    }
+    }      
 
     private Vector3 FindPositionInRadiusAround(float startDegree, float endDegree)
     {

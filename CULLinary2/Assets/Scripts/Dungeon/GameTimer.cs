@@ -43,11 +43,15 @@ public class GameTimer : SingletonGeneric<GameTimer>
     public static event StartNewDayDelegate OnStartNewDay;
     public delegate void BeforeStartNewDayDelegate();
     // public static event BeforeStartNewDayDelegate OnBeforeStartNewDay; // invoked right before OnStartNewDay; for enabling certain populations
+    public delegate void StartNightDelegate();
+    public static event StartNightDelegate OnStartNight;
+    public delegate void BeforeStartNightDelegate(); //for enabling Mushy
     public delegate void EndOfDayDelegate();
     public static event EndOfDayDelegate OnEndOfDay;
 
     private int currentIssueNumber = 1;
     private bool showRandomNews = false;
+    private bool hasActivatedMushroom = false;
 
     void Start()
     {
@@ -141,7 +145,6 @@ public class GameTimer : SingletonGeneric<GameTimer>
         if (gameTime > startOfDay && isNewDay)
         {
             isNewDay = false;
-
             NewsIssue currentNews = showRandomNews
                 ? DatabaseLoader.GetRandomNewsIssue()
                 : DatabaseLoader.GetOrderedNewsIssueById(currentIssueNumber);
@@ -164,15 +167,34 @@ public class GameTimer : SingletonGeneric<GameTimer>
             showRandomNews = false;
         }
 
+        if (!hasActivatedMushroom && gameTime >= sunset && gameTime < dayEndTime)
+		{
+            hasActivatedMushroom = true;
+            StartCoroutine(invokeMushy());
+		}
+
         if (gameTime >= dayEndTime)
         {
             OnEndOfDay?.Invoke();
+            hasActivatedMushroom = false;
             if (DrivingManager.instance.IsPlayerInVehicle())
             {
                 DrivingManager.instance.HandlePlayerLeaveVehicle(true);
             }
             StartSceneFadeOut();
         }
+    }
+
+    private IEnumerator invokeMushy()
+    {
+        Debug.Log("activated Mushroom");
+        OnStartNight?.Invoke();
+        yield return null;
+    }
+
+    public bool GetIsMushroomActive()
+	{
+        return hasActivatedMushroom;
     }
 
     private void UpdateTimedObjects()

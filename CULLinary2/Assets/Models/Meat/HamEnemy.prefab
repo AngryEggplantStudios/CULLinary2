@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 68778949683007971}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0.35, z: 0}
-  m_LocalScale: {x: 5, y: 6.6635, z: 1}
+  m_LocalScale: {x: 5, y: 8.044969, z: 1}
   m_Children: []
   m_Father: {fileID: 4943754348278179382}
   m_RootOrder: 0
@@ -66,7 +66,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 015eca7371b41b3449b5fd1f2d0b536a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackDamage: 50
+  attackDamage: 150
   parentGO: {fileID: 807139516458123811}
   angleFromForwardVectorToHit: 60
   canvasObject: {fileID: 8224418065270643181}
@@ -354,7 +354,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85312a11147074bd4a346f763020aae9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterHealth: 350
+  monsterHealth: 1000
   distanceTriggered: 16
   stopChase: 20
   lootDropped: {fileID: 9082172801818293735, guid: 89dc8105fc2fa9b4ebc581392b1ff42d, type: 3}
@@ -380,7 +380,7 @@ MonoBehaviour:
   onDamageColor: {r: 1, g: 1, b: 1, a: 1}
   texturesForFlash: []
   transparentMaterials:
-  - {fileID: 2100000, guid: 3fdb8f5ce4608104fb04a39514808f91, type: 2}
+  - {fileID: 2100000, guid: 16051babb595da24181fcfa1ab957836, type: 2}
   currentState: 0
   playerTransform: {fileID: 0}
 --- !u!65 &5072701816161682914
@@ -1649,7 +1649,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 5, y: 5}
+  m_SizeDelta: {x: 6, y: 6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5673711461372084349
 CanvasRenderer:

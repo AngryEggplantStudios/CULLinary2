@@ -19,6 +19,7 @@ public class InventoryItem : Item
     public int evasionBoostAmount; // Boost evasion chance by ____ for ____ s
     public int critBoostAmount; // Boost crit chance by ____ for ____ s
     public BuffType[] buffTypes;
+    public int eventTriggered;
 
     public string description = "This is a new item";
 
@@ -60,6 +61,9 @@ public class InventoryItem : Item
                     break;
                 case BuffType.BUFF_CRIT_BOOST:
                     result += "+ " + critBoostAmount + " Crit Chance for " + buffDuration + "s";
+                    break;
+                case BuffType.SUMMON_EVENT:
+                    result += "Lures a certain monster";
                     break;
             }
             isStringModified = true;

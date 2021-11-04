@@ -7,8 +7,11 @@ public class ObjectCuller : SingletonGeneric<ObjectCuller>
     public float activeRadius = 100;
     public float inactiveRadius = 150;
     public Transform playerTransform;
+    private bool isMushActive = false;
 
     List<GameObject> cullableObjects = new List<GameObject>();
+    //Mushrooms need a seperate list to keep logic apart
+    List<MonsterScript> listOfMushrooms = new List<MonsterScript>();
 
     void Start()
     {
@@ -16,6 +19,11 @@ public class ObjectCuller : SingletonGeneric<ObjectCuller>
         {
             Debug.LogError("activeRadius should be smaller than inactiveRadius!");
         }
+    }
+
+    public void AddMushroom(MonsterScript obj)
+    {
+        listOfMushrooms.Add(obj);
     }
 
     public void Add(GameObject obj)
@@ -28,9 +36,15 @@ public class ObjectCuller : SingletonGeneric<ObjectCuller>
         cullableObjects.Remove(obj);
     }
 
+    public void RemoveMushroom(MonsterScript obj)
+    {
+        listOfMushrooms.Add(obj);
+    }
+
     void Update()
     {
         if (playerTransform == null) return;
+        isMushActive = GameTimer.Instance.GetIsMushroomActive();
 
         foreach (GameObject obj in cullableObjects)
         {
@@ -48,6 +62,19 @@ public class ObjectCuller : SingletonGeneric<ObjectCuller>
                     obj.SetActive(true);
                 }
             }
+        }
+
+        foreach (MonsterScript obj in listOfMushrooms)
+        {
+            if (isMushActive && IsNear(obj.transform.position))
+            {
+                obj.SetActiveMonster(true);
+            }
+            else
+			{
+                obj.DeactivateAggression();
+                obj.SetActiveMonster(false);
+			}
         }
     }
 

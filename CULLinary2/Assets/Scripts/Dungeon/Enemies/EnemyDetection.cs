@@ -7,7 +7,7 @@ public class EnemyDetection : SingletonGeneric<EnemyDetection>
     [SerializeField] float globalRadius;
     private List<MonsterScript> listOfEnemies;
     [SerializeField] private Transform playerTransform;
-
+    private bool isMushActive = false;
     void Start()
     {
         listOfEnemies = new List<MonsterScript>();
@@ -19,16 +19,20 @@ public class EnemyDetection : SingletonGeneric<EnemyDetection>
         {
             playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         }
-
+        isMushActive = GameTimer.Instance.GetIsMushroomActive();
+        Debug.Log("ISMUSH ACTIVE" + isMushActive);
         foreach (MonsterScript monster in listOfEnemies)
         {
-            if (monster.IsFarEnoughFromPlayer(playerTransform.position, globalRadius))
-            {
-                monster.SetActiveMonster(false);
-            }
-            else
-            {
-                monster.SetActiveMonster(true);
+            if (monster.GetMonsterName() != MonsterName.Mushroom || isMushActive)
+			{
+                if (monster.IsFarEnoughFromPlayer(playerTransform.position, globalRadius))
+                {
+                    monster.SetActiveMonster(false);
+                }
+                else
+                {
+                    monster.SetActiveMonster(true);
+                }
             }
         }
     }

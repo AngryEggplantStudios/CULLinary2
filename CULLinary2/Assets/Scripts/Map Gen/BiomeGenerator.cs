@@ -39,6 +39,10 @@ public class BiomeGenerator : MonoBehaviour
     [Header("Needed for strange Navmeshbug")]
     [SerializeField] private NavMeshSurface navMeshSurfaceFromParent;
 
+    [Header("Quick Load Meshes")]
+    [SerializeField] private Mesh savedCreatedMesh;
+    [SerializeField] private Mesh savedWalkableMesh;
+
     //Private variables
     private float[,] falloffMap;
     private float[,] noiseMap;
@@ -61,6 +65,19 @@ public class BiomeGenerator : MonoBehaviour
             _instance = this;
         }
 
+    }
+
+    public IEnumerator QuickLoad()
+    {
+        seed = 0;
+        yield return StartCoroutine(GenerateNoise());
+        createdMesh = savedCreatedMesh;
+        walkableMesh = savedWalkableMesh;
+        yield return StartCoroutine(AttachCreatedMesh());
+        yield return StartCoroutine(AttachWalkableMesh());
+        yield return StartCoroutine(ReactivateNavMesh());
+
+        BiomeGeneratorManager.Instance.ProcessComplete();
     }
 
     public IEnumerator LoadGeneratedMap()
