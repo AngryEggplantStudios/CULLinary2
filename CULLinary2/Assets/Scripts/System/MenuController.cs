@@ -18,6 +18,7 @@ public class MenuController : MonoBehaviour
 
     [Header("Other References")]
     [SerializeField] private GameObject saveGamePresentWarning;
+    [SerializeField] private GameObject newGameTypeSelection;
 
     private bool isSaveFilePresent = true;
 
@@ -40,7 +41,7 @@ public class MenuController : MonoBehaviour
     {
         if (!isSaveFilePresent)
         {
-            StartNewGame();
+            newGameTypeSelection.SetActive(true);
         }
         else
         {
@@ -50,7 +51,17 @@ public class MenuController : MonoBehaviour
 
     public void StartNewGame()
     {
-        //TO DO: Place the fade on audio/foreground once the main menu scene is set up properly
+        PlayerData playerData = PlayerManager.instance.CreateBlankData();
+        BiomeData biomeData = new BiomeData();
+        SaveSystem.SaveData(biomeData);
+        SaveSystem.SaveData(playerData);
+        PlayerPrefs.SetInt("nextScene", (int)SceneIndexes.MAIN_SCENE);
+        SceneManager.LoadScene((int)SceneIndexes.LOADING_SCENE);
+    }
+
+    public void StartNewDefaultGame()
+    {
+        // TODO: eventually calls BiomeGeneratorManager.LoadDefaultBiome() instead of LoadExistingBiome()
         PlayerData playerData = PlayerManager.instance.CreateBlankData();
         BiomeData biomeData = new BiomeData();
         SaveSystem.SaveData(biomeData);
@@ -61,7 +72,6 @@ public class MenuController : MonoBehaviour
 
     public void LoadGame()
     {
-        //TO DO: Place the fade on audio/foreground once the main menu scene is set up properly
         PlayerManager.instance.LoadData();
         PlayerPrefs.SetInt("nextScene", (int)SceneIndexes.MAIN_SCENE);
         SceneManager.LoadScene((int)SceneIndexes.LOADING_SCENE);
@@ -69,7 +79,6 @@ public class MenuController : MonoBehaviour
 
     public void ExitGame()
     {
-        //TO DO: Place the fade on audio/foreground once the main menu scene is set up properly
         Application.Quit();
     }
 
