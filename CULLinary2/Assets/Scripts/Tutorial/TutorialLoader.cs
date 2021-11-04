@@ -75,7 +75,7 @@ public class TutorialLoader : SingletonGeneric<TutorialLoader>
         TutorialUIController.UpdateAllUIs();
         uiCanvas.SetActive(true);
         yield return null;
-        TutorialManager.instance.TriggerDialogue();
+        TutorialManager.instance.DisplayDialogue();
         // GameTimer.instance.Run();
         // PlayerSpawnManager.instance.SpawnPlayer();
     }

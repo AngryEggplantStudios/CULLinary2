@@ -57,6 +57,10 @@ public class TutorialUIController : SingletonGeneric<TutorialUIController>
     // For interacting with objects
     private List<PlayerInteractable> currentInteractables = new List<PlayerInteractable>();
 
+    // For triggering tutorial events
+    private bool wasOrdersOpened = false;
+    private bool wasRecipesOpened = false;
+
     public override void Awake()
     {
         base.Awake();
@@ -197,6 +201,12 @@ public class TutorialUIController : SingletonGeneric<TutorialUIController>
         // shopTab.SetActive(false);
         // creatureTab.SetActive(false);
         currentUiPage = (int)UIPage.RECIPES;
+    }
+
+    public bool WereOrdersAndRecipesOpened()
+    {
+        Debug.Log("orders opened?: " + wasOrdersOpened + ", recipes opened?: " + wasRecipesOpened);
+        return wasOrdersOpened && wasRecipesOpened;
     }
 
     // public void ToggleWeapons()
@@ -415,16 +425,11 @@ public class TutorialUIController : SingletonGeneric<TutorialUIController>
             // {
             //     DrivingManager.instance.HandlePlayerLeaveVehicle(false);
             // }
-            if (Input.GetKeyDown(interactKeyCode))
-            {
-                Debug.Log("pressing F");
-            }
 
             // Toggle interactable if menu is not active
             if (Input.GetKeyDown(interactKeyCode) && currentInteractables.Count > 0)
             {
                 // Interact with the top of the interactables stack
-                Debug.Log("here");
                 currentInteractables[currentInteractables.Count - 1].OnPlayerInteract();
             }
         }
@@ -442,6 +447,16 @@ public class TutorialUIController : SingletonGeneric<TutorialUIController>
         else if (Input.GetKeyDown(closeUiKeyCode))
         {
             CloseMenu();
+        }
+
+        if (ordersTab.activeSelf)
+        {
+            wasOrdersOpened = true;
+        }
+
+        if (recipesTab.activeSelf)
+        {
+            wasRecipesOpened = true;
         }
     }
 

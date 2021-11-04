@@ -4,33 +4,32 @@ using UnityEngine;
 
 public class TutorialEvent
 {
-    private int id { get; set; } // Should be same as dialogue index
-    private Dialogue dialogue;
-    // Is player action required (apart from pressing next) to trigger next dialogue?
-    public bool HasTriggerForNextDialogue { get; set; }
-    // Name of the trigger condition to be fulfilled to trigger next dialogue (would be empty if isActionRequired is false)
-    private string triggerName;
+    private int id; // Should be same as dialogue index
+    public Dialogue Dialogue { get; set; }
+    // Is player action required (apart from pressing next) to trigger next event?
+    public bool HasTriggerForNextEvent { get; set; }
+    public bool CanTriggerNextEvent { get; set; }
     // Only start checking for trigger if shouldCheckForTrigger is true
-    private bool shouldCheckForTrigger;
+    public bool ShouldCheckForTrigger { get; set; }
 
     // Construct TutorialEvent without trigger
-    public TutorialEvent(int id, Dialogue dialogue, bool hasTrigger = false, string triggerName = "")
+    public TutorialEvent(int id, Dialogue dialogue, bool hasTrigger = false)
     {
         this.id = id;
-        this.dialogue = dialogue;
-        this.HasTriggerForNextDialogue = hasTrigger;
-        this.triggerName = triggerName;
-        this.shouldCheckForTrigger = true;
+        this.Dialogue = dialogue;
+        this.HasTriggerForNextEvent = hasTrigger;
+        this.CanTriggerNextEvent = true;
+        this.ShouldCheckForTrigger = true;
     }
 
     // Construct TutorialEvent with trigger
-    public TutorialEvent(int id, Dialogue dialogue, bool hasTrigger, string triggerName, bool shouldCheckForTrigger)
+    public TutorialEvent(int id, Dialogue dialogue, bool hasTrigger, bool shouldCheckForTrigger)
     {
         this.id = id;
-        this.dialogue = dialogue;
-        this.HasTriggerForNextDialogue = hasTrigger;
-        this.triggerName = triggerName;
-        this.shouldCheckForTrigger = shouldCheckForTrigger;
+        this.Dialogue = dialogue;
+        this.HasTriggerForNextEvent = hasTrigger;
+        this.CanTriggerNextEvent = false;
+        this.ShouldCheckForTrigger = shouldCheckForTrigger;
     }
 
 }

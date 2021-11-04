@@ -27,8 +27,9 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
     private Dialogue currentDialogue;
     private Dialogue nextDialogue;
     // Delegate to be run after dialogue ends
-    private static readonly Action defaultDialogueAction = () => { };
+    private static readonly Action defaultDialogueAction = () => { Debug.Log("default dialogue action invoked"); };
     private Action endDialogueAction = defaultDialogueAction;
+    private bool resetEndDialogueAction = true;
 
     /*
     private Restaurant_CustomerController currentCustomer;
@@ -60,7 +61,11 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
             // Invoke the ending action
             mePanel.SetActive(false);
             endDialogueAction.Invoke();
-            endDialogueAction = defaultDialogueAction;
+            if (resetEndDialogueAction)
+            {
+                endDialogueAction = defaultDialogueAction;
+                Debug.Log("setting end dialogue action to default");
+            }
         }
     }
 
@@ -95,7 +100,11 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
             // Invoke the ending action
             theyPanel.SetActive(false);
             endDialogueAction.Invoke();
-            endDialogueAction = defaultDialogueAction;
+            if (resetEndDialogueAction)
+            {
+                endDialogueAction = defaultDialogueAction;
+                Debug.Log("setting end dialogue action to default");
+            }
         }
     }
 
@@ -239,5 +248,10 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
     public void SetDialogueEndCallback(Action a)
     {
         endDialogueAction = a;
+    }
+
+    public void SetResetEndDialogueAction(bool value)
+    {
+        resetEndDialogueAction = value;
     }
 }

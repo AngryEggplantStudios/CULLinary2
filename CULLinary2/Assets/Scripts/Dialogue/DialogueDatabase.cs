@@ -51,7 +51,8 @@ public static class DialogueDatabase
         /* 1 */ "{[R]1}Hey Chef! Are you still open for business?"
                     + "{[L]0}Yes, I'm now open for delivery. What would you like to have, Tew Tawrel?"
                     + "{[R]1}That's great! I want some french fries, please. *Call ended*",
-        /* 2 */ "{[L]0}I just got my first order! Let me check how many ingredients I need by pressing TAB to see my orders and recipe menus."
+        /* 2 */ "{[L]0}I just got my first order! Let me check how many ingredients I need by pressing TAB to see my ORDERS and RECIPES menus.",
+        /* 3 */ "{[L]0}Okay, time to get me 3 potatoes by killing some potatoes. (Move around with WASD and attack with Left Mouse Button).",
     };
 
     private static (Dialogue, double)[] dialoguesWithCumulativeChance = null;
