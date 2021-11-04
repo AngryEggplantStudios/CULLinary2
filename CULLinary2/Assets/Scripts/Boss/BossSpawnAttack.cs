@@ -34,7 +34,7 @@ public class BossSpawnAttack : MonoBehaviour
         }
         else
         {
-            spawnPoint2[currSpawnPoint].activateSpawn();
+            spawnPoint1[currSpawnPoint].activateSpawn();
             currSpawnPoint = (currSpawnPoint + 1) % 3;
         }
 
@@ -42,13 +42,11 @@ public class BossSpawnAttack : MonoBehaviour
 
     public void activateStage2()
     {
-        Debug.Log("Activate Stage 2");
         stage2On = true;
     }
 
     public void activateStage3()
     {
-        Debug.Log("Activate Stage 2");
         stage2On = false;
         stage3On = true;
     }

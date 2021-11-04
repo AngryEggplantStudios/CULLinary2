@@ -62,7 +62,6 @@ public class BossExplodingEnemyBehaviour : BossRushEnemyScript
         {
             if (canSetDestination)
             {
-                Debug.Log(agent + "TOmatoa");
                 NavMesh.CalculatePath(transform.position, playerPositionWithoutYOffset, NavMesh.AllAreas, path);
                 canSetDestination = false;
                 StartCoroutine(DelayFindingPlayer());
