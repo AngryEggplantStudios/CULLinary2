@@ -113,6 +113,27 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
         progress = 1f;
     }
 
+    private IEnumerator LoadDefaultBiome()
+    {
+        // TODO: called by MenuController.StartNewDefaultGame()
+        Debug.Log("LOADING: Loading default map");
+
+        yield return StartCoroutine(Process("Generating Map", 0f,
+                biomeGenerator.QuickLoad()));
+
+        yield return StartCoroutine(Process("Placing objects around the world", 0.33f,
+                biomeObjectSpawner.SpawnObjects(BiomeDataManager.instance.seed)));
+
+        yield return StartCoroutine(Process("Generating AI map for monsters", 0.66f,
+                biomeNavMeshGenerator.GenerateMesh()));
+
+        yield return StartCoroutine(Process("Final touches", 0.99f,
+                biomeGenerator.ReactivateMap()));
+
+        isComplete = true;
+        progress = 1f;
+    }
+
     private void CheckForExistingData()
     {
         hasExistingData = BiomeDataManager.instance.LoadData();
