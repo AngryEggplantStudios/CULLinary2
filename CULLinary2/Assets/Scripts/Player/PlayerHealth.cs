@@ -39,6 +39,7 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
     private bool deathIsCalled = false;
     private bool isInvincibleByBuff = false;
     private bool isInvincibleByDash = false;
+    private bool isInvincibleByEvasion = false;
     private bool isClownActive = false;
     private List<GameObject> playerDamagedNumbers = new List<GameObject>();
 
@@ -158,10 +159,16 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         }
 
         int evasionChance = PlayerManager.instance.evasionChance + PlayerManager.instance.evasionBonus;
-
-        if (evasionChance > 0 && Random.Range(0, 100) < evasionChance && !drowning)
+        if (isInvincible || isInvincibleByEvasion)
         {
+            return false;
+        }
+        if (evasionChance > 0 && Random.Range(0, 100) < evasionChance && !drowning && !isInvincibleByEvasion)
+        {
+            Debug.Log("Evasion started first");
+            isInvincibleByEvasion = true;
             SpawnDamageCounter("MISS");
+            StartCoroutine(BecomeTemporarilyInvincibleByEvasion());
             return false;
         }
 
@@ -169,6 +176,12 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         {
             return true;
         }
+
+        if (isInvincible || isInvincibleByEvasion)
+        {
+            return false;
+        }
+        StartCoroutine(BecomeTemporarilyInvincibleWithFlash(invincibilityDurationSeconds));
         PlayerManager.instance.currentHealth = Mathf.Max(0f, PlayerManager.instance.currentHealth - damage);
         float currentHealth = PlayerManager.instance.currentHealth;
         float maxHealth = PlayerManager.instance.maxHealth;
@@ -182,7 +195,6 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
 
 
 
-        StartCoroutine(BecomeTemporarilyInvincibleWithFlash(invincibilityDurationSeconds));
         return true;
     }
 
@@ -282,8 +294,16 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
         isInvincibleByDash = false;
     }
 
+    public IEnumerator BecomeTemporarilyInvincibleByEvasion()
+    {
+        isInvincibleByEvasion = true;
+        yield return new WaitForSeconds(0.05f);
+        isInvincibleByEvasion = false;
+    }
+
     public IEnumerator BecomeTemporarilyInvincibleWithFlash(float invincibilityDurationSeconds)
     {
+        Debug.Log("Coroutine started first");
         isInvincible = true;
         bool isFlashing = false;
         for (float i = 0; i < invincibilityDurationSeconds; i += invincibilityDeltaTime)

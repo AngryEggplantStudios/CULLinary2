@@ -346,6 +346,7 @@ GameObject:
   - component: {fileID: 1220267129655490126}
   - component: {fileID: 1220267129655490127}
   - component: {fileID: 1220267129655490124}
+  - component: {fileID: 6501057589620499437}
   m_Layer: 0
   m_Name: Left Leg Target
   m_TagString: Untagged
@@ -401,10 +402,24 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1220267129655490121}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.45, y: 0.45, z: 0.45}
+  m_Size: {x: 0.55, y: 0.55, z: 0.55}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!136 &6501057589620499437
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1220267129655490121}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.15
+  m_Height: 0.3
+  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1220267129838108123
 GameObject:
@@ -527,6 +542,7 @@ GameObject:
   - component: {fileID: 1220267129966022301}
   - component: {fileID: 1220267129966022370}
   - component: {fileID: 1220267129966022371}
+  - component: {fileID: 3825514891900935349}
   m_Layer: 0
   m_Name: Right Leg Target
   m_TagString: Untagged
@@ -582,10 +598,24 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1220267129966022300}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.45, y: 0.45, z: 0.45}
+  m_Size: {x: 0.55, y: 0.55, z: 0.55}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!136 &3825514891900935349
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1220267129966022300}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.15
+  m_Height: 0.3
+  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1220267130317731895
 GameObject:
@@ -2332,6 +2362,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  spawnPoint2: []
 --- !u!1 &9163130081350387992
 GameObject:
   m_ObjectHideFlags: 0
