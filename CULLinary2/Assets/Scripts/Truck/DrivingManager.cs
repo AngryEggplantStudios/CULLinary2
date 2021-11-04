@@ -61,6 +61,8 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
     private KeyCode consumableFiveKeyCode;
     // Resummon the truck
     private KeyCode truckSummonKeycode;
+    // Delay for resummoning
+    private float delay = 0.0f;
 
     void Start()
     {
@@ -84,6 +86,8 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
 
     void Update()
     {
+        delay = Mathf.Max(delay - Time.deltaTime, 0.0f);
+
         if (isPlayerInVehicle)
         {
             player.transform.position = driveableTruck.transform.position;
@@ -102,12 +106,23 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
                 SpawnWarningMessage("Don't drink and drive!");
             }
         }
-        else if (!UIController.instance.isMenuActive && !UIController.instance.isPaused && Input.GetKeyDown(truckSummonKeycode) && PlayerManager.instance.isTruckUnlocked)
+        else if (!UIController.instance.isMenuActive && !UIController.instance.isPaused &&
+                 Input.GetKeyDown(truckSummonKeycode) && PlayerManager.instance.isTruckUnlocked)
         {
-            if (!TryTruckSummon())
+            if (delay > 0.0f)
             {
-                SpawnWarningMessagePlayer("Not enough space!");
+                SpawnWarningMessagePlayer("Try again later");
             }
+            else
+            {
+                if (!TryTruckSummon())
+                {
+                    SpawnWarningMessagePlayer("Not enough space!");
+                }
+                // Set delay to half a second
+                delay = 0.5f;
+            }
+
         }
     }
 
