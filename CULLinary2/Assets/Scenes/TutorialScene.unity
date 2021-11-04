@@ -5279,7 +5279,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &149358274
 Transform:
   m_ObjectHideFlags: 0
@@ -5307,16 +5307,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ff6fccb72d450f4b803619273f41cb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  recipesContainer: {fileID: 0}
+  recipesContainer: {fileID: 1027399961}
   recipeSlot: {fileID: 7624554976303173283, guid: aa4beb72684b9ff4c8127b2afd6353ab, type: 3}
-  infoDisplay: {fileID: 0}
-  filterButtonText: {fileID: 0}
+  infoDisplay: {fileID: 1809853391}
+  filterButtonText: {fileID: 87975996}
   filterButtonDisplayedTexts:
   - 'Filter: None'
   - 'Filter: Ordered'
   - 'Filter: Ready to cook'
-  ingredientsEmphasisAnimator: {fileID: 0}
-  pickup: {fileID: 0}
+  ingredientsEmphasisAnimator: {fileID: 1333529124}
+  pickup: {fileID: 5620305570932000174}
   cookingSound: {fileID: 887240040}
 --- !u!1 &150627936
 GameObject:
@@ -21760,6 +21760,8 @@ MonoBehaviour:
   - {fileID: 300839647}
   transforms: []
   navMeshSurfaceFromParent: {fileID: 300839646}
+  savedCreatedMesh: {fileID: 0}
+  savedWalkableMesh: {fileID: 0}
 --- !u!4 &625183380
 Transform:
   m_ObjectHideFlags: 0
@@ -32298,7 +32300,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &967442602
 Transform:
   m_ObjectHideFlags: 0
@@ -32322,18 +32324,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 967442601}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c06224f2b0559148a04d6811b8c218e, type: 3}
+  m_Script: {fileID: 11500000, guid: 19a4c96c6dbdedb4dad885a2c810f35f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ordersContainer: {fileID: 0}
-  orderSlot: {fileID: 5352017736513773463, guid: 071eaffb05eeafd46a2bfa7b1145c207, type: 3}
-  canvasDisplay: {fileID: 0}
+  recipeRequired: {fileID: 11400000, guid: e1d6e16a982f14789940229d51424285, type: 2}
+  orderSubmissionSound: {fileID: 778855639720961829}
   moneyNotif_prefab: {fileID: 1085209639500972291, guid: b2b969230b145834fba646520d5c76f0, type: 3}
-  missingOrderNotif_prefab: {fileID: 1085209639500972291, guid: 3e665808b292d594ba263a057e333c32, type: 3}
-  orderSubmissionSound: {fileID: 0}
-  order1: {fileID: 11400000, guid: aa2466e04e824496ba409f9fbbcffdf4, type: 2}
-  order2: {fileID: 11400000, guid: c38aa90e48cc842518ba551117062367, type: 2}
-  numberOfDailyOrders: 5
+  ordersContainer: {fileID: 773253503}
+  orderSlot: {fileID: 5352017736513773463, guid: 071eaffb05eeafd46a2bfa7b1145c207, type: 3}
+  canvasDisplay: {fileID: 1177946750}
+  orderSubmissionStn: {fileID: 0}
 --- !u!1 &969327209
 GameObject:
   m_ObjectHideFlags: 0
@@ -37159,6 +37159,7 @@ MonoBehaviour:
   currentMoney: 99999
   currentDay: 1
   currentNewspaperIssue: 1
+  isTruckUnlocked: 0
   unlockedMonsters: 040000000100000009000000
   campfireRegenerationRate: 0.25
 --- !u!1 &1143725191
@@ -47350,6 +47351,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5f94871aafb91d469cab6399e6dc4c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  orderSubmissionStnId: 0
 --- !u!1 &1504677248
 GameObject:
   m_ObjectHideFlags: 0
@@ -66487,7 +66489,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2108735273
 Transform:
   m_ObjectHideFlags: 0
@@ -66515,13 +66517,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isAutoload: 0
-  inventoryItemDatabase: {fileID: 11400000, guid: 7d7b575279fa44fb887308c609debab2, type: 2}
-  recipeDatabase: {fileID: 11400000, guid: f89a5f6ee0c2c584488a6e6f29f6a2e4, type: 2}
-  shopItemDatabase: {fileID: 11400000, guid: 7cafd9c44e8954e40aabbdf478c2b120, type: 2}
-  eventsDatabase: {fileID: 11400000, guid: 261481b60ea994d0dbe2262859ff6988, type: 2}
+  inventoryItemDatabase: {fileID: 11400000, guid: ba4ed024f89c62f47bd70ab242400a61, type: 2}
+  recipeDatabase: {fileID: 11400000, guid: 79a906b0418301f4e9dfb61ed91f6968, type: 2}
+  shopItemDatabase: {fileID: 11400000, guid: e636effe8400c9b41ab1e74edb4c5183, type: 2}
+  eventsDatabase: {fileID: 11400000, guid: 08c97f1c808492b4a9224eac09ed041f, type: 2}
   monsterDatabase: {fileID: 11400000, guid: 3c851ac921d5f4de7a58ecf2d2e719a0, type: 2}
-  weaponSkillDatabase: {fileID: 11400000, guid: fbd6e586c941f4cd0ab671344a9476ff, type: 2}
-  newspaperDatabase: {fileID: 11400000, guid: faf7934f765759b488abdd5d6ee190f7, type: 2}
+  weaponSkillDatabase: {fileID: 11400000, guid: 891ed22131d37c049a46876f604c0b77, type: 2}
+  newspaperDatabase: {fileID: 11400000, guid: f9ea023b875b7034682c199c0abfcdfd, type: 2}
 --- !u!1 &2113771078
 GameObject:
   m_ObjectHideFlags: 0
@@ -70515,7 +70517,7 @@ Transform:
   m_GameObject: {fileID: 5620305570932000160}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -65, y: 0, z: 35}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 9009508664128894001}
   - {fileID: 778855639855675883}

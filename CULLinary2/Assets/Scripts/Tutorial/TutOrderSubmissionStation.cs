@@ -19,6 +19,8 @@ public class TutOrderSubmissionStation : PlayerInteractable
         // Note that OrdersManager should have a lower execution order 
         // than OrderSubmissionStation (i.e. executed first)
         // SetId(OrdersManager.instance.AddOrderSubmissionStation(this.GetComponent<Transform>()));
+        uniqueId = TutorialManager.instance.orderSubmissionStnId;
+        TutorialOrdersManager.instance.SetOrderSubmissionStn(transform);
         spCollider.SetPlayerInteractable(this);
     }
 
@@ -80,15 +82,16 @@ public class TutOrderSubmissionStation : PlayerInteractable
 
     public override void OnPlayerInteract()
     {
-        if (OrdersManager.Instance.CompleteOrder(uniqueId))
-        {
-            hasDialogue = true;
-        }
-        if (hasDialogue)
-        {
-            DialogueManager.instance.LoadAndRun(DialogueDatabase.GetRandomDialogue());
-            hasDialogue = false;
-        }
+        TutorialOrdersManager.instance.CompleteOrder(uniqueId);
+        // if (OrdersManager.Instance.CompleteOrder(uniqueId))
+        // {
+        //     hasDialogue = true;
+        // }
+        // if (hasDialogue)
+        // {
+        //     DialogueManager.instance.LoadAndRun(DialogueDatabase.GetRandomDialogue());
+        //     hasDialogue = false;
+        // }
     }
 
     public override void OnPlayerLeave()

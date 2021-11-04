@@ -357,9 +357,9 @@ public class TutorialUIController : SingletonGeneric<TutorialUIController>
         {
             RecipeManager.instance.ForceUIUpdate();
         }
-        if (OrdersManager.instance != null)
+        if (TutorialOrdersManager.instance != null)
         {
-            OrdersManager.instance.ForceUIUpdate();
+            TutorialOrdersManager.instance.ForceUIUpdate();
         }
         // if (WeaponManager.instance != null)
         // {

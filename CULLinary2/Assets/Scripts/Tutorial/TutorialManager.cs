@@ -11,6 +11,10 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
     // Store IDs of events with triggers for their next events (for creating tutorial events and updating)
     private List<int> eventIdWithTriggers = new List<int> { 2 };
 
+
+    // Tutorial variables
+    public int orderSubmissionStnId = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -33,7 +37,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
             TutorialEvent tutorialEvent = events[eventId];
             if (tutorialEvent.ShouldCheckForTrigger && !tutorialEvent.CanTriggerNextEvent)
             {
-                Debug.Log("checking trigger for event #" + eventId);
+                // Debug.Log("checking trigger for event #" + eventId);
                 switch (eventId)
                 {
                     case 2:
