@@ -7,7 +7,7 @@ public class MiniBoss : MonoBehaviour
     [SerializeField] private int health;
     [SerializeField] private float distanceTriggered;
     [SerializeField] private float stopChase;
-    [SerializeField] private float damageMultiplier = 1.5f;
+    [SerializeField] private float damageMultiplier;
     [Header("MiniBoss Loot")]
     [SerializeField] private int[] randomLootRange = new int[2] { 3, 5 };
     [SerializeField] private GameObject lootChest;

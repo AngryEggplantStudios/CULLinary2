@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 281a8af603257604d9094bdf7fbe58fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 250
+  health: 400
   distanceTriggered: 24
   stopChase: 30
   damageMultiplier: 1.5
@@ -113,6 +113,10 @@ PrefabInstance:
     - target: {fileID: 3032895445469368953, guid: c6842ea22088da542ac77fec21ab95b5, type: 3}
       propertyPath: stopChase
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3032895445469368953, guid: c6842ea22088da542ac77fec21ab95b5, type: 3}
+      propertyPath: monsterHealth
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 3032895445469368953, guid: c6842ea22088da542ac77fec21ab95b5, type: 3}
       propertyPath: distanceTriggered
