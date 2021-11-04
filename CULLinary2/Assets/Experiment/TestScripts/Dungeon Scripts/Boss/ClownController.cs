@@ -180,6 +180,10 @@ public class ClownController : MonoBehaviour
     {
         float interpolationRatio = (float)elapsedFrames / interpolationFramesCount;
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        if (health / maxHealth < 0.3f)
+        {
+            spawnAttackScript.activateStage3();
+        }
         switch (state)
         {
             default:
@@ -248,7 +252,7 @@ public class ClownController : MonoBehaviour
                 }
                 if (!coroutineRangedRunning)
                 {
-                    if (health / maxHealth < 0.3f)
+                    if (health / maxHealth < 0.4f)
                     {
                         rangedAttackScript.activateStage3();
                         spawnAttackScript.activateStage3();
@@ -363,11 +367,11 @@ public class ClownController : MonoBehaviour
                     state = State.MeleeAttack;
                     break;
                 case 3:
-                    state = State.MeleeAttack;
+                    state = State.SpawnAttack;
                     break;
                 case 4:
                 case 5:
-                    state = State.MeleeAttack;
+                    state = State.RangedAttack;
                     break;
             }
         }
