@@ -251,11 +251,12 @@ public class ClownController : MonoBehaviour
                     if (health / maxHealth < 0.3f)
                     {
                         rangedAttackScript.activateStage3();
-                        spawnAttackScript.activateStage2();
+                        spawnAttackScript.activateStage3();
                     }
                     else if (health / maxHealth < 0.7f)
                     {
                         rangedAttackScript.activateStage2();
+                        spawnAttackScript.activateStage2( );
                     }
                     else
                     {
@@ -359,14 +360,14 @@ public class ClownController : MonoBehaviour
                 default:
                 case 1:
                 case 2:
-                    state = State.MeleeAttack;
+                    state = State.RangedAttack;
                     break;
                 case 3:
                     state = State.SpawnAttack;
                     break;
                 case 4:
                 case 5:
-                    state = State.RangedAttack;
+                    state = State.SpawnAttack;
                     break;
             }
         }
