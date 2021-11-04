@@ -128,7 +128,7 @@ public class TutorialUIController : SingletonGeneric<TutorialUIController>
             //isPaused = true;
             endOfDayMenu.SetActive(true);
             EndOfDayPanelStatistics stats = endOfDayMenu.GetComponent<EndOfDayPanelStatistics>();
-            stats.UpdateStatistics(GameTimer.GetDayNumber(),
+            stats.UpdateStatistics(TutorialGameTimer.GetDayNumber(),
                                    OrdersManager.GetNumberOfOrdersCompletedToday(),
                                    OrdersManager.GetNumberOfOrdersGeneratedDaily(),
                                    OrdersManager.GetMoneyEarnedToday(),
@@ -146,7 +146,7 @@ public class TutorialUIController : SingletonGeneric<TutorialUIController>
 
     private void ResumeGameTimer()
     {
-        GameTimer.instance.Run();
+        TutorialGameTimer.instance.Run();
     }
 
     public void OnPlayerEnterCampfire()
