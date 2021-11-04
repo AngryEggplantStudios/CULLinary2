@@ -6,12 +6,16 @@ public class ObjectCuller : SingletonGeneric<ObjectCuller>
 {
     public float activeRadius = 100;
     public float inactiveRadius = 150;
+    public float checkingRadius = 20;
     public Transform playerTransform;
-    private bool isMushActive = false;
 
+    Vector3 lastCheckedPosition = Vector3.up * 999;
     List<GameObject> cullableObjects = new List<GameObject>();
+
     //Mushrooms need a seperate list to keep logic apart
+    bool isMushActive = false;
     List<MonsterScript> listOfMushrooms = new List<MonsterScript>();
+
 
     void Start()
     {
@@ -44,7 +48,10 @@ public class ObjectCuller : SingletonGeneric<ObjectCuller>
     void Update()
     {
         if (playerTransform == null) return;
-        isMushActive = GameTimer.Instance.GetIsMushroomActive();
+
+        if (!IsCheckable()) return;
+
+        lastCheckedPosition = playerTransform.position;
 
         foreach (GameObject obj in cullableObjects)
         {
@@ -64,6 +71,7 @@ public class ObjectCuller : SingletonGeneric<ObjectCuller>
             }
         }
 
+        isMushActive = GameTimer.Instance.GetIsMushroomActive();
         foreach (MonsterScript obj in listOfMushrooms)
         {
             if (isMushActive && IsNear(obj.transform.position))
@@ -71,10 +79,10 @@ public class ObjectCuller : SingletonGeneric<ObjectCuller>
                 obj.SetActiveMonster(true);
             }
             else
-			{
+            {
                 obj.DeactivateAggression();
                 obj.SetActiveMonster(false);
-			}
+            }
         }
     }
 
@@ -90,6 +98,13 @@ public class ObjectCuller : SingletonGeneric<ObjectCuller>
         Vector3 delta = playerTransform.position - target;
         float sqredMagnitude = Vector3.SqrMagnitude(delta);
         return sqredMagnitude > inactiveRadius * inactiveRadius;
+    }
+
+    bool IsCheckable()
+    {
+        Vector3 delta = playerTransform.position - lastCheckedPosition;
+        float sqredMagnitude = Vector3.SqrMagnitude(delta);
+        return sqredMagnitude > checkingRadius * checkingRadius;
     }
 
     void OnDrawGizmosSelected()
