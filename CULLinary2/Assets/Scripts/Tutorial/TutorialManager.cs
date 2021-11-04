@@ -33,12 +33,12 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
             TutorialEvent tutorialEvent = events[eventId];
             if (tutorialEvent.ShouldCheckForTrigger && !tutorialEvent.CanTriggerNextEvent)
             {
+                Debug.Log("checking trigger for event #" + eventId);
                 switch (eventId)
                 {
                     case 2:
-                        Debug.Log("checking trigger for event #2");
                         tutorialEvent.CanTriggerNextEvent = TutorialUIController.instance.WereOrdersAndRecipesOpened() && !TutorialUIController.instance.isMenuActive;
-                        Debug.Log("can start next event for event #2 set to: " + tutorialEvent.CanTriggerNextEvent);
+                        // Debug.Log("can start next event for event #2 set to: " + tutorialEvent.CanTriggerNextEvent);
                         break;
                     default:
                         // Do nothing

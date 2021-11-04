@@ -205,7 +205,6 @@ public class TutorialUIController : SingletonGeneric<TutorialUIController>
 
     public bool WereOrdersAndRecipesOpened()
     {
-        Debug.Log("orders opened?: " + wasOrdersOpened + ", recipes opened?: " + wasRecipesOpened);
         return wasOrdersOpened && wasRecipesOpened;
     }
 
