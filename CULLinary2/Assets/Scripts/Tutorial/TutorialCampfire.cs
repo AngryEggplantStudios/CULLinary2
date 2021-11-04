@@ -11,7 +11,7 @@ public class TutorialCampfire : PlayerInteractable
     public void Awake()
     {
         // Add to the list in RecipeManager for use in the minimap
-        // RecipeManager.instance.AddCampfire(this.GetComponent<Transform>());
+        TutorialRecipeManager.instance.AddCampfire(this.GetComponent<Transform>());
         campfires.Add(this.gameObject);
     }
 

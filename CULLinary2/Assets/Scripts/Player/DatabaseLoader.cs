@@ -77,6 +77,12 @@ public class DatabaseLoader : MonoBehaviour
         yield return StartCoroutine(PopulateNewspaperDatabase());
     }
 
+    public IEnumerator PopulateTutorial()
+    {
+        yield return StartCoroutine(PopulateInventoryItemDatabase());
+        yield return StartCoroutine(PopulateRecipeDatabase());
+    }
+
     private IEnumerator PopulateInventoryItemDatabase()
     {
         foreach (InventoryItem i in inventoryItemDatabase.allItems)

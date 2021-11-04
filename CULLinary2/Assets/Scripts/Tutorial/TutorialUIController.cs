@@ -349,13 +349,13 @@ public class TutorialUIController : SingletonGeneric<TutorialUIController>
     public static void UpdateAllUIs()
     {
         // Stop the coroutines that are currently running
-        if (InventoryManager.instance != null)
+        if (TutorialInventoryManager.instance != null)
         {
-            InventoryManager.instance.ForceUIUpdate();
+            TutorialInventoryManager.instance.ForceUIUpdate();
         }
-        if (RecipeManager.instance != null)
+        if (TutorialRecipeManager.instance != null)
         {
-            RecipeManager.instance.ForceUIUpdate();
+            TutorialRecipeManager.instance.ForceUIUpdate();
         }
         if (TutorialOrdersManager.instance != null)
         {

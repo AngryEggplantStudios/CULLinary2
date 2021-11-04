@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class RecipeManager : SingletonGeneric<RecipeManager>
+public class TutorialRecipeManager : SingletonGeneric<TutorialRecipeManager>
 {
     [Header("For Recipes UI")]
     // Container to attach recipes to
@@ -80,12 +80,10 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         }
     }
 
-    // Update the unlocked and the locked recipes list based on PlayerManager
+    // Update the unlocked and the locked recipes list
     public void UpdateUnlockedRecipes()
     {
-        List<int> unlockedRecipes = PlayerManager.instance != null
-            ? PlayerManager.instance.unlockedRecipesList
-            : new List<int> { 0, 4, 6, 10, 32 };
+        List<int> unlockedRecipes = new List<int> { 1 }; // french fries
 
         StopAllCoroutines();
         innerLockedRecipesList.Clear();
@@ -162,14 +160,14 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             return;
         }
 
-        if (InventoryManager.instance.RemoveIdsFromInventory(r.GetIngredientIds()))
+        if (TutorialInventoryManager.instance.RemoveIdsFromInventory(r.GetIngredientIds()))
         {
             // Sucessfully cooked!
             ButtonAudio.Instance.Click();
 
             // UI will be updated in AddItem
             infoDisplay.IncreaseInventoryCountAndSetIngredients();
-            InventoryManager.instance.AddItem(r.cookedDishItem);
+            TutorialInventoryManager.instance.AddItem(r.cookedDishItem);
             // Create a pop-up for the player
             pickup?.PickUp(r.cookedDishItem);
             // Player cooking sfx
@@ -257,10 +255,13 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
     private IEnumerator UpdateUI()
     {
         // Wait until all orders have generated
-        if (!OrdersManager.instance.IsOrderGenerationComplete())
-        {
-            yield break;
-        }
+        // if (OrdersManager.instance != null)
+        // {
+        //     if (!OrdersManager.instance.IsOrderGenerationComplete())
+        //     {
+        //         yield break;
+        //     }
+        // }
 
         if (recipesChanged)
         {
@@ -287,6 +288,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         }
 
         // Retain the same index for the display after updating
+        Debug.Log("currently selected recipe: " + currentlySelectedRecipeIndex);
         recipesContainer
             .transform
             .GetChild(currentlySelectedRecipeIndex)
@@ -312,10 +314,11 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             List<(int, int)> ingIds = r.GetIngredientIds();
             List<(int, int, int)> invReqCount = new List<(int, int, int)>();
             bool areIngresInInv =
-                InventoryManager.instance.CheckIfItemsExist(ingIds, out invReqCount);
-            int numberOfOrders = OrdersManager.instance.GetNumberOfOrders(r.recipeId);
+                TutorialInventoryManager.instance.CheckIfItemsExist(ingIds, out invReqCount);
+            // int numberOfOrders = TutorialOrdersManager.instance.GetNumberOfOrders(r.recipeId);
+            int numberOfOrders = 1;
             CheckIfRecipeHasCookedDish(r);
-            int numberInInventory = InventoryManager.instance.GetAmountOfItem(r.cookedDishItem.inventoryItemId);
+            int numberInInventory = TutorialInventoryManager.instance.GetAmountOfItem(r.cookedDishItem.inventoryItemId);
 
             // Add to Recipes UI
             GameObject recipeEntry = Instantiate(recipeSlot,
@@ -327,33 +330,33 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             recipeDetails.SetInfoDisplay(infoDisplay);
             yield return null;
         }
-        yield return StartCoroutine(RecreateLockedRecipes());
+        // yield return StartCoroutine(RecreateLockedRecipes());
     }
 
-    private IEnumerator RecreateLockedRecipes()
-    {
-        foreach (Recipe r in innerLockedRecipesList)
-        {
-            CheckIfRecipeHasCookedDish(r);
-            GameObject recipeEntry = Instantiate(recipeSlot,
-                                                 new Vector3(0, 0, 0),
-                                                 Quaternion.identity,
-                                                 recipesContainer.transform) as GameObject;
-            RecipeUISlot recipeDetails = recipeEntry.GetComponent<RecipeUISlot>();
-            recipeDetails.AddUnknownRecipe(r);
-            recipeDetails.SetInfoDisplay(infoDisplay);
-            yield return null;
-        }
+    // private IEnumerator RecreateLockedRecipes()
+    // {
+    //     foreach (Recipe r in innerLockedRecipesList)
+    //     {
+    //         CheckIfRecipeHasCookedDish(r);
+    //         GameObject recipeEntry = Instantiate(recipeSlot,
+    //                                              new Vector3(0, 0, 0),
+    //                                              Quaternion.identity,
+    //                                              recipesContainer.transform) as GameObject;
+    //         RecipeUISlot recipeDetails = recipeEntry.GetComponent<RecipeUISlot>();
+    //         recipeDetails.AddUnknownRecipe(r);
+    //         recipeDetails.SetInfoDisplay(infoDisplay);
+    //         yield return null;
+    //     }
 
-        // Reset selected recipe index to 0
-        currentlySelectedRecipeIndex = 0;
-        recipesChanged = false;
-        recipesContainer
-            .transform
-            .GetChild(currentlySelectedRecipeIndex)
-            .GetComponent<RecipeUISlot>()
-            .DisplayRecipe();
-    }
+    //     // Reset selected recipe index to 0
+    //     currentlySelectedRecipeIndex = 0;
+    //     recipesChanged = false;
+    //     recipesContainer
+    //         .transform
+    //         .GetChild(currentlySelectedRecipeIndex)
+    //         .GetComponent<RecipeUISlot>()
+    //         .DisplayRecipe();
+    // }
 
     private void CheckIfRecipeHasCookedDish(Recipe r)
     {
@@ -363,31 +366,3 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         }
     }
 }
-
-
-
-/*
-bool[] recipesUnlocked = PlayerManager.instance
-? PlayerManager.instance.recipesUnlocked
-: new bool[36] {
-    true, true, true, true, true,
-    false, true, true, true, true,
-    true, false , false, false, false,
-    false, false, false, false , false,
-    false, false, false, false , false,
-    false, false, false, false , false,
-    false, false, false, false , false,
-    false, };
-
-for (int id = 0; id < recipesUnlocked.Length; id++)
-{
-if (recipesUnlocked[id])
-{
-    innerUnlockedRecipesList.Add(DatabaseLoader.GetRecipeById(id));
-}
-else
-{
-    innerLockedRecipesList.Add(DatabaseLoader.GetRecipeById(id));
-}
-}
-*/

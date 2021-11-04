@@ -5,7 +5,7 @@ using UnityEngine;
 public class TutorialLoader : SingletonGeneric<TutorialLoader>
 {
     [SerializeField] private BiomeGeneratorManager biomeGeneratorManager;
-    // [SerializeField] private DatabaseLoader databaseLoader;
+    [SerializeField] private DatabaseLoader databaseLoader;
     // [SerializeField] private DungeonSpawnManager dungeonSpawnManager;
     [SerializeField] private GameObject playerCharacter;
     // [SerializeField] private GameObject truck;
@@ -40,7 +40,7 @@ public class TutorialLoader : SingletonGeneric<TutorialLoader>
     public IEnumerator LoadWorldTesting()
     {
         audioListener.enabled = true;
-        // yield return StartCoroutine(databaseLoader.Populate());
+        yield return StartCoroutine(databaseLoader.PopulateTutorial());
         yield return StartCoroutine(biomeGeneratorManager.LoadBiome());
         //yield return StartCoroutine(dungeonSpawnManager.GetSpawners());
         audioListener.enabled = false;
@@ -72,9 +72,9 @@ public class TutorialLoader : SingletonGeneric<TutorialLoader>
         yield return null;
         playerCharacter.SetActive(true);
         yield return null;
-        TutorialUIController.UpdateAllUIs();
         uiCanvas.SetActive(true);
         yield return null;
+        TutorialUIController.UpdateAllUIs();
         TutorialManager.instance.DisplayDialogue();
         // GameTimer.instance.Run();
         // PlayerSpawnManager.instance.SpawnPlayer();
