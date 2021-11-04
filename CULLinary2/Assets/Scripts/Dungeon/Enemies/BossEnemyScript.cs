@@ -12,7 +12,6 @@ public class BossEnemyScript : Monster
     [SerializeField] private float distanceTriggered;
     [SerializeField] private float stopChase;
     [SerializeField] private GameObject lootDropped;
-    [SerializeField] private int additionalSpawning = 0;
     [HideInInspector] public GameObject spawner;
 
     [Header("UI Prefabs")]
