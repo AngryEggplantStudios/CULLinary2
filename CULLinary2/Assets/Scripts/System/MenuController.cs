@@ -51,8 +51,10 @@ public class MenuController : MonoBehaviour
 
     public void StartNewGame()
     {
+        //random
         PlayerData playerData = PlayerManager.instance.CreateBlankData();
         BiomeData biomeData = new BiomeData();
+        biomeData.SetRandomSeed();
         SaveSystem.SaveData(biomeData);
         SaveSystem.SaveData(playerData);
         PlayerPrefs.SetInt("nextScene", (int)SceneIndexes.MAIN_SCENE);
@@ -61,6 +63,7 @@ public class MenuController : MonoBehaviour
 
     public void StartNewDefaultGame()
     {
+        //fixed
         // TODO: eventually calls BiomeGeneratorManager.LoadDefaultBiome() instead of LoadExistingBiome()
         PlayerData playerData = PlayerManager.instance.CreateBlankData();
         BiomeData biomeData = new BiomeData();

@@ -32,12 +32,15 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
 
     public IEnumerator LoadBiome()
     {
-        foreach (GameObject obj in hideWhileLoading)
-        {
-            obj.SetActive(false);
+		foreach (GameObject obj in hideWhileLoading)
+		{
+            if (obj)
+			{
+                obj.SetActive(false);
+            }
         }
 
-        CheckForExistingData();
+		CheckForExistingData();
         if (hasExistingData)
         {
             yield return StartCoroutine(LoadExistingBiome());
@@ -50,7 +53,10 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
 
         foreach (GameObject obj in hideWhileLoading)
         {
-            obj.SetActive(true);
+            if (obj)
+            {
+                obj.SetActive(true);
+            }
         }
     }
 
