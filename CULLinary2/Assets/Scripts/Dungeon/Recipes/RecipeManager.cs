@@ -93,6 +93,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
 
         foreach (int recipeId in unlockedRecipes)
         {
+            Debug.Log("unlocked recipe: " + recipeId);
             innerUnlockedRecipesList.Add(DatabaseLoader.GetRecipeById(recipeId));
         }
         //Not sure if there's a faster method or a one-liner
@@ -177,7 +178,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
         else
         {
             ButtonAudio.Instance.ClickFailed();
-            ingredientsEmphasisAnimator.SetTrigger("triggerFlash"); 
+            ingredientsEmphasisAnimator.SetTrigger("triggerFlash");
             Debug.Log("RecipeManager: ingredients required!");
         }
     }
@@ -266,9 +267,10 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             yield return StartCoroutine(RegenerateRecipes());
         }
         else
-        {   
+        {
             yield return StartCoroutine(RefreshRecipes());
         }
+
     }
 
     // Goes through all unlocked recipes and updates them
@@ -283,7 +285,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             }
             yield return null;
         }
-    
+
         // Retain the same index for the display after updating
         recipesContainer
             .transform
@@ -342,7 +344,7 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
             recipeDetails.SetInfoDisplay(infoDisplay);
             yield return null;
         }
-        
+
         // Reset selected recipe index to 0
         currentlySelectedRecipeIndex = 0;
         recipesChanged = false;

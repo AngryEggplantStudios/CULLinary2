@@ -115,7 +115,14 @@ public class InventorySlotManager : SingletonGeneric<InventorySlotManager>
     private void OnEnable()
     {
         ResetSlot();
-        InventoryManager.instance.ForceUIUpdate();
+        if (InventoryManager.instance != null)
+        {
+            InventoryManager.instance.ForceUIUpdate();
+        }
+        else if (TutorialInventoryManager.instance != null)
+        {
+            TutorialInventoryManager.instance.ForceUIUpdate();
+        }
     }
 
     private void OnDisable()

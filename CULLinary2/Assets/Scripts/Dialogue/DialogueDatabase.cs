@@ -46,7 +46,33 @@ public static class DialogueDatabase
         /*   21 */ ("{[R]1}I love eggplants!{[L]0}That's great! We only serve eggplants here.{[R]1}This is the best restaurant!", 3),
     };
 
+    private static string[] rawTutorialDialogues = {
+        /* 0 */ "{[L]0}*Rrring rrring* Oh, looks like I already have an order coming in!",
+        /* 1 */ "{[R]1}Hey Chef! Are you still open for business?"
+                    + "{[L]0}Yes, I'm now open for delivery. What would you like to have, Tew Tawrel?"
+                    + "{[R]1}That's great! I want some french fries, please. *Call ended*",
+        /* 2 */ "{[L]0}I just got my first order! Let me check how many ingredients I need by pressing TAB to see my Orders and Recipe menus.",
+        /* 3 */ "{[L]0}Okay, time to find me 3 potatoes by killing some potatoes. (Move around with WASD and attack with Left Mouse Button).",
+        /* 4 */ "{[L]0}Now that I've collected 3 potatoes, I gotta find a campfire to cook the french fries. I can use the map to find a campfire.",
+        /* 5 */ "{[L]0}Alright I got the french fries ready to go! Time to deliver it to my customer."
+                    + "{[R]1}Hey Chef! You got my french fries yet?"
+                    + "{[L]0}Yes! I was about to deliver it to you."
+                    + "{[R]1}Great! Just wanted to let you know you need to deliver your orders before the day ends. *Call ended*",
+        /* 6 */ "{[L]0}Okay, let's go deliver the french fries to Tew Tawrel! Gotta check the map to find out where his house is at.",
+        /* 7 */ "{[R]1}Hey you're here!"
+                    + "{[L]0}Yeap, I'm here to deliver your french fries."
+                    + "{[R]1}Did you also know you could actually eat your own cooked food and get some special effects? How cool is that?!"
+                    + "{[L]0}Oooh hmmmm… it sure looks tasty…"
+                    + "{[R]1}Hey but those french fries are mine! If you eat my food, I'll get hangry >:("
+                    + "{[R]1}Now take your money and gimme my french fries!"
+                    + "{[L]0}Fine… here you go.",
+        /* 8 */ "{[L]0}Looks like I can earn money from delivering orders and I can use the money to buy new weapons and other things to become stronger and complete more orders and earn EVEN MORE money...",
+        /* 9 */ "{[L]0}I also need to keep an eye out for the newspaper, I've heard that more and more strange foods have been appearing lately... I wonder what's causing it...",
+        /* 10 */ "{[L]0}Well, now I'm ready. Let's start CULLing!",
+    };
+
     private static (Dialogue, double)[] dialoguesWithCumulativeChance = null;
+    private static Dialogue[] generatedTutorialDialogue = null;
     private static bool hasGenerated = false;
 
     public static void GenerateDialogues()
@@ -78,7 +104,26 @@ public static class DialogueDatabase
         }
         hasGenerated = true;
     }
-    
+
+    public static void GenerateTutorialDialogue()
+    {
+        int numDialogue = rawTutorialDialogues.Length;
+        generatedTutorialDialogue = new Dialogue[numDialogue];
+
+        for (int i = 0; i < numDialogue; i++)
+        {
+            string rawDialogue = rawTutorialDialogues[i];
+            Dialogue parsedDialogue = DialogueParser.Parse(rawDialogue);
+            if (parsedDialogue == null)
+            {
+                Debug.Log("Oops, dialogue (" + rawDialogue + ") is malformed! Stopping generation of tutorial dialogue.");
+                break;
+            }
+
+            generatedTutorialDialogue[i] = parsedDialogue;
+        }
+    }
+
     public static Dialogue GetDialogue(int index)
     {
         if (!hasGenerated)
@@ -86,6 +131,16 @@ public static class DialogueDatabase
             GenerateDialogues();
         }
         return dialoguesWithCumulativeChance[index].Item1;
+    }
+
+    public static Dialogue GetTutorialDialogue(int index)
+    {
+        return generatedTutorialDialogue[index];
+    }
+
+    public static Dialogue[] GetAllTutorialDialogue()
+    {
+        return generatedTutorialDialogue;
     }
 
     public static Dialogue GetRandomDialogue()
@@ -102,7 +157,8 @@ public static class DialogueDatabase
         for (int i = 0; i < numberOfDialogues; i++)
         {
             (Dialogue dialogue, double weight) = dialoguesWithCumulativeChance[i];
-            if (randomDouble < weight) {
+            if (randomDouble < weight)
+            {
                 return dialogue;
             }
         }
