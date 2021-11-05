@@ -21,17 +21,17 @@ public class TutOrderSubmissionStation : PlayerInteractable
         // SetId(OrdersManager.instance.AddOrderSubmissionStation(this.GetComponent<Transform>()));
         uniqueId = TutorialManager.instance.orderSubmissionStnId;
         TutorialOrdersManager.instance.SetOrderSubmissionStn(transform);
-        TutorialOrdersManager.instance.InstantiateFloatingItemNotifs();
+        // TutorialOrdersManager.instance.InstantiateFloatingItemNotifs();
         spCollider.SetPlayerInteractable(this);
     }
 
     public void Start()
     {
-/*		foreach (GameObject obj in activeIfOrdered)
-		{
-			obj.SetActive(false);
-		}*/
-	}
+        /*		foreach (GameObject obj in activeIfOrdered)
+                {
+                    obj.SetActive(false);
+                }*/
+    }
 
     // public void SetId(int id)
     // {

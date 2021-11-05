@@ -53,8 +53,11 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
                         tutorialEvent.IsComplete = true;
                         break;
                     case 4: // Cook french fries
-                        tutorialEvent.CanTriggerNextEvent = TutorialInventoryManager.instance.hasCookedRequiredDish;
+                        tutorialEvent.CanTriggerNextEvent = TutorialInventoryManager.instance.hasCookedRequiredDish && !TutorialUIController.instance.isMenuActive;
                         tutorialEvent.IsComplete = true;
+                        break;
+                    case 6: // Enter house collider
+
                         break;
                     default:
                         // Do nothing
@@ -102,7 +105,18 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
         if (currEventId >= totalNumEvents - 1)
         {
             // No more events/dialogue
+            Debug.Log("last dialogue");
             return;
+        }
+
+        // Do event specific stuff after dialogue
+        if (currEventId == 1)
+        {
+            TutorialOrdersManager.instance.InstantiateFloatingItemNotifs();
+        }
+        if (currEventId == 3)
+        {
+            ActivatePotatoes();
         }
 
         TutorialEvent currEvent = events[currEventId];
@@ -114,10 +128,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
         }
         else
         {
-            if (currEventId == 3)
-            {
-                ActivatePotatoes();
-            }
+
             StartCoroutine(TriggerNextDialogue());
         }
         // Debug.Log("end of on dialogue end for event #" + currEventId);

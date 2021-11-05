@@ -210,8 +210,8 @@ public class TutorialInventoryManager : SingletonGeneric<TutorialInventoryManage
             // May affect Recipe, Orders UI as well
             TutorialUIController.UpdateAllUIs();
 
-            Debug.Log("inv manager: num of potatoes" + itemListReference.FindAll((item) => item.itemName.Equals(requiredPotato.itemName)).Count);
-            if (itemListReference.Count == 3)
+            Debug.Log("inv manager: num of potatoes: " + itemListReference.FindAll((item) => item.itemName.Equals(requiredPotato.itemName)).Count);
+            if (itemListReference.FindAll((item) => item.itemName.Equals(requiredPotato.itemName)).Count == 3)
             {
                 hasCollected3Potatoes = true;
             }

@@ -23,6 +23,7 @@ public class TutorialOrdersManager : SingletonGeneric<TutorialOrdersManager>
         orderRequired = new Order(recipeRequired, "Your very first order.", TutorialManager.instance.orderSubmissionStnId);
 
         /*InstantiateFloatingItemNotifs();*/
+        orderSubmissionStn.GetComponent<TutOrderSubmissionStation>().HideFloatingItemNotif();
     }
 
 
