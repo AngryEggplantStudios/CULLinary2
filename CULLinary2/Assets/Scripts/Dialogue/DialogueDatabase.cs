@@ -51,7 +51,7 @@ public static class DialogueDatabase
         /* 1 */ "{[R]1}Hey Chef! Are you still open for business?"
                     + "{[L]0}Yes, I'm now open for delivery. What would you like to have, Tew Tawrel?"
                     + "{[R]1}That's great! I want some french fries, please. *Call ended*",
-        /* 2 */ "{[L]0}I just got my first order! Let me check how many ingredients I need by pressing TAB to see my ORDERS and RECIPES menus.",
+        /* 2 */ "{[L]0}I just got my first order! Let me check how many ingredients I need by pressing TAB to see my Orders and Recipe menus.",
         /* 3 */ "{[L]0}Okay, time to find me 3 potatoes by killing some potatoes. (Move around with WASD and attack with Left Mouse Button).",
         /* 4 */ "{[L]0}Now that I've collected 3 potatoes, I gotta find a campfire to cook the french fries. I can use the map to find a campfire.",
         /* 5 */ "{[L]0}Alright I got the french fries ready to go! Time to deliver it to my customer."
@@ -67,7 +67,7 @@ public static class DialogueDatabase
                     + "{[R]1}Now take your money and gimme my french fries!"
                     + "{[L]0}Fine… here you go.",
         /* 8 */ "{[L]0}Looks like I can earn money from delivering orders and I can use the money to buy new weapons and other things to become stronger and complete more orders and earn EVEN MORE money...",
-        /* 9 */ "{[L]0}I also need to keep an eye out for the newspaper... I've heard that more and more strange foods have been appearing lately...",
+        /* 9 */ "{[L]0}I also need to keep an eye out for the newspaper, I've heard that more and more strange foods have been appearing lately... I wonder what's causing it...",
         /* 10 */ "{[L]0}Well, now I'm ready. Let's start CULLing!",
     };
 
