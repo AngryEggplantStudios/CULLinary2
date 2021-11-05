@@ -78,7 +78,6 @@ public class TutorialMiniMap : MonoBehaviour
         orderSubmissionStationLocationsAndIcons = new Dictionary<int, (Transform, Transform)>();
         playerOldPosition = playerBody.position;
 
-        //TODO JESS SET THE SPRITE OF ORDER
         Dictionary<int, (Transform, Sprite)> relevantOrders = TutorialOrdersManager.instance.GetRelevantOrderStations();
         foreach (KeyValuePair<int, (Transform, Sprite)> order in relevantOrders)
         {

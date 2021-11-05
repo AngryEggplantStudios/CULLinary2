@@ -18,6 +18,8 @@ public class TutorialOrdersManager : SingletonGeneric<TutorialOrdersManager>
     private Transform orderSubmissionStn;
     private bool firstGeneration = true;
 
+    public bool hasDeliveredFood = false;
+
     void Start()
     {
         orderRequired = new Order(recipeRequired, "Your very first order.", TutorialManager.instance.orderSubmissionStnId);
@@ -66,6 +68,8 @@ public class TutorialOrdersManager : SingletonGeneric<TutorialOrdersManager>
             orderSubmissionSound.Play();
 
             orderSubmissionStn.GetComponent<TutOrderSubmissionStation>().HideFloatingItemNotif();
+
+            hasDeliveredFood = true;
         }
     }
 

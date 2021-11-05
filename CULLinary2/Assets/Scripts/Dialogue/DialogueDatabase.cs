@@ -66,9 +66,9 @@ public static class DialogueDatabase
                     // + "{[R]1}Hey but those french fries are mine! If you eat my food, I'll get hangry >:(",
                     // + "{[R]1}Now take your money and gimme my french fries!"
                     // + "{[L]0}Fine… here you go."
-        /* 8 */ "{[L]0}Looks like I can earn money from delivering orders and I can use the money to buy new weapons and other things to    become stronger and complete more orders and earn even more money...",
+        /* 8 */ "{[L]0}Looks like I can earn money from delivering orders and I can use the money to buy new weapons and other things to become stronger and complete more orders and earn EVEN MORE money...",
         /* 9 */ "{[L]0}I also need to keep an eye out for the newspaper... I've heard that more and more strange foods have been appearing lately...",
-        /* 10 */ "{[L]0}Chef: Well, now I'm ready. Let's start CULLing!",
+        /* 10 */ "{[L]0}Well, now I'm ready. Let's start CULLing!",
 
 
     };

@@ -15,7 +15,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
     private Dictionary<int, string> tutDirections = new Dictionary<int, string>() {
         {2, "Open orders and recipes menu"},
         {3, "Kill potatoes and collect 3 potatoes"},
-        {4, "Cook up french fries at campfire"},
+        {4, "Cook up French Fries at campfire"},
         {6, "Go to Tew Tawrel's house"},
         {7, "Deliver french fries"},
     };
@@ -81,6 +81,10 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
                         break;
                     case 6: // Enter house collider
                         tutorialEvent.CanTriggerNextEvent = TutorialOrdersManager.instance.IsPlayerNearOrderSubmissionStn();
+                        tutorialEvent.IsComplete = true;
+                        break;
+                    case 7: // Deliver food
+                        tutorialEvent.CanTriggerNextEvent = TutorialOrdersManager.instance.hasDeliveredFood;
                         tutorialEvent.IsComplete = true;
                         break;
                     default:
@@ -194,6 +198,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
             }
             Debug.Log("event #" + currEventId + ": waiting for event trigger to be fulfilled");
             yield return new WaitUntil(() => events[currEventId].CanTriggerNextEvent);
+            yield return new WaitForSeconds(0.25f);
             currEventId++;
             DisplayDialogue();
         }
@@ -204,6 +209,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
             Debug.Log("event #" + currEventId + ": should check for trigger is set to true");
             Debug.Log("event #" + currEventId + ": waiting for event trigger to be fulfilled");
             yield return new WaitUntil(() => events[currEventId].CanTriggerNextEvent);
+            yield return new WaitForSeconds(0.25f);
             currEventId++;
             DisplayDialogue();
         }
