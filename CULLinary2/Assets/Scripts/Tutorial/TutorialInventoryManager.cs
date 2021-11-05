@@ -16,6 +16,22 @@ public class TutorialInventoryManager : SingletonGeneric<TutorialInventoryManage
     private Dictionary<int, Tuple<int, List<InventoryItem>>> inventoryDictionaryCache;
     private bool isCacheValid = false;
 
+    // For event trigger
+    public InventoryItem potatoToCollect;
+    public bool hasCollected3Potatoes = false;
+
+    private void Start()
+    {
+        slots = inventoryPanel.GetComponentsInChildren<InventorySlot>();
+        PopulateUI(PlayerManager.instance.itemList);
+    }
+
+    public void PopulateUI(List<InventoryItem> items)
+    {
+        itemListReference = items;
+        //UIController.UpdateAllUIs();
+    }
+
     public void ForceUIUpdate()
     {
         StopAllCoroutines();
@@ -191,7 +207,12 @@ public class TutorialInventoryManager : SingletonGeneric<TutorialInventoryManage
             isCacheValid = false;
             // May affect Recipe, Orders UI as well
             TutorialUIController.UpdateAllUIs();
-            Debug.Log("added inventory item");
+
+            if (itemListReference.Count == 3)
+            {
+                hasCollected3Potatoes = true;
+            }
+
             return true;
         }
         else

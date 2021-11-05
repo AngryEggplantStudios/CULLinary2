@@ -43,10 +43,14 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
                 // Debug.Log("checking trigger for event #" + eventId);
                 switch (eventId)
                 {
-                    case 2:
+                    case 2: // Open recipes and orders menu
                         tutorialEvent.CanTriggerNextEvent = TutorialUIController.instance.WereOrdersAndRecipesOpened() && !TutorialUIController.instance.isMenuActive;
                         tutorialEvent.IsComplete = true;
                         // Debug.Log("can start next event for event #2 set to: " + tutorialEvent.CanTriggerNextEvent);
+                        break;
+                    case 3: // Collect 3 potatoes
+                        tutorialEvent.CanTriggerNextEvent = TutorialInventoryManager.instance.hasCollected3Potatoes;
+                        tutorialEvent.IsComplete = true;
                         break;
                     default:
                         // Do nothing
@@ -71,7 +75,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
             if (eventIdWithTriggers.Contains(i))
             {
                 events[i] = new TutorialEvent(i, tutorialDialogue[i], true, false);
-                Debug.Log("event #" + i + " has trigger");
+                // Debug.Log("event #" + i + " has trigger");
             }
             else
             {
@@ -106,10 +110,8 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
         }
         else
         {
-            Debug.Log("before trigger next dialogue: event #" + currEventId);
             if (currEventId == 3)
             {
-                Debug.Log("hello??");
                 ActivatePotatoes();
             }
             StartCoroutine(TriggerNextDialogue());
@@ -161,7 +163,6 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
     public void ActivatePotatoes()
     {
         tutorialPotatoesParent.SetActive(true);
-        Debug.Log("activate potatoes?: " + tutorialPotatoesParent.activeSelf);
     }
 
 }

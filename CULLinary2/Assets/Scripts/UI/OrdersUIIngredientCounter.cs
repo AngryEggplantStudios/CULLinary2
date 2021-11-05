@@ -24,7 +24,6 @@ public class OrdersUIIngredientCounter : MonoBehaviour
             // // Clamp the number to the maximum
             // numberToBeShown = numberRequired;
         }
-        Debug.Log("setting ingredient: itemId: " + itemId);
         itemIcon.sprite = DatabaseLoader.GetItemById(itemId).icon;
         text.text = numberToBeShown + separatorSymbol + numberRequired;
     }
