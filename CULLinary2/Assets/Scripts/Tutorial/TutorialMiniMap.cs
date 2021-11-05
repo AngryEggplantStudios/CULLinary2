@@ -42,7 +42,8 @@ public class TutorialMiniMap : MonoBehaviour
     private void InstantiateCampfireIcons()
     {
         campfireIcons = new List<(Transform, Transform)>();
-        List<Transform> listOfCampfireLocations = RecipeManager.instance.GetAllCampfires();
+        List<Transform> listOfCampfireLocations = TutorialRecipeManager.instance.GetAllCampfires();
+
         foreach (Transform fire in listOfCampfireLocations)
         {
             GameObject icon = Instantiate(iconPrefab,
@@ -77,38 +78,38 @@ public class TutorialMiniMap : MonoBehaviour
         orderSubmissionStationLocationsAndIcons = new Dictionary<int, (Transform, Transform)>();
         playerOldPosition = playerBody.position;
 
-        //TODO JESS SET THE SPRITE OF ORDER
-        /*        Dictionary<int, (Transform, Sprite)> relevantOrders = TutorialOrdersManager.instance.GetRelevantOrderStations();
-                foreach (KeyValuePair<int, (Transform, Sprite)> order in relevantOrders)
-                {
-                    int stationId = order.Key;
-                    Transform stationTransform = order.Value.Item1;
-                    GameObject minimapIcon = Instantiate(iconPrefab,
-                                                         new Vector3(0, 0, 0),
-                                                         Quaternion.identity,
-                                                         iconsParent.transform) as GameObject;
-                    // Set icon image
-                    minimapIcon.GetComponent<Image>().sprite = order.Value.Item2;
-                    orderSubmissionStationLocationsAndIcons.Add(stationId, (stationTransform, minimapIcon.transform));
-                }
+		//TODO JESS SET THE SPRITE OF ORDER
+		Dictionary<int, (Transform, Sprite)> relevantOrders = TutorialOrdersManager.instance.GetRelevantOrderStations();
+		foreach (KeyValuePair<int, (Transform, Sprite)> order in relevantOrders)
+		{
+			int stationId = order.Key;
+			Transform stationTransform = order.Value.Item1;
+			GameObject minimapIcon = Instantiate(iconPrefab,
+												 new Vector3(0, 0, 0),
+												 Quaternion.identity,
+												 iconsParent.transform) as GameObject;
+			// Set icon image
+			minimapIcon.GetComponent<Image>().sprite = order.Value.Item2;
+			orderSubmissionStationLocationsAndIcons.Add(stationId, (stationTransform, minimapIcon.transform));
+		}
 
-                // Register the callbacks, only on the first run
-                if (firstInstantiation)
-                {
-                    TutorialOrdersManager.instance.AddOrderCompletionCallback((stationId, _) =>
-                    {
-                        if (orderSubmissionStationLocationsAndIcons.ContainsKey(stationId))
-                        {
-                            Destroy(orderSubmissionStationLocationsAndIcons[stationId].Item2.gameObject);
-                            orderSubmissionStationLocationsAndIcons.Remove(stationId);
-                        }
-                    });
-                    OrdersManager.instance.AddOrderGenerationCallback(ResetInstantiatedOrderIconsFlag);
-                    firstInstantiation = false;
-                }
-                hasInstantiatedIcons = true;*/
+		// Register the callbacks, only on the first run
+/*		if (firstInstantiation)
+		{
+			TutorialOrdersManager.instance.AddOrderCompletionCallback((stationId, _) =>
+			{
+				if (orderSubmissionStationLocationsAndIcons.ContainsKey(stationId))
+				{
+					Destroy(orderSubmissionStationLocationsAndIcons[stationId].Item2.gameObject);
+					orderSubmissionStationLocationsAndIcons.Remove(stationId);
+				}
+			});
+			OrdersManager.instance.AddOrderGenerationCallback(ResetInstantiatedOrderIconsFlag);
+			firstInstantiation = false;
+		}*/
+		hasInstantiatedIcons = true;
 
-        // Force reupdate of the UI
+		// Force reupdate of the UI
         forceReupdate = true;
     }
 
@@ -137,12 +138,14 @@ public class TutorialMiniMap : MonoBehaviour
     // Or, update the UI if it is forced to
     protected void UpdateUI()
     {
+        Debug.Log("Updating UI");
         if (playerOldPosition != playerBody.position || forceReupdate)
         {
             playerOldPosition = playerBody.position;
             // Update positions of old icons
             foreach ((Transform station, Transform icon) in orderSubmissionStationLocationsAndIcons.Values)
             {
+                Debug.Log("Updating");
                 SetIconPos(station, icon, false);
             }
             foreach ((Transform fire, Transform icon) in campfireIcons)
@@ -151,7 +154,7 @@ public class TutorialMiniMap : MonoBehaviour
             }
             // Update player icon
             SetPlayerIconPos();
-            if (DrivingManager.instance.IsPlayerInVehicle())
+            /* if (DrivingManager.instance.IsPlayerInVehicle())
             {
                 navArrow.eulerAngles = new Vector3(0, 0, -DrivingManager.instance.GetTruckYRotation());
             }
@@ -159,7 +162,9 @@ public class TutorialMiniMap : MonoBehaviour
             {
                 navArrow.eulerAngles = new Vector3(0, 0, -playerBody.eulerAngles.y);
                 SetTruckIconPos();
-            }
+            }*/
+            navArrow.eulerAngles = new Vector3(0, 0, -playerBody.eulerAngles.y);
+
             forceReupdate = false;
         }
     }
@@ -180,7 +185,9 @@ public class TutorialMiniMap : MonoBehaviour
 
     // Do nothing, player is always in the centre of the minimap
     protected virtual void SetPlayerIconPos()
-    { }
+    {
+        SetIconPos(playerBody, navArrow, false);
+    }
 
     protected virtual void SetTruckIconPos()
     {
@@ -200,7 +207,6 @@ public class TutorialMiniMap : MonoBehaviour
             icon.gameObject.SetActive(false);
             return;
         }
-
         icon.gameObject.SetActive(true);
         Vector3 screenPos = minimapCamera.WorldToScreenPoint(target.position) -
                             GetCentrePointOfMap();
@@ -212,7 +218,6 @@ public class TutorialMiniMap : MonoBehaviour
         float halfHeight = height / 2 - borderPadding;
         bool exceedX = Mathf.Abs(localPos.x) > halfWidth;
         bool exceedY = Mathf.Abs(localPos.y) > halfHeight;
-
         if ((exceedX || exceedY) && hideIfFarAway)
         {
             icon.gameObject.SetActive(false);

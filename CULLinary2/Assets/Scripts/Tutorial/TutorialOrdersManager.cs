@@ -72,6 +72,14 @@ public class TutorialOrdersManager : SingletonGeneric<TutorialOrdersManager>
         orderSubmissionStn.GetComponent<TutOrderSubmissionStation>().SetFloatingItemNotif(orderRequired.GetProduct().icon);
     }
 
+    public Dictionary<int, (Transform, Sprite)> GetRelevantOrderStations()
+    {
+        Dictionary<int, (Transform, Sprite)> relevantStations = new Dictionary<int, (Transform, Sprite)>();
+        int id = orderRequired.GetSubmissionStationId();
+        relevantStations.Add(id, (orderSubmissionStn.GetComponent<TutOrderSubmissionStation>().getOrderSubmssionStationGameObj(), orderRequired.GetProduct().icon));
+        return relevantStations;
+    }
+
     public void ForceUIUpdate()
     {
         StopAllCoroutines();
