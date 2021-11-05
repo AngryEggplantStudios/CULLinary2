@@ -77,6 +77,13 @@ public class DatabaseLoader : MonoBehaviour
         yield return StartCoroutine(PopulateNewspaperDatabase());
     }
 
+    public IEnumerator PopulateTutorial()
+    {
+        yield return StartCoroutine(PopulateInventoryItemDatabase());
+        yield return StartCoroutine(PopulateRecipeDatabase());
+        yield return StartCoroutine(PopulateWeaponSkillItemDatabaseTutorial());
+    }
+
     private IEnumerator PopulateInventoryItemDatabase()
     {
         foreach (InventoryItem i in inventoryItemDatabase.allItems)
@@ -142,6 +149,10 @@ public class DatabaseLoader : MonoBehaviour
         if (RecipeManager.instance != null)
         {
             RecipeManager.instance.FilterUnlockedRecipes();
+        }
+        else if (TutorialRecipeManager.instance != null)
+        {
+            TutorialRecipeManager.instance.FilterUnlockedRecipes();
         }
 
         Debug.Log("Recipe Database populated.");
@@ -341,6 +352,24 @@ public class DatabaseLoader : MonoBehaviour
             yield return null;
         }
         WeaponManager.instance.SetupShop();
+        Debug.Log("Weapon Skill Item Database populated.");
+    }
+    private IEnumerator PopulateWeaponSkillItemDatabaseTutorial()
+    {
+        foreach (WeaponSkillItem i in weaponSkillDatabase.allItems)
+        {
+            try
+            {
+                weaponSkillDict.Add(i.weaponSkillId, i);
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Error: " + e);
+                Debug.Log("Unable to add item: " + i.itemName);
+            }
+            yield return null;
+        }
+        // WeaponManager.instance.SetupShop();
         Debug.Log("Weapon Skill Item Database populated.");
     }
 

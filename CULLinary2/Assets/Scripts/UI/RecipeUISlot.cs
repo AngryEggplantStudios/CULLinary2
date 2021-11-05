@@ -24,7 +24,7 @@ public class RecipeUISlot : MonoBehaviour
     private bool cookable;
     private bool ordered;
 
-    
+
     private List<(int, int, int)> invReqCount;
     private int numOfOrders;
     private int numInInv;
@@ -40,6 +40,7 @@ public class RecipeUISlot : MonoBehaviour
         int indexInRecipesMenu
     )
     {
+        Debug.Log("adding recipe: " + newRecipe.name);
         recipe = newRecipe;
         known = true;
         cookable = isCookable;
@@ -67,9 +68,20 @@ public class RecipeUISlot : MonoBehaviour
 
     public void DisplayRecipeOnClick()
     {
+        Debug.Log("display recipe on click");
+
         if (known)
         {
-            RecipeManager.instance.SetCurrentlySelectedRecipeInMenuUi(indexInMenu);
+            Debug.Log("display recipe on click: known");
+            if (RecipeManager.instance != null)
+            {
+                RecipeManager.instance.SetCurrentlySelectedRecipeInMenuUi(indexInMenu);
+
+            }
+            else if (TutorialRecipeManager.instance != null)
+            {
+                TutorialRecipeManager.instance.SetCurrentlySelectedRecipeInMenuUi(indexInMenu);
+            }
             DisplayRecipe();
         }
     }
@@ -83,7 +95,14 @@ public class RecipeUISlot : MonoBehaviour
         else
         {
             infoDisplay.ShowRecipe(selectedButton, recipe, invReqCount, numOfOrders, numInInv);
-            RecipeManager.instance.SetCurrentlyCookingRecipe(recipe);
+            if (RecipeManager.instance != null)
+            {
+                RecipeManager.instance.SetCurrentlyCookingRecipe(recipe);
+            }
+            else if (TutorialRecipeManager.instance != null)
+            {
+                TutorialRecipeManager.instance.SetCurrentlyCookingRecipe(recipe);
+            }
         }
     }
 
@@ -91,12 +110,12 @@ public class RecipeUISlot : MonoBehaviour
     {
         return known;
     }
-    
+
     public bool IsOrdered()
     {
         return ordered;
     }
-    
+
     public bool IsCookable()
     {
         return cookable;
@@ -104,12 +123,23 @@ public class RecipeUISlot : MonoBehaviour
 
     // Update the information of this recipe
     public void UpdateInfo()
-    {        
+    {
         List<(int, int)> ingIds = recipe.GetIngredientIds();
         List<(int, int, int)> invReq = new List<(int, int, int)>();
-        cookable = InventoryManager.instance.CheckIfItemsExist(ingIds, out invReq);
-        numOfOrders = OrdersManager.instance.GetNumberOfOrders(recipe.recipeId);
-        numInInv = InventoryManager.instance.GetAmountOfItem(recipe.cookedDishItem.inventoryItemId);
+        if (InventoryManager.instance != null && OrdersManager.instance != null)
+        {
+
+            cookable = InventoryManager.instance.CheckIfItemsExist(ingIds, out invReq);
+            numOfOrders = OrdersManager.instance.GetNumberOfOrders(recipe.recipeId);
+            numInInv = InventoryManager.instance.GetAmountOfItem(recipe.cookedDishItem.inventoryItemId);
+        }
+        else if (TutorialInventoryManager.instance != null && TutorialOrdersManager.instance != null)
+        {
+
+            cookable = TutorialInventoryManager.instance.CheckIfItemsExist(ingIds, out invReq);
+            numOfOrders = 1;
+            numInInv = TutorialInventoryManager.instance.GetAmountOfItem(recipe.cookedDishItem.inventoryItemId);
+        }
         invReqCount = invReq;
         ordered = numOfOrders > 0;
         UpdateUI();
@@ -124,12 +154,21 @@ public class RecipeUISlot : MonoBehaviour
     {
         selectedButton.SetActive(false);
     }
-    
+
     private void UpdateUI()
     {
         recipeIcon.sprite = recipe.cookedDishItem.icon;
         orderedIcon.SetActive(ordered);
-        cookableButton.SetActive(RecipeManager.instance.IsCookingActivated() && cookable);
+        if (RecipeManager.instance != null)
+        {
+            cookableButton.SetActive(RecipeManager.instance.IsCookingActivated() && cookable);
+
+        }
+        else if (TutorialRecipeManager.instance != null)
+        {
+            cookableButton.SetActive(TutorialRecipeManager.instance.IsCookingActivated() && cookable);
+
+        }
         if (known)
         {
             recipeDescription.text = recipe.cookedDishItem.itemName;

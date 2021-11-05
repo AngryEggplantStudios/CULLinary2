@@ -35,7 +35,14 @@ public class SpherePlayerCollider : MonoBehaviour
             playerWithinRange = true;
             popUpPrompts.SetActive(true);
             parentInteractable.OnPlayerEnter();
-            UIController.instance.SetPlayerInteractable(parentInteractable);
+            if (UIController.instance != null)
+            {
+                UIController.instance.SetPlayerInteractable(parentInteractable);
+            }
+            else if (TutorialUIController.instance != null)
+            {
+                TutorialUIController.instance.SetPlayerInteractable(parentInteractable);
+            }
         }
     }
 
@@ -53,6 +60,13 @@ public class SpherePlayerCollider : MonoBehaviour
         playerWithinRange = false;
         popUpPrompts.SetActive(false);
         parentInteractable.OnPlayerLeave();
-        UIController.instance.ClearPlayerInteractable(parentInteractable);
+        if (UIController.instance != null)
+        {
+            UIController.instance.ClearPlayerInteractable(parentInteractable);
+        }
+        else if (TutorialUIController.instance != null)
+        {
+            TutorialUIController.instance.ClearPlayerInteractable(parentInteractable);
+        }
     }
 }
