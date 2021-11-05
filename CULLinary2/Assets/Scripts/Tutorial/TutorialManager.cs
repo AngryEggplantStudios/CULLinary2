@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class TutorialManager : SingletonGeneric<TutorialManager>
 {
@@ -9,12 +11,23 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
     private int totalNumEvents;
     private TutorialEvent[] events;
     // Store IDs of events with triggers for their next events (for creating tutorial events and updating)
-    private List<int> eventIdWithTriggers = new List<int> { 2, 3, 4, 6 };
+    private List<int> eventIdWithTriggers = new List<int> { 2, 3, 4, 6, 7 };
+    private Dictionary<int, string> tutDirections = new Dictionary<int, string>() {
+        {2, "Open orders and recipes menu"},
+        {3, "Kill potatoes and collect 3 potatoes"},
+        {4, "Cook up french fries at campfire"},
+        {6, "Go to Tew Tawrel's house"},
+        {7, "Deliver french fries"},
+    };
 
+    // Tutorial directions UI
+    public GameObject tutorialDirectionsPanel;
+    public TextMeshProUGUI tutorialDirectionsText;
 
     // Tutorial variables
     public int orderSubmissionStnId = 0;
     public GameObject tutorialPotatoesParent;
+    public bool canDeliverFood = false; // Disallow delivery until event #7
 
 
     // Start is called before the first frame update
@@ -34,10 +47,20 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
     // Update is called once per frame
     void Update()
     {
+        if (currEventId == 7)
+        {
+            canDeliverFood = true;
+        }
+
         // Check event triggers
         foreach (int eventId in eventIdWithTriggers)
         {
             TutorialEvent tutorialEvent = events[eventId];
+            // if (tutorialEvent.IsComplete)
+            // {
+            //     continue;
+            // }
+
             if (tutorialEvent.ShouldCheckForTrigger && !tutorialEvent.CanTriggerNextEvent)
             {
                 // Debug.Log("checking trigger for event #" + eventId);
@@ -57,18 +80,15 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
                         tutorialEvent.IsComplete = true;
                         break;
                     case 6: // Enter house collider
-
+                        tutorialEvent.CanTriggerNextEvent = TutorialOrdersManager.instance.IsPlayerNearOrderSubmissionStn();
+                        tutorialEvent.IsComplete = true;
                         break;
                     default:
                         // Do nothing
                         break;
                 }
             }
-
-
         }
-
-
     }
 
     private void CreateTutorialEvents()
@@ -79,14 +99,21 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
 
         for (int i = 0; i < totalNumEvents; i++)
         {
+            string directions = "";
+            if (tutDirections.ContainsKey(i))
+            {
+                directions = tutDirections[i];
+            }
+
             if (eventIdWithTriggers.Contains(i))
             {
-                events[i] = new TutorialEvent(i, tutorialDialogue[i], true, false);
+
+                events[i] = new TutorialEvent(i, directions, tutorialDialogue[i], true, false);
                 // Debug.Log("event #" + i + " has trigger");
             }
             else
             {
-                events[i] = new TutorialEvent(i, tutorialDialogue[i]);
+                events[i] = new TutorialEvent(i, directions, tutorialDialogue[i]);
                 // Debug.Log("event #" + i + " has NO trigger");
             }
         }
@@ -95,6 +122,10 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
     public void DisplayDialogue()
     {
         Debug.Log("display dialogue for event #" + currEventId);
+        // Hide tutorial directions panel
+        tutorialDirectionsPanel.SetActive(false);
+        tutorialDirectionsText.text = "";
+
         DialogueManager.instance.LoadAndRunTutorialDialogue(DialogueDatabase.GetTutorialDialogue(currEventId));
         events[currEventId].HasStarted = true;
     }
@@ -128,7 +159,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
         }
         else
         {
-
+            // Need to wait for player to do something
             StartCoroutine(TriggerNextDialogue());
         }
         // Debug.Log("end of on dialogue end for event #" + currEventId);
@@ -144,6 +175,10 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
         }
 
         // Only move on to next dialogue if trigger condition is met
+        // Display tutorial directions
+        tutorialDirectionsPanel.SetActive(true);
+        tutorialDirectionsText.text = tutDirections[currEventId];
+
         TutorialEvent currEvent = events[currEventId];
         bool canTriggerNextEvent = currEvent.CanTriggerNextEvent;
         if (currEvent.ShouldCheckForTrigger)

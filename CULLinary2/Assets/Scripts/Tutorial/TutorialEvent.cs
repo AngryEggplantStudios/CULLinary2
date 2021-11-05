@@ -5,6 +5,7 @@ using UnityEngine;
 public class TutorialEvent
 {
     private int id; // Should be same as dialogue index
+    private string Directions { get; set; } // What the player needs to do
     public Dialogue Dialogue { get; set; }
     // Is player action required (apart from pressing next) to trigger next event?
     public bool HasTriggerForNextEvent { get; set; }
@@ -15,9 +16,10 @@ public class TutorialEvent
     public bool IsComplete { get; set; } // Tutorial event is complete when can move to the next event
 
     // Construct TutorialEvent without trigger
-    public TutorialEvent(int id, Dialogue dialogue, bool hasTrigger = false)
+    public TutorialEvent(int id, string directions, Dialogue dialogue, bool hasTrigger = false)
     {
         this.id = id;
+        this.Directions = directions;
         this.Dialogue = dialogue;
         this.HasTriggerForNextEvent = hasTrigger;
         this.CanTriggerNextEvent = true;
@@ -27,9 +29,10 @@ public class TutorialEvent
     }
 
     // Construct TutorialEvent with trigger
-    public TutorialEvent(int id, Dialogue dialogue, bool hasTrigger, bool shouldCheckForTrigger)
+    public TutorialEvent(int id, string directions, Dialogue dialogue, bool hasTrigger, bool shouldCheckForTrigger)
     {
         this.id = id;
+        this.Directions = directions;
         this.Dialogue = dialogue;
         this.HasTriggerForNextEvent = hasTrigger;
         this.CanTriggerNextEvent = false;

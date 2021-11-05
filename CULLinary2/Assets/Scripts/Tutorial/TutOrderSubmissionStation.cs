@@ -9,6 +9,7 @@ public class TutOrderSubmissionStation : PlayerInteractable
     public GameObject[] activeIfOrdered;
     public Image floatingItemNotifImage;
     public int uniqueId = -1;
+    public bool isPlayerWithinRange = false;
 
     private bool hasDialogue = false;
 
@@ -34,9 +35,9 @@ public class TutOrderSubmissionStation : PlayerInteractable
     }
 
     public Transform getOrderSubmssionStationGameObj()
-	{
+    {
         return this.gameObject.transform;
-	}
+    }
 
     public bool GetId(out int id)
     {
@@ -79,7 +80,10 @@ public class TutOrderSubmissionStation : PlayerInteractable
     }
 
     public override void OnPlayerEnter()
-    { }
+    {
+        isPlayerWithinRange = true;
+        Debug.Log("house: enter");
+    }
 
     public override void OnPlayerInteract()
     {
@@ -96,5 +100,8 @@ public class TutOrderSubmissionStation : PlayerInteractable
     }
 
     public override void OnPlayerLeave()
-    { }
+    {
+        isPlayerWithinRange = false;
+        Debug.Log("house: leave");
+    }
 }

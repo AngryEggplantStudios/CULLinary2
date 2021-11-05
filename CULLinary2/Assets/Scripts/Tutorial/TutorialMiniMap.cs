@@ -78,38 +78,38 @@ public class TutorialMiniMap : MonoBehaviour
         orderSubmissionStationLocationsAndIcons = new Dictionary<int, (Transform, Transform)>();
         playerOldPosition = playerBody.position;
 
-		//TODO JESS SET THE SPRITE OF ORDER
-		Dictionary<int, (Transform, Sprite)> relevantOrders = TutorialOrdersManager.instance.GetRelevantOrderStations();
-		foreach (KeyValuePair<int, (Transform, Sprite)> order in relevantOrders)
-		{
-			int stationId = order.Key;
-			Transform stationTransform = order.Value.Item1;
-			GameObject minimapIcon = Instantiate(iconPrefab,
-												 new Vector3(0, 0, 0),
-												 Quaternion.identity,
-												 iconsParent.transform) as GameObject;
-			// Set icon image
-			minimapIcon.GetComponent<Image>().sprite = order.Value.Item2;
-			orderSubmissionStationLocationsAndIcons.Add(stationId, (stationTransform, minimapIcon.transform));
-		}
+        //TODO JESS SET THE SPRITE OF ORDER
+        Dictionary<int, (Transform, Sprite)> relevantOrders = TutorialOrdersManager.instance.GetRelevantOrderStations();
+        foreach (KeyValuePair<int, (Transform, Sprite)> order in relevantOrders)
+        {
+            int stationId = order.Key;
+            Transform stationTransform = order.Value.Item1;
+            GameObject minimapIcon = Instantiate(iconPrefab,
+                                                 new Vector3(0, 0, 0),
+                                                 Quaternion.identity,
+                                                 iconsParent.transform) as GameObject;
+            // Set icon image
+            minimapIcon.GetComponent<Image>().sprite = order.Value.Item2;
+            orderSubmissionStationLocationsAndIcons.Add(stationId, (stationTransform, minimapIcon.transform));
+        }
 
-		// Register the callbacks, only on the first run
-/*		if (firstInstantiation)
-		{
-			TutorialOrdersManager.instance.AddOrderCompletionCallback((stationId, _) =>
-			{
-				if (orderSubmissionStationLocationsAndIcons.ContainsKey(stationId))
-				{
-					Destroy(orderSubmissionStationLocationsAndIcons[stationId].Item2.gameObject);
-					orderSubmissionStationLocationsAndIcons.Remove(stationId);
-				}
-			});
-			OrdersManager.instance.AddOrderGenerationCallback(ResetInstantiatedOrderIconsFlag);
-			firstInstantiation = false;
-		}*/
-		hasInstantiatedIcons = true;
+        // Register the callbacks, only on the first run
+        /*		if (firstInstantiation)
+                {
+                    TutorialOrdersManager.instance.AddOrderCompletionCallback((stationId, _) =>
+                    {
+                        if (orderSubmissionStationLocationsAndIcons.ContainsKey(stationId))
+                        {
+                            Destroy(orderSubmissionStationLocationsAndIcons[stationId].Item2.gameObject);
+                            orderSubmissionStationLocationsAndIcons.Remove(stationId);
+                        }
+                    });
+                    OrdersManager.instance.AddOrderGenerationCallback(ResetInstantiatedOrderIconsFlag);
+                    firstInstantiation = false;
+                }*/
+        hasInstantiatedIcons = true;
 
-		// Force reupdate of the UI
+        // Force reupdate of the UI
         forceReupdate = true;
     }
 
@@ -138,14 +138,14 @@ public class TutorialMiniMap : MonoBehaviour
     // Or, update the UI if it is forced to
     protected void UpdateUI()
     {
-        Debug.Log("Updating UI");
+        // Debug.Log("Updating UI");
         if (playerOldPosition != playerBody.position || forceReupdate)
         {
             playerOldPosition = playerBody.position;
             // Update positions of old icons
             foreach ((Transform station, Transform icon) in orderSubmissionStationLocationsAndIcons.Values)
             {
-                Debug.Log("Updating");
+                // Debug.Log("Updating");
                 SetIconPos(station, icon, false);
             }
             foreach ((Transform fire, Transform icon) in campfireIcons)

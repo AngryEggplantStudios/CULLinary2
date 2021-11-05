@@ -15,7 +15,7 @@ public class TutorialOrdersManager : SingletonGeneric<TutorialOrdersManager>
     // Prefab of an order book entry
     public GameObject orderSlot;
     public GameObject canvasDisplay;
-    public Transform orderSubmissionStn;
+    private Transform orderSubmissionStn;
     private bool firstGeneration = true;
 
     void Start()
@@ -23,7 +23,6 @@ public class TutorialOrdersManager : SingletonGeneric<TutorialOrdersManager>
         orderRequired = new Order(recipeRequired, "Your very first order.", TutorialManager.instance.orderSubmissionStnId);
 
         /*InstantiateFloatingItemNotifs();*/
-        orderSubmissionStn.GetComponent<TutOrderSubmissionStation>().HideFloatingItemNotif();
     }
 
 
@@ -34,13 +33,23 @@ public class TutorialOrdersManager : SingletonGeneric<TutorialOrdersManager>
         return firstGeneration;
     }
 
+    public bool IsPlayerNearOrderSubmissionStn()
+    {
+        return orderSubmissionStn.GetComponent<TutOrderSubmissionStation>().isPlayerWithinRange;
+    }
+
     public void SetOrderSubmissionStn(Transform transform)
     {
         orderSubmissionStn = transform;
+        orderSubmissionStn.GetComponent<TutOrderSubmissionStation>().HideFloatingItemNotif();
     }
 
     public void CompleteOrder(int stationId)
     {
+        if (!TutorialManager.instance.canDeliverFood)
+        {
+            return;
+        }
 
         TutorialInventoryManager inventory = TutorialInventoryManager.instance;
         if (inventory.RemoveIdIfPossible(orderRequired.GetProduct().inventoryItemId))

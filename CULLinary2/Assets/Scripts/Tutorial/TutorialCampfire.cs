@@ -32,7 +32,6 @@ public class TutorialCampfire : PlayerInteractable
         // Set this as last visited campfire
         // PlayerSpawnManager.instance.SetLastVisitedCampfire(transform);
         // Update Campfire UI
-        Debug.Log("enter campfire");
         TutorialUIController.instance.OnPlayerEnterCampfire();
         // ShopManager.instance.UpdateShop(); // TODO: Should be removed when UI is merged
         // Activate cooking
@@ -44,7 +43,6 @@ public class TutorialCampfire : PlayerInteractable
 
     public override void OnPlayerInteract()
     {
-        Debug.Log("interact with campfire");
         // Open Cooking Menu
         if (!TutorialUIController.instance.isMenuActive)
         {
@@ -59,7 +57,6 @@ public class TutorialCampfire : PlayerInteractable
 
     public override void OnPlayerLeave()
     {
-        Debug.Log("leave campfire");
         // Stop cooking anim if player walks away halfway
         // Probably can remove this once we let player stop moving when cooking
         // (we'll leave it for now just in case)
