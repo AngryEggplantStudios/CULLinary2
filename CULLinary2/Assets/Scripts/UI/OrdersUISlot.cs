@@ -14,7 +14,7 @@ public class OrdersUISlot : MonoBehaviour
     public GameObject ingredientCounterPrefab;
     public TextMeshProUGUI rewardsMoneyText;
     public TextMeshProUGUI dishNameText;
-    
+
     private Order order;
 
     private bool cookable;
@@ -36,7 +36,7 @@ public class OrdersUISlot : MonoBehaviour
             cookable = false;
         }
         else
-        {            
+        {
             cookable = isCookable;
         }
 
@@ -74,7 +74,7 @@ public class OrdersUISlot : MonoBehaviour
                                                     new Vector3(0, 0, 0),
                                                     Quaternion.identity,
                                                     ingredientsContainer.transform) as GameObject;
-                OrdersUIIngredientCounter counter = 
+                OrdersUIIngredientCounter counter =
                     ingCounter.GetComponent<OrdersUIIngredientCounter>();
                 counter.SetIngredient(id, invQnty, reqQnty);
             }

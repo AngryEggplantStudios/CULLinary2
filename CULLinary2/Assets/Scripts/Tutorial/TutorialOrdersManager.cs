@@ -93,14 +93,14 @@ public class TutorialOrdersManager : SingletonGeneric<TutorialOrdersManager>
                                           ordersContainer.transform) as GameObject;
 
         OrdersUISlot orderDetails = orderLog.GetComponent<OrdersUISlot>();
-        // InventoryManager inv = InventoryManager.instance;
+        TutorialInventoryManager inv = TutorialInventoryManager.instance;
         List<(int, int)> ingsList = orderRequired.GetIngredientIds();
         List<(int, int, int)> invReqCounter = new List<(int, int, int)>();
 
-        // bool isCookable = inv.CheckIfItemsExist(ingsList, out invReqCounter);
-        // bool isInInv = inv.CheckIfExists(orderRequired.GetProduct().inventoryItemId);
-        // orderDetails.AssignOrder(orderRequired, isCookable, isInInv, invReqCounter);
-        orderDetails.AssignOrder(orderRequired, false, false, invReqCounter);
+        bool isCookable = inv.CheckIfItemsExist(ingsList, out invReqCounter);
+        bool isInInv = inv.CheckIfExists(orderRequired.GetProduct().inventoryItemId);
+        orderDetails.AssignOrder(orderRequired, isCookable, isInInv, invReqCounter);
+        // orderDetails.AssignOrder(orderRequired, false, false, invReqCounter);
         yield return null;
         // }
     }

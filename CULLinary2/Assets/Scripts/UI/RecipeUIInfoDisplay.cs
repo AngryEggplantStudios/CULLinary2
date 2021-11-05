@@ -27,7 +27,7 @@ public class RecipeUIInfoDisplay : MonoBehaviour
 
     [Header("RecipeInfoDisplayIngredient Prefab")]
     public GameObject recipeInfoDisplayIngredient;
-    
+
 
     private Recipe recipe;
     // Currently selected button of the selected recipe
@@ -43,7 +43,15 @@ public class RecipeUIInfoDisplay : MonoBehaviour
     // Reset the recipes filter on disable
     public void OnDisable()
     {
-        RecipeManager.instance.ResetAllRecipesInUI();
+        if (RecipeManager.instance != null)
+        {
+            RecipeManager.instance.ResetAllRecipesInUI();
+
+        }
+        else if (TutorialRecipeManager.instance != null)
+        {
+            TutorialRecipeManager.instance.ResetAllRecipesInUI();
+        }
     }
 
     public void ShowRecipe(GameObject selectedButton,
