@@ -16,12 +16,21 @@ public class TutorialOrdersManager : SingletonGeneric<TutorialOrdersManager>
     public GameObject orderSlot;
     public GameObject canvasDisplay;
     public Transform orderSubmissionStn;
+    private bool firstGeneration = false;
 
     void Start()
     {
         orderRequired = new Order(recipeRequired, "Your very first order.", TutorialManager.instance.orderSubmissionStnId);
 
         InstantiateFloatingItemNotifs();
+    }
+
+
+    // Returns true only if map and orders have been generated
+    // Map always generates first before orders
+    public bool IsOrderGenerationComplete()
+    {
+        return firstGeneration;
     }
 
     public void SetOrderSubmissionStn(Transform transform)
