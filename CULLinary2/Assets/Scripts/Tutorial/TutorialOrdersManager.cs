@@ -16,13 +16,13 @@ public class TutorialOrdersManager : SingletonGeneric<TutorialOrdersManager>
     public GameObject orderSlot;
     public GameObject canvasDisplay;
     public Transform orderSubmissionStn;
-    private bool firstGeneration = false;
+    private bool firstGeneration = true;
 
     void Start()
     {
         orderRequired = new Order(recipeRequired, "Your very first order.", TutorialManager.instance.orderSubmissionStnId);
 
-        InstantiateFloatingItemNotifs();
+        /*InstantiateFloatingItemNotifs();*/
     }
 
 
@@ -67,7 +67,7 @@ public class TutorialOrdersManager : SingletonGeneric<TutorialOrdersManager>
         moneyNotif.transform.localPosition = Vector3.zero;
     }
 
-    void InstantiateFloatingItemNotifs()
+    public void InstantiateFloatingItemNotifs()
     {
         orderSubmissionStn.GetComponent<TutOrderSubmissionStation>().SetFloatingItemNotif(orderRequired.GetProduct().icon);
     }
