@@ -253,7 +253,7 @@ public class MonsterScript : Monster
     }
 
     public void DeactivateAggression()
-	{
+    {
         wasAggressive = false;
         EnemyAggressionManager.Instance.Add(-1);
 
@@ -401,7 +401,11 @@ public class MonsterScript : Monster
         }
         else
         {
-            MonsterBaseSpawning.instance.UpdateNumOfAliveMonsters(monsterName, -1);
+            if (MonsterBaseSpawning.instance != null)
+            {
+                MonsterBaseSpawning.instance.UpdateNumOfAliveMonsters(monsterName, -1);
+            }
+
             // Debug.Log("no spawner");
         }
 
@@ -525,7 +529,7 @@ public class MonsterScript : Monster
             getMonsterBehav.DestroyObjectEvents();
         }
         else if (TryGetComponent(out RushEnemyScript rushEnemy))
-		{
+        {
             rushEnemy.DestroyObjectEvents();
         }
         else
@@ -592,7 +596,7 @@ public class MonsterScript : Monster
     }
 
     public float getStopChaseDistance()
-	{
+    {
         return this.stopChase;
-	}
+    }
 }

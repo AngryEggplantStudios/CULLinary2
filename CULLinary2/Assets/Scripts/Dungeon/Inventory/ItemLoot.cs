@@ -9,12 +9,25 @@ public class ItemLoot : Loot
 
     protected override void OnPickup(PlayerPickup playerPickup)
     {
-        if (InventoryManager.instance.AddItem(itemLoot))
+        if (InventoryManager.instance != null)
         {
-            playerPickup.PickUp(itemLoot);
+            if (InventoryManager.instance.AddItem(itemLoot))
+            {
+                playerPickup.PickUp(itemLoot);
 
-            LootManager.instance.removeLoot(this.gameObject);
-            Destroy(gameObject);
+                LootManager.instance.removeLoot(this.gameObject);
+                Destroy(gameObject);
+            }
+        }
+        else if (TutorialInventoryManager.instance != null)
+        {
+            if (TutorialInventoryManager.instance.AddItem(itemLoot))
+            {
+                playerPickup.PickUp(itemLoot);
+
+                LootManager.instance.removeLoot(this.gameObject);
+                Destroy(gameObject);
+            }
         }
     }
 }

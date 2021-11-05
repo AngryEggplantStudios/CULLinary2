@@ -43,6 +43,10 @@ public class BiomeGenerator : MonoBehaviour
     [SerializeField] private Mesh savedCreatedMesh;
     [SerializeField] private Mesh savedWalkableMesh;
 
+    [Header("Tutorial Meshes")]
+    [SerializeField] private Mesh tutorialCreatedMesh;
+    [SerializeField] private Mesh tutorialWalkableMesh;
+
     //Private variables
     private float[,] falloffMap;
     private float[,] noiseMap;
@@ -73,6 +77,19 @@ public class BiomeGenerator : MonoBehaviour
         yield return StartCoroutine(GenerateNoise());
         createdMesh = savedCreatedMesh;
         walkableMesh = savedWalkableMesh;
+        yield return StartCoroutine(AttachCreatedMesh());
+        yield return StartCoroutine(AttachWalkableMesh());
+        yield return StartCoroutine(ReactivateNavMesh());
+
+        BiomeGeneratorManager.Instance.ProcessComplete();
+    }
+
+    public IEnumerator LoadTutorialMap()
+    {
+        seed = 0;
+        yield return StartCoroutine(GenerateNoise());
+        createdMesh = tutorialCreatedMesh;
+        walkableMesh = tutorialWalkableMesh;
         yield return StartCoroutine(AttachCreatedMesh());
         yield return StartCoroutine(AttachWalkableMesh());
         yield return StartCoroutine(ReactivateNavMesh());

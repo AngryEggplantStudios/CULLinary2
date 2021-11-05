@@ -32,10 +32,10 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
 
     public IEnumerator LoadBiome()
     {
-		foreach (GameObject obj in hideWhileLoading)
-		{
-            if (obj)
-			{
+        foreach (GameObject obj in hideWhileLoading)
+        {
+            if (obj != null)
+            {
                 obj.SetActive(false);
             }
         }
@@ -53,10 +53,26 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
 
         foreach (GameObject obj in hideWhileLoading)
         {
-            if (obj)
+            if (obj != null)
             {
                 obj.SetActive(true);
             }
+        }
+    }
+
+    public IEnumerator LoadBiomeForTutorial()
+    {
+        foreach (GameObject obj in hideWhileLoading)
+        {
+            obj.SetActive(false);
+        }
+
+        // yield return StartCoroutine(StartGeneration());
+        yield return StartCoroutine(LoadTutorialBiome());
+
+        foreach (GameObject obj in hideWhileLoading)
+        {
+            obj.SetActive(true);
         }
     }
 
@@ -126,6 +142,26 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
 
         yield return StartCoroutine(Process("Generating Map", 0f,
                 biomeGenerator.QuickLoad()));
+
+        yield return StartCoroutine(Process("Placing objects around the world", 0.33f,
+                biomeObjectSpawner.SpawnObjects(BiomeDataManager.instance.seed)));
+
+        yield return StartCoroutine(Process("Generating AI map for monsters", 0.66f,
+                biomeNavMeshGenerator.GenerateMesh()));
+
+        yield return StartCoroutine(Process("Final touches", 0.99f,
+                biomeGenerator.ReactivateMap()));
+
+        isComplete = true;
+        progress = 1f;
+    }
+
+    private IEnumerator LoadTutorialBiome()
+    {
+        Debug.Log("LOADING: Loading tutorial map");
+
+        yield return StartCoroutine(Process("Generating Map", 0f,
+                biomeGenerator.LoadTutorialMap()));
 
         yield return StartCoroutine(Process("Placing objects around the world", 0.33f,
                 biomeObjectSpawner.SpawnObjects(BiomeDataManager.instance.seed)));
