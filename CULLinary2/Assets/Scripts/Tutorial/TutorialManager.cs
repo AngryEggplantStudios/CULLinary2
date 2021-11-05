@@ -225,7 +225,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
     {
         currEventId = 0;
         canDeliverFood = false;
-        tutorialPotatoesParent.SetActive(false);
+        tutorialPotatoesParent.SetActive(false); // TODO: need to spawn new potatoes
 
         // Spawn player at the tutorial campfire
         player.GetComponent<PlayerHealth>().DestroyAllDamageCounter();

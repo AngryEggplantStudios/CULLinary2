@@ -122,7 +122,7 @@ public class TutorialUIController : SingletonGeneric<TutorialUIController>
         // restartTutorialPanel.SetActive(false);
 
         // TutorialManager.instance.RestartTutorial();
-        SceneManager.LoadScene((int)SceneIndexes.TUTORIAL_SCENE);
+        SceneManager.LoadScene((int)SceneIndexes.TUTORIAL_SCENE); // TODO: need to fix lighting (and display loading tutorial... on the button?)
         // operation.allowSceneActivation = false;
     }
 
