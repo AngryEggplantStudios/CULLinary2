@@ -60,6 +60,7 @@ public class RecipeUIInfoDisplay : MonoBehaviour
                            int numberOfOrders,
                            int numberInInventory)
     {
+        Debug.Log("showing recipe");
         if (currentSelectedSlot != null)
         {
             currentSelectedSlot.SetActive(false);

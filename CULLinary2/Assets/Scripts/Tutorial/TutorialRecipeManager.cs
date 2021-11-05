@@ -272,6 +272,8 @@ public class TutorialRecipeManager : SingletonGeneric<TutorialRecipeManager>
             yield return StartCoroutine(RefreshRecipes());
         }
 
+
+
     }
 
     // Goes through all unlocked recipes and updates them
@@ -288,7 +290,6 @@ public class TutorialRecipeManager : SingletonGeneric<TutorialRecipeManager>
         }
 
         // Retain the same index for the display after updating
-        Debug.Log("currently selected recipe: " + currentlySelectedRecipeIndex);
         recipesContainer
             .transform
             .GetChild(currentlySelectedRecipeIndex)
@@ -328,35 +329,36 @@ public class TutorialRecipeManager : SingletonGeneric<TutorialRecipeManager>
             RecipeUISlot recipeDetails = recipeEntry.GetComponent<RecipeUISlot>();
             recipeDetails.AddRecipe(r, areIngresInInv, invReqCount, numberOfOrders, numberInInventory, i);
             recipeDetails.SetInfoDisplay(infoDisplay);
+            recipeDetails.DisplayRecipe();
             yield return null;
         }
-        // yield return StartCoroutine(RecreateLockedRecipes());
+        yield return StartCoroutine(RecreateLockedRecipes());
     }
 
-    // private IEnumerator RecreateLockedRecipes()
-    // {
-    //     foreach (Recipe r in innerLockedRecipesList)
-    //     {
-    //         CheckIfRecipeHasCookedDish(r);
-    //         GameObject recipeEntry = Instantiate(recipeSlot,
-    //                                              new Vector3(0, 0, 0),
-    //                                              Quaternion.identity,
-    //                                              recipesContainer.transform) as GameObject;
-    //         RecipeUISlot recipeDetails = recipeEntry.GetComponent<RecipeUISlot>();
-    //         recipeDetails.AddUnknownRecipe(r);
-    //         recipeDetails.SetInfoDisplay(infoDisplay);
-    //         yield return null;
-    //     }
+    private IEnumerator RecreateLockedRecipes()
+    {
+        foreach (Recipe r in innerLockedRecipesList)
+        {
+            CheckIfRecipeHasCookedDish(r);
+            GameObject recipeEntry = Instantiate(recipeSlot,
+                                                 new Vector3(0, 0, 0),
+                                                 Quaternion.identity,
+                                                 recipesContainer.transform) as GameObject;
+            RecipeUISlot recipeDetails = recipeEntry.GetComponent<RecipeUISlot>();
+            recipeDetails.AddUnknownRecipe(r);
+            recipeDetails.SetInfoDisplay(infoDisplay);
+            yield return null;
+        }
 
-    //     // Reset selected recipe index to 0
-    //     currentlySelectedRecipeIndex = 0;
-    //     recipesChanged = false;
-    //     recipesContainer
-    //         .transform
-    //         .GetChild(currentlySelectedRecipeIndex)
-    //         .GetComponent<RecipeUISlot>()
-    //         .DisplayRecipe();
-    // }
+        // Reset selected recipe index to 0
+        currentlySelectedRecipeIndex = 0;
+        recipesChanged = false;
+        recipesContainer
+            .transform
+            .GetChild(currentlySelectedRecipeIndex)
+            .GetComponent<RecipeUISlot>()
+            .DisplayRecipe();
+    }
 
     private void CheckIfRecipeHasCookedDish(Recipe r)
     {

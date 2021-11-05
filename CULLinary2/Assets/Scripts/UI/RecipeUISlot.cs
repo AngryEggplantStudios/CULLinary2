@@ -40,6 +40,7 @@ public class RecipeUISlot : MonoBehaviour
         int indexInRecipesMenu
     )
     {
+        Debug.Log("adding recipe: " + newRecipe.name);
         recipe = newRecipe;
         known = true;
         cookable = isCookable;
@@ -67,9 +68,20 @@ public class RecipeUISlot : MonoBehaviour
 
     public void DisplayRecipeOnClick()
     {
+        Debug.Log("display recipe on click");
+
         if (known)
         {
-            RecipeManager.instance.SetCurrentlySelectedRecipeInMenuUi(indexInMenu);
+            Debug.Log("display recipe on click: known");
+            if (RecipeManager.instance != null)
+            {
+                RecipeManager.instance.SetCurrentlySelectedRecipeInMenuUi(indexInMenu);
+
+            }
+            else if (TutorialRecipeManager.instance != null)
+            {
+                TutorialRecipeManager.instance.SetCurrentlySelectedRecipeInMenuUi(indexInMenu);
+            }
             DisplayRecipe();
         }
     }
@@ -83,7 +95,14 @@ public class RecipeUISlot : MonoBehaviour
         else
         {
             infoDisplay.ShowRecipe(selectedButton, recipe, invReqCount, numOfOrders, numInInv);
-            RecipeManager.instance.SetCurrentlyCookingRecipe(recipe);
+            if (RecipeManager.instance != null)
+            {
+                RecipeManager.instance.SetCurrentlyCookingRecipe(recipe);
+            }
+            else if (TutorialRecipeManager.instance != null)
+            {
+                TutorialRecipeManager.instance.SetCurrentlyCookingRecipe(recipe);
+            }
         }
     }
 
