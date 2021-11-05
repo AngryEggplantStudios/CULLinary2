@@ -25,8 +25,8 @@ public class GameTimer : SingletonGeneric<GameTimer>
     [SerializeField] private GameObject newspaper;
     [SerializeField] private GameObject hudToHide;
     [Header("Daily Music")]
-    [SerializeField] private AudioSource chillBgm;
-    [SerializeField] private AudioSource hypeBgm;
+    [SerializeField] public AudioSource chillBgm;
+    [SerializeField] public AudioSource hypeBgm;
     [SerializeField] private AudioClip[] chillMusic;
     [SerializeField] private AudioClip[] hypeMusic;
     [SerializeField] private int numOfTracks;

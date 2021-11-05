@@ -44,7 +44,7 @@ public class PlayerData
         criticalChance = 0;
         evasionChance = 0;
         consumables = new int[3] { 0, 0, 0 }; //7,8,9 indices
-        unlockedRecipes = new int[5] { 0, 4, 6, 10, 32 };
+        unlockedRecipes = new int[3] { 0, 1, 3 };
         upgradesArray = new int[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         currentDay = 1;
         weaponSkillArray = new int[11] { 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 };

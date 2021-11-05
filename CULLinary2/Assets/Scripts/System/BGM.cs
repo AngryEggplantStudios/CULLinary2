@@ -20,6 +20,18 @@ public class BGM : MonoBehaviour
         {
             BGM.Instance.SetVolume(volume);
             BGM.Instance.SetTrack(track);
+            
+            if (GameTimer.instance != null)
+            {
+                // Assumes 0 is chill, 1 is hype
+                GameTimer.instance.chillBgm = BGM.Instance.audioSources[0];
+                GameTimer.instance.hypeBgm = BGM.Instance.audioSources[1];
+            }
+            else
+            {
+                Debug.Log("Failed to set GameTimer");
+            }
+
             Destroy(this.gameObject);
         }
         else
