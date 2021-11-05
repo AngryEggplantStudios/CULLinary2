@@ -469,7 +469,7 @@ public class TutorialUIController : SingletonGeneric<TutorialUIController>
         switch (currentUiPage)
         {
             case (int)UIPage.RECIPES:
-                RecipeManager.instance.CookCurrentlySelected();
+                TutorialRecipeManager.instance.CookCurrentlySelected();
                 break;
                 // case (int)UIPage.WEAPONS:
                 // TODO

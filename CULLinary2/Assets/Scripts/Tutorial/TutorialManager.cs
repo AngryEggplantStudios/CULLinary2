@@ -9,7 +9,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
     private int totalNumEvents;
     private TutorialEvent[] events;
     // Store IDs of events with triggers for their next events (for creating tutorial events and updating)
-    private List<int> eventIdWithTriggers = new List<int> { 2, 3, 4 };
+    private List<int> eventIdWithTriggers = new List<int> { 2, 3, 4, 6 };
 
 
     // Tutorial variables
@@ -50,6 +50,10 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
                         break;
                     case 3: // Collect 3 potatoes
                         tutorialEvent.CanTriggerNextEvent = TutorialInventoryManager.instance.hasCollected3Potatoes;
+                        tutorialEvent.IsComplete = true;
+                        break;
+                    case 4: // Cook french fries
+                        tutorialEvent.CanTriggerNextEvent = TutorialInventoryManager.instance.hasCookedRequiredDish;
                         tutorialEvent.IsComplete = true;
                         break;
                     default:

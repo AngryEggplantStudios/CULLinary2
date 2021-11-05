@@ -17,8 +17,10 @@ public class TutorialInventoryManager : SingletonGeneric<TutorialInventoryManage
     private bool isCacheValid = false;
 
     // For event trigger
-    public InventoryItem potatoToCollect;
+    public InventoryItem requiredPotato;
     public bool hasCollected3Potatoes = false;
+    public InventoryItem requiredCookedDish;
+    public bool hasCookedRequiredDish = false;
 
     private void Start()
     {
@@ -208,9 +210,14 @@ public class TutorialInventoryManager : SingletonGeneric<TutorialInventoryManage
             // May affect Recipe, Orders UI as well
             TutorialUIController.UpdateAllUIs();
 
+            Debug.Log("inv manager: num of potatoes" + itemListReference.FindAll((item) => item.itemName.Equals(requiredPotato.itemName)).Count);
             if (itemListReference.Count == 3)
             {
                 hasCollected3Potatoes = true;
+            }
+            if (itemListReference.Contains(requiredCookedDish))
+            {
+                hasCookedRequiredDish = true;
             }
 
             return true;

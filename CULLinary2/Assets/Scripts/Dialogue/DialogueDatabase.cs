@@ -54,11 +54,11 @@ public static class DialogueDatabase
         /* 2 */ "{[L]0}I just got my first order! Let me check how many ingredients I need by pressing TAB to see my ORDERS and RECIPES menus.",
         /* 3 */ "{[L]0}Okay, time to find me 3 potatoes by killing some potatoes. (Move around with WASD and attack with Left Mouse Button).",
         /* 4 */ "{[L]0}Now that I've collected 3 potatoes, I gotta find a campfire to cook the french fries. I can use the map to find a campfire.",
-        // /* 5 */ "{[L]0}Alright I got the french fries ready to go! Time to deliver it to my customer."
-        //             + "{[L]0}*Rrring rrring*"
-        //             + "{[R]1}Hey Chef! You got my french fries yet?"
-        //             + "{[L]0}Yes! I was about to deliver it to you."
-        //             + "{[R]1}Great! Just wanted to let you know you need to deliver your orders before the day ends. *Call ended*",
+        /* 5 */ "{[L]0}Alright I got the french fries ready to go! Time to deliver it to my customer."
+                    + "{[R]1}Hey Chef! You got my french fries yet?"
+                    + "{[L]0}Yes! I was about to deliver it to you."
+                    + "{[R]1}Great! Just wanted to let you know you need to deliver your orders before the day ends. *Call ended*",
+        /* 6 */ "{[L]0}Okay, let's go deliver the french fries to Tew Tawrel! Gotta check the map to find out where his house is at.",
     };
 
     private static (Dialogue, double)[] dialoguesWithCumulativeChance = null;

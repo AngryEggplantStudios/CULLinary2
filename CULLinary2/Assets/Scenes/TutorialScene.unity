@@ -19632,8 +19632,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: RecipeManager, Assembly-CSharp
+      - m_Target: {fileID: 149358275}
+        m_TargetAssemblyTypeName: TutorialRecipeManager, Assembly-CSharp
         m_MethodName: CookCurrentlySelected
         m_Mode: 1
         m_Arguments:
@@ -36878,7 +36878,10 @@ MonoBehaviour:
   unlockedRecipesList: 01000000
   upgradesArray: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   weaponSkillArray: 0100000001000000010000000100000001000000000000000000000000000000000000000000000000000000
-  itemList: []
+  itemList:
+  - {fileID: 11400000, guid: 7572f4ff3422f48ec8632b573d958cb9, type: 2}
+  - {fileID: 11400000, guid: 7572f4ff3422f48ec8632b573d958cb9, type: 2}
+  - {fileID: 11400000, guid: 7572f4ff3422f48ec8632b573d958cb9, type: 2}
   healthPill: 2
   staminaPill: 2
   potion: 2
@@ -47677,6 +47680,10 @@ MonoBehaviour:
   inventoryPanel: {fileID: 1889945966}
   moneyTexts:
   - {fileID: 430270164}
+  requiredPotato: {fileID: 11400000, guid: 7572f4ff3422f48ec8632b573d958cb9, type: 2}
+  hasCollected3Potatoes: 0
+  requiredCookedDish: {fileID: 11400000, guid: 4b3073b5e3be84eb0a6fc9b205a02a20, type: 2}
+  hasCookedRequiredDish: 0
 --- !u!1 &1522182354
 GameObject:
   m_ObjectHideFlags: 0

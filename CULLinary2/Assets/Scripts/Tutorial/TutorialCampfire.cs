@@ -36,10 +36,10 @@ public class TutorialCampfire : PlayerInteractable
         TutorialUIController.instance.OnPlayerEnterCampfire();
         // ShopManager.instance.UpdateShop(); // TODO: Should be removed when UI is merged
         // Activate cooking
-        // if (!RecipeManager.instance.IsCookingActivated())
-        // {
-        //     RecipeManager.instance.ActivateCooking();
-        // }
+        if (!TutorialRecipeManager.instance.IsCookingActivated())
+        {
+            TutorialRecipeManager.instance.ActivateCooking();
+        }
     }
 
     public override void OnPlayerInteract()
@@ -63,10 +63,10 @@ public class TutorialCampfire : PlayerInteractable
         // Stop cooking anim if player walks away halfway
         // Probably can remove this once we let player stop moving when cooking
         // (we'll leave it for now just in case)
-        // if (RecipeManager.instance.IsCookingActivated())
-        // {
-        //     RecipeManager.instance.DeactivateCooking();
-        // }
+        if (TutorialRecipeManager.instance.IsCookingActivated())
+        {
+            TutorialRecipeManager.instance.DeactivateCooking();
+        }
         // Stop healing
         // PlayerHealth.instance.OnPlayerLeaveCampfire();
         // Set back to normal menu
