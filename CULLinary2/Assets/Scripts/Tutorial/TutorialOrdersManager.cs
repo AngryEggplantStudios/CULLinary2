@@ -41,7 +41,7 @@ public class TutorialOrdersManager : SingletonGeneric<TutorialOrdersManager>
     public void CompleteOrder(int stationId)
     {
 
-        InventoryManager inventory = InventoryManager.instance;
+        TutorialInventoryManager inventory = TutorialInventoryManager.instance;
         if (inventory.RemoveIdIfPossible(orderRequired.GetProduct().inventoryItemId))
         {
             // Order completed successfully!
