@@ -34,7 +34,10 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
     {
         foreach (GameObject obj in hideWhileLoading)
         {
-            obj?.SetActive(false);
+            if (obj != null)
+            {
+                obj.SetActive(false);
+            }
         }
 
         CheckForExistingData();
@@ -50,7 +53,10 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
 
         foreach (GameObject obj in hideWhileLoading)
         {
-            obj.SetActive(true);
+            if (obj != null)
+            {
+                obj.SetActive(true);
+            }
         }
     }
 
