@@ -120,6 +120,7 @@ public class TutorialMiniMap : MonoBehaviour
 
     public virtual void Update()
     {
+
         if (TutorialOrdersManager.instance.IsOrderGenerationComplete() && !hasInstantiatedIcons)
         {
             InstantiateMinimapIcons();
