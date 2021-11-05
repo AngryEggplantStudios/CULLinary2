@@ -20,6 +20,9 @@ public class TutorialUIController : SingletonGeneric<TutorialUIController>
     [SerializeField] private GameObject confirmationToDesktop;
     [SerializeField] private GameObject controlsPage;
     [SerializeField] private GameObject settingsPage;
+    [SerializeField] private GameObject restartTutorialPanel; // Menu + background
+    [SerializeField] private GameObject restartTutorialMenu; // Should not be active by default
+    [SerializeField] private FadeInFadeOut restartTutorialBgFade;
 
     [Header("Uniquely Non-Campfire Elements")]
     [SerializeField] private List<GameObject> hideAtCampfire;
@@ -56,6 +59,7 @@ public class TutorialUIController : SingletonGeneric<TutorialUIController>
     private GameObject player;
     // For interacting with objects
     private List<PlayerInteractable> currentInteractables = new List<PlayerInteractable>();
+    private AsyncOperation restartTutorialOperation;
 
     // For triggering tutorial events
     private bool wasOrdersOpened = false;
@@ -75,6 +79,17 @@ public class TutorialUIController : SingletonGeneric<TutorialUIController>
         closeUiKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.CloseMenu);
         campfireActionKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.CampfireAction);
     }
+    public void Start()
+    {
+        //Use this for now, later when have more scene only adjust accordingly. TODO MC.
+        player = GameObject.FindWithTag("Player");
+
+        TutorialManager.OnRestartTutorial += () =>
+        {
+            wasOrdersOpened = false;
+            wasRecipesOpened = false;
+        };
+    }
 
     public void OpenControls()
     {
@@ -86,10 +101,29 @@ public class TutorialUIController : SingletonGeneric<TutorialUIController>
         settingsPage.SetActive(!settingsPage.activeSelf);
     }
 
-    public void Start()
+    public IEnumerator ShowRestartTutorialPanel()
     {
-        //Use this for now, later when have more scene only adjust accordingly. TODO MC.
-        player = GameObject.FindWithTag("Player");
+        // restartTutorialOperation = SceneManager.LoadSceneAsync((int)SceneIndexes.TUTORIAL_SCENE);
+        // restartTutorialOperation.allowSceneActivation = false;
+
+        // Enable whole panel including background (but the menu itself is not active by default)
+        restartTutorialPanel.SetActive(true);
+        yield return new WaitUntil(() => restartTutorialBgFade.isFinished);
+        // Enable the menu itself after fade in is complete
+        restartTutorialMenu.SetActive(true);
+
+        // operation.
+    }
+
+    public void RestartTutorial()
+    {
+        Debug.Log("restart tutorial");
+        // restartTutorialMenu.SetActive(false);
+        // restartTutorialPanel.SetActive(false);
+
+        // TutorialManager.instance.RestartTutorial();
+        SceneManager.LoadScene((int)SceneIndexes.TUTORIAL_SCENE);
+        // operation.allowSceneActivation = false;
     }
 
     public void TogglePauseMenu()
@@ -370,9 +404,15 @@ public class TutorialUIController : SingletonGeneric<TutorialUIController>
 
     private void Update()
     {
+
+        if (restartTutorialPanel.activeSelf)
+        {
+            return;
+        }
+
         anyUIActive = isMenuActive
                 || isPaused
-                || endOfDayMenu.activeSelf;
+                || endOfDayMenu.activeSelf || restartTutorialPanel.activeSelf;
 
         if (anyUIActive != anyUIWasActive)
         {

@@ -20,12 +20,17 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
         {7, "Deliver french fries"},
     };
 
+    public Transform player;
+    public delegate void RestartTutorialDelegate();
+    public static event RestartTutorialDelegate OnRestartTutorial;
+
     // Tutorial directions UI
     public GameObject tutorialDirectionsPanel;
     public TextMeshProUGUI tutorialDirectionsText;
 
     // Tutorial variables
     public int orderSubmissionStnId = 0;
+    public GameObject tutorialPotato;
     public GameObject tutorialPotatoesParent;
     public bool canDeliverFood = false; // Disallow delivery until event #7
 
@@ -214,6 +219,24 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
             DisplayDialogue();
         }
 
+    }
+
+    public void RestartTutorial()
+    {
+        currEventId = 0;
+        canDeliverFood = false;
+        tutorialPotatoesParent.SetActive(false);
+
+        // Spawn player at the tutorial campfire
+        player.GetComponent<PlayerHealth>().DestroyAllDamageCounter();
+        player.GetComponent<CharacterController>().enabled = false;
+        player.transform.position = new Vector3(-83.0f, 0f, 53.0f);
+        player.GetComponent<CharacterController>().enabled = true;
+
+        CreateTutorialEvents();
+        OnRestartTutorial?.Invoke();
+
+        TutorialGameTimer.instance.RestartDay();
     }
 
     public void ActivatePotatoes()

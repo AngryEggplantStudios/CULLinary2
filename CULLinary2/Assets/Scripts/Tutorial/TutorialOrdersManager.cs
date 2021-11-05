@@ -24,6 +24,10 @@ public class TutorialOrdersManager : SingletonGeneric<TutorialOrdersManager>
     {
         orderRequired = new Order(recipeRequired, "Your very first order.", TutorialManager.instance.orderSubmissionStnId);
 
+        TutorialManager.OnRestartTutorial += () =>
+        {
+            hasDeliveredFood = false;
+        };
         /*InstantiateFloatingItemNotifs();*/
     }
 

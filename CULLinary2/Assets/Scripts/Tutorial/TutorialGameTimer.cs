@@ -26,7 +26,7 @@ public class TutorialGameTimer : SingletonGeneric<TutorialGameTimer>
 
     private static float gameTime;
     private static float timeScale;
-    private static int dayNum = 1;
+    private static int dayNum = 0;
     private int hourNum;
     private int minuteNum;
     private string timeAsString;
@@ -50,7 +50,7 @@ public class TutorialGameTimer : SingletonGeneric<TutorialGameTimer>
 
     void Start()
     {
-        dayNum = PlayerManager.instance != null ? PlayerManager.instance.currentDay : 1;
+        dayNum = 0;
         if (sunrise > sunset) { Debug.LogError("Sunrise is after Sunset!"); }
 
         // Debug.Log("set timescale to 1");
@@ -61,8 +61,6 @@ public class TutorialGameTimer : SingletonGeneric<TutorialGameTimer>
 
         DayText.text = "DAY " + dayNum;
         UpdateTimedObjects();
-        //TODO JESS disable run if tutorial is loading
-        Run();
     }
 
     private void Update()
@@ -112,7 +110,7 @@ public class TutorialGameTimer : SingletonGeneric<TutorialGameTimer>
         }
 
         UpdateTimedObjects();
-        UpdateLighting(gameTime);
+        UpdateLighting();
 
         if (gameTime > startOfDay && isNewDay)
         {
@@ -154,27 +152,30 @@ public class TutorialGameTimer : SingletonGeneric<TutorialGameTimer>
     private void StartSceneFadeOut()
     {
         Pause(); // TODO: pause entire game using timeScale
-        //TODO JESS use the scene transition manager to fade in the dialogue for restarting the day
-        //SceneTransitionManager.instance.FadeInImage();
-        //Invoke("ShowEndOfDayMenu", 1);
-        //TODO JESS Call all the events before restarting the day and calling run()
-        RestartDay();
-        Run();
+                 //TODO JESS use the scene transition manager to fade in the dialogue for restarting the day
+                 //SceneTransitionManager.instance.FadeInImage();
+                 //Invoke("ShowEndOfDayMenu", 1);
+                 //TODO JESS Call all the events before restarting the day and calling run()
+
+        StartCoroutine(TutorialUIController.instance.ShowRestartTutorialPanel());
+        // Time.timeScale = 0;
+        // RestartDay();
+        // Run();
     }
 
     public void RestartDay()
     {
-        GameObject player = GameObject.FindWithTag("Player");
+        // GameObject player = GameObject.FindWithTag("Player");
         // happens after end of day screen is shown
         // reset player health and teleport player to origin for now
-        player.GetComponent<PlayerHealth>().RestoreToFull();
-        player.GetComponent<PlayerHealth>().DestroyAllDamageCounter();
-        player.GetComponent<PlayerStamina>().RestoreToFull();
+        // player.GetComponent<PlayerHealth>().RestoreToFull();
+        // player.GetComponent<PlayerHealth>().DestroyAllDamageCounter();
+        // player.GetComponent<PlayerStamina>().RestoreToFull();
         //BuffManager.instance.ClearBuffManager();
-        player.GetComponent<CharacterController>().enabled = false;
-        //Spawn at the tutorial campfire
-        player.transform.position = new Vector3(-83.0f, 0f, 53.0f);
-        player.GetComponent<CharacterController>().enabled = true;
+        // player.GetComponent<CharacterController>().enabled = false;
+        // //Spawn at the tutorial campfire
+        // player.transform.position = new Vector3(-83.0f, 0f, 53.0f);
+        // player.GetComponent<CharacterController>().enabled = true;
 
         // change time to next day
         gameTime = (float)System.Math.Round(startOfDay, 2);
@@ -182,12 +183,16 @@ public class TutorialGameTimer : SingletonGeneric<TutorialGameTimer>
         isNewDay = true;
 
         UpdateTimedObjects();
-        UpdateLighting(gameTime);
+        UpdateLighting();
+
+        Run();
     }
 
     public void Run()
     {
         isRunning = true;
+        UpdateLighting();
+        UpdateTimedObjects();
     }
 
     public void Pause()
@@ -210,8 +215,9 @@ public class TutorialGameTimer : SingletonGeneric<TutorialGameTimer>
         gameTime = 0f;
     }
 
-    private void UpdateLighting(float timePercent)
+    private void UpdateLighting()
     {
+        float timePercent = gameTime;
         // Set ambient and fog
         RenderSettings.ambientSkyColor = Preset.AmbientSkyColor.Evaluate(timePercent);
         RenderSettings.ambientEquatorColor = Preset.AmbientEquatorColor.Evaluate(timePercent);

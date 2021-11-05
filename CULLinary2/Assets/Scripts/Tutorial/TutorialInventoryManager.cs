@@ -26,6 +26,12 @@ public class TutorialInventoryManager : SingletonGeneric<TutorialInventoryManage
     {
         slots = inventoryPanel.GetComponentsInChildren<InventorySlot>();
         PopulateUI(PlayerManager.instance.itemList);
+
+        TutorialManager.OnRestartTutorial += () =>
+        {
+            hasCollected3Potatoes = false;
+            hasCookedRequiredDish = false;
+        };
     }
 
     public void PopulateUI(List<InventoryItem> items)
