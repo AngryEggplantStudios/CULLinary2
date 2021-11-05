@@ -10,6 +10,7 @@ public class PlayerDash : PlayerAction
     [Header("Visuals")]
     [SerializeField] private Transform playerbody;
     [SerializeField] private GameObject dustKickupPrefab;
+    [SerializeField] private GameObject dashCooldownUI;
 
     [Header("Variables")]
     [SerializeField] private float startingSpeed = 10f;
@@ -45,6 +46,7 @@ public class PlayerDash : PlayerAction
             StopCoroutine(currentCoroutine);
         }
         isDashing = false;
+        dashCooldownUI.SetActive(false);
     }
 
     private void Dash(Vector3 direction)
@@ -76,6 +78,7 @@ public class PlayerDash : PlayerAction
         audioSource.Play();
         Instantiate(dustKickupPrefab, playerbody);
         isDashing = true;
+        dashCooldownUI.SetActive(true);
         float startTime = Time.time;
         float currSpeed = startingSpeed;
         StartCoroutine(playerHealth.BecomeTemporarilyInvincibleByDash(dashTime));
@@ -88,6 +91,7 @@ public class PlayerDash : PlayerAction
         }
         yield return new WaitForSeconds(cooldownPause);
         isDashing = false;
+        dashCooldownUI.SetActive(false);
     }
 
     private void OnDestroy()

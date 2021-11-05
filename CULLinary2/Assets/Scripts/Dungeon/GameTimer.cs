@@ -24,6 +24,12 @@ public class GameTimer : SingletonGeneric<GameTimer>
     [Header("Daily News")]
     [SerializeField] private GameObject newspaper;
     [SerializeField] private GameObject hudToHide;
+    [Header("Daily Music")]
+    [SerializeField] private AudioSource chillBgm;
+    [SerializeField] private AudioSource hypeBgm;
+    [SerializeField] private AudioClip[] chillMusic;
+    [SerializeField] private AudioClip[] hypeMusic;
+    [SerializeField] private int numOfTracks;
 
     private static float gameTime;
     private static float timeScale;
@@ -157,6 +163,13 @@ public class GameTimer : SingletonGeneric<GameTimer>
             }
             else
             {
+                // Set up today's music, minus 1 to start at day 1
+                int musicTrack = (dayNum - 1) % numOfTracks;
+                chillBgm.clip = chillMusic[musicTrack];
+                hypeBgm.clip = hypeMusic[musicTrack];
+                chillBgm.Play();
+                hypeBgm.Play();
+                
                 Time.timeScale = 0;
                 newspaperDets.UpdateNewspaperIssueUI(currentNews);
                 UIController.instance.isNewspaperOpen = true;

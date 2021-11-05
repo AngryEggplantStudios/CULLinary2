@@ -8,6 +8,7 @@ public class BossMeleeAttack : MonoBehaviour
     private SphereCollider attackCollider;
     private PlayerHealth healthScript;
     [SerializeField] private float attackDamage;
+    private bool canDealDamage = true;
 
     private void Awake()
     {
@@ -19,18 +20,19 @@ public class BossMeleeAttack : MonoBehaviour
     // Update is called once per frame
     private void OnTriggerStay(Collider other)
     {
-        if (healthScript != null)
+        if (canDealDamage && healthScript != null)
         {
-            bool hitSuccess = healthScript.HandleHit(attackDamage);
-            /*
-            if (hitSuccess)
-            {
-                healthScript.KnockbackPlayer(transform.position);
-            }
-            */
+            canDealDamage = false;
+            healthScript.HandleHit(attackDamage);
+            StartCoroutine("AttackCooldown");
         }
-
     }
+
+    private IEnumerator AttackCooldown()
+	{
+        yield return new WaitForSeconds(0.5f);
+        canDealDamage = true;
+	}
 
     public void enableCollider(bool toEnable)
     {

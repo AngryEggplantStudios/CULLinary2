@@ -30,7 +30,10 @@ public class BossSpawn : MonoBehaviour
 	public void activateSpawn()
     {
         int enemyNum = Random.Range(minEnemy, maxEnemy + 1);
-        instantiateEnemy();
+        for (int i = 0; i < enemyNum; i++)
+		{
+            instantiateEnemy();
+        }
     }
 
     private void instantiateEnemy()
