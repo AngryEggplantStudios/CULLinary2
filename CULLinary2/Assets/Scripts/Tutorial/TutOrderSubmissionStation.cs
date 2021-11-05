@@ -33,10 +33,10 @@ public class TutOrderSubmissionStation : PlayerInteractable
                 }*/
     }
 
-    // public void SetId(int id)
-    // {
-    //     uniqueId = id;
-    // }
+    public Transform getOrderSubmssionStationGameObj()
+	{
+        return this.gameObject.transform;
+	}
 
     public bool GetId(out int id)
     {
