@@ -191,6 +191,7 @@ public class TutorialInventoryManager : SingletonGeneric<TutorialInventoryManage
             isCacheValid = false;
             // May affect Recipe, Orders UI as well
             TutorialUIController.UpdateAllUIs();
+            Debug.Log("added inventory item");
             return true;
         }
         else

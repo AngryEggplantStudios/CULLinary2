@@ -11,6 +11,8 @@ public class TutorialEvent
     public bool CanTriggerNextEvent { get; set; }
     // Only start checking for trigger if shouldCheckForTrigger is true
     public bool ShouldCheckForTrigger { get; set; }
+    public bool HasStarted { get; set; }
+    public bool IsComplete { get; set; } // Tutorial event is complete when can move to the next event
 
     // Construct TutorialEvent without trigger
     public TutorialEvent(int id, Dialogue dialogue, bool hasTrigger = false)
@@ -20,6 +22,8 @@ public class TutorialEvent
         this.HasTriggerForNextEvent = hasTrigger;
         this.CanTriggerNextEvent = true;
         this.ShouldCheckForTrigger = true;
+        this.HasStarted = false;
+        this.IsComplete = false;
     }
 
     // Construct TutorialEvent with trigger
@@ -30,6 +34,8 @@ public class TutorialEvent
         this.HasTriggerForNextEvent = hasTrigger;
         this.CanTriggerNextEvent = false;
         this.ShouldCheckForTrigger = shouldCheckForTrigger;
+        this.HasStarted = false;
+        this.IsComplete = false;
     }
 
 }

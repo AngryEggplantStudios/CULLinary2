@@ -9,11 +9,13 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
     private int totalNumEvents;
     private TutorialEvent[] events;
     // Store IDs of events with triggers for their next events (for creating tutorial events and updating)
-    private List<int> eventIdWithTriggers = new List<int> { 2 };
+    private List<int> eventIdWithTriggers = new List<int> { 2, 3, 4 };
 
 
     // Tutorial variables
     public int orderSubmissionStnId = 0;
+    public GameObject tutorialPotatoesParent;
+
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +34,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
     // Update is called once per frame
     void Update()
     {
+        // Check event triggers
         foreach (int eventId in eventIdWithTriggers)
         {
             TutorialEvent tutorialEvent = events[eventId];
@@ -42,6 +45,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
                 {
                     case 2:
                         tutorialEvent.CanTriggerNextEvent = TutorialUIController.instance.WereOrdersAndRecipesOpened() && !TutorialUIController.instance.isMenuActive;
+                        tutorialEvent.IsComplete = true;
                         // Debug.Log("can start next event for event #2 set to: " + tutorialEvent.CanTriggerNextEvent);
                         break;
                     default:
@@ -49,7 +53,11 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
                         break;
                 }
             }
+
+
         }
+
+
     }
 
     private void CreateTutorialEvents()
@@ -63,7 +71,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
             if (eventIdWithTriggers.Contains(i))
             {
                 events[i] = new TutorialEvent(i, tutorialDialogue[i], true, false);
-                // Debug.Log("event #" + i + " has trigger");
+                Debug.Log("event #" + i + " has trigger");
             }
             else
             {
@@ -77,6 +85,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
     {
         Debug.Log("display dialogue for event #" + currEventId);
         DialogueManager.instance.LoadAndRunTutorialDialogue(DialogueDatabase.GetTutorialDialogue(currEventId));
+        events[currEventId].HasStarted = true;
     }
 
     public void OnDialogueEnd()
@@ -91,11 +100,18 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
         TutorialEvent currEvent = events[currEventId];
         if (!currEvent.HasTriggerForNextEvent)
         {
+            currEvent.IsComplete = true;
             currEventId++;
             DisplayDialogue();
         }
         else
         {
+            Debug.Log("before trigger next dialogue: event #" + currEventId);
+            if (currEventId == 3)
+            {
+                Debug.Log("hello??");
+                ActivatePotatoes();
+            }
             StartCoroutine(TriggerNextDialogue());
         }
         // Debug.Log("end of on dialogue end for event #" + currEventId);
@@ -140,6 +156,12 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
             DisplayDialogue();
         }
 
+    }
+
+    public void ActivatePotatoes()
+    {
+        tutorialPotatoesParent.SetActive(true);
+        Debug.Log("activate potatoes?: " + tutorialPotatoesParent.activeSelf);
     }
 
 }

@@ -81,6 +81,7 @@ public class DatabaseLoader : MonoBehaviour
     {
         yield return StartCoroutine(PopulateInventoryItemDatabase());
         yield return StartCoroutine(PopulateRecipeDatabase());
+        yield return StartCoroutine(PopulateWeaponSkillItemDatabaseTutorial());
     }
 
     private IEnumerator PopulateInventoryItemDatabase()
@@ -351,6 +352,24 @@ public class DatabaseLoader : MonoBehaviour
             yield return null;
         }
         WeaponManager.instance.SetupShop();
+        Debug.Log("Weapon Skill Item Database populated.");
+    }
+    private IEnumerator PopulateWeaponSkillItemDatabaseTutorial()
+    {
+        foreach (WeaponSkillItem i in weaponSkillDatabase.allItems)
+        {
+            try
+            {
+                weaponSkillDict.Add(i.weaponSkillId, i);
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Error: " + e);
+                Debug.Log("Unable to add item: " + i.itemName);
+            }
+            yield return null;
+        }
+        // WeaponManager.instance.SetupShop();
         Debug.Log("Weapon Skill Item Database populated.");
     }
 

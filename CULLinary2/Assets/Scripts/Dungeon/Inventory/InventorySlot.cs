@@ -19,12 +19,12 @@ public class InventorySlot : MonoBehaviour
 
     public void AddItem(InventoryItem newItem)
     {
-
+        Debug.Log("set item in inventory slot");
         item = newItem;
         icon.sprite = item.icon;
         icon.enabled = true;
     }
-    
+
     public void ClearSlot()
     {
         item = null;
