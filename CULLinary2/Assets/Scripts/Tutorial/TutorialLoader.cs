@@ -52,12 +52,15 @@ public class TutorialLoader : SingletonGeneric<TutorialLoader>
         // LoadScene.instance.ChangeLoadingText("Loading database...");
         // LoadScene.instance.ChangeProgress(0.1f);
         // yield return StartCoroutine(databaseLoader.Populate());
+
         LoadScene.instance.ChangeLoadingText("Generating biome...");
         LoadScene.instance.ChangeProgress(0.3f);
         yield return StartCoroutine(biomeGeneratorManager.LoadBiome());
+
         // LoadScene.instance.ChangeLoadingText("Generating monsters...");
         // LoadScene.instance.ChangeProgress(0.8f);
         //yield return StartCoroutine(dungeonSpawnManager.GetSpawners());
+
         LoadScene.instance.ChangeLoadingText("Press Spacebar to start!");
         LoadScene.instance.ChangeProgress(1f);
         LoadScene.instance.isAbleToProceed = true;
@@ -68,6 +71,7 @@ public class TutorialLoader : SingletonGeneric<TutorialLoader>
         // EcosystemManager.instance.InstantiateEcosystem();
         // yield return StartCoroutine(dungeonSpawnManager.GetSpawners());
         // OrdersManager.instance.FirstGenerationOfOrders();
+
         WeaponSkillManager.instance.InstantiateWeaponSkill();
         yield return null;
         playerCharacter.SetActive(true);

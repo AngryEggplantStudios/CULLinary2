@@ -54,6 +54,22 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
         }
     }
 
+    public IEnumerator LoadBiomeForTutorial()
+    {
+        foreach (GameObject obj in hideWhileLoading)
+        {
+            obj.SetActive(false);
+        }
+
+        // yield return StartCoroutine(StartGeneration());
+        yield return StartCoroutine(LoadTutorialBiome());
+
+        foreach (GameObject obj in hideWhileLoading)
+        {
+            obj.SetActive(true);
+        }
+    }
+
     public static bool IsGenerationComplete()
     {
         return BiomeGeneratorManager.instance.isComplete;
@@ -120,6 +136,26 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
 
         yield return StartCoroutine(Process("Generating Map", 0f,
                 biomeGenerator.QuickLoad()));
+
+        yield return StartCoroutine(Process("Placing objects around the world", 0.33f,
+                biomeObjectSpawner.SpawnObjects(BiomeDataManager.instance.seed)));
+
+        yield return StartCoroutine(Process("Generating AI map for monsters", 0.66f,
+                biomeNavMeshGenerator.GenerateMesh()));
+
+        yield return StartCoroutine(Process("Final touches", 0.99f,
+                biomeGenerator.ReactivateMap()));
+
+        isComplete = true;
+        progress = 1f;
+    }
+
+    private IEnumerator LoadTutorialBiome()
+    {
+        Debug.Log("LOADING: Loading tutorial map");
+
+        yield return StartCoroutine(Process("Generating Map", 0f,
+                biomeGenerator.LoadTutorialMap()));
 
         yield return StartCoroutine(Process("Placing objects around the world", 0.33f,
                 biomeObjectSpawner.SpawnObjects(BiomeDataManager.instance.seed)));
