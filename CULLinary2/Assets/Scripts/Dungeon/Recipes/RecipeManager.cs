@@ -22,6 +22,8 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
     // For cooking, to play a sound and show a pop-up
     public PlayerPickup pickup;
     public AudioSource cookingSound;
+    [Header("Recipes Not to Order")]
+    public int clownBaitRecipeId = 36;
 
     private List<Recipe> innerUnlockedRecipesList = new List<Recipe>();
     private List<Recipe> innerLockedRecipesList = new List<Recipe>();
@@ -113,8 +115,23 @@ public class RecipeManager : SingletonGeneric<RecipeManager>
     public Recipe GetRandomRecipe()
     {
         FilterUnlockedRecipes();
-        int randomIndex = rand.Next(innerUnlockedRecipesList.Count);
-        return innerUnlockedRecipesList[randomIndex];
+        if (innerUnlockedRecipesList.Count == 0)
+        {
+            return null;
+        }
+        // edge case if only clown bait unlocked
+        else if (innerUnlockedRecipesList.Count == 1)
+        {
+            return innerUnlockedRecipesList[0];
+        }
+
+        Recipe validRecipe = null;
+        while (validRecipe == null || validRecipe.recipeId == clownBaitRecipeId)
+        {
+            int randomIndex = rand.Next(innerUnlockedRecipesList.Count);
+            validRecipe = innerUnlockedRecipesList[randomIndex];
+        }
+        return validRecipe;
     }
 
     public List<Recipe> GetUnlockedRecipes()
