@@ -243,6 +243,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     private void ShowEndOfDayMenu()
     {
+        Time.timeScale = 0;
         UIController.instance.ShowEndOfDayMenu();
         // Increment newspaper for next day
         NewsIssue currentNews = DatabaseLoader.GetOrderedNewsIssueById(currentIssueNumber + 1);
