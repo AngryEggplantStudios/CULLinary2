@@ -184,6 +184,7 @@ public class UIController : SingletonGeneric<UIController>
     public void ContinueToNextDay()
     {
         //isPaused = false;
+        Time.timeScale = 1;
         endOfDayMenu.SetActive(false);
         SceneTransitionManager.instance.FadeOutImage();
         Invoke("ResumeGameTimer", 1);
