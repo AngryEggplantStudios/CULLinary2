@@ -119,8 +119,22 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
         DialogueDatabase.GenerateDialogues();
 
         // For debug purposes
-        // LoadAndRunDebug(16);
+        // LoadAndRunDebug(2);
     }
+
+    // // For debug purposes
+    // int debugNum = 35;
+    // private void Update()
+    // {
+    //     if (Input.GetKeyDown(KeyCode.E))
+    //     {
+    //         LoadAndRunDebug(debugNum);
+    //     }
+    //     if (Input.GetKeyDown(KeyCode.Y))
+    //     {
+    //         debugNum++;
+    //     }
+    // }
 
     private void RunMeDialogue(PlainDialogue meDialogue)
     {
@@ -241,6 +255,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
     public void LoadAndRunDebug(int dialogueIndex)
     {
         LoadAndRun(DialogueDatabase.GetDialogue(dialogueIndex));
+        Time.timeScale = 1;
     }
 
     // Sets the ending callback for the next dialogue.
