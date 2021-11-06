@@ -19,9 +19,11 @@ public class BiomeData
 
     public void SetRandomSeed()
 	{
-         this.seed = Random.Range(int.MinValue, int.MaxValue);
-        Debug.Log("Randomized seed" + this.seed);
-	}
+        while (this.seed == 0)
+		{
+            this.seed = Random.Range(int.MinValue, int.MaxValue);
+        }
+    }
 
     public string ToJson()
     {

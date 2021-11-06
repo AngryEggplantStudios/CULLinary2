@@ -71,7 +71,8 @@ public class MenuController : MonoBehaviour
     {
         //random
         if (isSaveFilePresent)
-        {            
+        {
+            PlayerPrefs.SetInt("isGoingToUseDefaultMapAfterTutorial", 0);
             PlayerData playerData = PlayerManager.instance.CreateBlankData();
             BiomeData biomeData = new BiomeData();
             biomeData.SetRandomSeed();
@@ -88,6 +89,7 @@ public class MenuController : MonoBehaviour
         {
             //fixed
             // TODO: eventually calls BiomeGeneratorManager.LoadDefaultBiome() instead of LoadExistingBiome()
+            PlayerPrefs.SetInt("isGoingToUseDefaultMapAfterTutorial", 1);
             PlayerData playerData = PlayerManager.instance.CreateBlankData();
             BiomeData biomeData = new BiomeData();
             SaveSystem.SaveData(biomeData);
