@@ -27,9 +27,9 @@ public class BuffManager : SingletonGeneric<BuffManager>
         OrdersManager.instance.ClearBuffs();
         buffSlots.Clear();
         buffObjects.Clear();
-        foreach (GameObject buff in buffUIReference.transform)
+        foreach (Transform buff in buffUIReference.transform)
         {
-            Destroy(buff);
+            Destroy(buff.gameObject);
         }
 
     }

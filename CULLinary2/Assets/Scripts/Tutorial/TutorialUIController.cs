@@ -422,6 +422,10 @@ public class TutorialUIController : SingletonGeneric<TutorialUIController>
 
         if (isDialogueOpen)
         {
+            if (Input.GetKeyDown(closeUiKeyCode))
+            {
+                DialogueManager.instance.ShowCannotSkipMessage();
+            }
             return;
         }
 

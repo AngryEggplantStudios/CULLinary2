@@ -26,6 +26,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
     [SerializeField] private TMP_Text consumableCounterText;
     [SerializeField] private GameObject itemPanel;
     [SerializeField] private AudioSource kaching;
+    [SerializeField] private AudioSource kachingTruck;
     [SerializeField] private Scrollbar scrollbar;
 
     private int selectedSlotId = -1;
@@ -36,6 +37,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
         //Guard clause to check if there's a valid slot selected
         if (selectedSlotId == -1)
         {
+            ButtonAudio.Instance.ClickFailed();
             return;
         }
 
@@ -46,6 +48,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
         //Guard clause to check if player has enough money
         if (itemPrice > PlayerManager.instance.currentMoney)
         {
+            ButtonAudio.Instance.ClickFailed();
             return;
         }
 
@@ -84,6 +87,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
             EventShopItem eventItemPurchased = (EventShopItem)itemPurchased;
             if (SpecialEventManager.instance.CheckIfEventIsRunning(eventItemPurchased.eventId) || eventItemPurchased.CheckIfPurchased())
             {
+                ButtonAudio.Instance.ClickFailed();
                 return;
             }
             Debug.Log("Bought event item!");
@@ -119,7 +123,15 @@ public class ShopManager : SingletonGeneric<ShopManager>
             }
         }
 
-        kaching.Play();
+        ButtonAudio.Instance.Click();
+        if (DrivingManager.instance.IsPlayerInVehicle())
+        {
+            kachingTruck.Play();
+        }
+        else
+        {
+            kaching.Play();
+        }
 
         // Update all UIs
         UpdateShopDescription();

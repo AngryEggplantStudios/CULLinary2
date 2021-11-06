@@ -19,6 +19,12 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
     public TextMeshProUGUI mePanelText;
     public Image mePanelSprite;
 
+    // Skip dialogue on first showing
+    // Set to null to disable skipping
+    public GameObject skipDialogueText;
+    // Will be shown if skipping is not possible
+    public GameObject proceedDialogueText;
+
     // The prefab to use for the choice selection
     public GameObject choicePrefab;
     // Array of sprites for the dialogue boxes
@@ -30,6 +36,8 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
     private static readonly Action defaultDialogueAction = () => { Debug.Log("default dialogue action invoked"); };
     private Action endDialogueAction = defaultDialogueAction;
     private bool resetEndDialogueAction = true;
+    private bool isFirstDialogue = false;
+    private bool isProceedDialogueShown = false;
 
     /*
     private Restaurant_CustomerController currentCustomer;
@@ -37,6 +45,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
 
     private void DisplayNextAndCloseMePanel()
     {
+        PreventSkip();
         if (!currentDialogue.isLast)
         {
             currentDialogue = nextDialogue;
@@ -71,6 +80,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
 
     private void DisplayNextAndCloseTheyPanel()
     {
+        PreventSkip();
         if (!currentDialogue.isLast)
         {
             currentDialogue = nextDialogue;
@@ -119,8 +129,22 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
         DialogueDatabase.GenerateDialogues();
 
         // For debug purposes
-        // LoadAndRunDebug(16);
+        // LoadAndRunDebug(2);
     }
+
+    // // For debug purposes
+    // int debugNum = 35;
+    // private void Update()
+    // {
+    //     if (Input.GetKeyDown(KeyCode.E))
+    //     {
+    //         LoadAndRunDebug(debugNum);
+    //     }
+    //     if (Input.GetKeyDown(KeyCode.Y))
+    //     {
+    //         debugNum++;
+    //     }
+    // }
 
     private void RunMeDialogue(PlainDialogue meDialogue)
     {
@@ -165,6 +189,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
             int currentI = i;
             choiceOnClick.SelectThisChoice += () =>
             {
+                PreventSkip();
                 // close all panels
                 choicePanel.SetActive(false);
                 mePanel.SetActive(false);
@@ -208,10 +233,34 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
             RunChoiceDialogue(choice);
         }
     }
+    
+    private void PreventSkip()
+    {
+        if (skipDialogueText != null)
+        {
+            isFirstDialogue = false;
+            skipDialogueText.SetActive(false);
+        }
+    }
+
+    private IEnumerator ShowCannotSkipForTime(float time)
+    {
+        proceedDialogueText.SetActive(true);
+        isProceedDialogueShown = true;
+        yield return new WaitForSecondsRealtime(time);
+        isProceedDialogueShown = false;
+        proceedDialogueText.SetActive(false);
+    }
 
     // Loads and runs the dialogue tree provided
     public void LoadAndRun(Dialogue dialogue)
     {
+        if (skipDialogueText != null)
+        {
+            isFirstDialogue = true;
+            skipDialogueText.SetActive(true);
+        }
+
         if (UIController.instance != null)
         {
             UIController.instance.isDialogueOpen = true;
@@ -241,6 +290,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
     public void LoadAndRunDebug(int dialogueIndex)
     {
         LoadAndRun(DialogueDatabase.GetDialogue(dialogueIndex));
+        Time.timeScale = 1;
     }
 
     // Sets the ending callback for the next dialogue.
@@ -253,5 +303,25 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
     public void SetResetEndDialogueAction(bool value)
     {
         resetEndDialogueAction = value;
+    }
+
+    public bool CheckIfIsFirstDialogue()
+    {
+        return isFirstDialogue;
+    }
+
+    public void CloseAllDialogue()
+    {
+        mePanel.SetActive(false);
+        theyPanel.SetActive(false);
+        choicePanel.SetActive(false);
+    }
+
+    public void ShowCannotSkipMessage()
+    {
+        if (!isProceedDialogueShown)
+        {
+            StartCoroutine(ShowCannotSkipForTime(1.0f));
+        }
     }
 }
