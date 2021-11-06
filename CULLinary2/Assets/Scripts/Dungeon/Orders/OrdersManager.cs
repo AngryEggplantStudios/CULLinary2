@@ -333,6 +333,12 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         return OrdersManager.instance.moneyEarnedToday;
     }
 
+    // Updates the statistics for amount of money earned
+    public static void AddToMoneyEarnedToday(int amount)
+    {
+        OrdersManager.instance.moneyEarnedToday += amount;
+    }
+
     // To be called when a new day begins
     // Generates random orders and populates the order list
     private void GenerateRandomOrders()

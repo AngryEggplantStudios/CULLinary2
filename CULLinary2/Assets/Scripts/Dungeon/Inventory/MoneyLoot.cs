@@ -9,6 +9,7 @@ public class MoneyLoot : Loot
     protected override void OnPickup(PlayerPickup playerPickup)
     {
         PlayerManager.instance.currentMoney += moneyAmount;
+        OrdersManager.AddToMoneyEarnedToday(moneyAmount);
         playerPickup.PickUpMoney(moneyAmount);
 
         LootManager.instance.removeLoot(this.gameObject);
