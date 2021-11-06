@@ -24,7 +24,8 @@ public enum KeybindAction
     Consumable3,
     Consumable4,
     Consumable5,
-    CampfireAction
+    CampfireAction,
+    TruckSummon
 }
 
 /// <summary>
@@ -53,7 +54,8 @@ public class PlayerKeybinds
         { KeybindAction.Consumable3, KeyCode.Alpha3 },
         { KeybindAction.Consumable4, KeyCode.Alpha4 },
         { KeybindAction.Consumable5, KeyCode.Alpha5 },
-        { KeybindAction.CampfireAction, KeyCode.Z }
+        { KeybindAction.CampfireAction, KeyCode.Z },
+        { KeybindAction.TruckSummon, KeyCode.T }
     };
 
     /// <summary>

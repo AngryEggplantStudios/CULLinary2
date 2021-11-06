@@ -10,6 +10,10 @@ public class UnlockTruckEvent : SpecialEvent
         if (PlayerManager.instance != null)
         {
             PlayerManager.instance.isTruckUnlocked = true;
+            if (DrivingManager.instance != null)
+            {
+                DrivingManager.instance.AddTruckSummonIcon();
+            }
         }
     }
 }

@@ -27,6 +27,7 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
     [Header("UI References")]
     [SerializeField] private GameObject warningPrefab;
     [SerializeField] private GameObject truckCanvas;
+    [SerializeField] private GameObject truckSummonUiIcon;
     [Header("Truck Dimensions")]
     // World space radius of truck, 10.0 is manually determined
     // Used for summoning truck
@@ -80,8 +81,13 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         consumableFourKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.Consumable4);  //Crit & Evasion(Pfizer)
         consumableFiveKeyCode = PlayerKeybinds.GetKeybind(KeybindAction.Consumable5);  //Attack(Moderna)
 
-        // Temporary
-        truckSummonKeycode = KeyCode.T;
+        truckSummonKeycode = PlayerKeybinds.GetKeybind(KeybindAction.TruckSummon);
+
+        // Check if truck is already unlocked
+        if (PlayerManager.instance.isTruckUnlocked)
+        {
+            AddTruckSummonIcon();
+        }
     }
 
     void Update()
@@ -109,21 +115,14 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         else if (!UIController.instance.isMenuActive && !UIController.instance.isPaused &&
                  Input.GetKeyDown(truckSummonKeycode) && PlayerManager.instance.isTruckUnlocked)
         {
-            if (delay > 0.0f)
-            {
-                SpawnWarningMessagePlayer("Try again later");
-            }
-            else
-            {
-                if (!TryTruckSummon())
-                {
-                    SpawnWarningMessagePlayer("Not enough space!");
-                }
-                // Set delay to half a second
-                delay = 0.5f;
-            }
-
+            DoTruckSummonAndShowErrorOnFail();
         }
+    }
+
+    // Adds truck summon icon to the UI
+    public void AddTruckSummonIcon()
+    {
+        truckSummonUiIcon.SetActive(true);
     }
 
     public void HandlePlayerEnterVehicle()
@@ -210,7 +209,24 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         return driveableTruck.transform;
     }
 
-    public bool TryTruckSummon()
+    public void DoTruckSummonAndShowErrorOnFail()
+    {
+        if (delay > 0.0f)
+        {
+            SpawnWarningMessagePlayer("Try again later");
+        }
+        else
+        {
+            if (!TryTruckSummon())
+            {
+                SpawnWarningMessagePlayer("Not enough space!");
+            }
+            // Set delay to half a second
+            delay = 0.5f;
+        }
+    }
+
+    private bool TryTruckSummon()
     {
         Vector3 positionLeft = player.transform.position + Vector3.left * unitsFromPlayer;
         Vector3 positionForward = player.transform.position + Vector3.forward * unitsFromPlayer;
