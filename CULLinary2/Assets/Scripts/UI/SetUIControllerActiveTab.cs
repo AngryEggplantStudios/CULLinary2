@@ -11,6 +11,7 @@ public class SetUIControllerActiveTab : MonoBehaviour
     {
         if (UIController.instance)
         {
+            UIController.instance.isMenuActive = true;
             UIController.instance.SetCurrentUiPage(thisUiPage);   
         }
     }
