@@ -17,6 +17,12 @@ public class BiomeData
         seed = 0;
     }
 
+    public void SetRandomSeed()
+	{
+         this.seed = Random.Range(int.MinValue, int.MaxValue);
+        Debug.Log("Randomized seed" + this.seed);
+	}
+
     public string ToJson()
     {
         return JsonUtility.ToJson(this);

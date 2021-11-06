@@ -11,7 +11,10 @@ public class MonsterLandmark : MonoBehaviour
 
     void Start()
     {
-        landmarks.Add(monsterName, this.gameObject);
+        if (!landmarks.ContainsKey(monsterName))
+		{
+            landmarks.Add(monsterName, this.gameObject);
+        }
     }
 
     public static GameObject GetByMonsterName(MonsterName name)

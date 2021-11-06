@@ -34,6 +34,11 @@ public class BiomeDataManager : SingletonGeneric<BiomeDataManager>
         }
     }
 
+    public void RandomizeSeed()
+	{
+        this.seed = Random.Range(int.MinValue, int.MaxValue);
+    }
+
     public bool LoadData()
     {
         biomeData = SaveSystem.LoadBiomeData();

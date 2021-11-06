@@ -54,12 +54,15 @@ public class PlayerSpawnManager : SingletonGeneric<PlayerSpawnManager>
         {
             foreach (GameObject campfire in campfires)
             {
-                Vector3 directionToCampfire = campfire.transform.position - givenPosition;
-                float sqrDist = directionToCampfire.sqrMagnitude;
-                if (sqrDist < nearestDistSqr)
-                {
-                    nearestDistSqr = sqrDist;
-                    nearestCampfire = campfire.transform;
+                if (campfire != null)
+				{
+                    Vector3 directionToCampfire = campfire.transform.position - givenPosition;
+                    float sqrDist = directionToCampfire.sqrMagnitude;
+                    if (sqrDist < nearestDistSqr)
+                    {
+                        nearestDistSqr = sqrDist;
+                        nearestCampfire = campfire.transform;
+                    }
                 }
             }
         }

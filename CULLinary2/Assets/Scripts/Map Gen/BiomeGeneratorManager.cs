@@ -40,7 +40,7 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
             }
         }
 
-        CheckForExistingData();
+		CheckForExistingData();
         if (hasExistingData)
         {
             yield return StartCoroutine(LoadExistingBiome());
