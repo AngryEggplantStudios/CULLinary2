@@ -33,7 +33,7 @@ public class OrdersUIMap : Minimap
     {
         // Edge case where player gets into truck without opening the Orders UI before
         // We set the transform to the truck's transform
-        if (DrivingManager.instance.IsPlayerInVehicle() && !hasSetPlayerBody)
+        if (DrivingManager.instance != null && DrivingManager.instance.IsPlayerInVehicle() && !hasSetPlayerBody)
         {
             playerBody = DrivingManager.instance.GetTruckTransform();
         }

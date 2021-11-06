@@ -1128,8 +1128,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverSound: {fileID: 82233582}
   loadGameButton: {fileID: 104264471}
+  newGameQuickStartButton: {fileID: 1601432971499121837}
+  newGameRandomMapButton: {fileID: 795899584}
   saveGamePresentWarning: {fileID: 1270332178}
   newGameTypeSelection: {fileID: 8129901446860835353}
+  newGameButtonText: {fileID: 13091539}
 --- !u!1001 &267899448
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1742,7 +1745,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: NewGame+! Can you beat the game with a random map and settings?
+  m_text: 'NewGame+ with a random map! (<u>WARNING</u>: Not for slow computers)'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a1bc1abf93d37c348ab5a4e3cdfdd48c, type: 2}
   m_sharedMaterial: {fileID: 5819034279512177362, guid: a1bc1abf93d37c348ab5a4e3cdfdd48c, type: 2}
@@ -5088,7 +5091,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'only reccomended if you are
+  m_text: 'only recommended if you are
 
     our TA and want to bully us'
   m_isRightToLeft: 0
