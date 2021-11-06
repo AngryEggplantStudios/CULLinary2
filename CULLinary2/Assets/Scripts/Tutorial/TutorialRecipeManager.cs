@@ -22,6 +22,9 @@ public class TutorialRecipeManager : SingletonGeneric<TutorialRecipeManager>
     // For cooking, to play a sound and show a pop-up
     public PlayerPickup pickup;
     public AudioSource cookingSound;
+    [Header("Tutorial")]
+
+    [SerializeField] Recipe tutorialRecipe;
 
     private List<Recipe> innerUnlockedRecipesList = new List<Recipe>();
     private List<Recipe> innerLockedRecipesList = new List<Recipe>();
@@ -69,55 +72,20 @@ public class TutorialRecipeManager : SingletonGeneric<TutorialRecipeManager>
         };
 
         filterButtonText.text = filterButtonDisplayedTexts[currentFilterState];
-    }
-
-    // To be called when save data is loaded
-    public void FilterUnlockedRecipes()
-    {
-        if (!hasPopulatedUnlockedRecipes)
-        {
-            UpdateUnlockedRecipes();
-        }
-    }
-
-    // Update the unlocked and the locked recipes list
-    public void UpdateUnlockedRecipes()
-    {
-        List<int> unlockedRecipes = new List<int> { 1 }; // french fries
-
-        StopAllCoroutines();
-        innerLockedRecipesList.Clear();
-        innerUnlockedRecipesList.Clear();
-
-        foreach (int recipeId in unlockedRecipes)
-        {
-            Debug.Log("unlocked recipe: " + recipeId);
-            innerUnlockedRecipesList.Add(DatabaseLoader.GetRecipeById(recipeId));
-        }
-        //Not sure if there's a faster method or a one-liner
-        foreach (Recipe recipe in DatabaseLoader.GetAllRecipes())
-        {
-            if (!unlockedRecipes.Contains(recipe.recipeId))
-            {
-                innerLockedRecipesList.Add(DatabaseLoader.GetRecipeById(recipe.recipeId));
-            }
-        }
-
-        hasPopulatedUnlockedRecipes = true;
+        
+        innerUnlockedRecipesList.Add(tutorialRecipe);
         recipesChanged = true;
         ForceUIUpdate();
     }
 
     public Recipe GetRandomRecipe()
     {
-        FilterUnlockedRecipes();
         int randomIndex = rand.Next(innerUnlockedRecipesList.Count);
         return innerUnlockedRecipesList[randomIndex];
     }
 
     public List<Recipe> GetUnlockedRecipes()
     {
-        FilterUnlockedRecipes();
         return innerUnlockedRecipesList;
     }
 

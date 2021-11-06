@@ -150,10 +150,6 @@ public class DatabaseLoader : MonoBehaviour
         {
             RecipeManager.instance.FilterUnlockedRecipes();
         }
-        else if (TutorialRecipeManager.instance != null)
-        {
-            TutorialRecipeManager.instance.FilterUnlockedRecipes();
-        }
 
         Debug.Log("Recipe Database populated.");
     }

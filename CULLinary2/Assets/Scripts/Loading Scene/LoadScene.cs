@@ -43,7 +43,19 @@ public class LoadScene : SingletonGeneric<LoadScene>
     private IEnumerator HandleUnloading()
     {
         BGM.Instance.SetVolume(0.3f);
-        yield return StartCoroutine(GameLoader.instance.LoadObjects());
+        if (PlayerPrefs.GetInt("nextScene") == (int)SceneIndexes.MAIN_SCENE && GameLoader.instance != null)
+        {
+            yield return StartCoroutine(GameLoader.instance.LoadObjects());
+        }
+        else if (PlayerPrefs.GetInt("nextScene") == (int)SceneIndexes.TUTORIAL_SCENE && TutorialLoader.instance != null)
+        {
+            yield return StartCoroutine(TutorialLoader.instance.LoadObjects());
+        }
+        else
+        {
+            Debug.Log("HandleUnloading: Unknown next scene or missing GameLoader!");
+            yield break;
+        }
         SceneManager.SetActiveScene(scene);
         SceneManager.UnloadSceneAsync((int)SceneIndexes.LOADING_SCENE);
     }

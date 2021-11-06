@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 /// <summary>
 /// Menu Controller.
@@ -15,10 +16,13 @@ public class MenuController : MonoBehaviour
 
     [Header("Button References")]
     [SerializeField] private Button loadGameButton;
+    [SerializeField] private Button newGameQuickStartButton;
+    [SerializeField] private Button newGameRandomMapButton;
 
     [Header("Other References")]
     [SerializeField] private GameObject saveGamePresentWarning;
     [SerializeField] private GameObject newGameTypeSelection;
+    [SerializeField] private TextMeshProUGUI newGameButtonText;
 
     private bool isSaveFilePresent = true;
 
@@ -28,6 +32,9 @@ public class MenuController : MonoBehaviour
         {
             loadGameButton.interactable = false;
             isSaveFilePresent = false;
+            newGameButtonText.text = "TUTORIAL";
+            newGameQuickStartButton.onClick.AddListener(() => StartTutorial(true));
+            newGameRandomMapButton.onClick.AddListener(() => StartTutorial(false));
             Debug.Log("File not found. Disabling load game");
         }
         else
@@ -49,28 +56,45 @@ public class MenuController : MonoBehaviour
         }
     }
 
+    public void StartTutorial(bool isDefault)
+    {
+        if (!isSaveFilePresent)
+        {
+            SaveSystem.SaveData(new BiomeData());
+            PlayerPrefs.SetInt("isGoingToUseDefaultMapAfterTutorial", isDefault ? 1 : 0);
+            PlayerPrefs.SetInt("nextScene", (int)SceneIndexes.TUTORIAL_SCENE);
+            SceneManager.LoadScene((int)SceneIndexes.LOADING_SCENE);
+        }
+    }
+
     public void StartNewGame()
     {
         //random
-        PlayerData playerData = PlayerManager.instance.CreateBlankData();
-        BiomeData biomeData = new BiomeData();
-        biomeData.SetRandomSeed();
-        SaveSystem.SaveData(biomeData);
-        SaveSystem.SaveData(playerData);
-        PlayerPrefs.SetInt("nextScene", (int)SceneIndexes.MAIN_SCENE);
-        SceneManager.LoadScene((int)SceneIndexes.LOADING_SCENE);
+        if (isSaveFilePresent)
+        {            
+            PlayerData playerData = PlayerManager.instance.CreateBlankData();
+            BiomeData biomeData = new BiomeData();
+            biomeData.SetRandomSeed();
+            SaveSystem.SaveData(biomeData);
+            SaveSystem.SaveData(playerData);
+            PlayerPrefs.SetInt("nextScene", (int)SceneIndexes.MAIN_SCENE);
+            SceneManager.LoadScene((int)SceneIndexes.LOADING_SCENE);
+        }
     }
 
     public void StartNewDefaultGame()
     {
-        //fixed
-        // TODO: eventually calls BiomeGeneratorManager.LoadDefaultBiome() instead of LoadExistingBiome()
-        PlayerData playerData = PlayerManager.instance.CreateBlankData();
-        BiomeData biomeData = new BiomeData();
-        SaveSystem.SaveData(biomeData);
-        SaveSystem.SaveData(playerData);
-        PlayerPrefs.SetInt("nextScene", (int)SceneIndexes.MAIN_SCENE);
-        SceneManager.LoadScene((int)SceneIndexes.LOADING_SCENE);
+        if (isSaveFilePresent)
+        {
+            //fixed
+            // TODO: eventually calls BiomeGeneratorManager.LoadDefaultBiome() instead of LoadExistingBiome()
+            PlayerData playerData = PlayerManager.instance.CreateBlankData();
+            BiomeData biomeData = new BiomeData();
+            SaveSystem.SaveData(biomeData);
+            SaveSystem.SaveData(playerData);
+            PlayerPrefs.SetInt("nextScene", (int)SceneIndexes.MAIN_SCENE);
+            SceneManager.LoadScene((int)SceneIndexes.LOADING_SCENE);
+        }
     }
 
     public void LoadGame()

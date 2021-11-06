@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
@@ -146,6 +147,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
         {
             // No more events/dialogue
             Debug.Log("last dialogue");
+            OnFinishTutorialOrSkip();
             return;
         }
 
@@ -244,4 +246,24 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
         tutorialPotatoesParent.SetActive(true);
     }
 
+    public void OnFinishTutorialOrSkip()
+    {
+        int useDefaultMap = PlayerPrefs.GetInt("isGoingToUseDefaultMapAfterTutorial", -1);
+        if (useDefaultMap != 0 && useDefaultMap != 1)
+        {
+            Debug.Log("Oops! Not sure if using default map or random seed.");
+            return;
+        }
+        
+        PlayerData playerData = PlayerManager.instance.CreateBlankData();
+        BiomeData biomeData = new BiomeData();
+        if (useDefaultMap == 0)
+        {
+            biomeData.SetRandomSeed();
+        }
+        SaveSystem.SaveData(biomeData);
+        SaveSystem.SaveData(playerData);
+        PlayerPrefs.SetInt("nextScene", (int)SceneIndexes.MAIN_SCENE);
+        SceneManager.LoadScene((int)SceneIndexes.LOADING_SCENE);
+    }
 }

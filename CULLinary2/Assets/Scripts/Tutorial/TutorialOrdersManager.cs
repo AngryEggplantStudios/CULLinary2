@@ -19,6 +19,10 @@ public class TutorialOrdersManager : SingletonGeneric<TutorialOrdersManager>
     private bool firstGeneration = true;
 
     public bool hasDeliveredFood = false;
+    
+    // Define a callback for order completion
+    public delegate void OrderCompletionDelegate(int orderSubmissionStationId, int recipeId);
+    private event OrderCompletionDelegate onOrderCompleteCallback;
 
     void Start()
     {
@@ -50,6 +54,11 @@ public class TutorialOrdersManager : SingletonGeneric<TutorialOrdersManager>
         orderSubmissionStn.GetComponent<TutOrderSubmissionStation>().HideFloatingItemNotif();
     }
 
+    public void AddOrderCompletionCallback(OrderCompletionDelegate ocd)
+    {
+        onOrderCompleteCallback += ocd;
+    }
+
     public void CompleteOrder(int stationId)
     {
         if (!TutorialManager.instance.canDeliverFood)
@@ -70,6 +79,9 @@ public class TutorialOrdersManager : SingletonGeneric<TutorialOrdersManager>
             // Update UI and play sounds
             TutorialUIController.UpdateAllUIs();
             orderSubmissionSound.Play();
+            
+            // Invoke additional callbacks given to OrdersManager
+            onOrderCompleteCallback.Invoke(stationId, orderRequired.GetRecipe().recipeId);
 
             orderSubmissionStn.GetComponent<TutOrderSubmissionStation>().HideFloatingItemNotif();
 

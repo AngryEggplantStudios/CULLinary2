@@ -42,7 +42,19 @@ public class Minimap : MonoBehaviour
     private void InstantiateCampfireIcons()
     {
         campfireIcons = new List<(Transform, Transform)>();
-        List<Transform> listOfCampfireLocations = RecipeManager.instance.GetAllCampfires();
+        List<Transform> listOfCampfireLocations = new List<Transform>();
+        if (RecipeManager.instance != null)
+        {
+            listOfCampfireLocations = RecipeManager.instance.GetAllCampfires();
+        }
+        else if (TutorialRecipeManager.instance != null)
+        {
+            listOfCampfireLocations = TutorialRecipeManager.instance.GetAllCampfires();
+        }
+        else
+        {
+            Debug.Log("InstantiateCampfireIcons: No recipe manager found!");
+        }
         foreach (Transform fire in listOfCampfireLocations)
         {
             GameObject icon = Instantiate(iconPrefab,
@@ -77,7 +89,20 @@ public class Minimap : MonoBehaviour
         orderSubmissionStationLocationsAndIcons = new Dictionary<int, (Transform, Transform)>();
         playerOldPosition = playerBody.position;
 
-        Dictionary<int, (Transform, Sprite)> relevantOrders = OrdersManager.instance.GetRelevantOrderStations();
+        Dictionary<int, (Transform, Sprite)> relevantOrders = new Dictionary<int, (Transform, Sprite)>();
+        if (OrdersManager.instance != null)
+        {
+            relevantOrders = OrdersManager.instance.GetRelevantOrderStations();
+        }
+        else if (TutorialOrdersManager.instance != null)
+        {
+            relevantOrders = TutorialOrdersManager.instance.GetRelevantOrderStations();
+        }
+        else
+        {
+            Debug.Log("InstantiateMinimapIcons (relevantOrders): No orders manager found!");
+        }
+        
         foreach (KeyValuePair<int, (Transform, Sprite)> order in relevantOrders)
         {
             int stationId = order.Key;
@@ -93,16 +118,34 @@ public class Minimap : MonoBehaviour
 
         // Register the callbacks, only on the first run
         if (firstInstantiation)
-        {
-            OrdersManager.instance.AddOrderCompletionCallback((stationId, _) =>
+        {            
+            if (OrdersManager.instance != null)
             {
-                if (orderSubmissionStationLocationsAndIcons.ContainsKey(stationId))
+                OrdersManager.instance.AddOrderCompletionCallback((stationId, _) =>
                 {
-                    Destroy(orderSubmissionStationLocationsAndIcons[stationId].Item2.gameObject);
-                    orderSubmissionStationLocationsAndIcons.Remove(stationId);
-                }
-            });
-            OrdersManager.instance.AddOrderGenerationCallback(ResetInstantiatedOrderIconsFlag);
+                    if (orderSubmissionStationLocationsAndIcons.ContainsKey(stationId))
+                    {
+                        Destroy(orderSubmissionStationLocationsAndIcons[stationId].Item2.gameObject);
+                        orderSubmissionStationLocationsAndIcons.Remove(stationId);
+                    }
+                });
+                OrdersManager.instance.AddOrderGenerationCallback(ResetInstantiatedOrderIconsFlag);
+            }
+            else if (TutorialOrdersManager.instance != null)
+            {
+                TutorialOrdersManager.instance.AddOrderCompletionCallback((stationId, _) =>
+                {
+                    if (orderSubmissionStationLocationsAndIcons.ContainsKey(stationId))
+                    {
+                        Destroy(orderSubmissionStationLocationsAndIcons[stationId].Item2.gameObject);
+                        orderSubmissionStationLocationsAndIcons.Remove(stationId);
+                    }
+                });
+            }
+            else
+            {
+                Debug.Log("InstantiateMinimapIcons (firstInstantiation): No orders manager found!");
+            }
             firstInstantiation = false;
         }
         hasInstantiatedIcons = true;
@@ -150,7 +193,7 @@ public class Minimap : MonoBehaviour
             }
             // Update player icon
             SetPlayerIconPos();
-            if (DrivingManager.instance.IsPlayerInVehicle())
+            if (DrivingManager.instance != null && DrivingManager.instance.IsPlayerInVehicle())
             {
                 navArrow.eulerAngles = new Vector3(0, 0, -DrivingManager.instance.GetTruckYRotation());
             }
