@@ -68,7 +68,10 @@ public class Population
         isEnabled = value;
         dayEnabled = GameTimer.GetDayNumber();
         // if (value) { Debug.Log("enabled population: " + name); }
-        MonsterLandmark.GetByMonsterName(name)?.SetActive(value);
+        if (MonsterLandmark.GetByMonsterName(name) != null)
+		{
+            MonsterLandmark.GetByMonsterName(name).SetActive(value);
+        }
     }
 
     private void SetCurrentNumberBasedOnLevel()
