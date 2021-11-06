@@ -441,6 +441,19 @@ public class UIController : SingletonGeneric<UIController>
 
         if (playerDeathMenu.activeSelf || isNewspaperOpen || isDialogueOpen)
         {
+            if (isDialogueOpen && Input.GetKeyDown(closeUiKeyCode))
+            {
+                if (DialogueManager.instance.CheckIfIsFirstDialogue())
+                {                 
+                    DialogueManager.instance.CloseAllDialogue();
+                    Time.timeScale = 1.0f;
+                    isDialogueOpen = false;
+                }
+                else
+                {
+                    DialogueManager.instance.ShowCannotSkipMessage();
+                }
+            }
             return;
         }
 
