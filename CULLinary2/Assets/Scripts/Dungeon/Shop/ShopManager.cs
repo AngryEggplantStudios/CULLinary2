@@ -26,6 +26,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
     [SerializeField] private TMP_Text consumableCounterText;
     [SerializeField] private GameObject itemPanel;
     [SerializeField] private AudioSource kaching;
+    [SerializeField] private AudioSource kachingTruck;
     [SerializeField] private Scrollbar scrollbar;
 
     private int selectedSlotId = -1;
@@ -119,7 +120,14 @@ public class ShopManager : SingletonGeneric<ShopManager>
             }
         }
 
-        kaching.Play();
+        if (DrivingManager.instance.IsPlayerInVehicle())
+        {
+            kachingTruck.Play();
+        }
+        else
+        {
+            kaching.Play();
+        }
 
         // Update all UIs
         UpdateShopDescription();
