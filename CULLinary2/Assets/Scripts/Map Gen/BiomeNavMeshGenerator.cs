@@ -13,7 +13,8 @@ public class BiomeNavMeshGenerator : MonoBehaviour
     private NavMeshData navMeshData;
     private GameObject orderSubmissionStationParent;
     private bool navMeshGenerated;
-
+    [SerializeField] private NavMeshData defaultMapNavMesh;
+    [SerializeField] private NavMeshData defaultTutorialNavMesh;
     private void Awake()
     {
         parent = this.gameObject.transform.parent.gameObject;
@@ -91,6 +92,11 @@ public class BiomeNavMeshGenerator : MonoBehaviour
 #if UNITY_EDITOR
         navMeshData = AssetDatabase.LoadAssetAtPath<NavMeshData>(savePath);
 #endif
+        int useDefaultMap = PlayerPrefs.GetInt("isGoingToUseDefaultMapAfterTutorial", -1);
+        if (useDefaultMap == 1)
+		{
+            navMeshData = defaultMapNavMesh;
+        }
         if (navMeshData == null)
         {
             //disable sphere collider from order submissions
@@ -116,6 +122,17 @@ public class BiomeNavMeshGenerator : MonoBehaviour
             surfaceForNavMesh.navMeshData = navMeshData;
             surfaceForNavMesh.AddData();
         }
+
+        BiomeGeneratorManager.Instance.ProcessComplete();
+    }
+
+    public IEnumerator GenerateTutorialMesh()
+    {
+        savePath = "Assets/Scenes/UtilScenes/Saved_Meshes/" + "NavMesh" + ".asset";
+        yield return StartCoroutine(CombineAllMeshes());
+        navMeshData = defaultTutorialNavMesh;
+        surfaceForNavMesh.navMeshData = navMeshData;
+        surfaceForNavMesh.AddData();
 
         BiomeGeneratorManager.Instance.ProcessComplete();
     }

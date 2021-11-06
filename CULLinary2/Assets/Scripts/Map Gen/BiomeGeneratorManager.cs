@@ -39,16 +39,34 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
                 obj.SetActive(false);
             }
         }
-
-		CheckForExistingData();
+        int useDefaultMap = PlayerPrefs.GetInt("isGoingToUseDefaultMapAfterTutorial", -1);
+        if (useDefaultMap != 0 && useDefaultMap != 1)
+        {
+            Debug.Log("Oops! Not sure if using default map or random seed.");
+        }
+        CheckForExistingData();
         if (hasExistingData)
         {
-            yield return StartCoroutine(LoadExistingBiome());
+            if (useDefaultMap == 0)
+            {
+                yield return StartCoroutine(LoadExistingBiome());
+            } 
+            else
+			{
+                yield return StartCoroutine(LoadDefaultBiome());
+            }
         }
         else
         {
             yield return StartCoroutine(StartGeneration());
-            yield return StartCoroutine(LoadExistingBiome());
+            if (useDefaultMap == 0)
+            {
+                yield return StartCoroutine(LoadExistingBiome());
+            }
+            else
+            {
+                yield return StartCoroutine(LoadDefaultBiome());
+            }
         }
 
         foreach (GameObject obj in hideWhileLoading)
@@ -167,7 +185,7 @@ public class BiomeGeneratorManager : SingletonGeneric<BiomeGeneratorManager>
                 biomeObjectSpawner.SpawnObjects(BiomeDataManager.instance.seed)));
 
         yield return StartCoroutine(Process("Generating AI map for monsters", 0.66f,
-                biomeNavMeshGenerator.GenerateMesh()));
+                biomeNavMeshGenerator.GenerateTutorialMesh()));
 
         yield return StartCoroutine(Process("Final touches", 0.99f,
                 biomeGenerator.ReactivateMap()));
