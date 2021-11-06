@@ -349,6 +349,11 @@ public class UIController : SingletonGeneric<UIController>
         creatureTab.SetActive(false);
     }
 
+    public void SetCurrentUiPage(int pageNum)
+    {
+        currentUiPage = pageNum;
+    }
+
     // Remembers the current player interactable for interaction
     public void SetPlayerInteractable(PlayerInteractable interactable)
     {
@@ -514,12 +519,12 @@ public class UIController : SingletonGeneric<UIController>
         // Menu/Tabs interface is active
         else if (Input.GetKeyDown(rightUiTabKeyCode))
         {
-            currentUiPage = (currentUiPage + 1) % 5;
+            currentUiPage = (currentUiPage + 1) % 6;
             HandlePageChange();
         }
         else if (Input.GetKeyDown(leftUiTabKeyCode))
         {
-            currentUiPage = (currentUiPage + 4) % 5;
+            currentUiPage = (currentUiPage + 5) % 6;
             HandlePageChange();
         }
         else if (Input.GetKeyDown(closeUiKeyCode))
@@ -594,8 +599,8 @@ public enum UIPage
 {
     INVENTORY = 0,
     ORDERS = 1,
-    RECIPES = 2,
-    WEAPONS = 3,
-    SHOP = 4,
-    CREATURES = 5
+    CREATURES = 2,
+    RECIPES = 3,
+    WEAPONS = 4,
+    SHOP = 5
 }

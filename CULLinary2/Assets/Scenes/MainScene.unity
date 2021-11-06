@@ -41884,6 +41884,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1492946323}
+  - component: {fileID: 1492946324}
   m_Layer: 5
   m_Name: Creatures UI
   m_TagString: Untagged
@@ -41915,6 +41916,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1492946324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1492946322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c80a0b3b148130f4d9f4604d2d039c53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thisUiPage: 2
 --- !u!1 &1494396250
 GameObject:
   m_ObjectHideFlags: 0
@@ -61302,7 +61316,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb59fab3258daa44883a6c50dfef71ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  doClickSound: 1
+  doClickSound: 0
 --- !u!224 &695325734555484460
 RectTransform:
   m_ObjectHideFlags: 0
@@ -68132,6 +68146,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5893098491619452268}
   - component: {fileID: 8908541866539183355}
+  - component: {fileID: 2545507601038897608}
   m_Layer: 5
   m_Name: Recipes UI
   m_TagString: Untagged
@@ -68139,6 +68154,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
+--- !u!114 &2545507601038897608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2545507601038897607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c80a0b3b148130f4d9f4604d2d039c53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thisUiPage: 3
 --- !u!224 &2554248177049109775
 RectTransform:
   m_ObjectHideFlags: 0
@@ -74251,6 +74279,7 @@ GameObject:
   - component: {fileID: 5917597596437685159}
   - component: {fileID: 7797799681028742552}
   - component: {fileID: 8818321284762231870}
+  - component: {fileID: 4222028053516729757}
   m_Layer: 5
   m_Name: Orders UI
   m_TagString: Untagged
@@ -74258,6 +74287,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
+--- !u!114 &4222028053516729757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4222028053516729756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c80a0b3b148130f4d9f4604d2d039c53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thisUiPage: 1
 --- !u!224 &4228467200313038020
 RectTransform:
   m_ObjectHideFlags: 0
@@ -90055,6 +90097,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6662030478102890000}
+  - component: {fileID: 6662030478102890002}
   m_Layer: 5
   m_Name: Inventory UI
   m_TagString: Untagged
@@ -90062,6 +90105,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
+--- !u!114 &6662030478102890002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6662030478102890001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c80a0b3b148130f4d9f4604d2d039c53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thisUiPage: 0
 --- !u!1 &6662030478257019932
 GameObject:
   m_ObjectHideFlags: 0
@@ -90071,6 +90127,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6662030478257019935}
+  - component: {fileID: 6662030478257019933}
   m_Layer: 5
   m_Name: Weapons UI
   m_TagString: Untagged
@@ -90078,6 +90135,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
+--- !u!114 &6662030478257019933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6662030478257019932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c80a0b3b148130f4d9f4604d2d039c53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thisUiPage: 4
 --- !u!224 &6662030478257019935
 RectTransform:
   m_ObjectHideFlags: 0
@@ -90633,6 +90703,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6662030478394873832}
+  - component: {fileID: 6662030478394873834}
   m_Layer: 5
   m_Name: Shop UI
   m_TagString: Untagged
@@ -90640,6 +90711,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
+--- !u!114 &6662030478394873834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6662030478394873833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c80a0b3b148130f4d9f4604d2d039c53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thisUiPage: 5
 --- !u!224 &6662030478403688064
 RectTransform:
   m_ObjectHideFlags: 0

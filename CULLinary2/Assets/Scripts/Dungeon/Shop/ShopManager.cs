@@ -37,6 +37,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
         //Guard clause to check if there's a valid slot selected
         if (selectedSlotId == -1)
         {
+            ButtonAudio.Instance.ClickFailed();
             return;
         }
 
@@ -47,6 +48,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
         //Guard clause to check if player has enough money
         if (itemPrice > PlayerManager.instance.currentMoney)
         {
+            ButtonAudio.Instance.ClickFailed();
             return;
         }
 
@@ -85,6 +87,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
             EventShopItem eventItemPurchased = (EventShopItem)itemPurchased;
             if (SpecialEventManager.instance.CheckIfEventIsRunning(eventItemPurchased.eventId) || eventItemPurchased.CheckIfPurchased())
             {
+                ButtonAudio.Instance.ClickFailed();
                 return;
             }
             Debug.Log("Bought event item!");
@@ -120,6 +123,7 @@ public class ShopManager : SingletonGeneric<ShopManager>
             }
         }
 
+        ButtonAudio.Instance.Click();
         if (DrivingManager.instance.IsPlayerInVehicle())
         {
             kachingTruck.Play();
