@@ -38,6 +38,13 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     public int currentDay;
     public int currentNewspaperIssue = 1;
     public bool isTruckUnlocked = false;
+    public int moneyEarned = 0; //from customers
+    public int ordersFulfilled = 0;
+    public int noOfDeaths = 0;
+    public int enemiesCulled = 0;
+    public float gameTime = 0f;
+    public float bossTime = 0f;
+
     public List<MonsterName> unlockedMonsters = new List<MonsterName> { MonsterName.Bread, MonsterName.DaddyPotato, MonsterName.Potato };
     public Dictionary<MonsterName, PopulationLevel> monsterDict = new Dictionary<MonsterName, PopulationLevel>{
         {MonsterName.Bread, PopulationLevel.Normal},
@@ -92,9 +99,22 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.currentNewspaperIssue = currentNewspaperIssue;
         playerData.unlockedMonsters = unlockedMonsters.ToArray();
         playerData.isTruckUnlocked = isTruckUnlocked;
+        playerData.enemiesCulled = enemiesCulled;
+        SaveStats();
         SaveSystem.SaveData(playerData);
     }
 
+    public void SaveStats()
+    {
+        if (GameTimeTracker.instance != null)
+        {
+            playerData.gameTime = gameTime;
+            //GameTimeTracker.instance.gameTime = 0f; //Reset timer after saving game
+        }
+        playerData.ordersFulfilled = ordersFulfilled;
+        playerData.moneyEarned = moneyEarned;
+        playerData.noOfDeaths = noOfDeaths;
+    }
 
     public void LoadData()
     {
@@ -136,6 +156,12 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         modernaShot = playerData.modernaShot;
         currentNewspaperIssue = playerData.currentNewspaperIssue;
         isTruckUnlocked = playerData.isTruckUnlocked;
+        moneyEarned = playerData.moneyEarned;
+        ordersFulfilled = playerData.ordersFulfilled;
+        noOfDeaths = playerData.noOfDeaths;
+        gameTime = playerData.gameTime;
+        bossTime = playerData.bossTime;
+        enemiesCulled = playerData.enemiesCulled;
         LoadMonsters();
     }
 

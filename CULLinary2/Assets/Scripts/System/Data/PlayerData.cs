@@ -31,6 +31,15 @@ public class PlayerData
     public float campfireRegenerationRate;
     public bool isTruckUnlocked = false;
 
+    //Stats
+    public int moneyEarned = 0; //from customers
+    public int ordersFulfilled = 0;
+    public int noOfDeaths = 0;
+    public float gameTime = 0f;
+    public float bossTime = 0f;
+    public int enemiesCulled = 0;
+
+
 
     public PlayerData()
     {
@@ -58,6 +67,12 @@ public class PlayerData
         modernaShot = 0;
         currentNewspaperIssue = 1;
         isTruckUnlocked = false;
+        moneyEarned = 0;
+        ordersFulfilled = 0;
+        noOfDeaths = 0;
+        gameTime = 0f;
+        bossTime = 0f;
+        enemiesCulled = 0;
         unlockedMonsters = new MonsterName[3] { MonsterName.Bread, MonsterName.DaddyPotato, MonsterName.Potato };
         monsterSavedDatas = new MonsterSavedData[12] {
             new MonsterSavedData(MonsterName.Bread, PopulationLevel.Normal),
