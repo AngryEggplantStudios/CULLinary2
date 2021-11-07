@@ -149,7 +149,7 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
             return;
         }
 
-        int currentLevel = PlayerManager.instance.upgradesArray[itemToBePurchased.weaponSkillId];
+        int currentLevel = PlayerManager.instance.weaponSkillArray[itemToBePurchased.weaponSkillId];
         int itemPrice = itemToBePurchased.price[currentLevel];
 
         if (itemPrice > PlayerManager.instance.currentMoney)
