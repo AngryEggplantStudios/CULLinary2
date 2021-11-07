@@ -24,7 +24,7 @@ public class CameraObstacleManager : MonoBehaviour
 
     void Update()
     {
-        if (DrivingManager.instance.IsPlayerInVehicle())
+        if (DrivingManager.instance != null && DrivingManager.instance.IsPlayerInVehicle())
         {
             currentCam = truckCam;
             currentEntity = driveableTruck;
