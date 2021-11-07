@@ -392,6 +392,8 @@ public class MonsterScript : Monster
 
     public void Die()
     {
+        //Update Stats
+        PlayerManager.instance.enemiesCulled++;
         EcosystemManager.DecreasePopulation(monsterName, 1);
 
         // update spawn cap for the spawner it came from

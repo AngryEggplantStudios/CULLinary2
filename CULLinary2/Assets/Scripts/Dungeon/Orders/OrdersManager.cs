@@ -151,12 +151,17 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
             // Invoke additional callbacks given to OrdersManager
             onOrderCompleteCallback.Invoke(stationId, orderToComplete.GetRecipe().recipeId);
 
-            // Update statistics
+            // Update statistics (Today)
             numOfOrdersCompletedToday++;
-            moneyEarnedToday = moneyEarnedToday + earnings;
+            moneyEarnedToday += earnings;
+
+            //Update statistics (Overall)
+            PlayerManager.instance.ordersFulfilled++;
+            PlayerManager.instance.moneyEarned += earnings;
 
             // Invalidate the cache of number of orders for each recipe
             isCacheValid = false;
+
             return true;
         }
         else

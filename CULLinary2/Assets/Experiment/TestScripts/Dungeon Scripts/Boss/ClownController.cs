@@ -154,6 +154,7 @@ public class ClownController : MonoBehaviour
                 //Don't rainburgers yet
                 //endingBurgers.GetComponent<SpawnBurger>().callRainBurger();
                 healthOfPlayer.SetIsClownActive(false);
+                WinStatsController.instance.SetupStats();
                 UIController.instance.ShowWinPanel();
                 //whenClownKilledCallback.Invoke();
                 StartCoroutine(WaitZeroPointOneSecondBeforeKilling());
@@ -260,7 +261,7 @@ public class ClownController : MonoBehaviour
                     else if (health / maxHealth < 0.7f)
                     {
                         rangedAttackScript.activateStage2();
-                        spawnAttackScript.activateStage2( );
+                        spawnAttackScript.activateStage2();
                     }
                     else
                     {

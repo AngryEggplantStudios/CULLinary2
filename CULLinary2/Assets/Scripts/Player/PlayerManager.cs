@@ -38,6 +38,12 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     public int currentDay;
     public int currentNewspaperIssue = 1;
     public bool isTruckUnlocked = false;
+    public int moneyEarned = 0; //from customers
+    public int ordersFulfilled = 0;
+    public int noOfDeaths = 0;
+    public int enemiesCulled = 0;
+    public float gameTime = 0f;
+    public float bossTime = 0f;
     public bool isTruckTutorialDone = false;
     public List<MonsterName> unlockedMonsters = new List<MonsterName> { MonsterName.Bread, MonsterName.DaddyPotato, MonsterName.Potato };
     public Dictionary<MonsterName, PopulationLevel> monsterDict = new Dictionary<MonsterName, PopulationLevel>{
@@ -94,9 +100,13 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.unlockedMonsters = unlockedMonsters.ToArray();
         playerData.isTruckUnlocked = isTruckUnlocked;
         playerData.isTruckTutorialDone = isTruckTutorialDone;
+        playerData.gameTime = gameTime;
+        playerData.ordersFulfilled = ordersFulfilled;
+        playerData.moneyEarned = moneyEarned;
+        playerData.noOfDeaths = noOfDeaths;
+        playerData.enemiesCulled = enemiesCulled;
         SaveSystem.SaveData(playerData);
     }
-
 
     public void LoadData()
     {
@@ -137,7 +147,14 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         pfizerShot = playerData.pfizerShot;
         modernaShot = playerData.modernaShot;
         currentNewspaperIssue = playerData.currentNewspaperIssue;
+        isTruckTutorialDone = playerData.isTruckTutorialDone;
         isTruckUnlocked = playerData.isTruckUnlocked;
+        moneyEarned = playerData.moneyEarned;
+        ordersFulfilled = playerData.ordersFulfilled;
+        noOfDeaths = playerData.noOfDeaths;
+        gameTime = playerData.gameTime;
+        bossTime = playerData.bossTime;
+        enemiesCulled = playerData.enemiesCulled;
         LoadMonsters();
     }
 

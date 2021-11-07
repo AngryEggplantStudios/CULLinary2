@@ -129,6 +129,9 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
         // OnBeforeStartNewDay?.Invoke();
         OnStartNewDay?.Invoke();
+
+        //Open orders at start of the day
+        UIController.instance.ToggleOrders();
     }
 
     // Adds a certain number of minutes to the clock
@@ -169,7 +172,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
                 hypeBgm.clip = hypeMusic[musicTrack];
                 chillBgm.Play();
                 hypeBgm.Play();
-                
+
                 Time.timeScale = 0;
                 newspaperDets.UpdateNewspaperIssueUI(currentNews);
                 UIController.instance.isNewspaperOpen = true;
@@ -181,10 +184,10 @@ public class GameTimer : SingletonGeneric<GameTimer>
         }
 
         if (!hasActivatedMushroom && gameTime >= sunset && gameTime < dayEndTime)
-		{
+        {
             hasActivatedMushroom = true;
             StartCoroutine(invokeMushy());
-		}
+        }
 
         if (gameTime >= dayEndTime)
         {
@@ -206,7 +209,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
     }
 
     public bool GetIsMushroomActive()
-	{
+    {
         return hasActivatedMushroom;
     }
 

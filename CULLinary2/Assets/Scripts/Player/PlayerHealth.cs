@@ -239,6 +239,7 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
     private void Die()
     {
         animator.SetTrigger("isDead");
+        PlayerManager.instance.noOfDeaths++;
         UIController.instance.ShowDeathMenu();
     }
 
@@ -264,18 +265,18 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
     }
 
     public void DestroyDamageCounter(GameObject damageNum)
-	{
+    {
         if (playerDamagedNumbers.Contains(damageNum))
-		{
+        {
             playerDamagedNumbers.Remove(damageNum);
         }
     }
     public void DestroyAllDamageCounter()
     {
         foreach (GameObject damageCounter in playerDamagedNumbers)
-		{
+        {
             Destroy(damageCounter);
-		}
+        }
     }
 
     private void SpawnDrowningAlert()
@@ -335,9 +336,9 @@ public class PlayerHealth : SingletonGeneric<PlayerHealth>
     }
 
     public void SetIsClownActive(bool isActive)
-	{
+    {
         isClownActive = isActive;
-	}
+    }
 }
 
 /*
