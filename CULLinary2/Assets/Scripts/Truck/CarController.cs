@@ -232,6 +232,12 @@ public class CarController : MonoBehaviour
     {
         return rigidBody.velocity.magnitude > stoppingEpsilon;
     }
+
+    // Checks if the car is in reverse
+    public bool IsReversing()
+    {
+        return isReversing;
+    }
     
     // Checks if the car is moving faster than the collision speed
     public bool IsPastCollisionSpeed()
