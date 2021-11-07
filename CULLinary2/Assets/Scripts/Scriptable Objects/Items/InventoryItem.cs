@@ -45,22 +45,22 @@ public class InventoryItem : Item
                     result += "+ " + increaseBaseDamageAmount + " Base Damage";
                     break;
                 case BuffType.BUFF_BASE_DAMAGE:
-                    result += "Melee Boost for " + buffDuration + "s";
+                    result += "Melee Boost, " + buffDuration + "s";
                     break;
                 case BuffType.BUFF_MONEY_BONUS:
-                    result += "Double Earnings for " + buffDuration + "s";
+                    result += "x2 Earnings, " + buffDuration + "s";
                     break;
                 case BuffType.BUFF_UNLIMITED_STAMINA:
-                    result += "Unlimited Stamina for " + buffDuration + "s";
+                    result += "Unlimited Stamina, " + buffDuration + "s";
                     break;
                 case BuffType.BUFF_INVINCIBILITY:
-                    result += "Invincible for " + buffDuration + "s";
+                    result += "Invincible, " + buffDuration + "s";
                     break;
                 case BuffType.BUFF_EVASION_BOOST:
-                    result += "+ " + evasionBoostAmount + " Evasion Chance for " + buffDuration + "s";
+                    result += "+ " + evasionBoostAmount + " Evade Chn., " + buffDuration + "s";
                     break;
                 case BuffType.BUFF_CRIT_BOOST:
-                    result += "+ " + critBoostAmount + " Crit Chance for " + buffDuration + "s";
+                    result += "+ " + critBoostAmount + " Crit Chance, " + buffDuration + "s";
                     break;
                 case BuffType.SUMMON_EVENT:
                     result += "Lures a certain monster";
@@ -68,7 +68,14 @@ public class InventoryItem : Item
             }
             isStringModified = true;
         }
-        return result;
+        if (!isStringModified)
+        {
+            return "None";
+        }
+        else
+        {
+            return result;
+        }
     }
     /*
 
