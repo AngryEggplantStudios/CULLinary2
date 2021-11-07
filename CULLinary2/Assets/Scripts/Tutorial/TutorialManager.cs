@@ -28,6 +28,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
     // Tutorial directions UI
     public GameObject tutorialDirectionsPanel;
     public TextMeshProUGUI tutorialDirectionsText;
+    public AudioSource taskCompleteAudio;
 
     // Tutorial variables
     public int orderSubmissionStnId = 0;
@@ -205,6 +206,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
             }
             Debug.Log("event #" + currEventId + ": waiting for event trigger to be fulfilled");
             yield return new WaitUntil(() => events[currEventId].CanTriggerNextEvent);
+            taskCompleteAudio.Play();
             yield return new WaitForSeconds(0.25f);
             currEventId++;
             DisplayDialogue();
@@ -216,6 +218,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
             Debug.Log("event #" + currEventId + ": should check for trigger is set to true");
             Debug.Log("event #" + currEventId + ": waiting for event trigger to be fulfilled");
             yield return new WaitUntil(() => events[currEventId].CanTriggerNextEvent);
+            taskCompleteAudio.Play();
             yield return new WaitForSeconds(0.25f);
             currEventId++;
             DisplayDialogue();

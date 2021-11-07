@@ -44,7 +44,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
     public int enemiesCulled = 0;
     public float gameTime = 0f;
     public float bossTime = 0f;
-
+    public bool isTruckTutorialDone = false;
     public List<MonsterName> unlockedMonsters = new List<MonsterName> { MonsterName.Bread, MonsterName.DaddyPotato, MonsterName.Potato };
     public Dictionary<MonsterName, PopulationLevel> monsterDict = new Dictionary<MonsterName, PopulationLevel>{
         {MonsterName.Bread, PopulationLevel.Normal},
@@ -101,6 +101,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.isTruckUnlocked = isTruckUnlocked;
         playerData.enemiesCulled = enemiesCulled;
         SaveStats();
+        playerData.isTruckTutorialDone = isTruckTutorialDone;
         SaveSystem.SaveData(playerData);
     }
 
@@ -155,6 +156,7 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         pfizerShot = playerData.pfizerShot;
         modernaShot = playerData.modernaShot;
         currentNewspaperIssue = playerData.currentNewspaperIssue;
+        isTruckTutorialDone = playerData.isTruckTutorialDone;
         isTruckUnlocked = playerData.isTruckUnlocked;
         moneyEarned = playerData.moneyEarned;
         ordersFulfilled = playerData.ordersFulfilled;

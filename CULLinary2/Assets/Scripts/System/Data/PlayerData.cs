@@ -30,6 +30,7 @@ public class PlayerData
     public int currentSecondaryHeld = 3;
     public float campfireRegenerationRate;
     public bool isTruckUnlocked = false;
+    public bool isTruckTutorialDone;
 
     //Stats
     public int moneyEarned = 0; //from customers
@@ -73,6 +74,7 @@ public class PlayerData
         gameTime = 0f;
         bossTime = 0f;
         enemiesCulled = 0;
+        isTruckTutorialDone = false;
         unlockedMonsters = new MonsterName[3] { MonsterName.Bread, MonsterName.DaddyPotato, MonsterName.Potato };
         monsterSavedDatas = new MonsterSavedData[12] {
             new MonsterSavedData(MonsterName.Bread, PopulationLevel.Normal),

@@ -49,6 +49,8 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
     [SerializeField] private GameObject playerCanvas;
     // Prevent trails moving when summoning truck
     [SerializeField] private TrailRenderer[] hideTrailsWhenSummoning;
+    [Header("For Tutorial")]
+    [SerializeField] private GameObject truckTutorialManager;
 
     private Vector3 rightEdgeOfTruck;
     private bool isPlayerInVehicle = false;
@@ -141,6 +143,11 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         // Hide stamina when driving
         wasStaminaIconActivePreviously = staminaIcon.activeSelf;
         staminaIcon.SetActive(false);
+
+        if (!PlayerManager.instance.isTruckTutorialDone)
+        {
+            truckTutorialManager.SetActive(true);
+        }
     }
 
     // Makes the player leave the vehicle
@@ -189,12 +196,20 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         ordersMapIcon.SetActive(true);
         isPlayerInVehicle = false;
         UIController.instance.isPlayerInVehicle = false;
+        truckTutorialManager.SetActive(false);
     }
 
     // Checks if the player is driving the truck
     public bool IsPlayerInVehicle()
     {
         return isPlayerInVehicle;
+    }
+    
+    // Checks if the car is in reverse
+    public bool IsTruckReversing()
+    {
+        CarController truckController = driveableTruck.GetComponent<CarController>();
+        return truckController.enabled && truckController.IsReversing();
     }
 
     // Returns the y-axis rotation of the truck
