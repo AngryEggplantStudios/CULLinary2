@@ -64,22 +64,22 @@ public static class DialogueDatabase
         /* 0 */ "{[L]0}*Rrring rrring* Oh, looks like I already have an order coming in!",
         /* 1 */ "{[R]1}Hey Chef! Are you still open for business?"
                     + "{[L]0}Yes, I'm now open for delivery. What would you like to have, Tew Tawrel?"
-                    + "{[R]1}That's great! I want some french fries, please. *Call ended*",
-        /* 2 */ "{[L]0}I just got my first order! Let me check how many ingredients I need by pressing TAB to see my Orders and Recipe menus.",
+                    + "{[R]1}That's great! I want some French fries, please. *Call ended*",
+        /* 2 */ "{[L]0}I just got my first order! Let me check how many ingredients I need by pressing TAB to see my Orders and Recipes menus.",
         /* 3 */ "{[L]0}Okay, time to find me 3 potatoes by killing some potatoes. (Move around with WASD and attack with Left Mouse Button).",
-        /* 4 */ "{[L]0}Now that I've collected 3 potatoes, I gotta find a campfire to cook the french fries. I can use the map to find a campfire.",
-        /* 5 */ "{[L]0}Alright I got the french fries ready to go! Time to deliver it to my customer."
-                    + "{[R]1}Hey Chef! You got my french fries yet?"
+        /* 4 */ "{[L]0}Now that I've collected 3 potatoes, I gotta find a campfire to cook the French fries. I can use the map to find a campfire.",
+        /* 5 */ "{[L]0}Alright I got the French fries ready to go! Time to deliver it to my customer."
+                    + "{[R]1}Hey Chef! You got my French fries yet?"
                     + "{[L]0}Yes! I was about to deliver it to you."
-                    + "{[R]1}Great! Just wanted to let you know you need to deliver your orders before the day ends. *Call ended*",
-        /* 6 */ "{[L]0}Okay, let's go deliver the french fries to Tew Tawrel! Gotta check the map to find out where his house is at.",
+                    + "{[R]1}Great! Do you see the clock at the top? Just remember that you have to deliver your orders before the day ends at 23:59. *Call ended*",
+        /* 6 */ "{[L]0}Okay, let's go deliver the French fries to Tew Tawrel! Gotta check the map to find out where his house is at.",
         /* 7 */ "{[R]1}Hey you're here!"
-                    + "{[L]0}Yeap, I'm here to deliver your french fries."
+                    + "{[L]0}Yeap, I'm here to deliver your French fries."
                     + "{[R]1}Did you also know you could actually eat your own cooked food and get some special effects? How cool is that?!"
-                    + "{[L]0}Oooh hmmmm… it sure looks tasty…"
-                    + "{[R]1}Hey but those french fries are mine! If you eat my food, I'll get hangry >:("
-                    + "{[R]1}Now take your money and gimme my french fries!"
-                    + "{[L]0}Fine… here you go.",
+                    + "{[L]0}Oooh hmmmm... it sure looks tasty..."
+                    + "{[R]1}Hey but those French fries are mine! If you eat my food, I'll get hangry >:("
+                    + "{[R]1}Now take your money and gimme my French fries!"
+                    + "{[L]0}Fine... here you go.",
         /* 8 */ "{[L]0}Looks like I can earn money from delivering orders and I can use the money to buy new weapons and other things to become stronger and complete more orders and earn EVEN MORE money...",
         /* 9 */ "{[L]0}I also need to keep an eye out for the newspaper, I've heard that more and more strange foods have been appearing lately... I wonder what's causing it...",
         /* 10 */ "{[L]0}Well, now I'm ready. Let's start CULLing!",

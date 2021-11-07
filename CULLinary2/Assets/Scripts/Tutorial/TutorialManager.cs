@@ -14,20 +14,17 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
     // Store IDs of events with triggers for their next events (for creating tutorial events and updating)
     private List<int> eventIdWithTriggers = new List<int> { 2, 3, 4, 6, 7 };
     private Dictionary<int, string> tutDirections = new Dictionary<int, string>() {
-        {2, "Open orders and recipes menu"},
+        {2, "Open Orders and Recipes menu"},
         {3, "Kill potatoes and collect 3 potatoes"},
-        {4, "Cook up French Fries at campfire"},
+        {4, "Cook up French fries at campfire"},
         {6, "Go to Tew Tawrel's house"},
-        {7, "Deliver french fries"},
+        {7, "Deliver French fries"},
     };
 
     public Transform player;
-    public delegate void RestartTutorialDelegate();
-    public static event RestartTutorialDelegate OnRestartTutorial;
-
-    // Tutorial directions UI
-    public GameObject tutorialDirectionsPanel;
-    public TextMeshProUGUI tutorialDirectionsText;
+    [Header("Tutorial variables/references")]
+    public GameObject dayCounterUI;
+    public GameObject dayTimerUI;
     public AudioSource taskCompleteAudio;
 
     // Tutorial variables
@@ -35,6 +32,14 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
     public GameObject tutorialPotato;
     public GameObject tutorialPotatoesParent;
     public bool canDeliverFood = false; // Disallow delivery until event #7
+
+    // Tutorial directions UI
+    [Header("Tutorial directions UI")]
+    public GameObject tutorialDirectionsPanel;
+    public TextMeshProUGUI tutorialDirectionsText;
+
+    public delegate void RestartTutorialDelegate();
+    public static event RestartTutorialDelegate OnRestartTutorial;
 
 
     // Start is called before the first frame update
@@ -161,6 +166,16 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
         {
             ActivatePotatoes();
         }
+        if (currEventId == 4)
+        {
+            // Introduce day number and timer
+            dayCounterUI.SetActive(true);
+            dayTimerUI.SetActive(true);
+        }
+        if (currEventId == 5)
+        {
+            TutorialGameTimer.instance.Run();
+        }
 
         TutorialEvent currEvent = events[currEventId];
         if (!currEvent.HasTriggerForNextEvent)
@@ -226,23 +241,23 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
 
     }
 
-    public void RestartTutorial()
-    {
-        currEventId = 0;
-        canDeliverFood = false;
-        tutorialPotatoesParent.SetActive(false); // TODO: need to spawn new potatoes
+    // public void RestartTutorial()
+    // {
+    //     currEventId = 0;
+    //     canDeliverFood = false;
+    //     tutorialPotatoesParent.SetActive(false); // TODO: need to spawn new potatoes
 
-        // Spawn player at the tutorial campfire
-        player.GetComponent<PlayerHealth>().DestroyAllDamageCounter();
-        player.GetComponent<CharacterController>().enabled = false;
-        player.transform.position = new Vector3(-83.0f, 0f, 53.0f);
-        player.GetComponent<CharacterController>().enabled = true;
+    //     // Spawn player at the tutorial campfire
+    //     player.GetComponent<PlayerHealth>().DestroyAllDamageCounter();
+    //     player.GetComponent<CharacterController>().enabled = false;
+    //     player.transform.position = new Vector3(-83.0f, 0f, 53.0f);
+    //     player.GetComponent<CharacterController>().enabled = true;
 
-        CreateTutorialEvents();
-        OnRestartTutorial?.Invoke();
+    //     CreateTutorialEvents();
+    //     OnRestartTutorial?.Invoke();
 
-        TutorialGameTimer.instance.RestartDay();
-    }
+    //     TutorialGameTimer.instance.RestartDay();
+    // }
 
     public void ActivatePotatoes()
     {
@@ -257,7 +272,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
             Debug.Log("Oops! Not sure if using default map or random seed.");
             return;
         }
-        
+
         PlayerData playerData = PlayerManager.instance.CreateBlankData();
         BiomeData biomeData = new BiomeData();
         if (useDefaultMap == 0)
