@@ -31,6 +31,6 @@ public class WinStatsController : SingletonGeneric<WinStatsController>
         mins = (int)Mathf.Floor(time / 60);
         time -= mins * 60;
         secs = (int)Mathf.Floor(time);
-        return hrs + "h " + mins + "m " + secs + "s";
+        return hrs + "h" + mins + "m" + secs + "s";
     }
 }
