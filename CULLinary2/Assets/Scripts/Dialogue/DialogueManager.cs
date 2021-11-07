@@ -233,7 +233,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
             RunChoiceDialogue(choice);
         }
     }
-    
+
     private void PreventSkip()
     {
         if (skipDialogueText != null)
@@ -315,6 +315,10 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
         mePanel.SetActive(false);
         theyPanel.SetActive(false);
         choicePanel.SetActive(false);
+        if (skipDialogueText != null)
+        {
+            skipDialogueText.SetActive(false);
+        }
     }
 
     public void ShowCannotSkipMessage()
