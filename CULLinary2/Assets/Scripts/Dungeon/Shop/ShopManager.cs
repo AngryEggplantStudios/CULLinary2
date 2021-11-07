@@ -332,18 +332,43 @@ public class ShopManager : SingletonGeneric<ShopManager>
             {
                 case 7:
                     consumableCounterText.text = "Currently, you have " + PlayerManager.instance.healthPill + " " + itemSelected.itemName + "(s).";
+                    if (PlayerManager.instance.healthPill >= 99)
+                    {
+                        upgradeButton.interactable = false;
+                        purchaseWarning.text = "Inventory for this is full!";
+                    }
                     break;
                 case 8:
                     consumableCounterText.text = "Currently, you have " + PlayerManager.instance.staminaPill + " " + itemSelected.itemName + "(s).";
+                    if (PlayerManager.instance.staminaPill >= 99)
+                    {
+                        upgradeButton.interactable = false;
+                        purchaseWarning.text = "Inventory for this is full!";
+                    }
                     break;
                 case 9:
                     consumableCounterText.text = "Currently, you have " + PlayerManager.instance.potion + " " + itemSelected.itemName + "(s).";
+                    if (PlayerManager.instance.potion >= 99)
+                    {
+                        upgradeButton.interactable = false;
+                        purchaseWarning.text = "Inventory for this is full!";
+                    }
                     break;
                 case 10:
                     consumableCounterText.text = "Currently, you have " + PlayerManager.instance.pfizerShot + " " + itemSelected.itemName + "(s).";
+                    if (PlayerManager.instance.pfizerShot >= 99)
+                    {
+                        upgradeButton.interactable = false;
+                        purchaseWarning.text = "Inventory for this is full!";
+                    }
                     break;
                 case 11:
                     consumableCounterText.text = "Currently, you have " + PlayerManager.instance.modernaShot + " " + itemSelected.itemName + "(s).";
+                    if (PlayerManager.instance.modernaShot >= 99)
+                    {
+                        upgradeButton.interactable = false;
+                        purchaseWarning.text = "Inventory for this is full!";
+                    }
                     break;
             }
 
