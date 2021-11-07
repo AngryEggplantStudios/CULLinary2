@@ -99,22 +99,13 @@ public class PlayerManager : SingletonGeneric<PlayerManager>
         playerData.currentNewspaperIssue = currentNewspaperIssue;
         playerData.unlockedMonsters = unlockedMonsters.ToArray();
         playerData.isTruckUnlocked = isTruckUnlocked;
-        playerData.enemiesCulled = enemiesCulled;
-        SaveStats();
         playerData.isTruckTutorialDone = isTruckTutorialDone;
-        SaveSystem.SaveData(playerData);
-    }
-
-    public void SaveStats()
-    {
-        if (GameTimeTracker.instance != null)
-        {
-            playerData.gameTime = gameTime;
-            //GameTimeTracker.instance.gameTime = 0f; //Reset timer after saving game
-        }
+        playerData.gameTime = gameTime;
         playerData.ordersFulfilled = ordersFulfilled;
         playerData.moneyEarned = moneyEarned;
         playerData.noOfDeaths = noOfDeaths;
+        playerData.enemiesCulled = enemiesCulled;
+        SaveSystem.SaveData(playerData);
     }
 
     public void LoadData()
