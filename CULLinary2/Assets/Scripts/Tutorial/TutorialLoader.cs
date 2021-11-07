@@ -41,7 +41,7 @@ public class TutorialLoader : SingletonGeneric<TutorialLoader>
     {
         audioListener.enabled = true;
         yield return StartCoroutine(databaseLoader.PopulateTutorial());
-        yield return StartCoroutine(biomeGeneratorManager.LoadBiome());
+        yield return StartCoroutine(biomeGeneratorManager.LoadBiomeForTutorial());
         //yield return StartCoroutine(dungeonSpawnManager.GetSpawners());
         audioListener.enabled = false;
         yield return StartCoroutine(LoadObjects());
@@ -55,7 +55,8 @@ public class TutorialLoader : SingletonGeneric<TutorialLoader>
 
         LoadScene.instance.ChangeLoadingText("Generating biome...");
         LoadScene.instance.ChangeProgress(0.3f);
-        yield return StartCoroutine(biomeGeneratorManager.LoadBiome());
+        Debug.Log("Loading biome");
+        yield return StartCoroutine(biomeGeneratorManager.LoadBiomeForTutorial());
 
         // LoadScene.instance.ChangeLoadingText("Generating monsters...");
         // LoadScene.instance.ChangeProgress(0.8f);

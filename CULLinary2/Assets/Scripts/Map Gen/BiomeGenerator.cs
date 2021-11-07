@@ -90,6 +90,7 @@ public class BiomeGenerator : MonoBehaviour
         yield return StartCoroutine(GenerateNoise());
         createdMesh = tutorialCreatedMesh;
         walkableMesh = tutorialWalkableMesh;
+        Debug.Log("TutorialMeesh");
         yield return StartCoroutine(AttachCreatedMesh());
         yield return StartCoroutine(AttachWalkableMesh());
         yield return StartCoroutine(ReactivateNavMesh());
