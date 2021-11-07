@@ -30,6 +30,7 @@ public class PlayerData
     public int currentSecondaryHeld = 3;
     public float campfireRegenerationRate;
     public bool isTruckUnlocked = false;
+    public bool isTruckTutorialDone;
 
 
     public PlayerData()
@@ -58,6 +59,7 @@ public class PlayerData
         modernaShot = 0;
         currentNewspaperIssue = 1;
         isTruckUnlocked = false;
+        isTruckTutorialDone = false;
         unlockedMonsters = new MonsterName[3] { MonsterName.Bread, MonsterName.DaddyPotato, MonsterName.Potato };
         monsterSavedDatas = new MonsterSavedData[12] {
             new MonsterSavedData(MonsterName.Bread, PopulationLevel.Normal),
