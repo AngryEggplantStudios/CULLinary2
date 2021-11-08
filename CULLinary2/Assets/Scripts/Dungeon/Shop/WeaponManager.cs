@@ -44,6 +44,8 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
     [SerializeField] private TMP_Text weaponDamageText;
     [SerializeField] private TMP_Text totalDamageText;
     [SerializeField] private TMP_Text secondaryDamageText;
+    [SerializeField] private TMP_Text primaryWeaponHeldText;
+    [SerializeField] private TMP_Text secondarySkillHeldText;
 
     private int currentTab = 0; //0 for primary, 1 for secondary
     private int primarySelectedSlotId = -1;
@@ -76,6 +78,8 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
         int minSecondaryDamage = Mathf.RoundToInt(secondarySkillDamage * 0.85f);
         int maxSecondaryDamage = Mathf.RoundToInt(secondarySkillDamage * 1.15f);
         secondaryDamageText.text = minSecondaryDamage + " ~ " + maxSecondaryDamage + " DMG";
+        primaryWeaponHeldText.text = primaryWeapon.itemName;
+        secondarySkillHeldText.text = secondarySkill.itemName;
     }
 
 
@@ -129,7 +133,7 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
             playerSecondaryAttack.ChangeSecondaryAttack(weaponId);
         }
         UpdateShopDescription();
-        kaching.Play();
+        equipSound.Play();
         UIController.instance.UpdateFixedHUD();
     }
 

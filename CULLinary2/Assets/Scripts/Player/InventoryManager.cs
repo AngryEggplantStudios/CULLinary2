@@ -31,6 +31,11 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
     [SerializeField] private TMP_Text critChanceText;
     [SerializeField] private TMP_Text evasionChanceText;
     [SerializeField] private TMP_Text secondaryDamageText;
+    [SerializeField] private TMP_Text monstersCulledText;
+    [SerializeField] private TMP_Text ordersCompletedText;
+    [SerializeField] private TMP_Text recipesUnlockedText;
+    [SerializeField] private TMP_Text monstersSeenText;
+    [SerializeField] private TMP_Text gameTimeText;
     private InventorySlot[] slots;
     private int inventoryLimit = 20;
 
@@ -73,6 +78,24 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
         secondaryDamageText.text = minSecondaryDamage + " ~ " + maxSecondaryDamage + " DMG";
         critChanceText.text = (PlayerManager.instance.criticalChance + PlayerManager.instance.criticalBonus) + "%";
         evasionChanceText.text = (PlayerManager.instance.evasionBonus + PlayerManager.instance.evasionChance) + "%";
+        monstersCulledText.text = PlayerManager.instance.enemiesCulled.ToString();
+        ordersCompletedText.text = PlayerManager.instance.ordersFulfilled.ToString();
+        recipesUnlockedText.text = PlayerManager.instance.unlockedRecipesList.Count + " / 37";
+        monstersSeenText.text = PlayerManager.instance.unlockedMonsters.Count + " / 12";
+        gameTimeText.text = ProcessTime(PlayerManager.instance.gameTime);
+    }
+
+    private string ProcessTime(float time)
+    {
+        int hrs;
+        int mins;
+        int secs;
+        hrs = (int)Mathf.Floor(time / (60 * 60));
+        time -= hrs * (60 * 60);
+        mins = (int)Mathf.Floor(time / 60);
+        time -= mins * 60;
+        secs = (int)Mathf.Floor(time);
+        return hrs + "h" + mins + "m" + secs + "s";
     }
 
 
