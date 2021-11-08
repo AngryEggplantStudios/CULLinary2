@@ -58,6 +58,7 @@ public static class DialogueDatabase
         /*   33 */ ("{[R]13}Wait! I have something to say, don't go yet!{[R]13}Today's message is brought to you by our sponsor, CornVPN!{[R]13}Protect your privacy from prying eyes with military-grade encryption!{[L]1}I'm never delivering food to this house again.{[R]13}Remember to like, comment and subscribe, and don't forget to hit the notification bell!{[L]1}Good day to you! I do hope that the food displeases your olfactory system!", 3),
         /*   34 */ ("{[R]14}Hey! I just wanted to say that I really appreciate your delivery service!{[L]0}You are welcome!", 5),
         /*   35 */ ("{[R]14}Wait, I have a promotional code!{[L]0}Sorry... Our delivery business does not have those!{[R]14}Oh? But I got an email that said I won a free pizza!{[R]14}I just had to put in my credit card details to get it!{[L]1}What! That sounds like a scam!{[R]14}Oh? By the love of holy potatoes!{[L]2}You'd better call the bank!{[R]14}I will! I'm such an idiot. Thanks for the food!", 5),
+        /*   36 */ ("{[L]1}What! You are a cactus!{[R]15}Yessa, that'sa right cha. Issa thar a problema?{[L]2}How is this possible?{[R]15}Howsa issa yousa possible?{[L]1}...{[L]1}Just give me my money and we'll never speak of this again!{[R]15}Right cha. Here yousa go cha.{[L]2}What was that?", 1),
     };
 
     private static string[] rawTutorialDialogues = {

@@ -224,6 +224,12 @@ public class DrivingManager : SingletonGeneric<DrivingManager>
         return driveableTruck.transform;
     }
 
+    // Returns the camera following the truck
+    public Camera GetTruckCamera()
+    {
+        return truckCamera;
+    }
+
     public void DoTruckSummonAndShowErrorOnFail()
     {
         if (delay > 0.0f)
