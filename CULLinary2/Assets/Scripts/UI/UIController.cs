@@ -42,6 +42,8 @@ public class UIController : SingletonGeneric<UIController>
     [Header("Winning Screen References")]
     [SerializeField] private AudioSource winningAudio;
     [SerializeField] private GameObject winPanel;
+    [SerializeField] private GameObject credits;
+    [SerializeField] private Animator creditsAnimator;
 
 
     private KeyCode ToggleInventoryKeyCode;
@@ -67,6 +69,10 @@ public class UIController : SingletonGeneric<UIController>
     private GameObject player;
     // For interacting with objects
     private List<PlayerInteractable> currentInteractables = new List<PlayerInteractable>();
+
+    // For truck tutorial
+    private bool isSetToCheckForLeavingVehicle = false;
+    private bool hasLeftVehicle = false;
 
     public override void Awake()
     {
@@ -146,6 +152,20 @@ public class UIController : SingletonGeneric<UIController>
         }
     }
 
+    // For truck tutorial, make UIController check when player leaves
+    public void SetToCheckForLeavingVehicle()
+    {
+        isSetToCheckForLeavingVehicle = true;
+    }
+
+    // For truck tutorial, check if player has left vehicle once
+    public bool HasLeftVehicle()
+    {
+        bool temp = hasLeftVehicle;
+        hasLeftVehicle = false;
+        return temp;
+    }
+
     private IEnumerator PauseToShowDeathAnimation()
     {
         yield return new WaitForSeconds(1.9f);
@@ -200,6 +220,7 @@ public class UIController : SingletonGeneric<UIController>
         if (winningAudio != null)
         {
             winningAudio.Play();
+            GameTimer.instance.StopBgm();
         }
 
         winPanel.SetActive(true);
@@ -210,8 +231,21 @@ public class UIController : SingletonGeneric<UIController>
     public void CloseWinPanel()
     {
         winPanel.SetActive(false);
-        //isPaused = false;
-        Time.timeScale = 1;
+
+        // Show credits
+        creditsAnimator.SetBool("TurnBlack", true);
+        credits.SetActive(true);
+    }
+
+    public void OnEndCredits()
+    {
+        credits.SetActive(false);
+        // Go to next day and save game
+        if (winningAudio != null)
+        {
+            winningAudio.Stop();
+        }
+        GameTimer.instance.GoToNextDay();
     }
 
     public void OnPlayerEnterCampfire()
@@ -509,6 +543,11 @@ public class UIController : SingletonGeneric<UIController>
             if (Input.GetKeyDown(interactKeyCode) && isPlayerInVehicle)
             {
                 DrivingManager.instance.HandlePlayerLeaveVehicle(false);
+                if (isSetToCheckForLeavingVehicle)
+                {
+                    hasLeftVehicle = true;
+                    isSetToCheckForLeavingVehicle = false;
+                }
             }
             // Toggle interactable if menu is not active
             else if (Input.GetKeyDown(interactKeyCode) && currentInteractables.Count > 0)

@@ -27,7 +27,7 @@ public class PlayerData
 
     public int[] weaponSkillArray;
     public int currentWeaponHeld = 0;
-    public int currentSecondaryHeld = 3;
+    public int currentSecondaryHeld = 4;
     public float campfireRegenerationRate;
     public bool isTruckUnlocked = false;
     public bool isTruckTutorialDone;
@@ -50,7 +50,7 @@ public class PlayerData
         maxStamina = 200f;
         currentStamina = 200f;
         meleeDamage = 10f;
-        currentMoney = 0;
+        currentMoney = 90;
         criticalChance = 0;
         evasionChance = 0;
         consumables = new int[3] { 0, 0, 0 }; //7,8,9 indices
@@ -68,7 +68,7 @@ public class PlayerData
         modernaShot = 0;
         currentNewspaperIssue = 1;
         isTruckUnlocked = false;
-        moneyEarned = 0;
+        moneyEarned = 90;
         ordersFulfilled = 0;
         noOfDeaths = 0;
         gameTime = 0f;

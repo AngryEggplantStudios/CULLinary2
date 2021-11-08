@@ -16,5 +16,9 @@ public class SpawnEvent : SpecialEvent
             CreatureDexManager.instance.UpdateCreatureSlots();
         }
         Instantiate(monsterToSpawn);
+        if (monsterToUnlockInDex == MonsterName.Clown && GameTimer.instance != null)
+        {
+            GameTimer.instance.PlayBossMusic();
+        }
     }
 }
