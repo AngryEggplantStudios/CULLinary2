@@ -15,6 +15,7 @@ public class TruckTutorialManager : MonoBehaviour
         "Tap W once to move forward",
         "Press A or D to steer",
         "Hold S to brake",
+        "Press F to exit the truck (enter to resume the tutorial again!)",
         "While you are stationary, press S again to reverse",
         "Hold W to brake while reversing",
         "Press W again to switch to forward gear",
@@ -41,6 +42,7 @@ public class TruckTutorialManager : MonoBehaviour
             CheckTutorialTask3,
             CheckTutorialTask4,
             CheckTutorialTask5,
+            CheckTutorialTask6,
             CheckTutorialTaskAlwaysTrue,
             CheckTutorialTaskAlwaysTrue,
             CheckTutorialTaskAlwaysTrue,
@@ -55,11 +57,12 @@ public class TruckTutorialManager : MonoBehaviour
             AfterTutorialTask3,
             AfterTutorialTask4,
             AfterTutorialTask5,
+            AfterTutorialTask6,
             AfterTutorialTaskWaitFiveSeconds,
             AfterTutorialTaskWaitFiveSeconds,
             AfterTutorialTaskWaitFiveSeconds,
-            AfterTutorialTask9,
-            AfterTutorialTask10
+            AfterTutorialTask10,
+            AfterTutorialTask11
         };
     }
     void OnEnable()
@@ -108,8 +111,13 @@ public class TruckTutorialManager : MonoBehaviour
 
     private void RunAction(int num)
     {
-        Debug.Log(num);
         tutorialUiText.text = tasksText[num];
+
+        // Check for leaving and entering
+        if (num == 3)
+        {
+            UIController.instance.SetToCheckForLeavingVehicle();
+        }
     }
 
     private bool CheckTask(int num)
@@ -136,17 +144,22 @@ public class TruckTutorialManager : MonoBehaviour
     {
         return Input.GetKeyDown(KeyCode.S);
     }
-    
+
     private bool CheckTutorialTask3()
+    {
+        return UIController.instance.HasLeftVehicle();
+    }
+    
+    private bool CheckTutorialTask4()
     {
         return DrivingManager.instance.IsTruckReversing();
     }
-    private bool CheckTutorialTask4()
+    private bool CheckTutorialTask5()
     {
         return Input.GetKeyDown(KeyCode.W);
     }
 
-    private bool CheckTutorialTask5()
+    private bool CheckTutorialTask6()
     {
         return !DrivingManager.instance.IsTruckReversing();
     }
@@ -173,19 +186,25 @@ public class TruckTutorialManager : MonoBehaviour
         tutorialUiText.text = "Terrific! Brake when you have to make a sharp turn!";
         delay = 5.0f;
     }
-    
+
     private void AfterTutorialTask3()
+    {
+        tutorialUiText.text = "Good work! Note that you cannot leave if you are going too fast!";
+        delay = 5.0f;
+    }
+    
+    private void AfterTutorialTask4()
     {
         tutorialUiText.text = "Reverse to get out of tight spots!";
         delay = 5.0f;
     }
-    private void AfterTutorialTask4()
+    private void AfterTutorialTask5()
     {
         tutorialUiText.text = "Great job!";
         delay = 1.0f;
     }
 
-    private void AfterTutorialTask5()
+    private void AfterTutorialTask6()
     {
         tutorialUiText.text = "You now know everything that you need to drive safely!";
         delay = 5.0f;
@@ -196,12 +215,12 @@ public class TruckTutorialManager : MonoBehaviour
         delay = 5.0f;
     }
 
-    private void AfterTutorialTask9()
+    private void AfterTutorialTask10()
     {
         delay = 3.0f;
     }
     
-    private void AfterTutorialTask10()
+    private void AfterTutorialTask11()
     {
         PlayerManager.instance.isTruckTutorialDone = true;
         gameObject.SetActive(false);
