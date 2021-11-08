@@ -30,7 +30,7 @@ public class PlayerStamina : SingletonGeneric<PlayerStamina>
 
     private void OnEnable()
     {
-        StartCoroutine(checkRegenerate());
+        //StartCoroutine(checkRegenerate());
     }
 
     private void OnDisable()
@@ -76,7 +76,7 @@ public class PlayerStamina : SingletonGeneric<PlayerStamina>
             DisplayOnUI(currentStamina, maxStamina);
             yield return timeTakenRegen;
         }
-        staminaCircle.SetActive(false); ;
+        staminaCircle.SetActive(false);
     }
 
     public bool HasStamina(float staminaCost)

@@ -191,8 +191,8 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
         if (gameTime >= dayEndTime)
         {
-            OnEndOfDay?.Invoke();
             hasActivatedMushroom = false;
+            OnEndOfDay?.Invoke();
             if (DrivingManager.instance.IsPlayerInVehicle())
             {
                 DrivingManager.instance.HandlePlayerLeaveVehicle(true);
@@ -203,7 +203,6 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     private IEnumerator invokeMushy()
     {
-        Debug.Log("activated Mushroom");
         OnStartNight?.Invoke();
         yield return null;
     }
