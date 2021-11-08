@@ -27,6 +27,10 @@ public class InventoryItem : Item
     {
         string result = "";
         bool isStringModified = false;
+        if (buffTypes == null || buffTypes.Length == 0)
+        {
+            return result;
+        }
         foreach (BuffType buffType in buffTypes)
         {
             if (isStringModified)
