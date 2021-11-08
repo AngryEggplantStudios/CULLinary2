@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b45cbb98fe89452d85b32ce78e7d614, type: 3}
-  m_Name: Health Pill
+  m_Name: Red Pill
   m_EditorClassIdentifier: 
   itemName: Red Pill
   icon: {fileID: 21300000, guid: f54c85620ed0c476d82ce450aa9c0f4a, type: 3}
   maxLevel: 1
   shopItemId: 7
-  price: 1e000000
+  price: 32000000
   description:
-  - Don't ask what this is made of. +150 HP when consumed.
+  - Don't ask what this is made of. +50% Crit Chance for 30 seconds.
   iconArr:
   - {fileID: 21300000, guid: f54c85620ed0c476d82ce450aa9c0f4a, type: 3}
   eventId: 0
-  healAmount: 150
+  healAmount: 0
   staminaAmount: 0
-  duration: 0
+  duration: 30
   evasionBoost: 0
-  critBoost: 0
+  critBoost: 50
   attackBoost: 0

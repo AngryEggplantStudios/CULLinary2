@@ -51,7 +51,7 @@ public class TutorialMiniMap : MonoBehaviour
                                           Quaternion.identity,
                                           iconsParent.transform) as GameObject;
             // Set icon image
-            icon.GetComponent<Image>().sprite = campfireSprite;
+            icon.GetComponent<IconSetImage>().SetImage(campfireSprite, false);
             campfireIcons.Add((fire, icon.transform));
         }
     }
@@ -88,7 +88,7 @@ public class TutorialMiniMap : MonoBehaviour
                                                  Quaternion.identity,
                                                  iconsParent.transform) as GameObject;
             // Set icon image
-            minimapIcon.GetComponent<Image>().sprite = order.Value.Item2;
+            minimapIcon.GetComponent<IconSetImage>().SetImage(order.Value.Item2, true);
             orderSubmissionStationLocationsAndIcons.Add(stationId, (stationTransform, minimapIcon.transform));
         }
 

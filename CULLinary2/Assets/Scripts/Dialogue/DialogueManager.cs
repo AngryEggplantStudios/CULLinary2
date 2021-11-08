@@ -10,6 +10,8 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
     public GameObject theyPanel;
     public TextMeshProUGUI theyPanelText;
     public Image theyPanelSprite;
+    // Shown when there is still dialogue to be seen
+    public GameObject theyDialogueTriangle;
 
     public GameObject choicePanel;
     // Container to add the choices to
@@ -18,6 +20,8 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
     public GameObject mePanel;
     public TextMeshProUGUI mePanelText;
     public Image mePanelSprite;
+    // Shown when there is still dialogue to be seen
+    public GameObject meDialogueTriangle;
 
     // Skip dialogue on first showing
     // Set to null to disable skipping
@@ -132,19 +136,19 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
         // LoadAndRunDebug(2);
     }
 
-    // // For debug purposes
-    // int debugNum = 35;
-    // private void Update()
-    // {
-    //     if (Input.GetKeyDown(KeyCode.E))
-    //     {
-    //         LoadAndRunDebug(debugNum);
-    //     }
-    //     if (Input.GetKeyDown(KeyCode.Y))
-    //     {
-    //         debugNum++;
-    //     }
-    // }
+    // For debug purposes
+    int debugNum = 35;
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            LoadAndRunDebug(debugNum);
+        }
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            debugNum++;
+        }
+    }
 
     private void RunMeDialogue(PlainDialogue meDialogue)
     {
@@ -153,6 +157,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
 
         nextDialogue = meDialogue.next;
         mePanel.SetActive(true);
+        meDialogueTriangle.SetActive(!meDialogue.isLast);
     }
 
     private void RunTheyDialogue(PlainDialogue theyDialogue)
@@ -162,6 +167,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
 
         nextDialogue = theyDialogue.next;
         theyPanel.SetActive(true);
+        theyDialogueTriangle.SetActive(!theyDialogue.isLast);
     }
 
     private void RunChoiceDialogue(ChoiceDialogue choiceDialogue)
@@ -233,7 +239,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
             RunChoiceDialogue(choice);
         }
     }
-    
+
     private void PreventSkip()
     {
         if (skipDialogueText != null)
@@ -315,6 +321,10 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
         mePanel.SetActive(false);
         theyPanel.SetActive(false);
         choicePanel.SetActive(false);
+        if (skipDialogueText != null)
+        {
+            skipDialogueText.SetActive(false);
+        }
     }
 
     public void ShowCannotSkipMessage()

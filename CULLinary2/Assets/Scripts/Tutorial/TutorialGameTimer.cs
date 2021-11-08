@@ -61,6 +61,7 @@ public class TutorialGameTimer : SingletonGeneric<TutorialGameTimer>
 
         DayText.text = "DAY " + dayNum;
         UpdateTimedObjects();
+        UpdateLighting();
     }
 
     private void Update()
@@ -163,30 +164,30 @@ public class TutorialGameTimer : SingletonGeneric<TutorialGameTimer>
         // Run();
     }
 
-    public void RestartDay()
-    {
-        // GameObject player = GameObject.FindWithTag("Player");
-        // happens after end of day screen is shown
-        // reset player health and teleport player to origin for now
-        // player.GetComponent<PlayerHealth>().RestoreToFull();
-        // player.GetComponent<PlayerHealth>().DestroyAllDamageCounter();
-        // player.GetComponent<PlayerStamina>().RestoreToFull();
-        //BuffManager.instance.ClearBuffManager();
-        // player.GetComponent<CharacterController>().enabled = false;
-        // //Spawn at the tutorial campfire
-        // player.transform.position = new Vector3(-83.0f, 0f, 53.0f);
-        // player.GetComponent<CharacterController>().enabled = true;
+    // public void RestartDay()
+    // {
+    //     // GameObject player = GameObject.FindWithTag("Player");
+    //     // happens after end of day screen is shown
+    //     // reset player health and teleport player to origin for now
+    //     // player.GetComponent<PlayerHealth>().RestoreToFull();
+    //     // player.GetComponent<PlayerHealth>().DestroyAllDamageCounter();
+    //     // player.GetComponent<PlayerStamina>().RestoreToFull();
+    //     //BuffManager.instance.ClearBuffManager();
+    //     // player.GetComponent<CharacterController>().enabled = false;
+    //     // //Spawn at the tutorial campfire
+    //     // player.transform.position = new Vector3(-83.0f, 0f, 53.0f);
+    //     // player.GetComponent<CharacterController>().enabled = true;
 
-        // change time to next day
-        gameTime = (float)System.Math.Round(startOfDay, 2);
-        DayText.text = "DAY " + dayNum;
-        isNewDay = true;
+    //     // change time to next day
+    //     gameTime = (float)System.Math.Round(startOfDay, 2);
+    //     DayText.text = "DAY " + dayNum;
+    //     isNewDay = true;
 
-        UpdateTimedObjects();
-        UpdateLighting();
+    //     UpdateTimedObjects();
+    //     UpdateLighting();
 
-        Run();
-    }
+    //     Run();
+    // }
 
     public void Run()
     {

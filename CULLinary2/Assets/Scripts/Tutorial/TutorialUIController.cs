@@ -115,16 +115,16 @@ public class TutorialUIController : SingletonGeneric<TutorialUIController>
         // operation.
     }
 
-    public void RestartTutorial()
-    {
-        Debug.Log("restart tutorial");
-        // restartTutorialMenu.SetActive(false);
-        // restartTutorialPanel.SetActive(false);
+    // public void RestartTutorial()
+    // {
+    //     Debug.Log("restart tutorial");
+    //     // restartTutorialMenu.SetActive(false);
+    //     // restartTutorialPanel.SetActive(false);
 
-        // TutorialManager.instance.RestartTutorial();
-        SceneManager.LoadScene((int)SceneIndexes.TUTORIAL_SCENE); // TODO: need to fix lighting (and display loading tutorial... on the button?)
-        // operation.allowSceneActivation = false;
-    }
+    //     // TutorialManager.instance.RestartTutorial();
+    //     SceneManager.LoadScene((int)SceneIndexes.TUTORIAL_SCENE); // TODO: need to fix lighting (and display loading tutorial... on the button?)
+    //     // operation.allowSceneActivation = false;
+    // }
 
     public void TogglePauseMenu()
     {

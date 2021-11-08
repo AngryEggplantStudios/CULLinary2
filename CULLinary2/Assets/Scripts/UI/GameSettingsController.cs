@@ -89,7 +89,7 @@ public class GameSettingsController : SingletonGeneric<GameSettingsController>
         else if (Mathf.Floor(volume) >= maxVol)
         {
             audioMixer.SetFloat("SFX_Vol", 20f);
-            currentBgValue.text = "100";
+            currentSfxValue.text = "100";
             return;
         }
         audioMixer.SetFloat("SFX_Vol", volume);

@@ -49,9 +49,9 @@ public class TutorialLoader : SingletonGeneric<TutorialLoader>
 
     public IEnumerator LoadWorld()
     {
-        // LoadScene.instance.ChangeLoadingText("Loading database...");
-        // LoadScene.instance.ChangeProgress(0.1f);
-        // yield return StartCoroutine(databaseLoader.Populate());
+        LoadScene.instance.ChangeLoadingText("Loading database...");
+        LoadScene.instance.ChangeProgress(0.1f);
+        yield return StartCoroutine(databaseLoader.PopulateTutorial());
 
         LoadScene.instance.ChangeLoadingText("Generating biome...");
         LoadScene.instance.ChangeProgress(0.3f);
@@ -81,7 +81,7 @@ public class TutorialLoader : SingletonGeneric<TutorialLoader>
         yield return null;
         TutorialUIController.UpdateAllUIs();
         TutorialManager.instance.DisplayDialogue();
-        TutorialGameTimer.instance.Run();
+        // TutorialGameTimer.instance.Run();
         // PlayerSpawnManager.instance.SpawnPlayer();
     }
 }
