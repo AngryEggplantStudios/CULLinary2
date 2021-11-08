@@ -28,7 +28,8 @@ public class CarController : MonoBehaviour
     // 1500 is about a reduction in 30 units of velocity
     // in one FixedUpdate (using fixed time scale 0.02)
     [SerializeField] private float accelThreshholdForCollision = 1500.0f;
-
+    // For steering while reversing
+    [SerializeField] private int gearLevelForReverseSteerAngle = 1;
 
     [Header("Wheel Colliders")]
     [SerializeField] private WheelCollider wheelFrontLeftCollider;
@@ -339,7 +340,12 @@ public class CarController : MonoBehaviour
     private void HandleSteering()
     {
         // get steering angle based on current gear
-        float maxSteerAngle = gearMaxSteerAngles[currentGearLevel];
+        // 
+        // unless the vehicle is reversing, in which case we use a higher
+        // gear to make the angle smaller so the vehicle is easier to control
+        float maxSteerAngle = isReversing
+            ? gearMaxSteerAngles[gearLevelForReverseSteerAngle]
+            : gearMaxSteerAngles[currentGearLevel];
         currentSteerAngle = maxSteerAngle * steeringInput;
         wheelFrontLeftCollider.steerAngle = currentSteerAngle;
         wheelFrontRightCollider.steerAngle = currentSteerAngle;
