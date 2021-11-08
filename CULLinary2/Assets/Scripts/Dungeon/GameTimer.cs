@@ -258,7 +258,6 @@ public class GameTimer : SingletonGeneric<GameTimer>
         }
         //Restore health here
         GoToNextDay();
-        SaveGame();
     }
 
     public void SaveGame()
@@ -295,6 +294,8 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
         UpdateTimedObjects();
         UpdateLighting(gameTime);
+
+        SaveGame();
     }
 
     public void Run()
