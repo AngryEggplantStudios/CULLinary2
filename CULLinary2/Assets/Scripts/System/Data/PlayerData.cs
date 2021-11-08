@@ -27,7 +27,7 @@ public class PlayerData
 
     public int[] weaponSkillArray;
     public int currentWeaponHeld = 0;
-    public int currentSecondaryHeld = 3;
+    public int currentSecondaryHeld = 4;
     public float campfireRegenerationRate;
     public bool isTruckUnlocked = false;
     public bool isTruckTutorialDone;
