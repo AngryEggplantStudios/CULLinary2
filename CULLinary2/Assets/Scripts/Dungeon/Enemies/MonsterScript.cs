@@ -190,7 +190,10 @@ public class MonsterScript : Monster
             if (!wasAggressive)
             {
                 wasAggressive = aggressive;
-                EnemyAggressionManager.Instance.Add(1);
+                if (monsterName != MonsterName.Bread)
+                {
+                    EnemyAggressionManager.Instance.Add(1);
+                }
 
                 foreach (GameObject ui in uiElements)
                 {
@@ -236,7 +239,10 @@ public class MonsterScript : Monster
         else if (wasAggressive)
         {
             wasAggressive = aggressive;
-            EnemyAggressionManager.Instance.Add(-1);
+            if (monsterName != MonsterName.Bread)
+			{
+                EnemyAggressionManager.Instance.Add(-1);
+            }
 
             foreach (GameObject ui in uiElements)
             {
