@@ -30,6 +30,8 @@ public class GameTimer : SingletonGeneric<GameTimer>
     [SerializeField] private AudioClip[] chillMusic;
     [SerializeField] private AudioClip[] hypeMusic;
     [SerializeField] private int numOfTracks;
+    [Header("Boss Music")]
+    [SerializeField] public AudioClip bossMusic;
 
     private static float gameTime;
     private static float timeScale;
@@ -257,6 +259,20 @@ public class GameTimer : SingletonGeneric<GameTimer>
         }
         //Restore health here
         GoToNextDay();
+    }
+
+    public void PlayBossMusic()
+    {
+        chillBgm.clip = bossMusic;
+        hypeBgm.clip = bossMusic;
+        chillBgm.Play();
+        hypeBgm.Play();
+    }
+
+    public void StopBgm()
+    {
+        chillBgm.Stop();
+        hypeBgm.Stop();
     }
 
     public void SaveGame()
