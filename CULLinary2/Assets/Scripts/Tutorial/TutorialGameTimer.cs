@@ -152,11 +152,7 @@ public class TutorialGameTimer : SingletonGeneric<TutorialGameTimer>
 
     private void StartSceneFadeOut()
     {
-        Pause(); // TODO: pause entire game using timeScale
-                 //TODO JESS use the scene transition manager to fade in the dialogue for restarting the day
-                 //SceneTransitionManager.instance.FadeInImage();
-                 //Invoke("ShowEndOfDayMenu", 1);
-                 //TODO JESS Call all the events before restarting the day and calling run()
+        Pause();
 
         StartCoroutine(TutorialUIController.instance.ShowRestartTutorialPanel());
         // Time.timeScale = 0;
@@ -218,6 +214,7 @@ public class TutorialGameTimer : SingletonGeneric<TutorialGameTimer>
 
     public void UpdateLighting()
     {
+        Debug.Log("update lighting: gameTime: " + gameTime);
         float timePercent = gameTime;
         // Set ambient and fog
         RenderSettings.ambientSkyColor = Preset.AmbientSkyColor.Evaluate(timePercent);
