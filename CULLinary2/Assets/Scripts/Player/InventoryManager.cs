@@ -36,6 +36,12 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
     [SerializeField] private TMP_Text recipesUnlockedText;
     [SerializeField] private TMP_Text monstersSeenText;
     [SerializeField] private TMP_Text gameTimeText;
+    [Header("Inventory Full Warning")]
+    [SerializeField] private GameObject warningPrefab;
+    [SerializeField] private GameObject playerCanvas;
+    [SerializeField] private Camera playerCamera;
+    [SerializeField] private GameObject player;
+    
     private InventorySlot[] slots;
     private int inventoryLimit = 20;
 
@@ -325,5 +331,14 @@ public class InventoryManager : SingletonGeneric<InventoryManager>
             }
         }
         return cookableRecipes;
+    }
+
+    // Displays a warning to the UI
+    public void DisplayWarning(string message)
+    {
+        GameObject warning = Instantiate(warningPrefab);
+        warning.transform.GetComponentInChildren<Text>().text = message.ToString();
+        warning.transform.SetParent(playerCanvas.transform);
+        warning.transform.position = playerCamera.WorldToScreenPoint(player.transform.position);
     }
 }

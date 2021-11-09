@@ -145,8 +145,11 @@ public class UIController : SingletonGeneric<UIController>
     {
         if (!playerDeathMenu.activeSelf && !deathMenuActive)
         {
+            HandleUIActiveChange(true);
             player.GetComponent<CharacterController>().enabled = false;
             deathMenuActive = true;
+            // Reset BGM
+            EnemyAggressionManager.Instance.Reset();
             //isPaused = true;
             StartCoroutine(PauseToShowDeathAnimation());
         }
@@ -191,6 +194,7 @@ public class UIController : SingletonGeneric<UIController>
         if (endOfDayMenu)
         {
             //isPaused = true;
+            HandleUIActiveChange(true);
             endOfDayMenu.SetActive(true);
             EndOfDayPanelStatistics stats = endOfDayMenu.GetComponent<EndOfDayPanelStatistics>();
             stats.UpdateStatistics(GameTimer.GetDayNumber(),
@@ -486,6 +490,7 @@ public class UIController : SingletonGeneric<UIController>
                 if (DialogueManager.instance.CheckIfIsFirstDialogue())
                 {
                     DialogueManager.instance.CloseAllDialogue();
+                    UIController.instance.HandleUIActiveChange(false);
                     Time.timeScale = 1.0f;
                     isDialogueOpen = false;
                 }
@@ -573,7 +578,7 @@ public class UIController : SingletonGeneric<UIController>
         }
     }
 
-    private void HandleUIActiveChange(bool active)
+    public void HandleUIActiveChange(bool active)
     {
         BGM.Instance.SetVolume(active ? 0.15f : 0.3f);
     }

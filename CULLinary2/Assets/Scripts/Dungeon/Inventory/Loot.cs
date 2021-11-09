@@ -6,7 +6,9 @@ public abstract class Loot : MonoBehaviour
 {
     private Rigidbody rb;
 
+    public float delayTimeBetweenPickupTries = 1.0f;
     bool lootable = false;
+    float delay = 0.0f;
 
     void Start()
     {
@@ -14,6 +16,15 @@ public abstract class Loot : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.AddForce(Vector3.up * 20, ForceMode.Impulse);
         StartCoroutine(spawningCooldown());
+    }
+
+    void Update()
+    {
+        if (delay > 0.0f)
+        {
+            delay -= Time.deltaTime;
+            delay = Mathf.Max(delay, 0.0f);
+        }
     }
 
     IEnumerator spawningCooldown()
@@ -24,17 +35,20 @@ public abstract class Loot : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!lootable) return;
+        if (!lootable || delay > 0.0f) return;
 
         PlayerPickup playerPickup = other.GetComponent<PlayerPickup>();
         if (playerPickup != null)
         {
-            OnPickup(playerPickup);
+            if (!OnPickup(playerPickup))
+            {
+                delay = delayTimeBetweenPickupTries;
+            }
         }
     }
 
-    protected virtual void OnPickup(PlayerPickup playerPickup)
+    protected virtual bool OnPickup(PlayerPickup playerPickup)
     {
-
+        return false;
     }
 }

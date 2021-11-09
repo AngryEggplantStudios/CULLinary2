@@ -127,18 +127,7 @@ public class MonsterScript : Monster
     {
         SetupHpBar();
         SetupFlash();
-
-        foreach (GameObject ui in uiElements)
-        {
-            if (ui != null)
-            {
-                ui.SetActive(false);
-            }
-            else
-            {
-                uiElements.Remove(null);
-            }
-        }
+        RemoveUiElements();
     }
 
     private void Update()
@@ -194,7 +183,6 @@ public class MonsterScript : Monster
                 {
                     EnemyAggressionManager.Instance.Add(1);
                 }
-
                 foreach (GameObject ui in uiElements)
                 {
                     if (ui != null)
@@ -206,6 +194,10 @@ public class MonsterScript : Monster
                         uiElements.Remove(null);
                     }
                 }
+            }
+            else if (CheckIfPlayerGoingToMoveAway())
+            {
+                RemoveUiElements();
             }
 
             Vector2 screenPos = playerCamera.WorldToScreenPoint(transform.position);
@@ -243,18 +235,7 @@ public class MonsterScript : Monster
 			{
                 EnemyAggressionManager.Instance.Add(-1);
             }
-
-            foreach (GameObject ui in uiElements)
-            {
-                if (ui != null)
-                {
-                    ui.SetActive(false);
-                }
-                else
-                {
-                    uiElements.Remove(null);
-                }
-            }
+            RemoveUiElements();
         }
     }
 
@@ -262,20 +243,8 @@ public class MonsterScript : Monster
     {
         wasAggressive = false;
         EnemyAggressionManager.Instance.Add(-1);
-
-        foreach (GameObject ui in uiElements)
-        {
-            if (ui != null)
-            {
-                ui.SetActive(false);
-            }
-            else
-            {
-                uiElements.Remove(null);
-            }
-        }
+        RemoveUiElements();
     }
-
 
     public bool checkIfDead()
     {
@@ -297,6 +266,28 @@ public class MonsterScript : Monster
     public void SetStateMachine(MonsterState newState)
     {
         currentState = newState;
+    }
+
+    // Checks if the player is going to be teleported away in a moment
+    private bool CheckIfPlayerGoingToMoveAway()
+    {
+        return PlayerHealth.instance.WasDeathCalled() ||
+            (GameTimer.instance != null && GameTimer.instance.WasEndOfDayCalled());
+    }
+
+    private void RemoveUiElements()
+    {
+        foreach (GameObject ui in uiElements)
+        {
+            if (ui != null)
+            {
+                ui.SetActive(false);
+            }
+            else
+            {
+                uiElements.Remove(null);
+            }
+        }
     }
 
     private void SetupHpBar()

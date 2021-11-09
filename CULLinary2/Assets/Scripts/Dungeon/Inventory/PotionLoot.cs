@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PotionLoot : Loot
 {
-    protected override void OnPickup(PlayerPickup playerPickup)
+    protected override bool OnPickup(PlayerPickup playerPickup)
     {
         int randomPotion = Random.Range(1, 6);
         bool isFull = false;
@@ -70,10 +70,11 @@ public class PotionLoot : Loot
         }
         if (isFull)
         {
-            return;
+            return false;
         }
         playerPickup.PickUpPotion(randomPotion);
         LootManager.instance.removeLoot(this.gameObject);
         Destroy(gameObject);
+        return true;
     }
 }

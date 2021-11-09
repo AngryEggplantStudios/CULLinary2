@@ -7,7 +7,7 @@ public class ItemLoot : Loot
 {
     [SerializeField] private InventoryItem itemLoot;
 
-    protected override void OnPickup(PlayerPickup playerPickup)
+    protected override bool OnPickup(PlayerPickup playerPickup)
     {
         if (InventoryManager.instance != null)
         {
@@ -17,6 +17,12 @@ public class ItemLoot : Loot
 
                 LootManager.instance.removeLoot(this.gameObject);
                 Destroy(gameObject);
+                return true;
+            }
+            else
+            {
+                InventoryManager.instance.DisplayWarning("Inventory full!");
+                return false;
             }
         }
         else if (TutorialInventoryManager.instance != null)
@@ -27,7 +33,13 @@ public class ItemLoot : Loot
 
                 LootManager.instance.removeLoot(this.gameObject);
                 Destroy(gameObject);
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
+        return false;
     }
 }

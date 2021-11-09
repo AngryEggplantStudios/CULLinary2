@@ -11,6 +11,9 @@ public class Cullable : MonoBehaviour
 
     void OnDestroy()
     {
-        ObjectCuller.Instance.Remove(this.gameObject);
+        if (ObjectCuller.CheckIfInstanceExists())
+        {
+            ObjectCuller.Instance.Remove(this.gameObject);
+        }
     }
 }

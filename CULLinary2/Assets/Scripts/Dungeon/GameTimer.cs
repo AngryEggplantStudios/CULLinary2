@@ -44,6 +44,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     private bool isNewDay = true; // prevent OnStartNewDay from being invoked multiple times
     private bool isRunning = false;
+    private bool isEndOfDay = false;
 
     private NewspaperDetails newspaperDets;
 
@@ -78,9 +79,12 @@ public class GameTimer : SingletonGeneric<GameTimer>
         DayText.text = "DAY " + dayNum;
         UpdateTimedObjects();
 
-        // enable unlocked monsters
         OnStartNewDay += () =>
         {
+            // Reset isEndOfDay flag
+            isEndOfDay = false;
+
+            // enable unlocked monsters
             foreach (MonsterName mn in PlayerManager.instance.unlockedMonsters)
             {
                 EcosystemManager.EnablePopulation(mn);
@@ -90,6 +94,13 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     private void Update()
     {
+        // // For debug
+        // if (Input.GetKeyDown(KeyCode.E))
+        // {
+        //     ShowEndOfDayMenu();
+        //     return;
+        // }
+
         if (Preset == null || !isRunning)
             return;
 
@@ -178,6 +189,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
                 Time.timeScale = 0;
                 newspaperDets.UpdateNewspaperIssueUI(currentNews);
                 UIController.instance.isNewspaperOpen = true;
+                UIController.instance.HandleUIActiveChange(true);
                 newspaper.SetActive(true);
                 hudToHide.SetActive(false);
                 // when newspaper is closed, CloseNewspaperAndStartDay is called
@@ -248,6 +260,9 @@ public class GameTimer : SingletonGeneric<GameTimer>
     private void ShowEndOfDayMenu()
     {
         Time.timeScale = 0;
+        isEndOfDay = true;
+        // Reset BGM
+        EnemyAggressionManager.Instance.Reset();
         UIController.instance.ShowEndOfDayMenu();
         // Increment newspaper for next day
         NewsIssue currentNews = DatabaseLoader.GetOrderedNewsIssueById(currentIssueNumber + 1);
@@ -259,6 +274,11 @@ public class GameTimer : SingletonGeneric<GameTimer>
         }
         //Restore health here
         GoToNextDay();
+    }
+
+    public bool WasEndOfDayCalled()
+    {
+        return isEndOfDay;
     }
 
     public void PlayBossMusic()

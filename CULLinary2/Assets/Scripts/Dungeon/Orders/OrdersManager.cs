@@ -285,6 +285,12 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         return firstGeneration;
     }
 
+    // Checks if earnings are doubled
+    public bool AreEarningsDoubled()
+    {
+        return isDoubled;
+    }
+
     // Gets a dictionary of recipe IDs mapped to the number
     // of orders that the player has currently for that recipe.
     public Dictionary<int, int> GetNumberOfOrdersByRecipe()
