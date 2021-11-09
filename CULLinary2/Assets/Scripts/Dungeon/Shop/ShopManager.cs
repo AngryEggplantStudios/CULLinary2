@@ -150,10 +150,10 @@ public class ShopManager : SingletonGeneric<ShopManager>
             return;
         }
 
-        slots[slotId].gameObject.GetComponent<Outline>().enabled = true;
+        slots[slotId].gameObject.GetComponent<ShopSlot>().EnableOutline();
         if (selectedSlotId != -1)
         {
-            slots[selectedSlotId].gameObject.GetComponent<Outline>().enabled = false;
+            slots[selectedSlotId].gameObject.GetComponent<ShopSlot>().DisableOutline();
         }
         selectedSlotId = slotId;
         UpdateShopDescription();
