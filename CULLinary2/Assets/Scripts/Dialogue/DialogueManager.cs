@@ -28,6 +28,8 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
     public GameObject skipDialogueText;
     // Will be shown if skipping is not possible
     public GameObject proceedDialogueText;
+    // Show when pressing buttons for choices
+    public GameObject choiceDialogueText;
 
     // The prefab to use for the choice selection
     public GameObject choicePrefab;
@@ -41,7 +43,8 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
     private Action endDialogueAction = defaultDialogueAction;
     private bool resetEndDialogueAction = true;
     private bool isFirstDialogue = false;
-    private bool isProceedDialogueShown = false;
+    private bool isProceedTextShown = false;
+    private bool isChoiceTextShown = false;
 
     /*
     private Restaurant_CustomerController currentCustomer;
@@ -140,19 +143,19 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
         // LoadAndRunDebug(2);
     }
 
-    // // For debug purposes
-    // int debugNum = 35;
-    // private void Update()
-    // {
-    //     if (Input.GetKeyDown(KeyCode.E))
-    //     {
-    //         LoadAndRunDebug(debugNum);
-    //     }
-    //     if (Input.GetKeyDown(KeyCode.Y))
-    //     {
-    //         debugNum++;
-    //     }
-    // }
+    // For debug purposes
+    int debugNum = 19;
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(2))
+        {
+            LoadAndRunDebug(debugNum);
+        }
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            debugNum++;
+        }
+    }
 
     private void RunMeDialogue(PlainDialogue meDialogue)
     {
@@ -256,10 +259,42 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
     private IEnumerator ShowCannotSkipForTime(float time)
     {
         proceedDialogueText.SetActive(true);
-        isProceedDialogueShown = true;
+        isProceedTextShown = true;
         yield return new WaitForSecondsRealtime(time);
-        isProceedDialogueShown = false;
+        isProceedTextShown = false;
         proceedDialogueText.SetActive(false);
+    }
+
+    private IEnumerator ShowSelectChoiceForTime(float time)
+    {
+        choiceDialogueText.SetActive(true);
+        isChoiceTextShown = true;
+        yield return new WaitForSecondsRealtime(time);
+        isChoiceTextShown = false;
+        choiceDialogueText.SetActive(false);
+    }
+
+    public void DisplayNextOnKeyPress()
+    {
+        if (choicePanel.activeSelf)
+        {
+            if (!isChoiceTextShown && !isProceedTextShown)
+            {
+                StartCoroutine(ShowSelectChoiceForTime(1.0f));
+            }
+        }
+        else if (mePanel.activeSelf)
+        {
+            DisplayNextAndCloseMePanel();
+        }
+        else if (theyPanel.activeSelf)
+        {
+            DisplayNextAndCloseTheyPanel();
+        }
+        else
+        {
+            Debug.Log("Oops! No panels active!!");
+        }
     }
 
     // Loads and runs the dialogue tree provided
@@ -336,7 +371,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
 
     public void ShowCannotSkipMessage()
     {
-        if (!isProceedDialogueShown)
+        if (!isProceedTextShown && !isChoiceTextShown)
         {
             StartCoroutine(ShowCannotSkipForTime(1.0f));
         }

@@ -499,6 +499,11 @@ public class UIController : SingletonGeneric<UIController>
                     DialogueManager.instance.ShowCannotSkipMessage();
                 }
             }
+            else if (isDialogueOpen && Input.anyKeyDown && !(Input.GetMouseButtonDown(0) ||
+                     Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2)))
+            {
+                DialogueManager.instance.DisplayNextOnKeyPress();
+            }
             return;
         }
 
