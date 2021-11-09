@@ -62,12 +62,13 @@ public static class DialogueDatabase
     };
 
     private static string[] rawTutorialDialogues = {
-        /* 0 */ "{[L]0}*Rrring rrring* Oh, looks like I already have an order coming in!",
+        /* 0 */ "{[L]0}*Rrring rrring* Oh, looks like I already have an order coming in! (Press any key to continue)",
         /* 1 */ "{[R]1}Hey Chef! Are you still open for business?"
                     + "{[L]0}Yes, I'm now open for delivery. What would you like to have, Tew Tawrel?"
                     + "{[R]1}That's great! I want some French fries, please. *Call ended*",
         /* 2 */ "{[L]0}I just got my first order! Let me check how many ingredients I need by pressing TAB to see my Orders and Recipes menus.",
-        /* 3 */ "{[L]0}Okay, time to find me 3 potatoes by killing some potatoes. (Move around with WASD and attack with Left Mouse Button).",
+        /* 3 */ "{[L]0}Okay, time to find me 3 potatoes by killing some potatoes. (Move around with WASD and attack with Left Mouse Button)."
+                    + "{[L]0}(Press Left Shift to Sprint and Space to Dash)",
         /* 4 */ "{[L]0}Now that I've collected 3 potatoes, I gotta find a campfire to cook the French fries. I can use the map to find a campfire.",
         /* 5 */ "{[L]0}Alright I got the French fries ready to go! Time to deliver it to my customer."
                     + "{[R]1}Hey Chef! You got my French fries yet?"
@@ -81,10 +82,20 @@ public static class DialogueDatabase
                     + "{[R]1}Hey but those French fries are mine! If you eat my food, I'll get hangry >:("
                     + "{[R]1}Now take your money and gimme my French fries!"
                     + "{[L]0}Fine... here you go.",
-        /* 8 */ "{[L]0}Looks like I can earn money from delivering orders and I can use the money to buy new weapons and other things to become stronger and complete more orders and earn EVEN MORE money...",
-        /* 9 */ "{[L]0}I also need to keep an eye out for the newspaper, I've heard that more and more strange foods have been appearing lately... I wonder what's causing it...",
-        /* 10 */ "{[L]0}Well, now I'm ready. Let's start CULLing!",
-    };
+        /* 8 */ "{[R]1} Hey wait! I need to tell you some things."
+                    + "{[L]0}What?"
+                    + "{[R]1}You can use the money you earn from completing orders to buy new weapons and upgrades (like a truck!) from the shop."
+                    + "{[L]0}Oh, cool!"
+                    + "{[R]1}You'll need it to become stronger because it's only going to get tougher from now. But you can also rest at the campfire for an hour to regain some health."
+                    + "{[R]1}If you can survive until the end of the day, new events happen and you also unlock new recipes! Just keep an eye out for the newspaper."
+                    + "{[L]0}What new events?"
+                    + "{[R]1}More and more strange foods have been appearing and... and I heard that there's something sinister causing it..."
+                    + "{[L]0}What? Why do you sound so scared?"
+                    + "{[R]1}The... the c-clown... no, I don't want to talk about it. Once you get the CLOWN BAIT recipe after all the monsters appear, drink it and you'll know what I mean. *Leaves*",
+        /* 9 */ "{[L]0}Hmm... the clown seems to be scaring the people of this town."
+                    + "{[L]0}He said I just need to get the CLOWN BAIT recipe after all the monsters show up and drink the CLOWN BAIT..."
+                    + "{[L]0}Maybe I can help them to defeat it. Well, let's start CULLing!"
+};
 
     private static (Dialogue, double)[] dialoguesWithCumulativeChance = null;
     private static Dialogue[] generatedTutorialDialogue = null;
