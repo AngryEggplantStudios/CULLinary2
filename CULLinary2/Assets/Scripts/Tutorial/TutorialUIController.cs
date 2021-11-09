@@ -196,7 +196,7 @@ public class TutorialUIController : SingletonGeneric<TutorialUIController>
     public void ToggleInventory()
     {
         // WeaponManager.instance.UpdateWeaponSkillStats();
-        InventoryManager.instance.ForceUIUpdate();
+        TutorialInventoryManager.instance.ForceUIUpdate();
         mainHud.SetActive(inventoryTab.activeSelf);
         Time.timeScale = inventoryTab.activeSelf ? 1f : 0f;
         isMenuActive = !inventoryTab.activeSelf;
