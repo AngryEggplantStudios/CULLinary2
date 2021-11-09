@@ -94,12 +94,12 @@ public class GameTimer : SingletonGeneric<GameTimer>
 
     private void Update()
     {
-        // For debug
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            ShowEndOfDayMenu();
-            return;
-        }
+        // // For debug
+        // if (Input.GetKeyDown(KeyCode.E))
+        // {
+        //     ShowEndOfDayMenu();
+        //     return;
+        // }
 
         if (Preset == null || !isRunning)
             return;
