@@ -250,6 +250,7 @@ public class UIController : SingletonGeneric<UIController>
             winningAudio.Stop();
         }
         GameTimer.instance.GoToNextDay();
+        Time.timeScale = 1.0f;
     }
 
     public void OnPlayerEnterCampfire()
