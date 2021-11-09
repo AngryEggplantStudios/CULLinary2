@@ -13,6 +13,8 @@ public class EggplantAttack : MonsterAttack
     {
         attackSprite = gameObject.GetComponent<SpriteRenderer>();
         attackCollider = gameObject.GetComponent<SphereCollider>();
+        attackSprite.enabled = false;
+        attackCollider.enabled = false;
         canDealDamage = false;
     }
 
