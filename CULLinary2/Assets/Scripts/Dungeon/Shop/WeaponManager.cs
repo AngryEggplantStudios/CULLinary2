@@ -266,6 +266,8 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
                 attackSpeedCurrent.GetComponent<EffectDescriptionSlot>().SetupSlot("Attack Speed: " + weaponItem.attackSpeed[currentLevel]);
                 damageEffectCurrent.transform.SetParent(currentLevelEffectList.transform);
                 attackSpeedCurrent.transform.SetParent(currentLevelEffectList.transform);
+                damageEffectCurrent.transform.localScale = new Vector3(1, 1, 1);
+                attackSpeedCurrent.transform.localScale = new Vector3(1, 1, 1);
                 upgradeText.text = "Upgrade";
             }
             else
@@ -295,6 +297,8 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
                 );
                 damageEffectNext.transform.SetParent(nextLevelEffectList.transform);
                 attackSpeedNext.transform.SetParent(nextLevelEffectList.transform);
+                damageEffectNext.transform.localScale = new Vector3(1, 1, 1);
+                attackSpeedNext.transform.localScale = new Vector3(1, 1, 1);
             }
 
         }
@@ -309,6 +313,8 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
                 staminaCostCurrent.GetComponent<EffectDescriptionSlot>().SetupSlot("Stamina Cost: " + skillItem.staminaCost[currentLevel]);
                 damageEffectCurrent.transform.SetParent(currentLevelEffectList.transform);
                 staminaCostCurrent.transform.SetParent(currentLevelEffectList.transform);
+                damageEffectCurrent.transform.localScale = new Vector3(1, 1, 1);
+                staminaCostCurrent.transform.localScale = new Vector3(1, 1, 1);
                 upgradeText.text = "Upgrade";
             }
             else
@@ -338,6 +344,8 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
                 );
                 damageEffectNext.transform.SetParent(nextLevelEffectList.transform);
                 staminaCostNext.transform.SetParent(nextLevelEffectList.transform);
+                damageEffectNext.transform.localScale = new Vector3(1, 1, 1);
+                staminaCostNext.transform.localScale = new Vector3(1, 1, 1);
             }
 
         }
