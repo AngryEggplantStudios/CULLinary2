@@ -189,6 +189,7 @@ public class GameTimer : SingletonGeneric<GameTimer>
                 Time.timeScale = 0;
                 newspaperDets.UpdateNewspaperIssueUI(currentNews);
                 UIController.instance.isNewspaperOpen = true;
+                UIController.instance.HandleUIActiveChange(true);
                 newspaper.SetActive(true);
                 hudToHide.SetActive(false);
                 // when newspaper is closed, CloseNewspaperAndStartDay is called

@@ -503,7 +503,7 @@ public class TutorialUIController : SingletonGeneric<TutorialUIController>
         }
     }
 
-    private void HandleUIActiveChange(bool active)
+    public void HandleUIActiveChange(bool active)
     {
         BGM.Instance.SetVolume(active ? 0.15f : 0.3f);
     }

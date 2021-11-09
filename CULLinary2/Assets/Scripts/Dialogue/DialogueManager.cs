@@ -60,6 +60,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
             if (UIController.instance != null)
             {
                 UIController.instance.isDialogueOpen = false;
+                UIController.instance.HandleUIActiveChange(false);
                 Time.timeScale = 1;
             }
             else
@@ -67,6 +68,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
                 if (TutorialUIController.instance != null)
                 {
                     TutorialUIController.instance.isDialogueOpen = false;
+                    TutorialUIController.instance.HandleUIActiveChange(false);
                     Time.timeScale = 1;
                 }
             }
@@ -95,6 +97,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
             if (UIController.instance != null)
             {
                 UIController.instance.isDialogueOpen = false;
+                UIController.instance.HandleUIActiveChange(false);
                 Time.timeScale = 1;
             }
             else
@@ -102,6 +105,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
                 if (TutorialUIController.instance != null)
                 {
                     TutorialUIController.instance.isDialogueOpen = false;
+                    TutorialUIController.instance.HandleUIActiveChange(false);
                     Time.timeScale = 1;
                 }
             }
@@ -270,12 +274,14 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
         if (UIController.instance != null)
         {
             UIController.instance.isDialogueOpen = true;
+            UIController.instance.HandleUIActiveChange(true);
         }
         else
         {
             if (TutorialUIController.instance != null)
             {
                 TutorialUIController.instance.isDialogueOpen = true;
+                TutorialUIController.instance.HandleUIActiveChange(true);
             }
         }
         Time.timeScale = 0;
@@ -286,6 +292,7 @@ public class DialogueManager : SingletonGeneric<DialogueManager>
     public void LoadAndRunTutorialDialogue(Dialogue dialogue)
     {
         TutorialUIController.instance.isDialogueOpen = true;
+        TutorialUIController.instance.HandleUIActiveChange(true);
         Time.timeScale = 0;
         LoadDialogue(dialogue);
         RunCurrentDialogue();
