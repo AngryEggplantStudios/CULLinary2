@@ -147,6 +147,8 @@ public class UIController : SingletonGeneric<UIController>
         {
             player.GetComponent<CharacterController>().enabled = false;
             deathMenuActive = true;
+            // Reset BGM
+            EnemyAggressionManager.Instance.Reset();
             //isPaused = true;
             StartCoroutine(PauseToShowDeathAnimation());
         }

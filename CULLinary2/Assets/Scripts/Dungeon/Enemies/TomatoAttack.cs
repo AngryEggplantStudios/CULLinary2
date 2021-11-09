@@ -35,6 +35,7 @@ public class TomatoAttack : MonsterAttack
         Instantiate(prefabForExplosion, positionToInstantiate, Quaternion.identity);
         positionToInstantiate = FindPositionInRadiusAround(270f, 360f);
         Instantiate(prefabForExplosion, positionToInstantiate, Quaternion.identity);
+        EnemyAggressionManager.Instance.Add(-1);
     }      
 
     private Vector3 FindPositionInRadiusAround(float startDegree, float endDegree)

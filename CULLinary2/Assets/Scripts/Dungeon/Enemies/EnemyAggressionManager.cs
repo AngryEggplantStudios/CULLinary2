@@ -28,8 +28,12 @@ public class EnemyAggressionManager : MonoBehaviour
     public void Add(int i)
     {
         aggressiveEnemies += i;
+        if (aggressiveEnemies < 0)
+        {
+            aggressiveEnemies = 0;
+        }
 
-        if (aggro && aggressiveEnemies <= 0)
+        if (aggro && aggressiveEnemies == 0)
         {
             aggro = false;
             BGM.Instance.SetTrack(0);
@@ -39,5 +43,12 @@ public class EnemyAggressionManager : MonoBehaviour
             aggro = true;
             BGM.Instance.SetTrack(1);
         }
+    }
+
+    public void Reset()
+    {
+        aggressiveEnemies = 0;
+        aggro = false;
+        BGM.Instance.SetTrack(0);
     }
 }
