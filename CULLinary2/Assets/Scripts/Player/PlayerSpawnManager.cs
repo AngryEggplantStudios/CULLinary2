@@ -6,14 +6,12 @@ public class PlayerSpawnManager : SingletonGeneric<PlayerSpawnManager>
 {
     private List<GameObject> campfires;
     private bool hasFoundCampfires = false;
-    private Vector3 lastVisitedCampfirePosition;
-    private Vector3 spawnOffset = Vector3.left * 5;
+    // private Vector3 lastVisitedCampfirePosition = Vector3.zero;
+    private GameObject lastVisitedCampfire;
 
     // Start is called before the first frame update
     void Start()
     {
-        // TODO: get from player data if not new world
-        lastVisitedCampfirePosition = Vector3.zero;
     }
 
     public void SpawnPlayer()
@@ -24,24 +22,22 @@ public class PlayerSpawnManager : SingletonGeneric<PlayerSpawnManager>
             hasFoundCampfires = true;
         }
 
-        if (lastVisitedCampfirePosition.Equals(Vector3.zero))
+        if (!lastVisitedCampfire)
         {
             // Get nearest campfire to origin
-            lastVisitedCampfirePosition = GetCampfireNearestTo(Vector3.zero).position;
+            lastVisitedCampfire = GetCampfireNearestTo(Vector3.zero).gameObject;
         }
 
-        Vector3 campfirePosition = lastVisitedCampfirePosition;
-        Vector3 playerSpawn = campfirePosition + spawnOffset;
+        Vector3 spawnPosition = lastVisitedCampfire.GetComponent<PlayerSpawn>().GetPosition();
 
         gameObject.GetComponent<CharacterController>().enabled = false;
-        transform.position = playerSpawn;
+        transform.position = spawnPosition;
         gameObject.GetComponent<CharacterController>().enabled = true;
     }
 
     public void SetLastVisitedCampfire(Transform campfire)
     {
-        lastVisitedCampfirePosition = campfire.position;
-        // TODO: save to player data
+        lastVisitedCampfire = campfire.gameObject;
     }
 
     public Transform GetCampfireNearestTo(Vector3 givenPosition)
@@ -55,7 +51,7 @@ public class PlayerSpawnManager : SingletonGeneric<PlayerSpawnManager>
             foreach (GameObject campfire in campfires)
             {
                 if (campfire != null)
-				{
+                {
                     Vector3 directionToCampfire = campfire.transform.position - givenPosition;
                     float sqrDist = directionToCampfire.sqrMagnitude;
                     if (sqrDist < nearestDistSqr)
@@ -68,7 +64,7 @@ public class PlayerSpawnManager : SingletonGeneric<PlayerSpawnManager>
         }
         else
         {
-            Debug.LogWarning("cannot find campfires");
+            Debug.LogWarning("PlayerSpawnManager: cannot find campfires");
         }
 
         return nearestCampfire;
