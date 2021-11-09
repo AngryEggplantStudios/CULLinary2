@@ -216,7 +216,7 @@ public class TutorialGameTimer : SingletonGeneric<TutorialGameTimer>
         gameTime = 0f;
     }
 
-    private void UpdateLighting()
+    public void UpdateLighting()
     {
         float timePercent = gameTime;
         // Set ambient and fog

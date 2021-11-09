@@ -14,7 +14,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
     // Store IDs of events with triggers for their next events (for creating tutorial events and updating)
     private List<int> eventIdWithTriggers = new List<int> { 2, 3, 4, 6, 7 };
     private Dictionary<int, string> tutDirections = new Dictionary<int, string>() {
-        {2, "Open Orders and Recipes menu"},
+        {2, "1. Open Orders menu\n2. Open Recipes menu"},
         {3, "Kill potatoes and collect 3 potatoes"},
         {4, "Cook up French fries at campfire"},
         {6, "Go to Tew Tawrel's house"},
