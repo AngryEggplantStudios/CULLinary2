@@ -10,7 +10,7 @@ public class ShopSlot : MonoBehaviour
     [SerializeField] private Image shopItemIcon;
     [SerializeField] private TMP_Text levelText;
     [SerializeField] private GameObject upgradeIcon;
-    [SerializeField] private Outline outline;
+    [SerializeField] private GameObject outline;
     public ShopItem shopItem;
     private Button button;
     private int slotIndex;
@@ -69,4 +69,13 @@ public class ShopSlot : MonoBehaviour
 
     }
 
+    public void EnableOutline()
+    {
+        outline.SetActive(true);
+    }
+
+    public void DisableOutline()
+    {
+        outline.SetActive(false);
+    }
 }
