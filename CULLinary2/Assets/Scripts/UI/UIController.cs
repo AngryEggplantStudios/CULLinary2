@@ -484,7 +484,7 @@ public class UIController : SingletonGeneric<UIController>
             if (isDialogueOpen && Input.GetKeyDown(closeUiKeyCode))
             {
                 if (DialogueManager.instance.CheckIfIsFirstDialogue())
-                {                 
+                {
                     DialogueManager.instance.CloseAllDialogue();
                     Time.timeScale = 1.0f;
                     isDialogueOpen = false;

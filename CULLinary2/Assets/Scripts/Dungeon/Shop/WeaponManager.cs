@@ -282,7 +282,7 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
             }
             else
             {
-                upgradeButton.interactable = true;
+                //upgradeButton.interactable = true;
                 GameObject damageEffectNext = Instantiate(nextLevelEffectPrefab);
                 damageEffectNext.GetComponent<EffectDescriptionWithIncrementSlot>().SetupSlot(
                     "Damage: " + weaponItem.baseDamage[currentLevel + 1] + " DMG",
@@ -325,7 +325,7 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
             }
             else
             {
-                upgradeButton.interactable = true;
+                //upgradeButton.interactable = true;
                 GameObject damageEffectNext = Instantiate(nextLevelEffectPrefab);
                 damageEffectNext.GetComponent<EffectDescriptionWithIncrementSlot>().SetupSlot(
                     "Damage: " + skillItem.attackDamage[currentLevel + 1] + " DMG",
