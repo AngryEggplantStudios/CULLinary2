@@ -58,7 +58,10 @@ public class SpherePlayerCollider : MonoBehaviour
     public void DoExit()
     {
         playerWithinRange = false;
-        popUpPrompts?.SetActive(false);
+        if (popUpPrompts != null)
+        {
+            popUpPrompts.SetActive(false);
+        }
         parentInteractable.OnPlayerLeave();
         if (UIController.instance != null)
         {
