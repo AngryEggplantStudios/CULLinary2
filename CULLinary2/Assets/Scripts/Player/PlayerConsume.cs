@@ -15,6 +15,7 @@ public class PlayerConsume : MonoBehaviour
     [SerializeField] private TMP_Text modernaShot;
     [SerializeField] private Sprite pfizerShotIcon;
     [SerializeField] private Sprite modernaShotIcon;
+    [SerializeField] private Sprite healthPillIcon;
 
     private KeyCode consumableOneKeyCode;
     private KeyCode consumableTwoKeyCode;
@@ -56,8 +57,7 @@ public class PlayerConsume : MonoBehaviour
             {
                 PlayerManager.instance.healthPill -= 1;
                 ConsumableShopItem consumableShopItem = (ConsumableShopItem)DatabaseLoader.GetShopItemById(7);
-                playerHealth.IncreaseHealth(consumableShopItem.healAmount);
-                SpawnNotif("+" + consumableShopItem.healAmount);
+                BuffManager.instance.ApplySingleBuff(healthPillIcon, consumableShopItem.duration, BuffType.BUFF_CRIT_BOOST, consumableShopItem.critBoost);
             }
             else if (Input.GetKeyDown(consumableTwoKeyCode) && PlayerManager.instance.staminaPill > 0)
             {
@@ -70,7 +70,6 @@ public class PlayerConsume : MonoBehaviour
                 PlayerManager.instance.potion -= 1;
                 ConsumableShopItem consumableShopItem = (ConsumableShopItem)DatabaseLoader.GetShopItemById(9);
                 playerHealth.IncreaseHealth(consumableShopItem.healAmount);
-                playerStamina.IncreaseStamina(consumableShopItem.staminaAmount);
                 SpawnNotif("+" + consumableShopItem.healAmount);
             }
             else if (Input.GetKeyDown(consumableFourKeyCode) && PlayerManager.instance.pfizerShot > 0)
@@ -78,7 +77,6 @@ public class PlayerConsume : MonoBehaviour
                 PlayerManager.instance.pfizerShot -= 1;
                 ConsumableShopItem consumableShopItem = (ConsumableShopItem)DatabaseLoader.GetShopItemById(10);
                 BuffManager.instance.ApplySingleBuff(pfizerShotIcon, consumableShopItem.duration, BuffType.BUFF_EVASION_BOOST, consumableShopItem.evasionBoost);
-                BuffManager.instance.ApplySingleBuff(pfizerShotIcon, consumableShopItem.duration, BuffType.BUFF_CRIT_BOOST, consumableShopItem.critBoost);
             }
             else if (Input.GetKeyDown(consumableFiveKeyCode) && PlayerManager.instance.modernaShot > 0)
             {
