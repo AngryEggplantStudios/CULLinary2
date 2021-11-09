@@ -68,10 +68,6 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
         foreach (int eventId in eventIdWithTriggers)
         {
             TutorialEvent tutorialEvent = events[eventId];
-            // if (tutorialEvent.IsComplete)
-            // {
-            //     continue;
-            // }
 
             if (tutorialEvent.ShouldCheckForTrigger && !tutorialEvent.CanTriggerNextEvent)
             {
@@ -125,19 +121,17 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
             {
 
                 events[i] = new TutorialEvent(i, directions, tutorialDialogue[i], true, false);
-                // Debug.Log("event #" + i + " has trigger");
             }
             else
             {
                 events[i] = new TutorialEvent(i, directions, tutorialDialogue[i]);
-                // Debug.Log("event #" + i + " has NO trigger");
             }
         }
     }
 
     public void DisplayDialogue()
     {
-        Debug.Log("display dialogue for event #" + currEventId);
+        // Debug.Log("display dialogue for event #" + currEventId);
         // Hide tutorial directions panel
         tutorialDirectionsPanel.SetActive(false);
         tutorialDirectionsText.text = "";
@@ -148,11 +142,11 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
 
     public void OnDialogueEnd()
     {
-        Debug.Log("on dialogue end for event #" + currEventId);
+        // Debug.Log("on dialogue end for event #" + currEventId);
         if (currEventId >= totalNumEvents - 1)
         {
             // No more events/dialogue
-            Debug.Log("last dialogue");
+            // Debug.Log("last dialogue");
             OnFinishTutorialOrSkip();
             return;
         }
@@ -194,7 +188,6 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
 
     public IEnumerator TriggerNextDialogue()
     {
-        Debug.Log("TriggerNextDialogue");
         if (!eventIdWithTriggers.Contains(currEventId))
         {
             Debug.LogWarning("Trigger condition not found for event #" + currEventId);
@@ -210,7 +203,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
         bool canTriggerNextEvent = currEvent.CanTriggerNextEvent;
         if (currEvent.ShouldCheckForTrigger)
         {
-            Debug.Log("event #" + currEventId + ": should check for trigger is ALREADY true");
+            // Debug.Log("event #" + currEventId + ": should check for trigger is ALREADY true");
             // If condition is already fulfilled, start next dialogue
             // Else, wait until it's fulfilled
             if (canTriggerNextEvent)
@@ -230,7 +223,7 @@ public class TutorialManager : SingletonGeneric<TutorialManager>
         {
             // Start checking trigger from now
             currEvent.ShouldCheckForTrigger = true;
-            Debug.Log("event #" + currEventId + ": should check for trigger is set to true");
+            // Debug.Log("event #" + currEventId + ": should check for trigger is set to true");
             Debug.Log("event #" + currEventId + ": waiting for event trigger to be fulfilled");
             yield return new WaitUntil(() => events[currEventId].CanTriggerNextEvent);
             taskCompleteAudio.Play();

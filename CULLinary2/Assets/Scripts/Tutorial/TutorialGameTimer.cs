@@ -214,7 +214,6 @@ public class TutorialGameTimer : SingletonGeneric<TutorialGameTimer>
 
     public void UpdateLighting()
     {
-        Debug.Log("update lighting: gameTime: " + gameTime);
         float timePercent = gameTime;
         // Set ambient and fog
         RenderSettings.ambientSkyColor = Preset.AmbientSkyColor.Evaluate(timePercent);
