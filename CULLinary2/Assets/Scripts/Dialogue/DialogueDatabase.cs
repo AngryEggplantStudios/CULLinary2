@@ -62,7 +62,7 @@ public static class DialogueDatabase
     };
 
     private static string[] rawTutorialDialogues = {
-        /* 0 */ "{[L]0}*Rrring rrring* Oh, looks like I already have an order coming in! (Press any key to continue)",
+        /* 0 */ "{[L]0}*Rrring rrring* Oh, looks like I already have an order coming in! (Press F or click to continue)",
         /* 1 */ "{[R]1}Hey Chef! Are you still open for business?"
                     + "{[L]0}Yes, I'm now open for delivery. What would you like to have, Tew Tawrel?"
                     + "{[R]1}That's great! I want some French fries, please. *Call ended*",

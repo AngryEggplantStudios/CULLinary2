@@ -359,7 +359,7 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         int numberOfStations = stations.Count;
 
         for (int i = 0; i < numberOfDailyOrders && i < numberOfStations; i++)
-        {
+    {
             int randomIndex = rand.Next(stations.Count);
             int stationId = stations[randomIndex];
             Recipe randomRecipe = RecipeManager.instance.GetRandomRecipe();
@@ -372,6 +372,8 @@ public class OrdersManager : SingletonGeneric<OrdersManager>
         isCacheValid = false;
         StopCoroutine(UpdateUI());
         StartCoroutine(UpdateUI());
+        // Update order information in Recipes UI
+        RecipesManager.instance.ForceUIUpdate();
         if (onOrderGenerationCallback != null)
         {
             onOrderGenerationCallback.Invoke();
