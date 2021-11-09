@@ -34,4 +34,9 @@ public class SingletonGeneric<T> : MonoBehaviour where T : SingletonGeneric<T>
             Destroy(gameObject);
         }
     }
+
+    public static bool CheckIfInstanceExists()
+    {
+        return instance != null;
+    }
 }
