@@ -13,23 +13,22 @@ Inventory management? Time crunch? Fetch quests? CULLinary 2 has them all.</p>
 <br>
 
 <h4 align=center>Vote for us in 19th STEPS here! 🥔🤡</h4>
-<p align=center><a class="button1" href="https://uvents.nus.edu.sg/event/19th-steps/vote">Voting Link</a></p><br>
+<p align=center><a class="button1" href="https://uvents.nus.edu.sg/event/19th-steps/vote">Voting Link</a></p>
 
 <h4 align=center>🍆🌽 Download CULLinary 2 here! Or head to our releases! 🥔🤡</h4>
-<p align=center><a class="button1" href="https://angryeggplant.itch.io/cullinary-2">Download Link</a></p><br>
+<p align=center><a class="button1" href="https://angryeggplant.itch.io/cullinary-2">Download Link</a></p>
 
 <h4 align=center> 🍕 CULLinary 2 | Official Launch Trailer 🌯</h4>
-<p align=center><a class="button1" href="https://www.youtube.com/watch?v=G_uVAnabw4Q">Trailer Link</a></p><br>
+<p align=center><a class="button1" href="https://www.youtube.com/watch?v=G_uVAnabw4Q">Trailer Link</a></p>
 
 <h4 align=center>Follow our dev blog!</h4>
-<p align=center><a class="button1" href="https://angryeggplant.itch.io/cullinary-2/devlog/296426/welcome-to-cullinary-2">Dev Blog Link</a></p><br>
+<p align=center><a class="button1" href="https://angryeggplant.itch.io/cullinary-2/devlog/296426/welcome-to-cullinary-2">Dev Blog Link</a></p>
 
 <p align=center><img src="https://i.imgur.com/dEFqL9p.png" alt="Key Features" draggable="false"></p>
-<br>
 
 <h4 align=center>🔪 12 delicious enemies to cull 🔪</h4>
 <p align=center>With 8 scrumptious enemies and 4 succulent bosses for you to chomp on, can you defeat them all?</p>
-<p align=center><img src="https://i.imgur.com/cbyoALG.png" alt="CULLinary 2 Enemies" draggable="false"> <br><br></p>
+<p align=center><img src="https://i.imgur.com/cbyoALG.png" alt="CULLinary 2 Enemies" draggable="false"><br></p>
 
 <h4 align=center>🧑‍🍳 Unique weapons, skills, and consumables 🧑‍🍳 </h4>
 <p align=center> Spice up your combat by switching between different weapon and secondary attack combinations, and use different consumables to give yourself an edge over your enemies!</p><br>
