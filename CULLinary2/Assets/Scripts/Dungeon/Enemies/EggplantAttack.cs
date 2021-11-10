@@ -14,14 +14,12 @@ public class EggplantAttack : MonsterAttack
         attackSprite = gameObject.GetComponent<SpriteRenderer>();
         attackCollider = gameObject.GetComponent<SphereCollider>();
         attackSprite.enabled = false;
-        attackCollider.enabled = false;
         canDealDamage = false;
     }
 
     public override void attackPlayerStart()
     {
         attackSprite.enabled = true;
-        attackCollider.enabled = true;
     }
 
     public override void attackPlayerDealDamage()
@@ -34,7 +32,6 @@ public class EggplantAttack : MonsterAttack
     {
         attackSprite.enabled = false;
         //Destroy(selectionCircleActual.gameObject);
-        attackCollider.enabled = false;
         canDealDamage = false;
     }
 
