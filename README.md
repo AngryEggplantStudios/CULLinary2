@@ -5,26 +5,24 @@ Developed by Team Angry Eggplant for NUS CS4350: Game Development Project. Devel
 <img src="https://i.imgur.com/nmYuObB.png" alt="CULLinary 2 Logo" draggable="false">
 <h4 align=center>🔪 Cull 🥘 Cook 🚚 Deliver</h4>
 <br><p align=left>
-  Welcome to the _zesty_ world of <strong>CULLinary 2</strong>, where you play as Chef, an aspiring restaurant owner trying to spread joy to the world, _one dish at a time_. With the onset of the Clownavirus pandemic, Chef has no choice but to close down his restaurant and deliver food to his customers instead. 
+  Welcome to the zesty world of <strong>CULLinary 2</strong>, where you play as Chef, an aspiring restaurant owner trying to spread joy to the world, one dish at a time. With the onset of the Clownavirus pandemic, Chef has no choice but to close down his restaurant and deliver food to his customers instead. 
 <br><br>
-Experience the _tangy_ thrill of battling against the clock by making sure your hungry customers get their food on time as you traverse the vibrant world of CULLinary 2 and hunt for the ingredients you need to _cook up a storm_, using a variety of _full-bodied_ weapons, _fiery_ skills, and _earthy_ power-ups.
+Experience the tangy thrill of battling against the clock by making sure your hungry customers get their food on time as you traverse the vibrant world of CULLinary 2 and hunt for the ingredients you need to cook up a storm, using a variety of full-bodied weapons, fiery skills, and earthy power-ups.
 <br><br>
 Inventory management? Time crunch? Fetch quests? CULLinary 2 has them all.</p>
 <br>
 
-<p align=center><a class="button1" href="https://uvents.nus.edu.sg/event/19th-steps/vote">Vote for us!</a></p><br>
+<h4 align=center>Vote for us in 19th STEPS here! 🥔🤡</h4>
+<p align=center><a class="button1" href="https://uvents.nus.edu.sg/event/19th-steps/vote">Voting Link</a></p><br>
 
-<p align=center><img src="https://i.imgur.com/Z7loDbU.png" alt="Download" draggable="false"></p>
 <h4 align=center>🍆🌽 Download CULLinary 2 here! Or head to our releases! 🥔🤡</h4>
-<p align=center>
-</p>
-<br>
+<p align=center><a class="button1" href="https://angryeggplant.itch.io/cullinary-2">Download Link</a></p><br>
 
-<p align=center><img src="https://i.imgur.com/e2SNjo0.png" alt="Launch Trailer" draggable="false"></p>
 <h4 align=center> 🍕 CULLinary 2 | Official Launch Trailer 🌯</h4>
-<p align=center>
-</p>
-<br>
+<p align=center><a class="button1" href="https://www.youtube.com/watch?v=G_uVAnabw4Q">Trailer Link</a></p><br>
+
+<h4 align=center>Follow our dev blog!</h4>
+<p align=center><a class="button1" href="https://angryeggplant.itch.io/cullinary-2">Dev Blog Link</a></p><br>
 
 <p align=center><img src="https://i.imgur.com/dEFqL9p.png" alt="Key Features" draggable="false"></p>
 <br>
@@ -93,8 +91,5 @@ The expensivest one.
 </table>
 <br>
 
-<p align=center><a class="button1" href="https://uvents.nus.edu.sg/event/19th-steps/vote">Vote for us!</a></p><br>
-
 <p align=center><img src="https://i.imgur.com/Y5PM2Ze.png" alt="Angry Eggplant" draggable="false"><br></p>
-<p align=center>[🍅 Follow our progress! 🍅] (https://angryeggplant.itch.io/cullinary-2)</p>
 <br>
