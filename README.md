@@ -22,7 +22,7 @@ Inventory management? Time crunch? Fetch quests? CULLinary 2 has them all.</p>
 <p align=center><a class="button1" href="https://www.youtube.com/watch?v=G_uVAnabw4Q">Trailer Link</a></p><br>
 
 <h4 align=center>Follow our dev blog!</h4>
-<p align=center><a class="button1" href="https://angryeggplant.itch.io/cullinary-2">Dev Blog Link</a></p><br>
+<p align=center><a class="button1" href="https://angryeggplant.itch.io/cullinary-2/devlog/296426/welcome-to-cullinary-2">Dev Blog Link</a></p><br>
 
 <p align=center><img src="https://i.imgur.com/dEFqL9p.png" alt="Key Features" draggable="false"></p>
 <br>
